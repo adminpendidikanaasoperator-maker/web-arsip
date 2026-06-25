@@ -382,7 +382,7 @@ function getMonthLabel(ym) {
 function allAYears() {
   const s = new Set(arsip.map(a=>a.ay||getAY(a.tanggal)));
   s.add(currentAY);
-  for(let y=2014; y<=2026; y++) {
+  for(let y=2014; y<=2050; y++) {
     s.add(`${y} - ${y+1} GANJIL`);
     s.add(`${y} - ${y+1} GENAP`);
   }
