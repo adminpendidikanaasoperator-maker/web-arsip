@@ -1035,7 +1035,7 @@ function openForm(prefillDept) {
     sel.innerHTML=[...allAYears()].reverse().map(y=>`<option value="${y}">${y}</option>`).join('');
     sel.value=currentAY||getAY(document.getElementById('fTanggal').value);
   }
-  onFormDateChange();
+  // onFormDateChange(); // Dihapus agar tidak menimpa currentAY
   document.getElementById('overlayForm').classList.add('open');
 }
 function closeForm(){ 
