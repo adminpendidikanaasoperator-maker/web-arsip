@@ -2045,7 +2045,7 @@ async function exportLamptkes(type) {
     if (typeof XLSX === 'undefined') { toast('Library Excel belum dimuat!', 'error'); return; }
     const excelData = data.map((a, index) => ({
       'No': index + 1,
-      'Kriteria': (getKriteriaNumber(a.jenis) === 11) ? 'LED (Semua Kriteria)' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II (LKPS)' : 'Kriteria ' + getKriteriaNumber(a.jenis),
+      'Kriteria': (getKriteriaNumber(a.jenis) === 12) ? 'SPMI (Per Bidang)' : (getKriteriaNumber(a.jenis) === 11) ? 'LED (Semua Kriteria)' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II (LKPS)' : 'Kriteria ' + getKriteriaNumber(a.jenis),
       'Tanggal': a.tanggal,
       'Judul Dokumen': a.judul,
       'Bidang Terkait': (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
@@ -2070,7 +2070,7 @@ async function exportLamptkes(type) {
     
     let tableData = data.map((a, i) => [
       i+1,
-      (getKriteriaNumber(a.jenis) === 11) ? 'LED' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II' : 'K' + getKriteriaNumber(a.jenis),
+      (getKriteriaNumber(a.jenis) === 12) ? 'SPMI' : (getKriteriaNumber(a.jenis) === 11) ? 'LED' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II' : 'K' + getKriteriaNumber(a.jenis),
       a.judul,
       (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
       getLabel(a),
@@ -2106,7 +2106,7 @@ async function exportLamptkes(type) {
     html += "<tr style='background:#10b981; color:#fff;'><th>No</th><th>Kriteria</th><th>Judul Arsip</th><th>Bidang</th><th>Deskripsi Dokumen</th><th>Tautan GDrive</th></tr>";
     
     data.forEach((a, index) => {
-      let krit = (getKriteriaNumber(a.jenis) === 11) ? 'LED (Semua Kriteria)' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II (LKPS)' : 'Kriteria ' + getKriteriaNumber(a.jenis);
+      let krit = (getKriteriaNumber(a.jenis) === 12) ? 'SPMI (Per Bidang)' : (getKriteriaNumber(a.jenis) === 11) ? 'LED (Semua Kriteria)' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II (LKPS)' : 'Kriteria ' + getKriteriaNumber(a.jenis);
       html += "<tr>";
       html += "<td style='padding:4px;'>" + (index + 1) + "</td>";
       html += "<td style='padding:4px;'>" + krit + "</td>";
