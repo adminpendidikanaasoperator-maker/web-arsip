@@ -1035,7 +1035,7 @@ function openForm(prefillDept) {
     sel.innerHTML=[...allAYears()].reverse().map(y=>`<option value="${y}">${y}</option>`).join('');
     sel.value=currentAY||getAY(document.getElementById('fTanggal').value);
   }
-  // onFormDateChange(); // Dihapus agar tidak menimpa currentAY
+  //  // Dihapus agar tidak menimpa currentAY
   document.getElementById('overlayForm').classList.add('open');
 }
 function closeForm(){ 
@@ -1138,13 +1138,7 @@ function renderDynamicFields(jenis, existingData = null) {
   html += `</div></div>`;
   container.innerHTML = html;
 }
-function onFormDateChange() {
-  const tgl=document.getElementById('fTanggal').value;
-  const sel=document.getElementById('fAYear');
-  if(sel && tgl) {
-    const ay = getAY(tgl);
-    if (ay) sel.value = ay;
-  }
+
 }
 function testGDriveLink() {
   const url=document.getElementById('fGdriveLink').value.trim();
@@ -1175,7 +1169,7 @@ function editArsip(id) {
   document.getElementById('fFileName').value=a.fileName||'';
   document.getElementById('fGdriveLink').value=a.gdriveLink||'';
   document.getElementById('fKeterangan').value=a.keterangan||'';
-  onFormDateChange();
+  
   const sel=document.getElementById('fAYear');
   if(sel){
     sel.innerHTML=[...allAYears()].reverse().map(y=>`<option value="${y}">${y}</option>`).join('');
