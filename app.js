@@ -473,6 +473,7 @@ function getFormatCfg(fmt) { return FORMAT_MAP[fmt] || FORMAT_MAP.pdf; }
 
 function fmtBadge(a) {
   if (!a.gdriveLink) return `<span class="no-file">—</span>`;
+  if (a.gdriveLink === 'UPLOADING') return `<span style="color:#f59e0b;font-size:0.85rem"><i class="fas fa-spinner fa-spin"></i> Mengunggah...</span>`;
   const f = getFormatCfg(a.format);
   return `<a href="${esc(a.gdriveLink)}" target="_blank" rel="noopener noreferrer" class="fmt-btn fmt-${a.format||'pdf'}" title="Buka Dokumen: ${esc(a.fileName||'')}"><i class="${f.icon}"></i> ${f.label}</a>`;
 }
@@ -1294,7 +1295,7 @@ function viewDetail(id) {
       <div class="detail-field"><label>Tahun Akademik</label><span class="td-ta">${a.ay||'—'}</span></div>
       <div class="detail-field" style="grid-column:1/-1">
         <label>Dokumen Google Drive</label>
-        ${a.gdriveLink
+        ${a.gdriveLink && a.gdriveLink !== 'UPLOADING'
           ?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
               <a href="${esc(a.gdriveLink)}" target="_blank" rel="noopener" class="gdrive-link-btn" onclick="logGDriveOpen('${a.id}',event)">
                 <i class="${f.icon}" style="color:${f.color}"></i>
@@ -2489,6 +2490,8 @@ async function generateIntegratedReport(type, isDashboard = false) {
 function exportExcel() { generateIntegratedReport('excel', true); }
 function exportPDF() { generateIntegratedReport('pdf', true); }
 function exportWord() { generateIntegratedReport('word', true); }
+
+
 
 
 
