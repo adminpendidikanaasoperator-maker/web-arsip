@@ -2586,3 +2586,21 @@ function updateYearlyChart() {
   const data=arsip.filter(a=>!currentAY||a.ay===currentAY);
   initDashCharts(data);
 }
+
+
+// --- DYNAMICALLY INJECT LED AND SPMI FOR ALL KRITERIA ---
+(function() {
+  Object.keys(DEPT_JENIS).forEach(k => {
+    if (!DEPT_JENIS[k]) return;
+    for(let i=9; i>=1; i--) {
+      let ledVal = 'k' + i + '_led';
+      let spmiVal = 'k' + i + '_spmi';
+      if (!DEPT_JENIS[k].find(x => x.val === ledVal)) {
+        DEPT_JENIS[k].unshift({ val: ledVal, label: '[LED] Laporan Evaluasi Diri Kriteria ' + i });
+      }
+      if (!DEPT_JENIS[k].find(x => x.val === spmiVal)) {
+        DEPT_JENIS[k].unshift({ val: spmiVal, label: '[SPMI] Dokumen SPMI Kriteria ' + i });
+      }
+    }
+  });
+})();
