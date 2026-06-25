@@ -399,14 +399,6 @@ async function loadData() {
     activity = activitySnap.docs.map(d => d.data());
     mahasiswa = mhsSnap.docs.map(d => d.data());
     sdm = sdmSnap.docs.map(d => d.data());
-    
-    arsip.forEach(a => { a.ay = getAY(a.tanggal); });
-    populateAYearSelect();
-    updateBadges();
-    if(currentPage==='dashboard') renderDashboard();
-    else if(currentPage==='arsip') renderArsipTable();
-    else if(currentPage==='dept') renderDeptPage(currentDept);
-    else if(currentPage==='analytics') renderAnalytics();
   } catch(err) {
     console.error('Failed to load from Firestore', err);
     try {
@@ -418,6 +410,14 @@ async function loadData() {
     if (!arsip.length) { arsip = sampleData(); }
     if (!mahasiswa.length) { mahasiswa = sampleDataMahasiswa(); }
     if (!sdm.length) { sdm = sampleDataSDM(); }
+  } finally {
+    arsip.forEach(a => { a.ay = getAY(a.tanggal); });
+    populateAYearSelect();
+    updateBadges();
+    if(currentPage==='dashboard') renderDashboard();
+    else if(currentPage==='arsip') renderArsipTable();
+    else if(currentPage==='dept') renderDeptPage(currentDept);
+    else if(currentPage==='analytics') renderAnalytics();
   }
 }
 function save() {

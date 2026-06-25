@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Migrasi Data ke Firestore</title>
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <!-- Firebase Firestore -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 800px; margin: 0 auto; line-height: 1.6; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: #2563eb; color: white; border: none; border-radius: 4px; }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+    #log { margin-top: 20px; background: #f1f5f9; padding: 15px; border-radius: 6px; border: 1px solid #cbd5e1; height: 400px; overflow-y: auto; font-family: monospace; font-size: 14px;}
+    .success { color: #16a34a; font-weight: bold; }
+    .error { color: #dc2626; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>Migrasi Data dari Google Sheets (GAS) ke Firestore</h1>
+  <p>Skrip ini akan mengambil semua data arsip, mahasiswa, sdm, dan aktivitas yang tersimpan sebelumnya di Google Apps Script, lalu memindahkannya ke dalam database Firebase Firestore yang baru.</p>
+  <p>Peringatan: Jangan menutup halaman ini saat proses migrasi sedang berjalan!</p>
+  <button id="btnMigrate" onclick="runMigration()">Mulai Migrasi Data</button>
+  <div id="log"></div>
+
+  <script>
+    // Konfigurasi Firebase Anda
+    const firebaseConfig = {
+      apiKey: "AIzaSyCdOtyCix06Cty82u7ls1YT-WhKcUMpjIo",
+      authDomain: "arsip-aas.firebaseapp.com",
+      projectId: "arsip-aas",
+      storageBucket: "arsip-aas.firebasestorage.app",
+      messagingSenderId: "958092839381",
+      appId: "1:958092839381:web:ba6936a7a4fccc11bfd55c"
+    };
+    
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbygsAY90lqF2Ax1SzWZ7NGMpPPWMhYa8kwwvzFJn9hVJVmY8BqWXhC1v-SpRTTuqHfSzA/exec';
+
+    function logMsg(msg, className = '') {
+      const logDiv = document.getElementById('log');
+      logDiv.innerHTML += `<div class="${className}">${msg}</div>`;
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    async function runMigration() {
+      document.getElementById('btnMigrate').disabled = true;
+      try {
+        logMsg("Langkah 1: Mengambil data dari Google Apps Script...", "info");
+        const res = await fetch(GAS_URL + '?action=loadAll');
+        const json = await res.json();
+        
+        if (json.status !== 'success' || !json.data) {
+          logMsg("Gagal mengambil data atau format salah.", "error");
+          return;
+        }
+
+        const collections = ['arsip', 'activity', 'mahasiswa', 'sdm'];
+        for (const col of collections) {
+          const items = json.data[col] || [];
+          logMsg(`Menemukan ${items.length} data di koleksi "${col}". Mulai menyimpan ke Firestore...`);
+          
+          let count = 0;
+          for (const item of items) {
+            if (!item.id) continue;
+            try {
+              // Convert id to string (Firestore doc IDs must be strings)
+              await db.collection(col).doc(item.id.toString()).set(item);
+              count++;
+              if(count % 10 === 0) logMsg(`...menyimpan ${count} / ${items.length} di ${col}...`);
+            } catch (err) {
+              logMsg(`Gagal menyimpan data id ${item.id}: ${err.message}`, "error");
+            }
+          }
+          logMsg(`Selesai koleksi "${col}": ${count} data berhasil dipindahkan.`, "success");
+        }
+        
+        logMsg("MIGRASI SELESAI! Semua data telah dipindahkan ke Firestore.", "success");
+        logMsg("Sekarang Anda dapat membuka aplikasi web utama (index.html).", "success");
+      } catch (err) {
+        console.error(err);
+        logMsg(`Error: ${err.message}`, "error");
+        logMsg("Catatan: Jika Anda melihat error 'Missing or insufficient permissions', itu berarti Aturan Firestore (Security Rules) Anda menolak akses Tulis. Ubah aturannya di Firebase Console ke 'allow read, write: if true;' sementara waktu.", "error");
+      } finally {
+        document.getElementById('btnMigrate').disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
