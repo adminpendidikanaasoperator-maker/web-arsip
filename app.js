@@ -473,7 +473,7 @@ function getFormatCfg(fmt) { return FORMAT_MAP[fmt] || FORMAT_MAP.pdf; }
 
 function fmtBadge(a) {
   if (!a.gdriveLink) return `<span class="no-file">—</span>`;
-  if (a.gdriveLink === 'UPLOADING') return `<span style="color:#f59e0b;font-size:0.85rem"><i class="fas fa-spinner fa-spin"></i> Mengunggah...</span>`;
+  if (a.gdriveLink === 'UPLOADING') return `<span style="color:#f59e0b;font-size:0.85rem;white-space:nowrap"><i class="fas fa-spinner fa-spin"></i> Mengunggah...</span>`;
   const f = getFormatCfg(a.format);
   return `<a href="${esc(a.gdriveLink)}" target="_blank" rel="noopener noreferrer" class="fmt-btn fmt-${a.format||'pdf'}" title="Buka Dokumen: ${esc(a.fileName||'')}"><i class="${f.icon}"></i> ${f.label}</a>`;
 }
