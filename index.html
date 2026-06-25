@@ -15,7 +15,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=108" />
+  <link rel="stylesheet" href="style.css?v=109" />
 </head>
 <body>
 
@@ -536,8 +536,10 @@
           </div>
         </div>
 
-        <div class="ayear-pill" id="ayearPill">
-          <i class="fas fa-calendar-check"></i> Tahun Akademik: <strong id="ayearPillVal">—</strong>
+                <div class="form-field" style="margin-bottom:12px">
+          <label>Tahun Akademik <span class="req">*</span></label>
+          <select id="fAYear" required style="padding:10px; border:1px solid var(--border); border-radius:6px; background:#fff; font-size:0.9rem; color:var(--text-main); cursor:pointer">
+          </select>
         </div>
 
         <!-- ── DOKUMEN GOOGLE DRIVE ── -->
@@ -928,6 +930,6 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="app.js?v=108"></script>
+<script src="app.js?v=109"></script>
 </body>
 </html>

@@ -1030,6 +1030,11 @@ function openForm(prefillDept) {
   document.getElementById('fGdriveLink').value='';
   if(prefillDept){ document.getElementById('fBidang').value=prefillDept; onBidangChange(); }
   else { document.getElementById('fJenis').innerHTML='<option value="">-- Pilih Bidang dulu --</option>'; }
+  const sel=document.getElementById('fAYear');
+  if(sel){
+    sel.innerHTML=[...allAYears()].reverse().map(y=>`<option value="${y}">${y}</option>`).join('');
+    sel.value=currentAY||getAY(document.getElementById('fTanggal').value);
+  }
   onFormDateChange();
   document.getElementById('overlayForm').classList.add('open');
 }
@@ -1135,7 +1140,11 @@ function renderDynamicFields(jenis, existingData = null) {
 }
 function onFormDateChange() {
   const tgl=document.getElementById('fTanggal').value;
-  document.getElementById('ayearPillVal').textContent=tgl?getAY(tgl):'—';
+  const sel=document.getElementById('fAYear');
+  if(sel && tgl) {
+    const ay = getAY(tgl);
+    if (ay) sel.value = ay;
+  }
 }
 function testGDriveLink() {
   const url=document.getElementById('fGdriveLink').value.trim();
@@ -1167,6 +1176,11 @@ function editArsip(id) {
   document.getElementById('fGdriveLink').value=a.gdriveLink||'';
   document.getElementById('fKeterangan').value=a.keterangan||'';
   onFormDateChange();
+  const sel=document.getElementById('fAYear');
+  if(sel){
+    sel.innerHTML=[...allAYears()].reverse().map(y=>`<option value="${y}">${y}</option>`).join('');
+    sel.value=a.ay;
+  }
   document.getElementById('formTitle').innerHTML='<i class="fas fa-pen"></i> Edit Arsip';
   document.getElementById('btnSimpan').innerHTML='<i class="fas fa-floppy-disk"></i> Update';
   document.getElementById('overlayForm').classList.add('open');
@@ -1184,7 +1198,7 @@ async function saveArsip(e) {
   let gdriveFolder='';
   const bidang=document.getElementById('fBidang').value;
   const jenis=document.getElementById('fJenis').value;
-  const tahun=getAY(tgl);
+  const tahun=document.getElementById('fAYear').value || getAY(tgl);
 
   const fileInput = document.getElementById('fUploadFile');
   let fileToUpload = null;
