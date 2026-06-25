@@ -1140,7 +1140,6 @@ function renderDynamicFields(jenis, existingData = null) {
   container.innerHTML = html;
 }
 
-}
 function testGDriveLink() {
   const url=document.getElementById('fGdriveLink').value.trim();
   if(!url){toast('Tempel link Google Drive terlebih dahulu.','error');return;}
