@@ -158,13 +158,25 @@
       </div>
       <select id="filterDept" onchange="onFilterDeptChange()">
         <option value="">Semua Bidang</option>
-        <option value="keuangan">Keuangan</option>
-        <option value="pendidikan">Pendidikan</option>
-        <option value="perpustakaan">Perpustakaan</option>
-        <option value="kemahasiswaan">Kemahasiswaan</option>
-        <option value="sdm">SDM & Kepegawaian</option>
-        <option value="sarana">Sarana & Prasarana</option>
-        <option value="humas">Humas</option>
+        <optgroup label="Wadir I">
+          <option value="akademik">Akademik & Pendidikan</option>
+          <option value="sistem_pendidikan">Sistem Informasi Pendidikan</option>
+          <option value="laboratorium">Laboratorium</option>
+          <option value="perpustakaan">Perpustakaan</option>
+          <option value="lppm">LPPM</option>
+          <option value="kemahasiswaan">Kemahasiswaan & Alumni</option>
+          <option value="pengabdian">Pengabdian Masyarakat</option>
+        </optgroup>
+        <optgroup label="Wadir II">
+          <option value="umum">Umum & Kelembagaan</option>
+          <option value="kepegawaian">Kepegawaian</option>
+          <option value="keuangan">Keuangan</option>
+          <option value="rumah_tangga">Rumah Tangga</option>
+          <option value="sarana">Sarana Prasarana</option>
+          <option value="sistem_informasi">Sistem Informasi</option>
+          <option value="humas">Humas</option>
+          <option value="kerjasama">Kerjasama</option>
+        </optgroup>
       </select>
       <select id="filterJenis" onchange="renderArsipTable()">
         <option value="">Semua Jenis</option>
@@ -471,13 +483,25 @@
             <label>Bidang <span class="req">*</span></label>
             <select id="fBidang" required onchange="onBidangChange()">
               <option value="">-- Pilih Bidang --</option>
-              <option value="keuangan">Keuangan</option>
-              <option value="pendidikan">Pendidikan</option>
-              <option value="perpustakaan">Perpustakaan</option>
-              <option value="kemahasiswaan">Kemahasiswaan</option>
-              <option value="sdm">SDM & Kepegawaian</option>
-              <option value="sarana">Sarana & Prasarana</option>
-              <option value="humas">Humas</option>
+              <optgroup label="Wadir I: Pendidikan & Kemahasiswaan">
+                <option value="akademik">Akademik & Pendidikan</option>
+                <option value="sistem_pendidikan">Sistem Informasi Pendidikan</option>
+                <option value="laboratorium">Laboratorium</option>
+                <option value="perpustakaan">Perpustakaan</option>
+                <option value="lppm">Penelitian & Pelatihan (LPPM)</option>
+                <option value="kemahasiswaan">Kemahasiswaan & Alumni</option>
+                <option value="pengabdian">Pengabdian Masyarakat</option>
+              </optgroup>
+              <optgroup label="Wadir II: Umum & Kerjasama">
+                <option value="umum">Umum & Kelembagaan</option>
+                <option value="kepegawaian">Administrasi Kepegawaian</option>
+                <option value="keuangan">Keuangan & Institusi</option>
+                <option value="rumah_tangga">Rumah Tangga</option>
+                <option value="sarana">Sarana Prasarana</option>
+                <option value="sistem_informasi">Sistem Informasi</option>
+                <option value="humas">HUMAS</option>
+                <option value="kerjasama">Kerjasama</option>
+              </optgroup>
             </select>
           </div>
           <div class="form-field" style="position:relative;">
