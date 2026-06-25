@@ -282,7 +282,7 @@ input,select,textarea{font-family:inherit}
 .data-table tbody tr{transition:background var(--tr)}
 .data-table tbody tr:hover{background:var(--hover)}
 .td-nomor{font-family:monospace;font-size:.8rem;color:var(--green-d);font-weight:700}
-.td-judul{font-weight:600;color:var(--t1);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.td-judul{font-weight:600;color:var(--t1);white-space:normal;display:block;line-height:1.4;word-wrap:break-word;}
 .td-ta{font-size:.75rem;color:var(--t3);white-space:nowrap;font-weight:600}
 .d-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:10px;font-size:.7rem;font-weight:600;white-space:normal;text-align:left;line-height:1.2;}
 .s-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;font-size:.7rem;font-weight:700;white-space:nowrap;letter-spacing:.5px}
