@@ -29,7 +29,7 @@ const SK_SDM = 'aas_sdm_v3';
 /* ─── GOOGLE APPS SCRIPT URL ─── */
 // Paste URL "Web app" dari Google Apps Script di sini setelah melakukan Deployment.
 // Contoh: 'https://script.google.com/macros/s/AKfycby.../exec'
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbygsAY90lqF2Ax1SzWZ7NGMpPPWMhYa8kwwvzFJn9hVJVmY8BqWXhC1v-SpRTTuqHfSzA/exec'; 
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxGxnDOyJHfhvo-NF6NZj2OX4lGI1450ehIGGE46F4XjocKNLGYaymyrApffsN_HDU8/exec'; 
 
 /* ─── DEPARTEMEN ─── */
 const DEPT = {
