@@ -696,7 +696,7 @@ function renderArsipTable() {
       <td style="color:var(--t3);font-size:.72rem">${i+1}</td>
       <td><span class="td-nomor">${esc(a.nomor)}</span></td>
       <td><span class="td-judul" title="${esc(a.judul)}">${esc(a.judul)}</span></td>
-      <td><span class="d-badge" style="background:${d.color}18;color:${d.color}"><i class="${d.icon}"></i>${d.label}</span></td>
+      <td><span class="d-badge" style="background:${d.color}18;color:${d.color}; white-space: normal !important; text-align: left; line-height: 1.2; min-width: 120px; display: inline-block;"><i class="${d.icon}"></i>${d.label}</span></td>
       <td style="font-size:.78rem;color:var(--t2);"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/"/g, '&quot;')}" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${getJenisLabel(a.bidang,a.jenis)}</div></td>
       <td style="font-size:.78rem;">${fmtDate(a.tanggal)}</td>
       <td><span class="td-ta" style="white-space:normal;">${a.ay||'—'}</span></td>
