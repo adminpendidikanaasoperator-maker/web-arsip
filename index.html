@@ -15,7 +15,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=113" />
+  <link rel="stylesheet" href="style.css?v=114" />
 </head>
 <body>
 
@@ -131,7 +131,7 @@
         <div class="chart-wrap"><canvas id="chartLine"></canvas></div>
       </div>
       <div class="panel">
-        <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center;"><h3><i class="fas fa-chart-area"></i> Tren Arsip Tahunan</h3><span class="panel-sub" style="display:inline-flex; align-items:center; gap:4px;"><select id="trendLimit" style="padding:2px 4px; font-size:0.75rem; border:1px solid var(--border); border-radius:4px;" onchange="updateYearlyChart()"><option value="5">5 TA Terakhir</option><option value="10">10 TA Terakhir</option><option value="15">15 TA Terakhir</option><option value="0">Semua TA</option></select></span></div>
+        <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center;"><h3><i class="fas fa-chart-area"></i> Tren Arsip Tahunan</h3><span class="panel-sub" style="display:inline-flex; align-items:center; gap:4px;"><select id="trendLimit" style="padding:2px 4px; font-size:0.75rem; border:1px solid var(--border); border-radius:4px;" onchange="updateYearlyChart()"><option value="5">5 TA Terakhir</option><option value="10">10 TA Terakhir</option><option value="15">15 TA Terakhir</option><option value="0">Semua TA</option><optgroup label="Rentang Tahun"><option value="2016-2020">2016 - 2020</option><option value="2021-2025">2021 - 2025</option><option value="2026-2030">2026 - 2030</option><option value="2031-2035">2031 - 2035</option><option value="2036-2040">2036 - 2040</option><option value="2041-2045">2041 - 2045</option><option value="2046-2050">2046 - 2050</option></optgroup></select></span></div>
         <div class="chart-wrap"><canvas id="chartYearlyLine"></canvas></div>
       </div>
     </div>
@@ -932,6 +932,6 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="app.js?v=113"></script>
+<script src="app.js?v=114"></script>
 </body>
 </html>
