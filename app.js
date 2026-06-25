@@ -1453,7 +1453,22 @@ function renderActivity() {
   const cfg={add:{cls:'dot-add',ic:'fa-plus'},edit:{cls:'dot-edit',ic:'fa-pen'},delete:{cls:'dot-del',ic:'fa-trash'}};
   el.innerHTML=activity.map(a=>{const c=cfg[a.type]||cfg.add;return`<div class="act-item"><div class="act-dot ${c.cls}"><i class="fas ${c.ic}"></i></div><div class="act-body"><div class="act-text">${esc(a.text)}</div><div class="act-time">${fmtDateTime(a.time)}</div></div></div>`;}).join('');
 }
-function clearActivity(){ if(!confirm('Hapus semua riwayat aktivitas?'))return; activity=[]; save(); renderActivity(); }
+async function clearActivity(){ 
+  if(!confirm('Hapus semua riwayat aktivitas dari database? Tindakan ini tidak dapat dibatalkan.')) return; 
+  try {
+    const snap = await db.collection('activity').get();
+    const batch = db.batch();
+    snap.docs.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+    activity = []; 
+    save(); 
+    renderActivity();
+    alert('Berhasil mengosongkan riwayat aktivitas di Firestore!');
+  } catch(e) {
+    console.error('Failed to clear activity:', e);
+    alert('Terjadi kesalahan saat menghapus aktivitas dari database.');
+  }
+}
 
 /* ═════ EXPORT ═════ */
 function toggleExportMenu(){ document.getElementById('exportMenu').classList.toggle('open'); }
