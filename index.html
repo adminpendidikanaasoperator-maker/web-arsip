@@ -15,7 +15,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=104" />
+  <link rel="stylesheet" href="style.css?v=105" />
 </head>
 <body>
 
@@ -129,7 +129,7 @@
         <div class="chart-wrap"><canvas id="chartLine"></canvas></div>
       </div>
       <div class="panel">
-        <div class="panel-hd"><h3><i class="fas fa-chart-area"></i> Tren Arsip Tahunan</h3><span class="panel-sub">Keseluruhan</span></div>
+        <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center;"><h3><i class="fas fa-chart-area"></i> Tren Arsip Tahunan</h3><span class="panel-sub" style="display:inline-flex; align-items:center; gap:4px;"><input type="number" id="trendStartY" style="width:60px; padding:2px 4px; font-size:0.75rem; border:1px solid var(--border); border-radius:4px; text-align:center" onchange="updateYearlyChart()"> - <input type="number" id="trendEndY" style="width:60px; padding:2px 4px; font-size:0.75rem; border:1px solid var(--border); border-radius:4px; text-align:center" onchange="updateYearlyChart()"></span></div>
         <div class="chart-wrap"><canvas id="chartYearlyLine"></canvas></div>
       </div>
     </div>
@@ -928,6 +928,6 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="app.js?v=104"></script>
+<script src="app.js?v=105"></script>
 </body>
 </html>
