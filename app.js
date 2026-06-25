@@ -33,241 +33,131 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycbz1Kw76k6SXS_bXweER_JAY
 
 /* ─── DEPARTEMEN ─── */
 const DEPT = {
-  keuangan:     { label:'Keuangan',          icon:'fas fa-coins',          color:'#f59e0b' },
-  pendidikan:   { label:'Pendidikan',         icon:'fas fa-graduation-cap', color:'#3b82f6' },
-  perpustakaan: { label:'Perpustakaan',       icon:'fas fa-book',           color:'#8b5cf6' },
-  kemahasiswaan:{ label:'Kemahasiswaan',      icon:'fas fa-users',          color:'#10b981' },
-  sdm:          { label:'SDM & Kepegawaian',  icon:'fas fa-user-tie',       color:'#ec4899' },
-  sarana:       { label:'Sarana & Prasarana', icon:'fas fa-building',       color:'#f97316' },
-  humas:        { label:'Humas',              icon:'fas fa-bullhorn',       color:'#06b6d4' },
-  lppm:         { label:'LPPM (Penelitian & PkM)', icon:'fas fa-flask',     color:'#14b8a6' },
+  // Wadir I
+  akademik: { label:'Bidang Administrasi Akademik & Pendidikan', icon:'fas fa-graduation-cap', color:'#3b82f6' },
+  sistem_pendidikan: { label:'Bidang Administrasi Sistem Informasi Pendidikan Tinggi', icon:'fas fa-laptop-code', color:'#6366f1' },
+  laboratorium: { label:'Bidang Laboratorium', icon:'fas fa-vials', color:'#8b5cf6' },
+  perpustakaan: { label:'Bidang Perpustakaan', icon:'fas fa-book', color:'#a855f7' },
+  lppm: { label:'Bidang Penelitian & Pelatihan (LPPM)', icon:'fas fa-microscope', color:'#d946ef' },
+  kemahasiswaan: { label:'Bidang Kemahasiswaan & Alumni', icon:'fas fa-users', color:'#ec4899' },
+  pengabdian: { label:'Bidang Pengabdian Masyarakat', icon:'fas fa-hands-helping', color:'#f43f5e' },
+  
+  // Wadir II
+  umum: { label:'Bidang Administrasi Umum & Kelembagaan', icon:'fas fa-building', color:'#f97316' },
+  kepegawaian: { label:'Bidang Administrasi Kepegawaian', icon:'fas fa-user-tie', color:'#f59e0b' },
+  keuangan: { label:'Bidang Administrasi Keuangan Institusi & Pendidikan', icon:'fas fa-coins', color:'#eab308' },
+  rumah_tangga: { label:'Bidang Rumah Tangga', icon:'fas fa-home', color:'#84cc16' },
+  sarana: { label:'Bidang Sarana Prasarana', icon:'fas fa-tools', color:'#22c55e' },
+  sistem_informasi: { label:'Bidang Sistem Informasi', icon:'fas fa-network-wired', color:'#10b981' },
+  humas: { label:'Bidang HUMAS', icon:'fas fa-bullhorn', color:'#14b8a6' },
+  kerjasama: { label:'Bidang Kerjasama', icon:'fas fa-handshake', color:'#06b6d4' },
+
+  // Backward compatibility keys (if they existed previously, they'll fall back gracefully or just display their label)
+  pendidikan: { label:'Pendidikan', icon:'fas fa-graduation-cap', color:'#3b82f6' },
+  sdm: { label:'SDM & Kepegawaian', icon:'fas fa-user-tie', color:'#ec4899' }
 };
 
 /* ─── JENIS DOKUMEN PER BIDANG (tidak ada "Lainnya") ─── */
 const DEPT_JENIS = {
-  keuangan: [
-    { val:'rencana_anggaran', label:'Rencana Anggaran (RAB / RKA)' },
-    { val:'realisasi_anggaran', label:'Realisasi Anggaran' },
-    { val:'laporan_keuangan', label:'Laporan Keuangan' },
-    { val:'spj', label:'SPJ - Surat Pertanggungjawaban' },
-    { val:'dipa', label:'DIPA / RKAKL' },
-    { val:'nota_dinas', label:'Nota Dinas Keuangan' },
-    { val:'sk', label:'SK / Keputusan Keuangan' },
-    { val:'kontrak', label:'Kontrak / SPK' },
-    { val:'surat_masuk', label:'Surat Masuk' },
-    { val:'surat_keluar', label:'Surat Keluar' },
-    { val:'k6_14', label:'Dokumen audit: keuangan dan sarana prasarana.' },
-    { val:'k8_2', label:'Prosedur operasional standar pengalokasian anggaran.' },
-    { val:'lkps_33', label:'[LKPS] Tabel 33. Jumlah Penerimaan Dana di Unit Pengelola Program Studi' },
-    { val:'lkps_34', label:'[LKPS] Tabel 34. Jumlah Penggunaan Dana di Unit Pengelola Program Studi' },
+  akademik: [
+    { val:'k2_kurikulum', label:'[Kriteria 2] Buku Kurikulum, Peta Kompetensi, RPS' },
+    { val:'k2_rapat_kurikulum', label:'[Kriteria 2] Notulen Rapat Komite Kurikulum' },
+    { val:'k2_metode_pendidikan', label:'[Kriteria 2] Dokumen Metode Pendidikan & Telaah Kurikulum' },
+    { val:'k2_pedoman_klinik', label:'[Kriteria 2] Modul & Panduan Praktik Klinik Profesi' },
+    { val:'k3_spo_penilaian', label:'[Kriteria 3] Prosedur Operasional Standar (SPO) Penilaian' },
+    { val:'k3_blueprint', label:'[Kriteria 3] Cetak Biru (Blueprint) Penilaian' },
+    { val:'k3_logbook', label:'[Kriteria 3] Buku Catatan Mahasiswa (Logbook)' },
+    { val:'k3_remedial', label:'[Kriteria 3] Mekanisme Remedial dan Konseling' },
+    { val:'k3_hasil_ukom', label:'[Kriteria 3] Lampiran Hasil Uji Kompetensi CBT & OSCE' },
+    { val:'lainnya', label:'Lainnya' }
   ],
-  pendidikan: [
-    { val:'kurikulum', label:'Kurikulum Program Studi' },
-    { val:'silabus', label:'Silabus / RPS Mata Kuliah' },
-    { val:'jadwal', label:'Jadwal Perkuliahan' },
-    { val:'sk_mengajar', label:'SK Beban Mengajar Dosen' },
-    { val:'nilai', label:'Daftar Nilai Mahasiswa' },
-    { val:'laporan_akademik', label:'Laporan Akademik' },
-    { val:'absensi', label:'Absensi / Presensi' },
-    { val:'sk', label:'SK / Keputusan Akademik' },
-    { val:'surat_masuk', label:'Surat Masuk' },
-    { val:'surat_keluar', label:'Surat Keluar' },
-    { val:'k1_1', label:'Laporan kegiatan atau notulen rapat pada saat perumusan visi, misi, dan unggulan Program Studi yang berasal dari visi, misi, dan unggulan fakultas dan universitas. Visi, misi, dan unggulan tersebut mencakup peran UPPS dalam meningkatkan derajat kesehatan masyarakat.' },
-    { val:'k1_2', label:'Bukti kegiatan keterlibatan pemangku kepentingan internal (mahasiswa, dosen, tendik, pengelola) dan eksternal (lulusan, pengguna lulusan, mitra, pakar, organisasi profesi dan pemerintah) seperti daftar hadir, rekaman foto/video pada saat pertemuan.' },
-    { val:'k1_3', label:'Media yang digunakan untuk publikasi/sosialisasi visi, misi, dan unggulan.' },
-    { val:'k1_4', label:'Dokumen rencana strategi (renstra) dan rencana operasional (renop)' },
-    { val:'k2_1', label:'Notulen rapat komite kurikulum untuk merumuskan capaian pembelajaran lulusan setiap mata kuliah (termasuk pengetahuan, keterampilan, dan perilaku) berdasarkan visi, misi, dan unggulan program studi dengan pelibatan pemangku kepentingan internal dan eksternal.' },
-    { val:'k2_2', label:'Buku kurikulum (kurikulum: prinsip, struktur, isi, urutan), peta kompetensi, rencana pembelajaran semester (RPS), hasil pembelajaran, metode pendidikan, penilaian.' },
-    { val:'k2_3', label:'Daftar departemen klinis untuk penempatan mahasiswa Daftar penempatan mahasiswa untuk orientasi pembelajaran klinik profesional  (early clinical exposure) pada tahap akademik dan praktek klinik profesional  tahap profesi.' },
-    { val:'k2_4', label:'Daftar rumah sakit pendidikan Daftar wahana praktek yang digunakan dan memenuhi persyaratan praktek klinik profesional mahasiswa' },
-    { val:'k2_5', label:'Notulen rapat komite kurikulum tentang metode pendidikan, telaah kurikulum, evaluasi dan peninjauan kurikulum.' },
-    { val:'k2_6', label:'Modul dan Panduan praktek klinik profesional mahasiswa' },
-    { val:'k2_7', label:'Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien' },
-    { val:'k2_8', label:'Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut' },
-    { val:'k2_9', label:'Kebijakan dan prosedur mitigasi kasus risiko kecelakaan' },
-    { val:'k3_1', label:'Prosedur operasional standar penilaian' },
-    { val:'k3_4', label:'Cetak biru (blueprint) penilaian' },
-    { val:'k3_5', label:'Prosedur mekanisme banding' },
-    { val:'k3_6', label:'Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan' },
-    { val:'k3_7', label:'Kebijakan dan prosedur penilaian sesuai tempat pembelajaran' },
-    { val:'k3_8', label:'Lampiran hasil Uji Kompetensi CBT dan OSCE' },
-    { val:'k6_1', label:'Daftar infrastruktur fisik/sarana dan prasarana' },
-    { val:'k6_2', label:'Daftar sistem pendukung pembelajaran lainnya. Sistem manajemen pembelajaran dan dukungan internet' },
-    { val:'k6_3', label:'Daftar rumah sakit pendidikan dan wahana praktek klinik.' },
-    { val:'k6_4', label:'Daftar fasilitas di rumah sakit pendidikan dan pengajaran klinik (ruang diskusi, ruang shift malam, perpustakaan, dll.)' },
-    { val:'k6_5', label:'Daftar manekin yang tersedia untuk pelatihan keterampilan klinis mahasiswa.' },
-    { val:'k6_6', label:'Kebijakan mengenai keselamatan dan kesehatan kerja civitas akademika.' },
-    { val:'k6_7', label:'Daftar pasien standar dan laporan pelatihannya.' },
-    { val:'k6_8', label:'Daftar pelatihan dan laporannya dari dosen klinis dan pembimbing' },
-    { val:'k6_9', label:'Daftar database jurnal yang tersedia' },
-    { val:'k6_10', label:'Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia' },
-    { val:'k7_1', label:'Sistem penjaminan mutu: struktur dan tupoksi.' },
-    { val:'k7_2', label:'Dokumen mutu: kebijakan, standar, manual, formulir, dan dokumen pendukung lainnya.' },
-    { val:'k7_3', label:'Laporan audit mutu internal.' },
-    { val:'k7_4', label:'Laporan rapat tinjauan manajemen.' },
-    { val:'k7_5', label:'Sumber daya yang dialokasikan untuk penjaminan mutu.' },
-    { val:'k7_6', label:'Notulen/risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem penjaminan mutu dan strategi keselamatan pasien.' },
-    { val:'k7_7', label:'Dokumen tindak lanjut atas umpan balik penjaminan mutu untuk peningkatan mutu berkelanjutan.' },
-    { val:'k7_8', label:'Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut' },
-    { val:'k7_9', label:'Kebijakan dan prosedur mitigasi kasus risiko.' },
-    { val:'lkps_1', label:'[LKPS] Tabel 1. Substansi Kurikulum (kuliah/praktikum/praktik) di Tahap Akademik dan Tahap Profesi di Program Studi' },
-    { val:'lkps_2', label:'[LKPS] Tabel 2. Persentase Keberhasilan Studi' },
-    { val:'lkps_3', label:'[LKPS] Tabel 3. Data IPK Lulusan Tahap Akademik di Program Studi' },
-    { val:'lkps_4', label:'[LKPS] Tabel 4. Data IPK Lulusan Tahap Profesi di Program Studi' },
-    { val:'lkps_5', label:'[LKPS] Tabel 5. Data Lulusan Tepat Waktu Tahap Akademik di Program Studi' },
-    { val:'lkps_6', label:'[LKPS] Tabel 6. Data Lulusan Tepat Waktu Tahap Profesi di Program Studi' },
-    { val:'lkps_7', label:'[LKPS] Tabel 7. Uji Kompetensi Mahasiswa Program Studi (UKMPS-CBT)' },
-    { val:'lkps_8', label:'[LKPS] Tabel 8. Uji Kompetensi Mahasiswa Program Studi (UKMPS-OSCE)' },
-    { val:'lkps_9', label:'[LKPS] Tabel 9. Data Total Mahasiswa pada Unit Pengelola Program Studi' },
-    { val:'lkps_10', label:'[LKPS] Tabel 10. Data Mahasiswa Tahap Akademik pada Program Studi' },
-    { val:'lkps_11', label:'[LKPS] Tabel 11. Data Mahasiswa Tahap Profesi pada Program Studi' },
-    { val:'lkps_13', label:'[LKPS] Tabel 13. Masa Tunggu Lulusan Mendapatkan Pekerjaan' },
-    { val:'lkps_15', label:'[LKPS] Tabel 15. Dosen Tetap pada Unit Pengelola Program Studi' },
-    { val:'lkps_16', label:'[LKPS] Tabel 16. Dosen Tetap Tahap Akademik dan Profesi pada Program Studi' },
-    { val:'lkps_17', label:'[LKPS] Tabel 17. Aktivitas Dosen Tetap pada Program Studi' },
-    { val:'lkps_18a_18b', label:'[LKPS] Tabel 18a & 18b Kegiatan seminar ilmiah/lokakarya/penataran/pameran Dosen dan Tendik Tetap pada Program Studi' },
-    { val:'lkps_19', label:'[LKPS] Tabel 19. Data Dosen Tidak Tetap pada Program Studi' },
-    { val:'lkps_20', label:'[LKPS] Tabel 20. Kegiatan tenaga ahli/pakar pada program studi' },
-    { val:'lkps_22', label:'[LKPS] Tabel 22. Data Kegiatan Penelitian Dosen Tetap Program Studi' },
-    { val:'lkps_23', label:'[LKPS] Tabel 23. Data Kegiatan Pengabdian kepada Masyarakat (PkM) Dosen Tetap Program Studi' },
-    { val:'lkps_25', label:'[LKPS] Tabel 25. Jumlah Karya Dosen dan Atau Mahasiswa Program Studi' },
-    { val:'lkps_26', label:'[LKPS] Tabel 26. Jumlah Pengabdian kepada Masyarakat yang relevan dengan Program Studi' },
-    { val:'lkps_27', label:'[LKPS] Tabel 27. Penghargaan Dosen Tetap Program Studi' },
-    { val:'lkps_28', label:'[LKPS] Tabel 28. Jumlah Karya Mahasiswa di Program Studi' },
-    { val:'lkps_29', label:'[LKPS] Tabel 29. Prasarana dan Peralatan Utama Laboratorium di Program Studi' },
-    { val:'lkps_30', label:'[LKPS] Tabel 30. Wahana Praktik Profesi: Rumah Sakit dan Sarana Pelayanan Kesehatan Lain di Program Studi' },
-    { val:'lkps_31', label:'[LKPS] Tabel 31. Rekapitulasi jumlah ketersediaan pustaka yang relevan dengan bidang program studi, baik dalam format cetak maupun elektronik.' },
-    { val:'lkps_33', label:'[LKPS] Tabel 33. Jumlah Penerimaan Dana di Unit Pengelola Program Studi' },
-    { val:'lkps_34', label:'[LKPS] Tabel 34. Jumlah Penggunaan Dana di Unit Pengelola Program Studi' },
-    { val:'lkps_38', label:'[LKPS] Tabel 38. Kerja sama Unit Pengelola Program Studi yang Relevan dengan  Program Studi yang sedang diakreditasi' },
+  sistem_pendidikan: [
+    { val:'k6_sistem_belajar', label:'[Kriteria 6] Sistem Pendukung Pembelajaran (LMS, Internet)' },
+    { val:'k6_evaluasi_sumber', label:'[Kriteria 6] Formulir Evaluasi Sumber Informasi' },
+    { val:'lainnya', label:'Lainnya' }
+  ],
+  laboratorium: [
+    { val:'k6_infrastruktur_lab', label:'[Kriteria 6] Daftar Infrastruktur & Sarana Laboratorium' },
+    { val:'k6_manekin', label:'[Kriteria 6] Daftar Manekin untuk Pelatihan Keterampilan Klinis' },
+    { val:'k6_k3', label:'[Kriteria 6] Kebijakan Keselamatan & Kesehatan Kerja (K3) Lab' },
+    { val:'lainnya', label:'Lainnya' }
   ],
   perpustakaan: [
-    { val:'tugas_akhir', label:'Tugas Akhir / KTI / Skripsi' },
-    { val:'jurnal_mahasiswa', label:'Jurnal Mahasiswa' },
-    { val:'jurnal_dosen', label:'Jurnal Dosen / Hasil Penelitian' },
-    { val:'pengadaan_buku', label:'Pengadaan Buku / Referensi' },
-    { val:'katalog', label:'Katalog Koleksi Perpustakaan' },
-    { val:'laporan_kunjungan', label:'Laporan Kunjungan Perpustakaan' },
-    { val:'sk', label:'SK / Keputusan Perpustakaan' },
-    { val:'surat_masuk', label:'Surat Masuk' },
-    { val:'surat_keluar', label:'Surat Keluar' },
-  ],
-  kemahasiswaan: [
-    { val:'sk_beasiswa', label:'SK Penerima Beasiswa' },
-    { val:'permohonan_beasiswa', label:'Permohonan / Pengajuan Beasiswa' },
-    { val:'laporan_ukm', label:'Laporan Kegiatan UKM / Organisasi' },
-    { val:'data_mahasiswa', label:'Data / Biodata Mahasiswa' },
-    { val:'surat_keterangan', label:'Surat Keterangan Mahasiswa' },
-    { val:'sk', label:'SK / Keputusan Kemahasiswaan' },
-    { val:'laporan', label:'Laporan Kemahasiswaan' },
-    { val:'surat_masuk', label:'Surat Masuk' },
-    { val:'surat_keluar', label:'Surat Keluar' },
-    { val:'k3_2', label:'Buku catatan mahasiswa (logbook), dokumen revisi strategi pengajaran: penilaian mahasiswa (evaluasi dan pemantauan kemajuan mahasiswa) dan umpan balik dosen (strategi mengajar dosen)' },
-    { val:'k3_3', label:'Mekanisme remedial dan konseling' },
-    { val:'k4_1', label:'Peraturan tentang kebijakan seleksi dan penerimaan: penyelarasan dengan misi dan akreditasi/persyaratan, publisitas/sosialisasi, peninjauan, dan revisi.' },
-    { val:'k4_2', label:'Kebijakan, peraturan, prosedur dukungan/layanan mahasiswa, dan keselamatan lingkungan kerja' },
-    { val:'k4_3', label:'Kebijakan, peraturan, dan prosedur konseling mahasiswa.' },
-    { val:'k4_4', label:'Pendukung sumber daya manusia, fasilitas, dan keuangan untuk sistem pendukung/layanan mahasiswa.' },
-    { val:'k4_5', label:'Monitoring dan evaluasi penerapan sistem pendukung/layanan kemahasiswaan.' },
-    { val:'k4_6', label:'Dokumen hasil survey kepuasaan mahasiswa terhadap layanan mahasiswa.' },
-    { val:'k4_7', label:'Dokumen hasil survey kepuasaan mahasiswa terhadap layanan manajemen' },
-    { val:'k4_8', label:'Kebijakan, peraturan mengenai ‘kampus sehat’ termasuk bebas dari kekerasan seksual, perundungan, intoleransi, bebas dari rokok dan narkotika.' },
-    { val:'k4_9', label:'Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut' },
-    { val:'k4_10', label:'Pemantauan dan evaluasi penerapan sistem pendukung mahasiswa dan keselamatan lingkungan kerja.' },
-    { val:'k4_11', label:'Pedoman RCA (Root Cause Analysis).' },
-    { val:'k6_11', label:'Fasilitas untuk mengakses sumber informasi dan sumber belajar.' },
-    { val:'k6_12', label:'Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni).' },
-    { val:'lkps_3', label:'[LKPS] Tabel 3. Data IPK Lulusan Tahap Akademik di Program Studi' },
-    { val:'lkps_4', label:'[LKPS] Tabel 4. Data IPK Lulusan Tahap Profesi di Program Studi' },
-    { val:'lkps_5', label:'[LKPS] Tabel 5. Data Lulusan Tepat Waktu Tahap Akademik di Program Studi' },
-    { val:'lkps_6', label:'[LKPS] Tabel 6. Data Lulusan Tepat Waktu Tahap Profesi di Program Studi' },
-    { val:'lkps_7', label:'[LKPS] Tabel 7. Uji Kompetensi Mahasiswa Program Studi (UKMPS-CBT)' },
-    { val:'lkps_8', label:'[LKPS] Tabel 8. Uji Kompetensi Mahasiswa Program Studi (UKMPS-OSCE)' },
-    { val:'lkps_9', label:'[LKPS] Tabel 9. Data Total Mahasiswa pada Unit Pengelola Program Studi' },
-    { val:'lkps_10', label:'[LKPS] Tabel 10. Data Mahasiswa Tahap Akademik pada Program Studi' },
-    { val:'lkps_11', label:'[LKPS] Tabel 11. Data Mahasiswa Tahap Profesi pada Program Studi' },
-    { val:'lkps_12', label:'[LKPS] Tabel 12. Kepuasan Mahasiswa' },
-    { val:'lkps_13', label:'[LKPS] Tabel 13. Masa Tunggu Lulusan Mendapatkan Pekerjaan' },
-    { val:'lkps_25', label:'[LKPS] Tabel 25. Jumlah Karya Dosen dan Atau Mahasiswa Program Studi' },
-    { val:'lkps_28', label:'[LKPS] Tabel 28. Jumlah Karya Mahasiswa di Program Studi' },
-  ],
-  sdm: [
-    { val:'sk_pengangkatan', label:'SK Pengangkatan Pegawai' },
-    { val:'sk_jabatan', label:'SK Jabatan / Penugasan' },
-    { val:'penilaian_kinerja', label:'Penilaian Kinerja (BKD / P2KP)' },
-    { val:'data_dosen', label:'Data Kepegawaian Dosen' },
-    { val:'data_pegawai', label:'Data Kepegawaian Staff / Tendik' },
-    { val:'kontrak_kerja', label:'Kontrak Kerja / Perjanjian' },
-    { val:'surat_izin', label:'Surat Izin / Cuti Pegawai' },
-    { val:'surat_masuk', label:'Surat Masuk' },
-    { val:'surat_keluar', label:'Surat Keluar' },
-    { val:'k5_1', label:'Rencana pengembangan sumber daya manusia (SDM) sesuai dengan kebutuhan masing-masing disiplin ilmu dan perkembangan ilmu pengetahuan.' },
-    { val:'k5_2', label:'Kebijakan dan prosedur pengembangan SDM (dosen dan tendik).' },
-    { val:'k5_3', label:'Notulen/risalah rapat dan daftar kehadiran terkait kegiatan pengembangan SDM.' },
-    { val:'k5_4', label:'Pemetaan disiplin kurikulum (kesesuaian bidang ilmu dengan mata kuliah yang diampu dan beban kerja).' },
-    { val:'k5_5', label:'Formulir monitoring dan evaluasi kinerja dosen, sampel formulir yang sudah diisi dari beberapa dosen, hasil penilaian kinerja setiap semester.' },
-    { val:'k5_6', label:'Laporan program pelatihan orientasi.' },
-    { val:'k5_7', label:'Laporan program pelatihan untuk dosen baru dan lama.' },
-    { val:'lkps_15', label:'[LKPS] Tabel 15. Dosen Tetap pada Unit Pengelola Program Studi' },
-    { val:'lkps_16', label:'[LKPS] Tabel 16. Dosen Tetap Tahap Akademik dan Profesi pada Program Studi' },
-    { val:'lkps_17', label:'[LKPS] Tabel 17. Aktivitas Dosen Tetap pada Program Studi' },
-    { val:'lkps_18a_18b', label:'[LKPS] Tabel 18a & 18b Kegiatan seminar ilmiah/lokakarya/penataran/pameran Dosen dan Tendik Tetap pada Program Studi' },
-    { val:'lkps_19', label:'[LKPS] Tabel 19. Data Dosen Tidak Tetap pada Program Studi' },
-    { val:'lkps_20', label:'[LKPS] Tabel 20. Kegiatan tenaga ahli/pakar pada program studi' },
-    { val:'lkps_22', label:'[LKPS] Tabel 22. Data Kegiatan Penelitian Dosen Tetap Program Studi' },
-    { val:'lkps_23', label:'[LKPS] Tabel 23. Data Kegiatan Pengabdian kepada Masyarakat (PkM) Dosen Tetap Program Studi' },
-    { val:'lkps_25', label:'[LKPS] Tabel 25. Jumlah Karya Dosen dan Atau Mahasiswa Program Studi' },
-    { val:'lkps_27', label:'[LKPS] Tabel 27. Penghargaan Dosen Tetap Program Studi' },
-  ],
-  sarana: [
-    { val:'pengadaan', label:'Pengadaan Barang / Jasa' },
-    { val:'inventaris', label:'Daftar Inventaris Aset' },
-    { val:'pemeliharaan', label:'Pemeliharaan / Perbaikan Fasilitas' },
-    { val:'berita_acara', label:'Berita Acara Serah Terima' },
-    { val:'kontrak', label:'Kontrak / SPK Pengadaan' },
-    { val:'sk', label:'SK / Keputusan Sarana' },
-    { val:'surat_masuk', label:'Surat Masuk' },
-    { val:'surat_keluar', label:'Surat Keluar' },
-    { val:'k5_8', label:'Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen.' },
-    { val:'k5_9', label:'Laporan penelitian dosen dan PkM  dosen serta publikasinya.' },
-    { val:'k5_10', label:'Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten).' },
-    { val:'k5_11', label:'Kebijakan penelitian dan PkM serta integrasinya.' },
-    { val:'k5_12', label:'Sertifikat Pendidik/Dosen, Sertifikat Kompetensi, dan Ijazah' },
-    { val:'k5_13', label:'HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional' },
-    { val:'k5_14', label:'Formulir monitoring dan evaluasi kinerja tendik.' },
-    { val:'k5_15', label:'Laporan program pelatihan tendik.' },
-    { val:'k6_13', label:'Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis.' },
-    { val:'lkps_29', label:'[LKPS] Tabel 29. Prasarana dan Peralatan Utama Laboratorium di Program Studi' },
-    { val:'lkps_30', label:'[LKPS] Tabel 30. Wahana Praktik Profesi: Rumah Sakit dan Sarana Pelayanan Kesehatan Lain di Program Studi' },
-    { val:'lkps_31', label:'[LKPS] Tabel 31. Rekapitulasi jumlah ketersediaan pustaka yang relevan dengan bidang program studi, baik dalam format cetak maupun elektronik.' },
-    { val:'lkps_32', label:'[LKPS] Tabel 32. Jurnal yang tersedia/yang diterima secara teratur (lengkap), terbitan tiga tahun terakhir' },
-  ],
-  humas: [
-    { val:'mou', label:'MOU / Perjanjian Kerjasama' },
-    { val:'undangan', label:'Undangan (Masuk / Keluar)' },
-    { val:'laporan_kerjasama', label:'Laporan Kerjasama Institusi' },
-    { val:'press_release', label:'Press Release / Siaran Pers' },
-    { val:'liputan', label:'Liputan / Dokumentasi Media' },
-    { val:'sk', label:'SK / Keputusan Humas' },
-    { val:'surat_masuk', label:'Surat Masuk' },
-    { val:'surat_keluar', label:'Surat Keluar' },
-    { val:'k8_1', label:'Bagan organisasi pengelolaan dan administrasi beserta tupoksi.' },
-    { val:'k8_3', label:'Laporkan tinjauan kinerja institusi/UPPS' },
-    { val:'k8_4', label:'Dokumen identifikasi dan mitigasi risiko.' },
-    { val:'k8_5', label:'Laporan/risalah rapat keterlibatan mahasiswa dan dosen dalam pengambilan keputusan dan fungsi UPPS' },
-    { val:'k8_6', label:'Standar prosedur operasional (SPO) untuk proses pengambilan keputusan.' },
-    { val:'k8_8', label:'Dokumen indikator kinerja utama dan kinerja tambahan.' },
-    { val:'lkps_14', label:'[LKPS] Tabel 14. Tingkat Kepuasan Pengguna' },
-    { val:'lkps_38', label:'[LKPS] Tabel 38. Kerja sama Unit Pengelola Program Studi yang Relevan dengan  Program Studi yang sedang diakreditasi' },
+    { val:'k6_database_jurnal', label:'[Kriteria 6] Daftar Database Jurnal yang Tersedia' },
+    { val:'k6_rekap_pustaka', label:'[Kriteria 6] Rekapitulasi Ketersediaan Pustaka Cetak/Elektronik' },
+    { val:'lainnya', label:'Lainnya' }
   ],
   lppm: [
-    { val:'k8_7', label:'Standar prosedur operasional (SPO) pelaporan pembelajaran, penelitian, dan pengabdian kepada masyarakat.' },
-    { val:'lkps_22', label:'[LKPS] Tabel 22. Data Kegiatan Penelitian Dosen Tetap Program Studi' },
-    { val:'lkps_23', label:'[LKPS] Tabel 23. Data Kegiatan Pengabdian kepada Masyarakat (PkM) Dosen Tetap Program Studi' },
-    { val:'lkps_24', label:'[LKPS] Tabel 24. Artikel Ilmiah/Karya Ilmiah/Buku Tiga Tahun Terakhir' },
-    { val:'lkps_26', label:'[LKPS] Tabel 26. Jumlah Pengabdian kepada Masyarakat yang relevan dengan Program Studi' },
-    { val:'lkps_27', label:'[LKPS] Tabel 27. Penghargaan Dosen Tetap Program Studi' },
+    { val:'k5_roadmap_penelitian', label:'[Kriteria 5] Roadmap Penelitian' },
+    { val:'k5_laporan_penelitian', label:'[Kriteria 5] Laporan Penelitian & Publikasi' },
+    { val:'k5_penghargaan', label:'[Kriteria 5] Bukti Penghargaan (Hibah, HaKi, Paten)' },
+    { val:'k5_kebijakan_penelitian', label:'[Kriteria 5] Kebijakan Penelitian' },
+    { val:'lainnya', label:'Lainnya' }
   ],
+  kemahasiswaan: [
+    { val:'k4_seleksi', label:'[Kriteria 4] Kebijakan & Peraturan Seleksi Penerimaan' },
+    { val:'k4_layanan_mhs', label:'[Kriteria 4] Kebijakan Layanan & Keselamatan Lingkungan' },
+    { val:'k4_kampus_sehat', label:'[Kriteria 4] Kebijakan Kampus Sehat (Bebas Kekerasan, Narkoba)' },
+    { val:'k4_konseling', label:'[Kriteria 4] Kebijakan & Prosedur Konseling Mahasiswa' },
+    { val:'k4_monev_layanan', label:'[Kriteria 4] Monitoring & Evaluasi Sistem Layanan Kemahasiswaan' },
+    { val:'k4_survei_kepuasan', label:'[Kriteria 4] Hasil Survey Kepuasaan Mahasiswa' },
+    { val:'k4_pedoman_rca', label:'[Kriteria 4] Pedoman RCA (Root Cause Analysis) Mahasiswa' },
+    { val:'lainnya', label:'Lainnya' }
+  ],
+  pengabdian: [
+    { val:'k5_roadmap_pkm', label:'[Kriteria 5] Roadmap Pengabdian kepada Masyarakat (PkM)' },
+    { val:'k5_laporan_pkm', label:'[Kriteria 5] Laporan PkM & Publikasi' },
+    { val:'k5_kebijakan_pkm', label:'[Kriteria 5] Kebijakan Pengabdian kepada Masyarakat' },
+    { val:'lainnya', label:'Lainnya' }
+  ],
+  umum: [
+    { val:'k1_visi_misi', label:'[Kriteria 1] Renstra, Renop & Dokumen Visi Misi' },
+    { val:'k7_spmi', label:'[Kriteria 7] Sistem Penjaminan Mutu Internal (SPMI)' },
+    { val:'k7_audit_mutu', label:'[Kriteria 7] Laporan Audit Mutu Internal & Tinjauan Manajemen' },
+    { val:'k8_organisasi', label:'[Kriteria 8] Bagan Organisasi Pengelolaan & Tupoksi' },
+    { val:'k8_kinerja', label:'[Kriteria 8] Laporan Tinjauan Kinerja Institusi' },
+    { val:'k8_risiko', label:'[Kriteria 8] Dokumen Identifikasi dan Mitigasi Risiko' },
+    { val:'lainnya', label:'Lainnya' }
+  ],
+  kepegawaian: [
+    { val:'k5_rencana_sdm', label:'[Kriteria 5] Rencana Pengembangan SDM (Dosen & Tendik)' },
+    { val:'k5_kebijakan_sdm', label:'[Kriteria 5] Kebijakan & Prosedur Pengembangan SDM' },
+    { val:'k5_monev_kinerja', label:'[Kriteria 5] Formulir Monitoring & Evaluasi Kinerja' },
+    { val:'k5_pelatihan', label:'[Kriteria 5] Laporan Program Pelatihan Orientasi Dosen/Tendik' },
+    { val:'k5_pemetaan_dosen', label:'[Kriteria 5] Pemetaan Disiplin Kurikulum (Beban Kerja Dosen)' },
+    { val:'k5_sertifikat', label:'[Kriteria 5] Sertifikat Pendidik, Kompetensi, & Ijazah' },
+    { val:'k5_anti_perundungan', label:'[Kriteria 5] Kebijakan Pencegahan Perundungan' },
+    { val:'lainnya', label:'Lainnya' }
+  ],
+  keuangan: [
+    { val:'k6_audit_keuangan', label:'[Kriteria 6] Dokumen Audit Keuangan' },
+    { val:'k8_spo_anggaran', label:'[Kriteria 8] SPO Pengalokasian Anggaran' },
+    { val:'lainnya', label:'Lainnya' }
+  ],
+  rumah_tangga: [
+    { val:'k6_infrastruktur_umum', label:'[Kriteria 6] Daftar Infrastruktur Fisik Umum' },
+    { val:'lainnya', label:'Lainnya' }
+  ],
+  sarana: [
+    { val:'k6_wahana_praktik', label:'[Kriteria 6] Daftar RS Pendidikan & Wahana Praktik' },
+    { val:'k6_fasilitas_klinik', label:'[Kriteria 6] Daftar Fasilitas di RS Pendidikan' },
+    { val:'lainnya', label:'Lainnya' }
+  ],
+  sistem_informasi: [
+    { val:'k8_sim', label:'[Kriteria 8] Dokumen Sistem Informasi Manajemen' },
+    { val:'lainnya', label:'Lainnya' }
+  ],
+  humas: [
+    { val:'k8_pelibatan_pemangku', label:'[Kriteria 8] Risalah Rapat Isu Relevan dengan Pemangku Kepentingan' },
+    { val:'k4_survei_manajemen', label:'[Kriteria 4] Survei Kepuasan atas Layanan Manajemen' },
+    { val:'lainnya', label:'Lainnya' }
+  ],
+  kerjasama: [
+    { val:'k8_mou', label:'[Kriteria 8] Dokumen Kerja Sama / MoU' },
+    { val:'lainnya', label:'Lainnya' }
+  ],
+  pendidikan: [{ val:'lainnya', label:'Lainnya' }],
+  sdm: [{ val:'lainnya', label:'Lainnya' }]
 };
 
 
@@ -1234,16 +1124,17 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
     const reader = new FileReader();
     reader.onload = async function() {
       const base64Data = reader.result.split(',')[1];
-      const payload = {
-        fileName: file.name,
+              const payload = {
+          fileName: file.name,
           filename: file.name,
-        mimeType: file.type || 'application/octet-stream',
-        base64Data: base64Data,
+          mimeType: file.type || 'application/octet-stream',
+          base64Data: base64Data,
           base64: base64Data,
-        bidang: DEPT[bidang]?.label || bidang,
-        jenis: jenis,
-        tahun: tahun
-      };
+          bidang: DEPT[bidang]?.label || bidang,
+          jenis: jenis,
+          tahun: tahun,
+          folder: 'AAS_' + (DEPT[bidang]?.label || bidang).replace(/[^a-zA-Z0-9 ]/g, '').trim()
+        };
 
       try {
         const response = await fetch(GAS_URL, {
@@ -1844,33 +1735,30 @@ function generateBanptOverview() {
   }
 }
 function generateBanptKeuangan() {
-  const tbody = document.querySelector('#tableBanptKeuangan tbody');
-  if(!tbody) return;
-  const list = arsip.filter(a => a.bidang === 'keuangan');
-  tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Keuangan.</td></tr>' : list.map(a => {
-    const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Dokumen</a>` : '-';
-    return `<tr><td class="font-bold">${esc(a.judul)}</td><td>${esc(a.tahun || getAY(a.tanggal))}</td><td><span class="badge bg-blue-50 text-blue-600">${a.status}</span></td><td>${fileLink}</td></tr>`;
-  }).join('');
-}
-function generateBanptKebijakan() {
-  const tbody = document.querySelector('#tableBanptKebijakan tbody');
-  if(!tbody) return;
-  const list = arsip.filter(a => a.jenis === 'sk' || a.jenis === 'sop' || a.jenis === 'kebijakan');
-  tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Kebijakan.</td></tr>' : list.map(a => {
-    const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Lihat SK</a>` : '-';
-    return `<tr><td class="font-bold">${esc(a.nomor)}</td><td>${esc(a.judul)}</td><td>${formatDate(a.tanggal)}</td><td>${fileLink}</td></tr>`;
-  }).join('');
-}
-function generateBanptLppm() {
-  const tbody = document.querySelector('#tableBanptLppm tbody');
-  if(!tbody) return;
-  const list = arsip.filter(a => a.bidang === 'lppm');
-  tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Penelitian & PkM.</td></tr>' : list.map(a => {
-    const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Lihat File</a>` : '-';
-    return `<tr><td class="font-bold">${esc(a.judul)}</td><td>${esc(a.jenis.toUpperCase())}</td><td>${esc(a.tahun || getAY(a.tanggal))}</td><td>${fileLink}</td></tr>`;
-  }).join('');
-}
-function exportBanptExcel() { alert('Export BAN-PT sedang dalam pengembangan API.'); }
+    const tbody = document.querySelector('#tableBanptKeuangan tbody');
+    if(!tbody) return;
+    const list = arsip.filter(a => a.bidang === 'keuangan' || a.jenis.includes('keuangan') || a.jenis.includes('anggaran'));
+    tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Keuangan.</td></tr>' : list.map(a => {
+      const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Dokumen</a>` : '-';
+      return `<tr><td class="font-bold">${esc(a.judul)}</td><td>${esc(a.tahun || getAY(a.tanggal))}</td><td><span class="badge bg-blue-50 text-blue-600">${a.status}</span></td><td>${fileLink}</td></tr>`;
+    }).join('');
+  }function generateBanptKebijakan() {
+    const tbody = document.querySelector('#tableBanptKebijakan tbody');
+    if(!tbody) return;
+    const list = arsip.filter(a => a.jenis.includes('sk_') || a.jenis.includes('spo_') || a.jenis.includes('sop') || a.jenis.includes('kebijakan') || a.jenis.includes('pedoman') || a.jenis === 'sk');
+    tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Kebijakan & SOP.</td></tr>' : list.map(a => {
+      const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Lihat Dokumen</a>` : '-';
+      return `<tr><td class="font-bold">${esc(a.nomor || '-')}</td><td>${esc(a.judul)}</td><td>${formatDate(a.tanggal)}</td><td>${fileLink}</td></tr>`;
+    }).join('');
+  }function generateBanptLppm() {
+    const tbody = document.querySelector('#tableBanptLppm tbody');
+    if(!tbody) return;
+    const list = arsip.filter(a => a.bidang === 'lppm' || a.bidang === 'pengabdian' || a.jenis.includes('penelitian') || a.jenis.includes('pkm') || a.jenis.includes('jurnal'));
+    tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Penelitian & PkM.</td></tr>' : list.map(a => {
+      const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Lihat File</a>` : '-';
+      return `<tr><td class="font-bold">${esc(a.judul)}</td><td>${esc(DEPT[a.bidang]?.label || a.bidang)}</td><td>${esc(a.tahun || getAY(a.tanggal))}</td><td>${fileLink}</td></tr>`;
+    }).join('');
+  }function exportBanptExcel() { alert('Export BAN-PT sedang dalam pengembangan API.'); }
 
 // ==================== LAM-PTKes ====================
 let currentLamptkesTab = 1;
