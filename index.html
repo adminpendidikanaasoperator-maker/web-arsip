@@ -15,7 +15,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=124" />
+  <link rel="stylesheet" href="style.css?v=125" />
 </head>
 <body>
 
@@ -137,9 +137,9 @@
           <h3><i class="fas fa-chart-area"></i> Tren Arsip Tahunan</h3>
           <span class="panel-sub" style="display:inline-flex; align-items:center; gap:6px;">
             Tahun:
-            <input type="number" id="trendStartY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2021" min="2014" max="2050" onchange="updateYearlyChart()">
+            <input type="number" id="trendStartY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2021" min="2014" max="2050" oninput="updateYearlyChart()">
             <span style="color:var(--text-sub)">-</span>
-            <input type="number" id="trendEndY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2025" min="2014" max="2050" onchange="updateYearlyChart()">
+            <input type="number" id="trendEndY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2025" min="2014" max="2050" oninput="updateYearlyChart()">
           </span>
         </div>
         <div class="chart-wrap"><canvas id="chartYearlyLine"></canvas></div>
@@ -939,6 +939,6 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="app.js?v=124"></script>
+<script src="app.js?v=125"></script>
 </body>
 </html>
