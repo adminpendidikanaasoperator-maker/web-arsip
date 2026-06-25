@@ -386,47 +386,47 @@ function onAYearChange() {
 }
 
 /* ─── DATA ─── */
-function loadData() {
-  if (!GAS_URL) return;
-  fetch(GAS_URL + '?action=loadAll')
-    .then(res => res.json())
-    .then(json => {
-      if (json.status === 'success' && json.data) {
-        arsip = json.data.arsip || [];
-        activity = json.data.activity || [];
-        mahasiswa = json.data.mahasiswa || [];
-        sdm = json.data.sdm || [];
-        
-        arsip.forEach(a => { a.ay = getAY(a.tanggal); });
-        populateAYearSelect();
-        updateBadges();
-        if(currentPage==='dashboard') renderDashboard();
-        else if(currentPage==='arsip') renderArsipTable();
-        else if(currentPage==='dept') renderDeptPage(currentDept);
-        else if(currentPage==='analytics') renderAnalytics();
-      }
-    })
-    .catch(err => {
-      console.error('Failed to load from server', err);
-      try {
-        arsip = JSON.parse(localStorage.getItem('SIMARSIP_AAS'))||[];
-        activity = JSON.parse(localStorage.getItem('SIMARSIP_ACT'))||[];
-        mahasiswa = JSON.parse(localStorage.getItem('SIMARSIP_MHS'))||[];
-        sdm = JSON.parse(localStorage.getItem('SIMARSIP_SDM'))||[];
-      } catch { arsip=[]; activity=[]; mahasiswa=[]; sdm=[]; }
-      if (!arsip.length) { arsip = sampleData(); }
-      if (!mahasiswa.length) { mahasiswa = sampleDataMahasiswa(); }
-      if (!sdm.length) { sdm = sampleDataSDM(); }
-    });
+async function loadData() {
+  try {
+    const [arsipSnap, activitySnap, mhsSnap, sdmSnap] = await Promise.all([
+      db.collection('arsip').get(),
+      db.collection('activity').get(),
+      db.collection('mahasiswa').get(),
+      db.collection('sdm').get()
+    ]);
+    
+    arsip = arsipSnap.docs.map(d => d.data());
+    activity = activitySnap.docs.map(d => d.data());
+    mahasiswa = mhsSnap.docs.map(d => d.data());
+    sdm = sdmSnap.docs.map(d => d.data());
+    
+    arsip.forEach(a => { a.ay = getAY(a.tanggal); });
+    populateAYearSelect();
+    updateBadges();
+    if(currentPage==='dashboard') renderDashboard();
+    else if(currentPage==='arsip') renderArsipTable();
+    else if(currentPage==='dept') renderDeptPage(currentDept);
+    else if(currentPage==='analytics') renderAnalytics();
+  } catch(err) {
+    console.error('Failed to load from Firestore', err);
+    try {
+      arsip = JSON.parse(localStorage.getItem('SIMARSIP_AAS'))||[];
+      activity = JSON.parse(localStorage.getItem('SIMARSIP_ACT'))||[];
+      mahasiswa = JSON.parse(localStorage.getItem('SIMARSIP_MHS'))||[];
+      sdm = JSON.parse(localStorage.getItem('SIMARSIP_SDM'))||[];
+    } catch { arsip=[]; activity=[]; mahasiswa=[]; sdm=[]; }
+    if (!arsip.length) { arsip = sampleData(); }
+    if (!mahasiswa.length) { mahasiswa = sampleDataMahasiswa(); }
+    if (!sdm.length) { sdm = sampleDataSDM(); }
+  }
 }
 function save() {
-  if (!GAS_URL) return;
-  const payload = { action: 'saveAll', data: { arsip, activity, mahasiswa, sdm } };
-  fetch(GAS_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify(payload)
-  }).catch(e => console.error('Save error', e));
+  try {
+    localStorage.setItem('SIMARSIP_AAS', JSON.stringify(arsip));
+    localStorage.setItem('SIMARSIP_ACT', JSON.stringify(activity));
+    localStorage.setItem('SIMARSIP_MHS', JSON.stringify(mahasiswa));
+    localStorage.setItem('SIMARSIP_SDM', JSON.stringify(sdm));
+  } catch(e) {}
 }
 function genId() { return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 
@@ -1172,6 +1172,7 @@ async function saveArsip(e) {
     log('add',`Menambah arsip: "${record.judul}" (TA ${record.ay})`);
     toast('Arsip berhasil disimpan!','success');
   }
+  db.collection('arsip').doc(record.id).set(record).catch(e => console.error(e));
 
   save(); populateAYearSelect(); updateBadges(); closeForm();
   if(currentPage==='dashboard')renderDashboard();
@@ -1191,6 +1192,7 @@ async function saveArsip(e) {
           arsip[idx].gdriveLink = res.fileUrl;
           arsip[idx].gdriveFolder = res.folderUrl || '';
           save();
+          db.collection('arsip').doc(record.id).set(arsip[idx]).catch(e => console.error(e));
           toast(`Berhasil mengunggah ${fileToUpload.name}!`, 'success');
           // Refresh tabel jika di halaman arsip
           if (currentPage === 'arsip') renderArsipTable();
@@ -1203,6 +1205,7 @@ async function saveArsip(e) {
       if (idx > -1) {
         arsip[idx].gdriveLink = ''; // Reset link
         save();
+        db.collection('arsip').doc(record.id).set(arsip[idx]).catch(e => console.error(e));
         if (currentPage === 'arsip') renderArsipTable();
         else if (currentPage === 'dept') renderDeptPage(currentDept);
       }
@@ -1256,9 +1259,10 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
   });
 }
 
-function deleteArsip(id) {
+async function deleteArsip(id) {
   const a=arsip.find(x=>x.id===id);
   if(!a||!confirm(`Hapus arsip "${a.judul}"?\n\nTindakan ini tidak dapat dibatalkan.`))return;
+  try { await db.collection('arsip').doc(id).delete(); } catch(e) { console.error(e); toast('Gagal menghapus dari database','error'); return; }
   arsip=arsip.filter(x=>x.id!==id);
   log('delete',`Menghapus arsip: "${a.judul}"`);
   save(); updateBadges(); toast('Arsip berhasil dihapus.','success');
@@ -1353,7 +1357,12 @@ function openInGDrive() {
 }
 
 /* ═════ ACTIVITY ═════ */
-function log(type,text){ activity.unshift({type,text,time:new Date().toISOString()}); if(activity.length>120)activity=activity.slice(0,120); }
+function log(type,text){
+  const item = { id: genId(), type, text, time: new Date().toISOString() };
+  activity.unshift(item);
+  if(activity.length>120)activity=activity.slice(0,120);
+  db.collection('activity').doc(item.id).set(item).catch(e => console.error(e));
+}
 function renderActivity() {
   const el=document.getElementById('activityList'); if(!el)return;
   if(!activity.length){el.innerHTML='<div class="act-empty"><i class="fas fa-history"></i><p>Belum ada aktivitas.</p></div>';return;}
@@ -1508,14 +1517,20 @@ function saveMahasiswa(e) {
         namaOrtu=document.getElementById('fmNamaOrtu').value,
         catatan=document.getElementById('fmCatatan').value,
         foto=document.getElementById('fmFotoBase64').value, dokumen=document.getElementById('fmDokumen').value;
+  let record;
   if(id){
     const i=mahasiswa.findIndex(m=>m.id===id);
-    if(i>-1) mahasiswa[i]={...mahasiswa[i],nim,nama,angkatan,semester,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,namaOrtu,catatan,foto,dokumen};
+    if(i>-1) {
+      record = {...mahasiswa[i],nim,nama,angkatan,semester,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,namaOrtu,catatan,foto,dokumen};
+      mahasiswa[i]=record;
+    }
     toast('Data mahasiswa diperbarui','success');
   } else {
-    mahasiswa.push({id:genId(),nim,nama,angkatan,semester,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,namaOrtu,catatan,foto,dokumen,createdAt:new Date().toISOString()});
+    record = {id:genId(),nim,nama,angkatan,semester,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,namaOrtu,catatan,foto,dokumen,createdAt:new Date().toISOString()};
+    mahasiswa.push(record);
     toast('Mahasiswa berhasil ditambahkan','success');
   }
+  if (record) db.collection('mahasiswa').doc(record.id).set(record).catch(e => console.error(e));
   save(); closeMhsForm(); renderMahasiswaPage(); updateBadges();
 }
 function editMhs(id) {
@@ -1547,9 +1562,11 @@ function editMhs(id) {
   document.getElementById('mhsFormTitle').innerHTML='<i class="fas fa-pen"></i> Edit Mahasiswa';
   document.getElementById('overlayMhsForm').classList.add('open');
 }
-function deleteMhs(id) {
-  if(!confirm('Hapus data mahasiswa ini secara permanen?')) return;
-  mahasiswa=mahasiswa.filter(m=>m.id!==id); save(); renderMahasiswaPage(); updateBadges(); toast('Mahasiswa dihapus','success');
+async function deleteMhs(id) {
+  const m=mahasiswa.find(x=>x.id===id);
+  if(!m||!confirm(`Hapus data mahasiswa "${m.nama}" secara permanen?`)) return;
+  try { await db.collection('mahasiswa').doc(id).delete(); } catch(e) { console.error(e); return; }
+  mahasiswa=mahasiswa.filter(x=>x.id!==id); save(); renderMahasiswaPage(); updateBadges(); toast('Mahasiswa dihapus','success');
 }
 
 /* ═════ MASTER DATA SDM ═════ */
@@ -1604,14 +1621,20 @@ function saveSdm(e) {
         email=document.getElementById('fsEmail').value, noBpjs=document.getElementById('fsNoBpjs').value,
         catatan=document.getElementById('fsCatatan').value,
         foto=document.getElementById('fsFotoBase64').value, dokumen=document.getElementById('fsDokumen').value;
+  let record;
   if(id){
     const i=sdm.findIndex(m=>m.id===id);
-    if(i>-1) sdm[i]={...sdm[i],nik,nama,jabatan,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,catatan,foto,dokumen};
+    if(i>-1) {
+      record = {...sdm[i],nik,nama,jabatan,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,catatan,foto,dokumen};
+      sdm[i]=record;
+    }
     toast('Data SDM diperbarui','success');
   } else {
-    sdm.push({id:genId(),nik,nama,jabatan,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,catatan,foto,dokumen,createdAt:new Date().toISOString()});
+    record = {id:genId(),nik,nama,jabatan,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,catatan,foto,dokumen,createdAt:new Date().toISOString()};
+    sdm.push(record);
     toast('SDM berhasil ditambahkan','success');
   }
+  if (record) db.collection('sdm').doc(record.id).set(record).catch(e => console.error(e));
   save(); closeSdmForm(); renderSdmPage(); updateBadges();
 }
 function editSdm(id) {
@@ -1641,9 +1664,11 @@ function editSdm(id) {
   document.getElementById('sdmFormTitle').innerHTML='<i class="fas fa-pen"></i> Edit SDM';
   document.getElementById('overlaySdmForm').classList.add('open');
 }
-function deleteSdm(id) {
-  if(!confirm('Hapus data SDM ini secara permanen?')) return;
-  sdm=sdm.filter(m=>m.id!==id); save(); renderSdmPage(); updateBadges(); toast('SDM dihapus','success');
+async function deleteSdm(id) {
+  const m=sdm.find(x=>x.id===id);
+  if(!m||!confirm(`Hapus data SDM "${m.nama}" secara permanen?`)) return;
+  try { await db.collection('sdm').doc(id).delete(); } catch(e) { console.error(e); return; }
+  sdm=sdm.filter(x=>x.id!==id); save(); renderSdmPage(); updateBadges(); toast('SDM dihapus','success');
 }
 
 /* ═════ HELPER MASTER DATA ═════ */
