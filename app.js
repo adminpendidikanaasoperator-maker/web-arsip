@@ -474,12 +474,7 @@ function getFormatCfg(fmt) { return FORMAT_MAP[fmt] || FORMAT_MAP.pdf; }
 function fmtBadge(a) {
   if (!a.gdriveLink) return `<span class="no-file">—</span>`;
   const f = getFormatCfg(a.format);
-  return `<a href="${esc(a.gdriveLink)}" target="_blank" rel="noopener noreferrer"
-    class="fmt-btn fmt-${a.format||'pdf'}"
-    title="Buka di Google Drive: ${esc(a.fileName||'')}"
-    onclick="logGDriveOpen('${a.id}',event)">
-    <i class="${f.icon}"></i> ${f.label}
-  </a>`;
+  return `<button class="fmt-btn fmt-${a.format||'pdf'}" title="Pratinjau Dokumen: ${esc(a.fileName||'')}" onclick="previewDoc('${a.id}')"><i class="${f.icon}"></i> ${f.label}</button>`;
 }
 function logGDriveOpen(id, e) {
   const a = arsip.find(x=>x.id===id);
@@ -2491,3 +2486,5 @@ async function generateIntegratedReport(type, isDashboard = false) {
 function exportExcel() { generateIntegratedReport('excel', true); }
 function exportPDF() { generateIntegratedReport('pdf', true); }
 function exportWord() { generateIntegratedReport('word', true); }
+
+
