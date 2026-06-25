@@ -29,7 +29,7 @@ const SK_SDM = 'aas_sdm_v3';
 /* ─── GOOGLE APPS SCRIPT URL ─── */
 // Paste URL "Web app" dari Google Apps Script di sini setelah melakukan Deployment.
 // Contoh: 'https://script.google.com/macros/s/AKfycby.../exec'
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwB5UV8387xbunErJo_V2OHHoFQdM26VbZ4Cc-bfcrJ3EucUltIDXcmKaphcxeiFtbQPw/exec'; 
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbygsAY90lqF2Ax1SzWZ7NGMpPPWMhYa8kwwvzFJn9hVJVmY8BqWXhC1v-SpRTTuqHfSzA/exec'; 
 
 /* ─── DEPARTEMEN ─── */
 const DEPT = {
@@ -387,23 +387,46 @@ function onAYearChange() {
 
 /* ─── DATA ─── */
 function loadData() {
-  try {
-    arsip = JSON.parse(localStorage.getItem(SK))||[];
-    activity = JSON.parse(localStorage.getItem(SAK))||[];
-    mahasiswa = JSON.parse(localStorage.getItem(SK_MHS))||[];
-    sdm = JSON.parse(localStorage.getItem(SK_SDM))||[];
-  } catch { arsip=[]; activity=[]; mahasiswa=[]; sdm=[]; }
-  if (!arsip.length) { 
-    arsip = sampleData(); 
-  }
-  else { arsip.forEach(a=>{ a.ay=getAY(a.tanggal); }); }
-  if (!mahasiswa.length) { mahasiswa = sampleDataMahasiswa(); }
-  if (!sdm.length) { sdm = sampleDataSDM(); }
-  save();
+  if (!GAS_URL) return;
+  fetch(GAS_URL + '?action=loadAll')
+    .then(res => res.json())
+    .then(json => {
+      if (json.status === 'success' && json.data) {
+        arsip = json.data.arsip || [];
+        activity = json.data.activity || [];
+        mahasiswa = json.data.mahasiswa || [];
+        sdm = json.data.sdm || [];
+        
+        arsip.forEach(a => { a.ay = getAY(a.tanggal); });
+        populateAYearSelect();
+        updateBadges();
+        if(currentPage==='dashboard') renderDashboard();
+        else if(currentPage==='arsip') renderArsipTable();
+        else if(currentPage==='dept') renderDeptPage(currentDept);
+        else if(currentPage==='analytics') renderAnalytics();
+      }
+    })
+    .catch(err => {
+      console.error('Failed to load from server', err);
+      try {
+        arsip = JSON.parse(localStorage.getItem('SIMARSIP_AAS'))||[];
+        activity = JSON.parse(localStorage.getItem('SIMARSIP_ACT'))||[];
+        mahasiswa = JSON.parse(localStorage.getItem('SIMARSIP_MHS'))||[];
+        sdm = JSON.parse(localStorage.getItem('SIMARSIP_SDM'))||[];
+      } catch { arsip=[]; activity=[]; mahasiswa=[]; sdm=[]; }
+      if (!arsip.length) { arsip = sampleData(); }
+      if (!mahasiswa.length) { mahasiswa = sampleDataMahasiswa(); }
+      if (!sdm.length) { sdm = sampleDataSDM(); }
+    });
 }
 function save() {
-  // Now handled by individual doc updates to Firestore, this function does nothing for array bulk saves
-  // but we keep it empty to not break existing calls.
+  if (!GAS_URL) return;
+  const payload = { action: 'saveAll', data: { arsip, activity, mahasiswa, sdm } };
+  fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  }).catch(e => console.error('Save error', e));
 }
 function genId() { return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 
