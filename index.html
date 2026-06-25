@@ -565,7 +565,7 @@
 
           <div class="form-field">
             <label>Upload Dokumen ke GDrive (Auto-Sync)</label>
-            <input type="file" id="fUploadFile" style="padding: 10px; background: #fff;" />
+            <input type="file" id="fUploadFile" onchange="autoDetectFormat(this)" style="padding: 10px; background: #fff;" />
             <div id="fUploadStatus" style="font-size: 0.8rem; color: var(--primary); font-weight: 600; display: none; word-break: break-word;">Mengunggah ke GDrive...</div>
           </div>
 

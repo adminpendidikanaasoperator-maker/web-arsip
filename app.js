@@ -2526,3 +2526,20 @@ function exportWord() { generateIntegratedReport('word', true); }
 
 
 
+
+function autoDetectFormat(input) {
+  if (!input.files || input.files.length === 0) return;
+  const fileName = input.files[0].name.toLowerCase();
+  const formatSelect = document.getElementById('fFormat');
+  if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx') || fileName.endsWith('.csv')) {
+    formatSelect.value = 'excel';
+  } else if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
+    formatSelect.value = 'word';
+  } else if (fileName.endsWith('.zip') || fileName.endsWith('.rar') || fileName.endsWith('.7z')) {
+    formatSelect.value = 'zip';
+  } else if (fileName.match(/\.(jpg|jpeg|png|gif|svg)$/)) {
+    formatSelect.value = 'img';
+  } else {
+    formatSelect.value = 'pdf';
+  }
+}
