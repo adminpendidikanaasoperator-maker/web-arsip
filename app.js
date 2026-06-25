@@ -529,7 +529,8 @@ function showPage(page) {
   if(banptMenu) banptMenu.style.display = (page === 'banpt') ? 'flex' : 'none';
 
   const lamptkesMenu = document.getElementById('lamptkes-sub-menu');
-  if(lamptkesMenu) lamptkesMenu.style.display = (page === 'lamptkes') ? 'flex' : 'none';
+    if(lamptkesMenu) lamptkesMenu.style.display = (page === 'lamptkes') ? 'flex' : 'none';
+    if(page === 'lamptkes') generateLamptkesReport();
 
   Object.keys(DEPT).forEach(k => {
     const menu = document.getElementById(`dept-${k}-sub-menu`);
@@ -2486,5 +2487,6 @@ async function generateIntegratedReport(type, isDashboard = false) {
 function exportExcel() { generateIntegratedReport('excel', true); }
 function exportPDF() { generateIntegratedReport('pdf', true); }
 function exportWord() { generateIntegratedReport('word', true); }
+
 
 
