@@ -413,6 +413,19 @@ function onAYearChange() {
 
 /* ─── DATA ─── */
 async function loadData() {
+
+// Migration: Update old bidang keys to new keys
+let dataMigrated = false;
+arsip.forEach(a => {
+  if (a.bidang === 'pendidikan') { a.bidang = 'akademik'; dataMigrated = true; }
+  if (a.bidang === 'sdm') { a.bidang = 'kepegawaian'; dataMigrated = true; }
+  // Update old jenis keys if needed (e.g. k5_aktivitas_mengajar is still the same)
+});
+if (dataMigrated) {
+  save(); // Save to localStorage
+  console.log('Migrated old arsip data to new Bidang keys');
+}
+
   try {
     const [arsipSnap, activitySnap, mhsSnap, sdmSnap] = await Promise.all([
       db.collection('arsip').get(),
@@ -1973,14 +1986,10 @@ function generateLamptkesReport() {
     html += "<tr>";
     html += "<td>"+(index+1)+"</td>";
     html += "<td style='font-weight:600; color:var(--text-main)'>"+item.judul+"</td>";
-    html += "<td><span class='badge bg-blue-100 text-blue-800' style='font-size:0.75rem'>"+bidangLabel+"</span><br><div title=\""+jenisLabel.replace(/\"/g, '&quot;')+"\" style='max-width:250px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:0.75rem; color:var(--text-sub)'>"+jenisLabel+"</div></td>";
+    html += "<td><span class='badge bg-blue-100 text-blue-800' style='font-size:0.75rem'>"+bidangLabel+"</span><br><div title=\""+jenisLabel.replace(/\"/g, '&quot;')+"\" style='white-space:normal; line-height:1.3; word-break:normal; overflow-wrap:break-word; font-size:0.72rem; color:var(--text-sub)'>"+jenisLabel+"</div></td>";
     html += "<td>"+item.tanggal+"</td>";
     html += "<td>";
-    if (item.link) {
-      html += "<a href='"+item.link+"' target='_blank' class='btn-action btn-edit text-xs' style='text-decoration:none'><i class='fas fa-external-link-alt'></i> Lihat Dokumen</a>";
-    } else {
-      html += "<span class='text-red-500 text-xs'>-</span>";
-    }
+    html += fmtBadge(item);
     html += "</td>";
     html += "</tr>";
   });
