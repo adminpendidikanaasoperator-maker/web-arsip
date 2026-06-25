@@ -633,28 +633,18 @@ function initDashCharts(data) {
   destroyChart(cYearlyLine);
   const ctxYL=document.getElementById('chartYearlyLine')?.getContext('2d');
   if(ctxYL){
-    const currY = new Date().getFullYear();
-    const startYEl = document.getElementById('trendStartY');
-    const endYEl = document.getElementById('trendEndY');
+    const limitEl = document.getElementById('trendLimit');
+    let limit = limitEl ? parseInt(limitEl.value) : 5;
     
-    if (startYEl && !startYEl.value) startYEl.value = currY - 4;
-    if (endYEl && !endYEl.value) endYEl.value = currY;
-
-    let startY = startYEl ? parseInt(startYEl.value) : (currY - 4);
-    let endY = endYEl ? parseInt(endYEl.value) : currY;
-
-    if (startY > endY) {
-      let temp = startY; startY = endY; endY = temp;
-    }
-
-    let yLabels = [];
-    for (let y = startY; y <= endY; y++) {
-      yLabels.push(String(y));
-    }
+    let sy = [...new Set(arsip.map(a=>a.ay).filter(Boolean))].sort();
+    if (sy.length === 0) sy = [currentAY || '2024 - 2025 GANJIL'];
     
-    const yCounts = yLabels.map(y => arsip.filter(a=>a.tanggal?.startsWith(y)).length);
+    if(limit > 0) sy = sy.slice(-limit);
+    
+    const yCounts = sy.map(y => arsip.filter(a=>a.ay===y).length);
+    
     const g=ctxYL.createLinearGradient(0,0,0,240);g.addColorStop(0,'rgba(59,130,246,.35)');g.addColorStop(1,'rgba(59,130,246,0)');
-    cYearlyLine=new Chart(ctxYL,{type:'line',data:{labels:yLabels,datasets:[{label:'Arsip Tahunan',data:yCounts,borderColor:'#3b82f6',backgroundColor:g,tension:.4,pointBackgroundColor:'#3b82f6',pointRadius:4,fill:true}]},options:chartOpts({plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',precision:0},beginAtZero:true}}})})
+    cYearlyLine=new Chart(ctxYL,{type:'line',data:{labels:sy,datasets:[{label:'Total Arsip',data:yCounts,borderColor:'#3b82f6',backgroundColor:g,tension:.4,pointBackgroundColor:'#3b82f6',pointRadius:4,fill:true}]},options:chartOpts({plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',precision:0},beginAtZero:true}}})})
   }
 
   destroyChart(cDoughnut);
