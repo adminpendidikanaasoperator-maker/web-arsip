@@ -350,6 +350,7 @@ const STATUS_CFG = {
 /* ─── STATE ─── */
 let arsip    = [];
 let isLamptkesMode = false;
+let yearlyChartOffset = 0;
 let activity = [];
 let mahasiswa = [];
 let sdm = [];
@@ -2630,3 +2631,16 @@ function updateYearlyChart() {
 
 
 
+
+function shiftYearlyChart(dir) {
+  const limitEl = document.getElementById('trendLimit');
+  let limit = limitEl ? parseInt(limitEl.value) : 10;
+  if (limit === 0) limit = 10;
+  if (dir === -1) yearlyChartOffset += limit;
+  else yearlyChartOffset -= limit;
+  updateYearlyChart();
+}
+function resetYearlyChartOffset() {
+  yearlyChartOffset = 0;
+  updateYearlyChart();
+}
