@@ -51,7 +51,7 @@ const DEPT = {
   sistem_informasi: { label:'Bidang Sistem Informasi', icon:'fas fa-network-wired', color:'#10b981' },
   humas: { label:'Bidang HUMAS', icon:'fas fa-bullhorn', color:'#14b8a6' },
   kerjasama: { label:'Bidang Kerjasama', icon:'fas fa-handshake', color:'#06b6d4' },
-    lamptkes_borang: { label:'Tim Borang LAM-PTKes', icon:'fas fa-notes-medical', color:'#10b981' },
+  lamptkes_borang: { label:'Tim Borang LAM-PTKes', icon:'fas fa-notes-medical', color:'#10b981' },
 
   // Backward compatibility keys (if they existed previously, they'll fall back gracefully or just display their label)
   pendidikan: { label:'Pendidikan', icon:'fas fa-graduation-cap', color:'#3b82f6' },
@@ -70,6 +70,7 @@ const DEPT_JENIS = {
     { val: 'k7_led', label: '[LED] Laporan Evaluasi Diri Kriteria 7' },
     { val: 'k8_led', label: '[LED] Laporan Evaluasi Diri Kriteria 8' },
     { val: 'k9_led', label: '[LED] Laporan Evaluasi Diri Kriteria 9' },
+    { val: 'led_semua', label: '[LED FINISH] Laporan Evaluasi Diri Lengkap' },
     { val: 'k1_spmi', label: '[SPMI] Dokumen SPMI Kriteria 1' },
     { val: 'k2_spmi', label: '[SPMI] Dokumen SPMI Kriteria 2' },
     { val: 'k3_spmi', label: '[SPMI] Dokumen SPMI Kriteria 3' },
@@ -79,7 +80,7 @@ const DEPT_JENIS = {
     { val: 'k7_spmi', label: '[SPMI] Dokumen SPMI Kriteria 7' },
     { val: 'k8_spmi', label: '[SPMI] Dokumen SPMI Kriteria 8' },
     { val: 'k9_spmi', label: '[SPMI] Dokumen SPMI Kriteria 9' },
-    { val: 'lainnya', label: 'Lainnya' }
+    { val: 'spmi_semua', label: '[SPMI FINISH] Dokumen SPMI Lengkap' }
   ],
   // ---------------------------------------------------------
   // WADIR I
