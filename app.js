@@ -697,7 +697,7 @@ function renderArsipTable() {
       <td><span class="td-nomor">${esc(a.nomor)}</span></td>
       <td><span class="td-judul" title="${esc(a.judul)}">${esc(a.judul)}</span></td>
       <td><span class="d-badge" style="background:${d.color}18;color:${d.color}; white-space: normal !important; text-align: left; line-height: 1.2; min-width: 120px; display: inline-block;"><i class="${d.icon}"></i>${d.label}</span></td>
-      <td style="font-size:.78rem;color:var(--t2);"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/"/g, '&quot;')}" style="white-space:normal; line-height:1.3; word-wrap:break-word;">${getJenisLabel(a.bidang,a.jenis)}</div></td>
+      <td style="font-size:.78rem;color:var(--t2);"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/"/g, '&quot;')}" style="white-space:normal; line-height:1.3; word-break:normal; overflow-wrap:break-word; font-size:0.72rem;">${getJenisLabel(a.bidang,a.jenis)}</div></td>
       <td style="font-size:.78rem;">${fmtDate(a.tanggal)}</td>
       <td><span class="td-ta" style="white-space:normal;">${a.ay||'—'}</span></td>
       <td>${statusBadge(a.status)}</td>
@@ -913,7 +913,7 @@ function renderDeptTable() {
         tdHtml += `<td style="font-size:.8rem;color:var(--primary);font-weight:600;">${val}</td>`; 
       });
     } else {
-      tdHtml += `<td style="font-size:.78rem;color:var(--t2)"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/\"/g, '&quot;')}" style="white-space:normal; line-height:1.3; word-wrap:break-word;">${getJenisLabel(a.bidang,a.jenis)}</div></td>`;
+      tdHtml += `<td style="font-size:.78rem;color:var(--t2)"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/\"/g, '&quot;')}" style="white-space:normal; line-height:1.3; word-break:normal; overflow-wrap:break-word; font-size:0.72rem;">${getJenisLabel(a.bidang,a.jenis)}</div></td>`;
     }
 
     tdHtml += `
