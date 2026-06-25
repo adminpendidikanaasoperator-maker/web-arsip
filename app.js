@@ -1172,7 +1172,12 @@ async function saveArsip(e) {
     log('add',`Menambah arsip: "${record.judul}" (TA ${record.ay})`);
     toast('Arsip berhasil disimpan!','success');
   }
-  db.collection('arsip').doc(record.id).set(record).catch(e => console.error(e));
+    try {
+      await db.collection('arsip').doc(record.id).set(record);
+    } catch(e) {
+      console.error(e);
+      alert('GAGAL MENYIMPAN KE DATABASE CLOUD: ' + e.message + '\n\nData hanya tersimpan sementara di browser. Periksa Koneksi atau Aturan Keamanan Firebase Anda.');
+    }
 
   save(); populateAYearSelect(); updateBadges(); closeForm();
   if(currentPage==='dashboard')renderDashboard();
@@ -1205,7 +1210,9 @@ async function saveArsip(e) {
       if (idx > -1) {
         arsip[idx].gdriveLink = ''; // Reset link
         save();
-        db.collection('arsip').doc(record.id).set(arsip[idx]).catch(e => console.error(e));
+        try {
+          db.collection('arsip').doc(record.id).set(arsip[idx]);
+        } catch(e) {}
         if (currentPage === 'arsip') renderArsipTable();
         else if (currentPage === 'dept') renderDeptPage(currentDept);
       }
@@ -1361,7 +1368,11 @@ function log(type,text){
   const item = { id: genId(), type, text, time: new Date().toISOString() };
   activity.unshift(item);
   if(activity.length>120)activity=activity.slice(0,120);
-  db.collection('activity').doc(item.id).set(item).catch(e => console.error(e));
+    try {
+      db.collection('activity').doc(item.id).set(item);
+    } catch(e) {
+      console.error('Log error:', e);
+    }
 }
 function renderActivity() {
   const el=document.getElementById('activityList'); if(!el)return;
@@ -1530,7 +1541,13 @@ function saveMahasiswa(e) {
     mahasiswa.push(record);
     toast('Mahasiswa berhasil ditambahkan','success');
   }
-  if (record) db.collection('mahasiswa').doc(record.id).set(record).catch(e => console.error(e));
+  if (record) {
+    try {
+      db.collection('mahasiswa').doc(record.id).set(record);
+    } catch(e) {
+      alert('GAGAL MENYIMPAN KE DATABASE CLOUD: ' + e.message);
+    }
+  }
   save(); closeMhsForm(); renderMahasiswaPage(); updateBadges();
 }
 function editMhs(id) {
@@ -1634,7 +1651,13 @@ function saveSdm(e) {
     sdm.push(record);
     toast('SDM berhasil ditambahkan','success');
   }
-  if (record) db.collection('sdm').doc(record.id).set(record).catch(e => console.error(e));
+  if (record) {
+    try {
+      db.collection('sdm').doc(record.id).set(record);
+    } catch(e) {
+      alert('GAGAL MENYIMPAN KE DATABASE CLOUD: ' + e.message);
+    }
+  }
   save(); closeSdmForm(); renderSdmPage(); updateBadges();
 }
 function editSdm(id) {
