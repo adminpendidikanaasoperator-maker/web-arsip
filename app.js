@@ -474,7 +474,7 @@ function getFormatCfg(fmt) { return FORMAT_MAP[fmt] || FORMAT_MAP.pdf; }
 function fmtBadge(a) {
   if (!a.gdriveLink) return `<span class="no-file">—</span>`;
   const f = getFormatCfg(a.format);
-  return `<button class="fmt-btn fmt-${a.format||'pdf'}" title="Pratinjau Dokumen: ${esc(a.fileName||'')}" onclick="previewDoc('${a.id}')"><i class="${f.icon}"></i> ${f.label}</button>`;
+  return `<a href="${esc(a.gdriveLink)}" target="_blank" rel="noopener noreferrer" class="fmt-btn fmt-${a.format||'pdf'}" title="Buka Dokumen: ${esc(a.fileName||'')}"><i class="${f.icon}"></i> ${f.label}</a>`;
 }
 function logGDriveOpen(id, e) {
   const a = arsip.find(x=>x.id===id);
@@ -1235,8 +1235,10 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
       const base64Data = reader.result.split(',')[1];
       const payload = {
         fileName: file.name,
+          filename: file.name,
         mimeType: file.type || 'application/octet-stream',
         base64Data: base64Data,
+          base64: base64Data,
         bidang: DEPT[bidang]?.label || bidang,
         jenis: jenis,
         tahun: tahun
@@ -2487,6 +2489,7 @@ async function generateIntegratedReport(type, isDashboard = false) {
 function exportExcel() { generateIntegratedReport('excel', true); }
 function exportPDF() { generateIntegratedReport('pdf', true); }
 function exportWord() { generateIntegratedReport('word', true); }
+
 
 
 
