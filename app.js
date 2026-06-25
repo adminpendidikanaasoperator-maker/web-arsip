@@ -1269,7 +1269,11 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
           bidang: DEPT[bidang]?.label || bidang,
           jenis: jenis,
           tahun: tahun,
-          folder: 'AAS_' + (DEPT[bidang]?.label || bidang).replace(/[^a-zA-Z0-9 ]/g, '').trim() + '_' + (tahun ? tahun.replace(/[^a-zA-Z0-9 ]/g, '') : 'Umum')
+          folderPath: [
+            (DEPT[bidang]?.label || bidang),
+            (tahun ? "TA " + tahun : "TA Umum"),
+            (getJenisLabel(bidang, jenis).match(/\[(Kriteria \d+)\]/i) ? getJenisLabel(bidang, jenis).match(/\[(Kriteria \d+)\]/i)[1] : "Umum")
+          ]
         };
 
       try {
