@@ -1270,6 +1270,7 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
           jenis: jenis,
           tahun: tahun,
           folderPath: [
+            "SIMARSIP AAS",
             (DEPT[bidang]?.label || bidang),
             (tahun ? "TA " + tahun : "TA Umum"),
             (getJenisLabel(bidang, jenis).match(/\[(Kriteria \d+)\]/i) ? getJenisLabel(bidang, jenis).match(/\[(Kriteria \d+)\]/i)[1] : "Umum")
