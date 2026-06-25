@@ -636,10 +636,24 @@ function initDashCharts(data) {
     const limitEl = document.getElementById('trendLimit');
     let limit = limitEl ? parseInt(limitEl.value) : 5;
     
-    let sy = [...new Set(arsip.map(a=>a.ay).filter(Boolean))].sort();
-    if (sy.length === 0) sy = [currentAY || '2024 - 2025 GANJIL'];
-    
-    if(limit > 0) sy = sy.slice(-limit);
+    let maxAY = currentAY || '2024 - 2025 GANJIL';
+    const dataAYs = arsip.map(a => a.ay).filter(Boolean).sort();
+    if (dataAYs.length > 0 && dataAYs[dataAYs.length - 1] > maxAY) {
+      maxAY = dataAYs[dataAYs.length - 1];
+    }
+
+    let allChrono = [...allAYears()].reverse(); // sorted chronologically (2014 -> 2050)
+    let endIdx = allChrono.indexOf(maxAY);
+    if (endIdx === -1) endIdx = allChrono.length - 1;
+
+    let sy = allChrono;
+    if (limit > 0) {
+      let startIdx = endIdx - limit + 1;
+      if (startIdx < 0) startIdx = 0;
+      sy = allChrono.slice(startIdx, endIdx + 1);
+    } else {
+      sy = allChrono.slice(0, endIdx + 1);
+    }
     
     const yCounts = sy.map(y => arsip.filter(a=>a.ay===y).length);
     
