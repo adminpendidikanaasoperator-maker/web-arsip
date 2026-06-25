@@ -51,6 +51,7 @@ const DEPT = {
   sistem_informasi: { label:'Bidang Sistem Informasi', icon:'fas fa-network-wired', color:'#10b981' },
   humas: { label:'Bidang HUMAS', icon:'fas fa-bullhorn', color:'#14b8a6' },
   kerjasama: { label:'Bidang Kerjasama', icon:'fas fa-handshake', color:'#06b6d4' },
+    lamptkes_borang: { label:'Tim Borang LAM-PTKes', icon:'fas fa-notes-medical', color:'#10b981' },
 
   // Backward compatibility keys (if they existed previously, they'll fall back gracefully or just display their label)
   pendidikan: { label:'Pendidikan', icon:'fas fa-graduation-cap', color:'#3b82f6' },
@@ -59,6 +60,27 @@ const DEPT = {
 
 /* ─── JENIS DOKUMEN PER BIDANG (tidak ada "Lainnya") ─── */
 const DEPT_JENIS = {
+  lamptkes_borang: [
+    { val: 'k1_led', label: '[LED] Laporan Evaluasi Diri Kriteria 1' },
+    { val: 'k2_led', label: '[LED] Laporan Evaluasi Diri Kriteria 2' },
+    { val: 'k3_led', label: '[LED] Laporan Evaluasi Diri Kriteria 3' },
+    { val: 'k4_led', label: '[LED] Laporan Evaluasi Diri Kriteria 4' },
+    { val: 'k5_led', label: '[LED] Laporan Evaluasi Diri Kriteria 5' },
+    { val: 'k6_led', label: '[LED] Laporan Evaluasi Diri Kriteria 6' },
+    { val: 'k7_led', label: '[LED] Laporan Evaluasi Diri Kriteria 7' },
+    { val: 'k8_led', label: '[LED] Laporan Evaluasi Diri Kriteria 8' },
+    { val: 'k9_led', label: '[LED] Laporan Evaluasi Diri Kriteria 9' },
+    { val: 'k1_spmi', label: '[SPMI] Dokumen SPMI Kriteria 1' },
+    { val: 'k2_spmi', label: '[SPMI] Dokumen SPMI Kriteria 2' },
+    { val: 'k3_spmi', label: '[SPMI] Dokumen SPMI Kriteria 3' },
+    { val: 'k4_spmi', label: '[SPMI] Dokumen SPMI Kriteria 4' },
+    { val: 'k5_spmi', label: '[SPMI] Dokumen SPMI Kriteria 5' },
+    { val: 'k6_spmi', label: '[SPMI] Dokumen SPMI Kriteria 6' },
+    { val: 'k7_spmi', label: '[SPMI] Dokumen SPMI Kriteria 7' },
+    { val: 'k8_spmi', label: '[SPMI] Dokumen SPMI Kriteria 8' },
+    { val: 'k9_spmi', label: '[SPMI] Dokumen SPMI Kriteria 9' },
+    { val: 'lainnya', label: 'Lainnya' }
+  ],
   // ---------------------------------------------------------
   // WADIR I
   // ---------------------------------------------------------
@@ -2603,19 +2625,15 @@ function updateYearlyChart() {
 }
 
 
-// --- DYNAMICALLY INJECT LED AND SPMI FOR ALL KRITERIA ---
-(function() {
-  Object.keys(DEPT_JENIS).forEach(k => {
-    if (!DEPT_JENIS[k]) return;
-    for(let i=9; i>=1; i--) {
-      let ledVal = 'k' + i + '_led';
-      let spmiVal = 'k' + i + '_spmi';
-      if (!DEPT_JENIS[k].find(x => x.val === ledVal)) {
-        DEPT_JENIS[k].unshift({ val: ledVal, label: '[LED] Laporan Evaluasi Diri Kriteria ' + i });
-      }
-      if (!DEPT_JENIS[k].find(x => x.val === spmiVal)) {
-        DEPT_JENIS[k].unshift({ val: spmiVal, label: '[SPMI] Dokumen SPMI Kriteria ' + i });
-      }
+
+
+function openFormForLamptkes() {
+  openForm();
+  setTimeout(() => {
+    const fB = document.getElementById('fBidang');
+    if(fB) {
+      fB.value = 'lamptkes_borang';
+      onBidangChange();
     }
-  });
-})();
+  }, 100);
+}

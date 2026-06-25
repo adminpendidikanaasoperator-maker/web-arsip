@@ -15,7 +15,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=117" />
+  <link rel="stylesheet" href="style.css?v=118" />
 </head>
 <body>
 
@@ -79,6 +79,8 @@
       <li onclick="switchLamptkesTab(10, this)"><i class="fas fa-table"></i> Bab II (Tabel LKPS)</li>
       <li onclick="switchLamptkesTab(11, this)"><i class="fas fa-book-open"></i> LED (Semua Kriteria)</li>
       <li onclick="switchLamptkesTab(12, this)"><i class="fas fa-tasks"></i> SPMI (Per Bidang)</li>
+      <hr style="border-color: rgba(255,255,255,0.05); margin: 4px 15px;">
+      <li onclick="openFormForLamptkes()" style="color:#10b981; font-weight:600;"><i class="fas fa-cloud-upload-alt"></i> Upload LED / SPMI</li>
     </ul>
     <a class="sb-link" href="#" data-page="analytics" id="nav-analytics"><i class="fas fa-chart-pie"></i><span>Analitik & Laporan</span></a>
     <a class="sb-link" href="#" data-page="aktivitas" id="nav-aktivitas"><i class="fas fa-clock-rotate-left"></i><span>Riwayat Aktivitas</span></a>
@@ -160,6 +162,9 @@
       </div>
       <select id="filterDept" onchange="onFilterDeptChange()">
         <option value="">Semua Bidang</option>
+        <optgroup label="Khusus">
+          <option value="lamptkes_borang">Tim Borang LAM-PTKes</option>
+        </optgroup>
         <optgroup label="Wadir I">
           <option value="akademik">Akademik & Pendidikan</option>
           <option value="sistem_pendidikan">Sistem Informasi Pendidikan</option>
@@ -932,6 +937,6 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="app.js?v=117"></script>
+<script src="app.js?v=118"></script>
 </body>
 </html>
