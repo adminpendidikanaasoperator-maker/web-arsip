@@ -657,31 +657,23 @@ function initDashCharts(data) {
 
   // Yearly Trend
   destroyChart(cYearlyLine);
-  const ctxYL=document.getElementById('chartYearlyLine')?.getContext('2d');
-  if(ctxYL){
-    const limitEl = document.getElementById('trendLimit');
-    let limit = limitEl ? parseInt(limitEl.value) : 5;
-    
-    let maxAY = currentAY || '2024 - 2025 GANJIL';
-    const dataAYs = arsip.map(a => a.ay).filter(Boolean).sort();
-    if (dataAYs.length > 0 && dataAYs[dataAYs.length - 1] > maxAY) {
-      maxAY = dataAYs[dataAYs.length - 1];
-    }
-
-    let allChrono = [...allAYears()].reverse(); // sorted chronologically (2014 -> 2050)
-    let endIdx = allChrono.indexOf(maxAY);
-    if (endIdx === -1) endIdx = allChrono.length - 1;
-
-    let sy = allChrono;
-    if (limit > 0) {
-      let startIdx = endIdx - limit + 1;
-      if (startIdx < 0) startIdx = 0;
-      sy = allChrono.slice(startIdx, endIdx + 1);
-    } else {
-      sy = allChrono.slice(0, endIdx + 1);
-    }
-    
-    const yCounts = sy.map(y => arsip.filter(a=>a.ay===y).length);
+    const ctxYL=document.getElementById('chartYearlyLine')?.getContext('2d');
+    if(ctxYL){
+      let startY = parseInt(document.getElementById('trendStartY')?.value || '2021', 10);
+      let endY = parseInt(document.getElementById('trendEndY')?.value || '2025', 10);
+      
+      if (startY > endY) {
+        let temp = startY; startY = endY; endY = temp;
+      }
+      
+      let allChrono = [...allAYears()].reverse(); // sorted chronologically (2014 -> 2050)
+      
+      let sy = allChrono.filter(ay => {
+        let ayStart = parseInt(ay.split('/')[0], 10);
+        return ayStart >= startY && ayStart <= endY;
+      });
+      
+      const yCounts = sy.map(y => arsip.filter(a=>a.ay===y).length);
     
     const g=ctxYL.createLinearGradient(0,0,0,240);g.addColorStop(0,'rgba(59,130,246,.35)');g.addColorStop(1,'rgba(59,130,246,0)');
     cYearlyLine=new Chart(ctxYL,{type:'line',data:{labels:sy,datasets:[{label:'Total Arsip',data:yCounts,borderColor:'#3b82f6',backgroundColor:g,tension:.4,pointBackgroundColor:'#3b82f6',pointRadius:4,fill:true}]},options:chartOpts({plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',precision:0},beginAtZero:true}}})})
