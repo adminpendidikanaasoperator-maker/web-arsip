@@ -1269,7 +1269,7 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
           bidang: DEPT[bidang]?.label || bidang,
           jenis: jenis,
           tahun: tahun,
-          folder: 'AAS_' + (DEPT[bidang]?.label || bidang).replace(/[^a-zA-Z0-9 ]/g, '').trim()
+          folder: 'AAS_' + (DEPT[bidang]?.label || bidang).replace(/[^a-zA-Z0-9 ]/g, '').trim() + '_' + (tahun ? tahun.replace(/[^a-zA-Z0-9 ]/g, '') : 'Umum')
         };
 
       try {
