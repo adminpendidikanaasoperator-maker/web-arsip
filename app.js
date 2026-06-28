@@ -60,27 +60,27 @@ const DEPT = {
 /* ─── JENIS DOKUMEN PER BIDANG (tidak ada "Lainnya") ─── */
 
 const LAMPTKES_SPECIAL_TYPES = [
-  { val: 'k1_led', label: '[LED] Laporan Evaluasi Diri Kriteria 1' },
-  { val: 'k2_led', label: '[LED] Laporan Evaluasi Diri Kriteria 2' },
-  { val: 'k3_led', label: '[LED] Laporan Evaluasi Diri Kriteria 3' },
-  { val: 'k4_led', label: '[LED] Laporan Evaluasi Diri Kriteria 4' },
-  { val: 'k5_led', label: '[LED] Laporan Evaluasi Diri Kriteria 5' },
-  { val: 'k6_led', label: '[LED] Laporan Evaluasi Diri Kriteria 6' },
-  { val: 'k7_led', label: '[LED] Laporan Evaluasi Diri Kriteria 7' },
-  { val: 'k8_led', label: '[LED] Laporan Evaluasi Diri Kriteria 8' },
-  { val: 'k9_led', label: '[LED] Laporan Evaluasi Diri Kriteria 9' },
-  { val: 'led_semua', label: '[LED FINISH] Laporan Evaluasi Diri Lengkap' },
-  { val: 'k1_spmi', label: '[SPMI] Dokumen SPMI Kriteria 1' },
-  { val: 'k2_spmi', label: '[SPMI] Dokumen SPMI Kriteria 2' },
-  { val: 'k3_spmi', label: '[SPMI] Dokumen SPMI Kriteria 3' },
-  { val: 'k4_spmi', label: '[SPMI] Dokumen SPMI Kriteria 4' },
-  { val: 'k5_spmi', label: '[SPMI] Dokumen SPMI Kriteria 5' },
-  { val: 'k6_spmi', label: '[SPMI] Dokumen SPMI Kriteria 6' },
-  { val: 'k7_spmi', label: '[SPMI] Dokumen SPMI Kriteria 7' },
-  { val: 'k8_spmi', label: '[SPMI] Dokumen SPMI Kriteria 8' },
-  { val: 'k9_spmi', label: '[SPMI] Dokumen SPMI Kriteria 9' },
-  { val: 'spmi_semua', label: '[SPMI FINISH] Dokumen SPMI Lengkap' }
-];
+    { val: 'k1_led', label: '[LED] Laporan Evaluasi Diri Kriteria 1' },
+    { val: 'k2_led', label: '[LED] Laporan Evaluasi Diri Kriteria 2' },
+    { val: 'k3_led', label: '[LED] Laporan Evaluasi Diri Kriteria 3' },
+    { val: 'k4_led', label: '[LED] Laporan Evaluasi Diri Kriteria 4' },
+    { val: 'k5_led', label: '[LED] Laporan Evaluasi Diri Kriteria 5' },
+    { val: 'k6_led', label: '[LED] Laporan Evaluasi Diri Kriteria 6' },
+    { val: 'k7_led', label: '[LED] Laporan Evaluasi Diri Kriteria 7' },
+    { val: 'k8_led', label: '[LED] Laporan Evaluasi Diri Kriteria 8' },
+    { val: 'led_semua', label: '[LED FINISH] Laporan Evaluasi Diri Lengkap' },
+    { val: 'spmi_akademik', label: '[SPMI] Bidang Akademik' },
+    { val: 'spmi_sistem_pendidikan', label: '[SPMI] Bidang Sistem Pendidikan' },
+    { val: 'spmi_kemahasiswaan', label: '[SPMI] Bidang Kemahasiswaan' },
+    { val: 'spmi_kepegawaian', label: '[SPMI] Bidang Kepegawaian (SDM)' },
+    { val: 'spmi_umum_keuangan', label: '[SPMI] Bidang Umum & Keuangan' },
+    { val: 'spmi_lppm', label: '[SPMI] Bidang LPPM' },
+    { val: 'spmi_penjaminan_mutu', label: '[SPMI] Bidang Penjaminan Mutu' },
+    { val: 'spmi_perpustakaan', label: '[SPMI] Bidang Perpustakaan' },
+    { val: 'spmi_it', label: '[SPMI] Bidang IT' },
+    { val: 'spmi_tata_usaha', label: '[SPMI] Bidang Tata Usaha' },
+    { val: 'spmi_semua', label: '[SPMI FINISH] Dokumen Mutu Lengkap' }
+  ];
 
 const DEPT_JENIS = {
   // ---------------------------------------------------------
