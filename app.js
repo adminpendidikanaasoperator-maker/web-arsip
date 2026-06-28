@@ -3960,14 +3960,14 @@ async function generateIntegratedReport(type, isDashboard = false) {
     const doc = new jsPDF('l', 'mm', 'a4'); // Landscape A4 is best for 7 columns
     
     // Kop Surat
-    if (logoBase64) { doc.addImage(logoBase64, 'JPEG', 14, 10, 22, 22); }
+    if (logoBase64) { doc.addImage(logoBase64, 'JPEG', 65, 10, 22, 22); }
     doc.setFontSize(16); doc.setFont('times', 'bold');
-    doc.text(institutionName, 148, 14, { align: 'center' });
+    doc.text(institutionName, 160, 14, { align: 'center' });
     doc.setFontSize(11); doc.setFont('times', 'normal');
-    doc.text(addressStr, 148, 20, { align: 'center' });
-    doc.text(KOP_KONTAK, 148, 25, { align: 'center' });
+    doc.text(addressStr, 160, 20, { align: 'center' });
+    doc.text(KOP_KONTAK, 160, 25, { align: 'center' });
     doc.setFont('times', 'bold');
-    doc.text(KOP_BANPT + '  |  ' + KOP_LAMPTKES, 148, 30, { align: 'center' });
+    doc.text(KOP_BANPT + '  |  ' + KOP_LAMPTKES, 160, 30, { align: 'center' });
     
     // Garis Kop Ganda
     doc.setLineWidth(0.8); doc.line(14, 34, 283, 34);
@@ -3983,8 +3983,8 @@ async function generateIntegratedReport(type, isDashboard = false) {
     if (c1Img && c2Img) {
       doc.setFontSize(11); doc.setFont('times', 'bold');
       doc.text('A. VISUALISASI DATA', 14, startY);
-      doc.addImage(c1Img, 'PNG', 14, startY+4, 100, 100);
-      doc.addImage(c2Img, 'PNG', 120, startY+4, 150, 75);
+      doc.addImage(c1Img, 'PNG', 14, startY+4, 170, 75); // Bar chart (lebar)
+      doc.addImage(c2Img, 'PNG', 190, startY+4, 75, 75); // Doughnut chart (persegi)
       doc.addPage();
       startY = 15;
     }
