@@ -3866,7 +3866,7 @@ const formatMetadataClean = (meta) => {
   }).join('\n');
 };
 
-async async function generateIntegratedReport(type, isDashboard = false) {
+async function generateIntegratedReport(type, isDashboard = false) {
   toast('Menyiapkan laporan, mohon tunggu...', 'info');
 
   const logoBase64 = await getBase64FromUrl('logo.jpg');
