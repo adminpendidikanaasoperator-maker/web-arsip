@@ -1680,6 +1680,14 @@ let mahasiswa = [];
 let sdm = [];
 let currentPage = 'dashboard';
 let isAppLoaded = false;
+let uploadCount = 0;
+
+window.addEventListener('beforeunload', function (e) {
+  if (uploadCount > 0) {
+    e.preventDefault();
+    e.returnValue = 'Ada file yang masih dalam proses unggah. Jika Anda keluar, file akan macet pada status Mengunggah.';
+  }
+});
 let currentDept = '';
 let currentAY   = '';
 let pendingPdfId = '';
@@ -1777,9 +1785,16 @@ function processSnapshot(snapshot, collectionName) {
   const data = snapshot.docs.map(d => d.data());
   
   if (collectionName === 'arsip') { 
+      let isFirst = isInitialLoad.arsip;
       // Force recalculate ay from tanggal so old database strings are ignored
-      data.forEach(a => { a.ay = getAY(a.tanggal); });
-      arsip = data; 
+      data.forEach(a => { 
+          if (isFirst && a.gdriveLink === 'UPLOADING') {
+              a.gdriveLink = '';
+              try { db.collection('arsip').doc(a.id).update({ gdriveLink: '' }); } catch(e) {}
+          }
+          a.ay = getAY(a.tanggal); 
+      });
+      arsip = data;
  
       
       // MIGRATION SCRIPT FOR ALL K1-K8
@@ -1881,8 +1896,7 @@ function processSnapshot(snapshot, collectionName) {
   else if (collectionName === 'sdm') { sdm = data; }
 
   if (!isInitialLoad[collectionName]) {
-     const ping = document.getElementById('soundPing');
-     if(ping) { ping.currentTime = 0; ping.play().catch(e=>console.log(e)); }
+
      
      if (isAppLoaded) {
        updateBadges();
@@ -1906,6 +1920,7 @@ function processSnapshot(snapshot, collectionName) {
 
 async function loadData() {
 // Migration: Update old bidang keys to new keys
+arsip = JSON.parse(localStorage.getItem('SIMARSIP_AAS')) || [];
 let dataMigrated = false;
 arsip.forEach(a => {
   if (a.bidang === 'pendidikan') { a.bidang = 'akademik'; dataMigrated = true; }
@@ -2697,14 +2712,14 @@ function chartOpts(extra={}) {
 
 function openEmptyStateForm() {
   if (currentPage === 'banpt') {
-     isBanptMode = true;
-     isLamptkesMode = false;
+    isBanptMode = true;
+    isLamptkesMode = false;
   } else if (currentPage === 'lamptkes') {
-     isLamptkesMode = true;
-     isBanptMode = false;
+    isLamptkesMode = true;
+    isBanptMode = false;
   } else {
-     isBanptMode = false;
-     isLamptkesMode = false;
+    isBanptMode = false;
+    isLamptkesMode = false;
   }
   openForm();
 }
@@ -2864,6 +2879,12 @@ function onBidangChange() {
       document.getElementById('fJenisLabelText').textContent = '-- Pilih Jenis Dokumen --';
       document.getElementById('fJenis').value = '';
       let html = '';
+      
+      // Jika types adalah array object item (bukan group), buat group 'Umum'
+      if (!types[0].group) {
+        types = [{ group: 'Kategori Dokumen', items: types }];
+      }
+      
       types.forEach(group => {
         html += `<div style="padding:8px 12px; font-size:0.75rem; color:#6b7280; font-weight:700; text-transform:uppercase; margin-top:8px; border-top:1px solid #e5e7eb;">${group.group}</div>`;
         group.items.forEach(t => {
@@ -3038,6 +3059,7 @@ async function saveArsip(e) {
   else if(currentPage==='arsip')renderArsipTable();
   else if(currentPage==='dept')renderDeptPage(currentDept);
   else if(currentPage==='analytics')renderAnalytics();
+  else if(currentPage==='banpt')initBanpt();
   else if(currentPage==='lamptkes')initLamptkes();
 
   
@@ -3047,6 +3069,8 @@ async function saveArsip(e) {
   if (fileToUpload) {
     toast(`Mulai mengunggah ${fileToUpload.name} ke GDrive... Jangan tutup halaman.`, 'info');
     uploadToGDrive(fileToUpload, bidang, jenis, tahun).then(res => {
+      uploadCount = Math.max(0, uploadCount - 1);
+      if (uploadCount === 0) showUploadOverlay(false);
       console.log('GDrive Response:', res);
       let gLink = res ? (res.fileUrl || res.url || res.link || res.webViewLink || '#') : '#';
       if (res && (res.status === 'success' || gLink !== '#')) {
@@ -3096,6 +3120,8 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
   }
 
   return new Promise((resolve, reject) => {
+    uploadCount++;
+    showUploadOverlay(true);
     const reader = new FileReader();
     reader.onload = async function() {
       const base64Data = reader.result.split(',')[1];
@@ -3192,6 +3218,7 @@ async function deleteArsip(id) {
   else if(currentPage==='arsip')renderArsipTable();
   else if(currentPage==='dept')renderDeptPage(currentDept);
   else if(currentPage==='analytics')renderAnalytics();
+  else if(currentPage==='banpt')initBanpt();
   else if(currentPage==='lamptkes')initLamptkes();
 
 }
@@ -3766,7 +3793,22 @@ function switchBanptTab(tabNum, element) {
 }
 
 function getBanptCriteriaForUpload(bidang, jenis) {
-    const j = (jenis || '').toLowerCase();
+    if (!jenis) return 0;
+    
+    // Exact BAN-PT types from forms
+    if (jenis.startsWith('banpt_led_k')) return parseInt(jenis.replace('banpt_led_k', ''));
+    if (jenis.startsWith('banpt_spmi_k')) return parseInt(jenis.replace('banpt_spmi_k', ''));
+    if (jenis.endsWith('_k1') || jenis.startsWith('k1_')) return 1;
+    if (jenis.endsWith('_k2') || jenis.startsWith('k2_')) return 2;
+    if (jenis.endsWith('_k3') || jenis.startsWith('k3_')) return 3;
+    if (jenis.endsWith('_k4') || jenis.startsWith('k4_')) return 4;
+    if (jenis.endsWith('_k5') || jenis.startsWith('k5_')) return 5;
+    if (jenis.endsWith('_k6') || jenis.startsWith('k6_')) return 6;
+    if (jenis.endsWith('_k7') || jenis.startsWith('k7_')) return 7;
+    if (jenis.endsWith('_k8') || jenis.startsWith('k8_')) return 8;
+    if (jenis.endsWith('_k9') || jenis.startsWith('k9_')) return 9;
+
+    const j = jenis.toLowerCase();
     const b = (bidang || '');
     if(j.includes('lulusan') || j.includes('ipk') || j.includes('publikasi') || j.includes('jurnal') || j.includes('ukom') || j.includes('tracer')) return 9;
     if(j.includes('renstra') || j.includes('renop') || j.includes('vmts') || j.includes('visi')) return 1;
@@ -3789,7 +3831,13 @@ function getLamptkesCriteriaForUpload(jenis) {
 }
 
 function getBanptData(k) {
-  return arsip.filter(a => getBanptCriteriaForUpload(a.bidang, a.jenis) === k);
+  return arsip.filter(a => {
+      // Don't mix currentAY filtering with BANPT filtering if not desired, 
+      // but let's assume we want ALL banpt documents for that criteria.
+      // Wait, there's a problem, in Banpt Criteria extraction, maybe it's not recognizing standard departments.
+      let cr = getBanptCriteriaForUpload(a.bidang, a.jenis);
+      return cr === k;
+  });
 }
 
 function generateBanptReport() {
@@ -3820,13 +3868,70 @@ function generateBanptReport() {
     let stat = "<span class='badge bg-green'>Aktif</span>";
     if (a.isKadaluarsa) stat = "<span class='badge bg-red' style='animation:pulseRed 2s infinite;'>Kadaluarsa</span>";
     else if (a.isPerluUpdate) stat = "<span class='badge bg-yellow'>Perlu Diperbarui</span>";
+    
+    let jenisLabel = a.jenis;
+    let foundLabel = false;
+    
+    if (a.bidang === 'banpt_led') {
+         const ledGroups = [{ group: 'Laporan Evaluasi Diri (LED)', items: [
+            {val: 'banpt_led_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'banpt_led_k2', label: 'Kriteria 2. Tata Pamong, Tata Kelola, dan Kerjasama'},
+            {val: 'banpt_led_k3', label: 'Kriteria 3. Mahasiswa'},
+            {val: 'banpt_led_k4', label: 'Kriteria 4. Sumber Daya Manusia'},
+            {val: 'banpt_led_k5', label: 'Kriteria 5. Keuangan, Sarana, dan Prasarana'},
+            {val: 'banpt_led_k6', label: 'Kriteria 6. Pendidikan'},
+            {val: 'banpt_led_k7', label: 'Kriteria 7. Penelitian'},
+            {val: 'banpt_led_k8', label: 'Kriteria 8. Pengabdian kepada Masyarakat'},
+            {val: 'banpt_led_k9', label: 'Kriteria 9. Luaran dan Capaian Tridharma'}
+         ]}];
+         for(let g of ledGroups) {
+            let it = g.items.find(x => x.val === a.jenis);
+            if(it) { jenisLabel = it.label; foundLabel = true; break; }
+         }
+    } else if (a.bidang === 'banpt_spmi') {
+         const spmiGroups = [{ group: 'Sistem Penjaminan Mutu Internal (SPMI)', items: [
+            {val: 'banpt_spmi_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'banpt_spmi_k2', label: 'Kriteria 2. Tata Pamong, Tata Kelola, dan Kerjasama'},
+            {val: 'banpt_spmi_k3', label: 'Kriteria 3. Mahasiswa'},
+            {val: 'banpt_spmi_k4', label: 'Kriteria 4. Sumber Daya Manusia'},
+            {val: 'banpt_spmi_k5', label: 'Kriteria 5. Keuangan, Sarana, dan Prasarana'},
+            {val: 'banpt_spmi_k6', label: 'Kriteria 6. Pendidikan'},
+            {val: 'banpt_spmi_k7', label: 'Kriteria 7. Penelitian'},
+            {val: 'banpt_spmi_k8', label: 'Kriteria 8. Pengabdian kepada Masyarakat'},
+            {val: 'banpt_spmi_k9', label: 'Kriteria 9. Luaran dan Capaian Tridharma'}
+         ]}];
+         for(let g of spmiGroups) {
+            let it = g.items.find(x => x.val === a.jenis);
+            if(it) { jenisLabel = it.label; foundLabel = true; break; }
+         }
+    }
+    
+    if (!foundLabel && DEPT_JENIS[a.bidang]) {
+        for(let group of DEPT_JENIS[a.bidang]) {
+           if (group.items) {
+               let it = group.items.find(x => x.val === a.jenis);
+               if(it) { jenisLabel = it.label; break; }
+           }
+        }
+    }
+    
+    if (jenisLabel === a.jenis) {
+       jenisLabel = getJenisLabel(a.bidang, a.jenis);
+    }
+
+        let gdriveAction = "";
+    if (a.gdriveLink === 'UPLOADING') {
+       gdriveAction = "<span style='color:#f59e0b;font-size:0.85rem;white-space:nowrap'><i class='fas fa-spinner fa-spin'></i> Mengunggah...</span>";
+    } else {
+       gdriveAction = `<a href='${a.gdriveLink || "#"}' target='_blank' class='tb-btn tb-btn-primary' style='padding:4px 8px; font-size:12px;'><i class='fas fa-folder-open'></i> Buka</a>`;
+    }
 
     html += "<tr>";
     html += `<td><strong>${a.judul}</strong><br><small class='text-gray-500'>ID: ${a.id.substring(0,8)}</small></td>`;
-    html += `<td><span class='badge' style='background:var(--p1);'>${getJenisLabel(a.bidang, a.jenis)}</span></td>`;
+    html += `<td><span class='badge' style='background:var(--p1);' title="${jenisLabel.replace(/\"/g, '&quot;')}">${jenisLabel}</span></td>`;
     html += `<td>${a.tahun || a.tanggal || '-'}</td>`;
     html += `<td>${stat}</td>`;
-    html += `<td><a href='${a.gdriveUrl}' target='_blank' class='tb-btn tb-btn-primary' style='padding:4px 8px; font-size:12px;'><i class='fas fa-folder-open'></i> Buka</a></td>`;
+    html += `<td>${gdriveAction}</td>`;
     html += "</tr>";
   });
 
@@ -3859,6 +3964,10 @@ function getKriteriaNumber(jenis) {
   if (jenis.startsWith('k8_') || jenis.endsWith('_k8')) return 8;
   if (jenis.startsWith('k9_') || jenis.endsWith('_k9')) return 9;
   if (jenis.startsWith('lkps_')) return 10;
+  
+  const match = jenis.match(/k(\d)$/);
+  if (match) return parseInt(match[1]);
+
   return 0;
 }
 
@@ -3907,8 +4016,55 @@ function generateLamptkesReport() {
   
   filtered.forEach((item, index) => {
     let bidangLabel = DEPT[item.bidang] ? DEPT[item.bidang].label : item.bidang;
-    let jenisObj = DEPT_JENIS[item.bidang] ? DEPT_JENIS[item.bidang].find(x => x.val === item.jenis) : null;
-    let jenisLabel = jenisObj ? jenisObj.label : item.jenis;
+    
+    // Better logic to find jenisLabel across led, spmi, and standard dept categories
+    let jenisLabel = item.jenis;
+    let foundLabel = false;
+    
+    if (item.bidang === 'lamptkes_led') {
+       const ledGroups = [{ group: 'Laporan Evaluasi Diri (LED)', items: [
+            {val: 'led_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'led_k2', label: 'Kriteria 2. Kurikulum'},
+            {val: 'led_k3', label: 'Kriteria 3. Penilaian'},
+            {val: 'led_k4', label: 'Kriteria 4. Mahasiswa'},
+            {val: 'led_k5', label: 'Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
+            {val: 'led_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
+            {val: 'led_k7', label: 'Kriteria 7. Penjaminan Mutu'},
+            {val: 'led_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
+       ]}];
+       for(let g of ledGroups) {
+          let it = g.items.find(x => x.val === item.jenis);
+          if(it) { jenisLabel = it.label; foundLabel = true; break; }
+       }
+    } else if (item.bidang === 'lamptkes_spmi') {
+       const spmiGroups = [{ group: 'Sistem Penjaminan Mutu Internal (SPMI)', items: [
+            {val: 'spmi_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'spmi_k2', label: 'Kriteria 2. Kurikulum'},
+            {val: 'spmi_k3', label: 'Kriteria 3. Penilaian'},
+            {val: 'spmi_k4', label: 'Kriteria 4. Mahasiswa'},
+            {val: 'spmi_k5', label: 'Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
+            {val: 'spmi_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
+            {val: 'spmi_k7', label: 'Kriteria 7. Penjaminan Mutu'},
+            {val: 'spmi_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
+       ]}];
+       for(let g of spmiGroups) {
+          let it = g.items.find(x => x.val === item.jenis);
+          if(it) { jenisLabel = it.label; foundLabel = true; break; }
+       }
+    }
+    
+    if (!foundLabel && DEPT_JENIS[item.bidang]) {
+        for(let group of DEPT_JENIS[item.bidang]) {
+           if (group.items) {
+               let it = group.items.find(x => x.val === item.jenis);
+               if(it) { jenisLabel = it.label; break; }
+           }
+        }
+    }
+    
+    if (jenisLabel === item.jenis) {
+       jenisLabel = getJenisLabel(item.bidang, item.jenis);
+    }
     
     html += "<tr>";
     html += "<td>"+(index+1)+"</td>";
@@ -3941,15 +4097,22 @@ async function exportLamptkes(type) {
   
   if (type === 'excel') {
     if (typeof XLSX === 'undefined') { toast('Library Excel belum dimuat!', 'error'); return; }
-    const excelData = data.map((a, index) => ({
-      'No': index + 1,
-      'Kriteria': (getKriteriaNumber(a.jenis) === 12) ? 'SPMI (Per Bidang)' : (getKriteriaNumber(a.jenis) === 11) ? 'LED (Semua Kriteria)' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II (LKPS)' : 'Kriteria ' + getKriteriaNumber(a.jenis),
-      'Tanggal': a.tanggal,
-      'Judul Dokumen': a.judul,
-      'Bidang Terkait': (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
-      'Deskripsi Dokumen': getLabel(a),
-      'Link GDrive': a.link || '-'
-    }));
+        const excelData = data.map((a, index) => {
+      let k = getKriteriaNumber(a.jenis);
+      let kLabel = 'Kriteria ' + k;
+      if (a.bidang === 'lamptkes_spmi' || (a.jenis && a.jenis.startsWith('spmi_'))) kLabel = 'SPMI K' + k;
+      if (a.bidang === 'lamptkes_led' || (a.jenis && a.jenis.startsWith('led_'))) kLabel = 'LED K' + k;
+      if (a.jenis && a.jenis.startsWith('lkps_')) kLabel = 'Bab II (LKPS)';
+      return {
+        'No': index + 1,
+        'Kriteria': kLabel,
+        'Tanggal': a.tanggal,
+        'Judul Dokumen': a.judul,
+        'Bidang Terkait': (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
+        'Deskripsi Dokumen': getLabel(a),
+        'Link GDrive': a.gdriveLink || '-'
+      };
+    });
     const worksheet = XLSX.utils.json_to_sheet(excelData);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'LAM-PTKes');
@@ -3966,14 +4129,21 @@ async function exportLamptkes(type) {
     doc.setFontSize(10); doc.setFont('helvetica', 'normal');
     doc.text("AKADEMI AKUPUNKTUR SURABAYA - Dicetak pada: " + dateStr, 14, 26);
     
-    let tableData = data.map((a, i) => [
-      i+1,
-      (getKriteriaNumber(a.jenis) === 12) ? 'SPMI' : (getKriteriaNumber(a.jenis) === 11) ? 'LED' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II' : 'K' + getKriteriaNumber(a.jenis),
-      a.judul,
-      (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
-      getLabel(a),
-      a.link || '-'
-    ]);
+        let tableData = data.map((a, i) => {
+      let k = getKriteriaNumber(a.jenis);
+      let kLabel = 'K' + k;
+      if (a.bidang === 'lamptkes_spmi' || (a.jenis && a.jenis.startsWith('spmi_'))) kLabel = 'SPMI K' + k;
+      if (a.bidang === 'lamptkes_led' || (a.jenis && a.jenis.startsWith('led_'))) kLabel = 'LED K' + k;
+      if (a.jenis && a.jenis.startsWith('lkps_')) kLabel = 'Bab II';
+      return [
+        i+1,
+        kLabel,
+        a.judul,
+        (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
+        getLabel(a),
+        a.gdriveLink || '-'
+      ];
+    });
 
     doc.autoTable({
       startY: 32,
@@ -4003,15 +4173,20 @@ async function exportLamptkes(type) {
     html += "<table border='1' style='border-collapse:collapse; width:100%; font-family:sans-serif; font-size:12px;'>";
     html += "<tr style='background:#10b981; color:#fff;'><th>No</th><th>Kriteria</th><th>Judul Arsip</th><th>Bidang</th><th>Deskripsi Dokumen</th><th>Tautan GDrive</th></tr>";
     
-    data.forEach((a, index) => {
-      let krit = (getKriteriaNumber(a.jenis) === 12) ? 'SPMI (Per Bidang)' : (getKriteriaNumber(a.jenis) === 11) ? 'LED (Semua Kriteria)' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II (LKPS)' : 'Kriteria ' + getKriteriaNumber(a.jenis);
+        data.forEach((a, index) => {
+      let k = getKriteriaNumber(a.jenis);
+      let kLabel = 'Kriteria ' + k;
+      if (a.bidang === 'lamptkes_spmi' || (a.jenis && a.jenis.startsWith('spmi_'))) kLabel = 'SPMI K' + k;
+      if (a.bidang === 'lamptkes_led' || (a.jenis && a.jenis.startsWith('led_'))) kLabel = 'LED K' + k;
+      if (a.jenis && a.jenis.startsWith('lkps_')) kLabel = 'Bab II (LKPS)';
+      
       html += "<tr>";
       html += "<td style='padding:4px;'>" + (index + 1) + "</td>";
-      html += "<td style='padding:4px;'>" + krit + "</td>";
+      html += "<td style='padding:4px;'>" + kLabel + "</td>";
       html += "<td style='padding:4px;'>" + a.judul + "</td>";
       html += "<td style='padding:4px;'>" + (DEPT[a.bidang]?.label || a.bidang).toUpperCase() + "</td>";
       html += "<td style='padding:4px;'>" + getLabel(a) + "</td>";
-      html += "<td style='padding:4px;'>" + (a.link ? `<a href="${a.link}">${a.link}</a>` : '-') + "</td>";
+      html += "<td style='padding:4px;'>" + (a.gdriveLink ? `<a href="${a.gdriveLink}">${a.gdriveLink}</a>` : '-') + "</td>";
       html += "</tr>";
     });
     html += "</table></body></html>";
@@ -4597,3 +4772,161 @@ window.resetUpload = function(id) {
     else if (currentPage === 'lamptkes') generateLamptkesReport();
   }
 };
+
+window.showUploadOverlay = function(show) {
+    let overlay = document.getElementById('uploadOverlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'uploadOverlay';
+        overlay.innerHTML = `
+            <div style="background: white; padding: 30px; border-radius: 12px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-width: 400px; width: 90%;">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 3rem; color: var(--p1); margin-bottom: 15px; animation: pulseRed 2s infinite;"></i>
+                <h3 style="margin: 0 0 10px 0; color: var(--t1); font-size: 1.2rem;">Mengunggah File...</h3>
+                <p style="margin: 0; color: var(--t2); font-size: 0.9rem; line-height: 1.4;">Proses ini memakan waktu karena file sedang dikirim ke Google Drive dan disinkronisasi.</p>
+                <div style="margin-top: 15px; padding: 10px; background: #fff3cd; color: #856404; border-radius: 6px; font-size: 0.8rem; font-weight: 500;">
+                    <i class="fas fa-exclamation-triangle"></i> JANGAN REFRESH ATAU TUTUP HALAMAN INI
+                </div>
+            </div>
+        `;
+        Object.assign(overlay.style, {
+            position: 'fixed', top: '0', left: '0', width: '100vw', height: '100vh',
+            background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(3px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: '99999', opacity: '0', transition: 'opacity 0.3s', pointerEvents: 'none'
+        });
+        document.body.appendChild(overlay);
+    }
+    
+    if (show) {
+        overlay.style.display = 'flex';
+        // Allow time for display:flex to apply before setting opacity
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'all';
+        }, 10);
+    } else {
+        overlay.style.opacity = '0';
+        overlay.style.pointerEvents = 'none';
+        setTimeout(() => { overlay.style.display = 'none'; }, 300);
+    }
+};
+
+
+async function exportBanpt(type) {
+  let data = arsip.filter(a => getBanptCriteriaForUpload(a.bidang, a.jenis) > 0);
+
+  if (data.length === 0) {
+    toast('Tidak ada dokumen BAN-PT untuk diekspor!', 'warning');
+    return;
+  }
+
+  data.sort((a, b) => getBanptCriteriaForUpload(a.bidang, a.jenis) - getBanptCriteriaForUpload(b.bidang, b.jenis));
+  const dateStr = new Date().toLocaleDateString('id-ID');
+  const fileName = "Borang_BANPT_" + new Date().toISOString().slice(0,10);
+
+  const getLabel = (a) => getJenisLabel(a.bidang, a.jenis);
+  
+  if (type === 'excel') {
+    if (typeof XLSX === 'undefined') { toast('Library Excel belum dimuat!', 'error'); return; }
+    const excelData = data.map((a, index) => {
+      let k = getBanptCriteriaForUpload(a.bidang, a.jenis);
+      let kLabel = 'Kriteria ' + k;
+      if (a.bidang === 'banpt_spmi' || (a.jenis && a.jenis.startsWith('banpt_spmi'))) kLabel = 'SPMI K' + k;
+      if (a.bidang === 'banpt_led' || (a.jenis && a.jenis.startsWith('banpt_led'))) kLabel = 'LED K' + k;
+      return {
+        'No': index + 1,
+        'Kriteria': kLabel,
+        'Tanggal': a.tanggal,
+        'Judul Dokumen': a.judul,
+        'Bidang Terkait': (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
+        'Deskripsi Dokumen': getLabel(a),
+        'Link GDrive': a.gdriveLink || '-'
+      };
+    });
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'BAN-PT');
+    XLSX.writeFile(workbook, fileName + ".xlsx");
+    toast("Berhasil mengunduh Excel", 'success');
+  } 
+  else if (type === 'pdf') {
+    if (typeof window.jspdf === 'undefined') { toast('Library jsPDF belum dimuat', 'error'); return; }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'a4'); 
+    
+    doc.setFontSize(14); doc.setFont('helvetica', 'bold');
+    doc.text("DOKUMEN PENDUKUNG BORANG BAN-PT", 14, 20);
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    doc.text("AKADEMI AKUPUNKTUR SURABAYA - Dicetak pada: " + dateStr, 14, 26);
+    
+    let tableData = data.map((a, i) => {
+      let k = getBanptCriteriaForUpload(a.bidang, a.jenis);
+      let kLabel = 'K' + k;
+      if (a.bidang === 'banpt_spmi' || (a.jenis && a.jenis.startsWith('banpt_spmi'))) kLabel = 'SPMI K' + k;
+      if (a.bidang === 'banpt_led' || (a.jenis && a.jenis.startsWith('banpt_led'))) kLabel = 'LED K' + k;
+      return [
+        i+1,
+        kLabel,
+        a.judul,
+        (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
+        getLabel(a),
+        a.gdriveLink || '-'
+      ];
+    });
+
+    doc.autoTable({
+      startY: 32,
+      head: [['No', 'Krit', 'Judul Arsip', 'Bidang', 'Deskripsi Dokumen / Tabel', 'Tautan GDrive']],
+      body: tableData,
+      theme: 'grid',
+      headStyles: { fillColor: [59, 130, 246] },
+      columnStyles: {
+        0: {cellWidth: 10},
+        1: {cellWidth: 18},
+        2: {cellWidth: 50},
+        3: {cellWidth: 35},
+        4: {cellWidth: 97},
+        5: {cellWidth: 60}
+      },
+      styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak' }
+    });
+    
+    doc.save(fileName + ".pdf");
+    toast("Berhasil mengunduh PDF", 'success');
+  }
+  else if (type === 'word') {
+    let html = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>";
+    html += "<head><meta charset='utf-8'><title>Export HTML to Word</title></head><body>";
+    html += "<h2>DOKUMEN PENDUKUNG BORANG BAN-PT</h2>";
+    html += "<p>AKADEMI AKUPUNKTUR SURABAYA<br>Dicetak pada: " + dateStr + "</p>";
+    html += "<table border='1' style='border-collapse:collapse; width:100%; font-family:sans-serif; font-size:12px;'>";
+    html += "<tr style='background:#3b82f6; color:#fff;'><th>No</th><th>Kriteria</th><th>Judul Arsip</th><th>Bidang</th><th>Deskripsi Dokumen</th><th>Tautan GDrive</th></tr>";
+    
+    data.forEach((a, index) => {
+      let k = getBanptCriteriaForUpload(a.bidang, a.jenis);
+      let kLabel = 'Kriteria ' + k;
+      if (a.bidang === 'banpt_spmi' || (a.jenis && a.jenis.startsWith('banpt_spmi'))) kLabel = 'SPMI K' + k;
+      if (a.bidang === 'banpt_led' || (a.jenis && a.jenis.startsWith('banpt_led'))) kLabel = 'LED K' + k;
+      html += "<tr>";
+      html += "<td style='padding:4px;'>" + (index + 1) + "</td>";
+      html += "<td style='padding:4px;'>" + kLabel + "</td>";
+      html += "<td style='padding:4px;'>" + a.judul + "</td>";
+      html += "<td style='padding:4px;'>" + (DEPT[a.bidang]?.label || a.bidang).toUpperCase() + "</td>";
+      html += "<td style='padding:4px;'>" + getLabel(a) + "</td>";
+      html += "<td style='padding:4px;'>" + (a.gdriveLink ? `<a href="${a.gdriveLink}">${a.gdriveLink}</a>` : '-') + "</td>";
+      html += "</tr>";
+    });
+    html += "</table></body></html>";
+    
+    let blob = new Blob(['\xef\xbb\xbf', html], { type: 'application/msword' });
+    let url = URL.createObjectURL(blob);
+    let link = document.createElement('a');
+    link.href = url;
+    link.download = fileName + ".doc";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast("Berhasil mengunduh Word", 'success');
+  }
+}
