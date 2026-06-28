@@ -2643,7 +2643,7 @@ function initSidebarSubMenus() {
     const groups = DEPT_JENIS[k] || [];
     groups.forEach((group, gIdx) => {
       // Create a subtle header for the group
-      html += `<li class="sb-sub-header" style="pointer-events:none; padding: 10px 15px 5px 25px; color: rgba(255,255,255,0.4); font-size: 0.65rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">${group.group}</li>`;
+      html += `<li class="sb-sub-header" style="pointer-events:none; padding: 10px 15px 5px 25px; color: #94a3b8; font-size: 0.65rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">${group.group}</li>`;
       
       group.items.forEach(t => {
         html += `<li title="${t.label.replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${t.val}', '${k}', this)" id="li-jenis-${t.val}">
@@ -2657,7 +2657,7 @@ function initSidebarSubMenus() {
     // Add COMMON_JENIS if not already present in groups
     let hasUmum = groups.some(g => g.group === 'Arsip Umum' || g.group === 'Umum');
     if (!hasUmum && COMMON_JENIS.length > 0) {
-      html += `<li class="sb-sub-header" style="pointer-events:none; padding: 10px 15px 5px 25px; color: rgba(255,255,255,0.4); font-size: 0.65rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Arsip Umum</li>`;
+      html += `<li class="sb-sub-header" style="pointer-events:none; padding: 10px 15px 5px 25px; color: #94a3b8; font-size: 0.65rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Arsip Umum</li>`;
       COMMON_JENIS.forEach(t => {
         html += `<li title="${t.label.replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${t.val}', '${k}', this)" id="li-jenis-${t.val}">
           <i class="fas fa-file-lines" style="margin-left: 5px;"></i>
