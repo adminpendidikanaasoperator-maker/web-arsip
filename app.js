@@ -1879,6 +1879,53 @@ const STATUS_CFG = {
 
 /* ─── STATE ─── */
 let arsip    = [];
+let currentDeptSub = 'all';
+
+function renderDeptSubmenus() {
+  document.querySelectorAll('.sb-link[data-page="dept"]').forEach(link => {
+    const deptId = link.getAttribute('data-dept');
+    
+    let existingUl = link.nextElementSibling;
+    if (existingUl && existingUl.classList.contains('sb-sub-menu')) {
+      existingUl.remove();
+    }
+    
+    const ul = document.createElement('ul');
+    ul.className = 'sb-sub-menu';
+    ul.id = `submenu-${deptId}`;
+    ul.style.display = (currentPage === 'dept' && currentDept === deptId) ? 'block' : 'none';
+    
+    if (DEPT_JENIS[deptId]) {
+      let countAll = arsip.filter(a => a.bidang === deptId).length;
+      ul.innerHTML += `<li class="${currentDeptSub === 'all' && currentDept === deptId ? 'active' : ''}" onclick="switchDeptSub('all', this, '${deptId}')">
+        <i class="fas fa-folder-open"></i> Semua Arsip <span class="badge bg-p1" style="float:right; margin-top:2px;">${countAll}</span>
+      </li>`;
+      
+      DEPT_JENIS[deptId].forEach((group, index) => {
+        let count = arsip.filter(a => {
+           if(a.bidang !== deptId) return false;
+           return group.items.some(item => item.val === a.jenis);
+        }).length;
+        
+        let safeId = 'group_' + index;
+        let isActive = (currentDeptSub === safeId && currentDept === deptId) ? 'active' : '';
+        ul.innerHTML += `<li class="${isActive}" onclick="switchDeptSub('${safeId}', this, '${deptId}')">
+          <i class="fas fa-caret-right"></i> ${group.group} <span class="badge bg-p2" style="float:right; margin-top:2px;">${count}</span>
+        </li>`;
+      });
+    }
+    
+    link.parentNode.insertBefore(ul, link.nextSibling);
+  });
+}
+
+function switchDeptSub(subId, element, deptId) {
+  document.querySelectorAll(`#submenu-${deptId} li`).forEach(li => li.classList.remove('active'));
+  element.classList.add('active');
+  currentDeptSub = subId;
+  renderDeptPage(deptId);
+}
+
 let isLamptkesMode = false;
 let activity = [];
 let mahasiswa = [];
@@ -2002,6 +2049,7 @@ function processSnapshot(snapshot, collectionName) {
        }
        updateStats();
        
+       renderDeptSubmenus();
        // Re-render visible page
        const activePage = document.querySelector('.page.active');
        if(activePage) {
