@@ -14,24 +14,24 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 
-/* ═══════════════════════════════════════════════════════════════
-   SIMARSIP  —  app.js  v3.0
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   SIMARSIP  ÔÇö  app.js  v3.0
    Akademi Akupunktur Surabaya
-   ═══════════════════════════════════════════════════════════════ */
+   ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */
 'use strict';
 
-/* ─── STORAGE KEYS ─── */
+/* ÔöÇÔöÇÔöÇ STORAGE KEYS ÔöÇÔöÇÔöÇ */
 const SK  = 'aas_arsip_v3';
 const SAK = 'aas_activity_v3';
 const SK_MHS = 'aas_mhs_v3';
 const SK_SDM = 'aas_sdm_v3';
 
-/* ─── GOOGLE APPS SCRIPT URL ─── */
+/* ÔöÇÔöÇÔöÇ GOOGLE APPS SCRIPT URL ÔöÇÔöÇÔöÇ */
 // Paste URL "Web app" dari Google Apps Script di sini setelah melakukan Deployment.
 // Contoh: 'https://script.google.com/macros/s/AKfycby.../exec'
 const GAS_URL = 'https://script.google.com/macros/s/AKfycbyVPovygRvN1B-JMWtXpCxMvvI-f2qJHJqjm9ENsGO2-mAV711VWhBd7sLGEAUGtqGY/exec'; 
 
-/* ─── DEPARTEMEN ─── */
+/* ÔöÇÔöÇÔöÇ DEPARTEMEN ÔöÇÔöÇÔöÇ */
 const DEPT = {
   // Wadir I
   akademik: { label:'Bidang Administrasi Akademik & Pendidikan', icon:'fas fa-graduation-cap', color:'#3b82f6' },
@@ -57,7 +57,7 @@ const DEPT = {
   sdm: { label:'SDM & Kepegawaian', icon:'fas fa-user-tie', color:'#ec4899' }
 };
 
-/* ─── JENIS DOKUMEN PER BIDANG (tidak ada "Lainnya") ─── */
+/* ÔöÇÔöÇÔöÇ JENIS DOKUMEN PER BIDANG (tidak ada "Lainnya") ÔöÇÔöÇÔöÇ */
 
 
 const LAMPTKES_KRITERIA_JENIS = {
@@ -1877,21 +1877,45 @@ const STATUS_CFG = {
   arsip:    { cls:'s-arsip',    icon:'fa-box-archive',    label:'Diarsipkan' },
 };
 
-/* ─── STATE ─── */
+/* ÔöÇÔöÇÔöÇ STATE ÔöÇÔöÇÔöÇ */
 let arsip    = [];
 let currentDeptSub = 'all';
 
 function renderDeptSubmenus() {
-  // Hanya update badge/count di sub-menu yang sudah ada
-  Object.keys(DEPT).forEach(k => {
-    const ul = document.getElementById(`dept-${k}-sub-menu`);
-    if (!ul) return;
-    const count = arsip.filter(a => a.bidang === k).length;
-    const firstLi = ul.querySelector('li:first-child');
-    if (firstLi) {
-      const badge = firstLi.querySelector('.badge-count');
-      if (badge) badge.textContent = count;
+  document.querySelectorAll('.sb-link[data-page="dept"]').forEach(link => {
+    const deptId = link.getAttribute('data-dept');
+    
+    let existingUl = link.nextElementSibling;
+    if (existingUl && existingUl.classList.contains('sb-sub-menu')) {
+      existingUl.remove();
     }
+    
+    const ul = document.createElement('ul');
+    ul.className = 'sb-sub-menu';
+    ul.id = `submenu-${deptId}`;
+    ul.style.display = (currentPage === 'dept' && currentDept === deptId) ? 'block' : 'none';
+    
+    if (DEPT_JENIS[deptId]) {
+      let countAll = arsip.filter(a => a.bidang === deptId).length;
+      ul.innerHTML += `<li class="${currentDeptSub === 'all' && currentDept === deptId ? 'active' : ''}" onclick="switchDeptSub('all', this, '${deptId}')">
+        <i class="fas fa-folder-open"></i> Semua Arsip <span class="badge bg-p1" style="float:right; margin-top:2px;">${countAll}</span>
+      </li>`;
+      
+      DEPT_JENIS[deptId].forEach((group, index) => {
+        let count = arsip.filter(a => {
+           if(a.bidang !== deptId) return false;
+           return group.items.some(item => item.val === a.jenis);
+        }).length;
+        
+        let safeId = 'group_' + index;
+        let isActive = (currentDeptSub === safeId && currentDept === deptId) ? 'active' : '';
+        ul.innerHTML += `<li class="${isActive}" onclick="switchDeptSub('${safeId}', this, '${deptId}')">
+          <i class="fas fa-caret-right"></i> ${group.group} <span class="badge bg-p2" style="float:right; margin-top:2px;">${count}</span>
+        </li>`;
+      });
+    }
+    
+    link.parentNode.insertBefore(ul, link.nextSibling);
   });
 }
 
@@ -1913,12 +1937,11 @@ let currentAY   = '';
 let pendingPdfId = '';
 let cLine, cYearlyLine, cDoughnut, cStatus, cDeptBar, cDeptDonut, cAnBar, cAnYear;
 
-/* ════════════════════════════════════════════════════════════
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
    INIT
-   ════════════════════════════════════════════════════════════ */
+   ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */
 document.addEventListener('DOMContentLoaded', async () => {
   currentAY = getAY(new Date().toISOString().slice(0,10));
-  populateAYearSelect();
   renderSidebarDate();
   setupNav();
   setupHamburger();
@@ -1929,14 +1952,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   initSidebarSubMenus();
   await loadData();
   isAppLoaded = true;
+  populateAYearSelect();
   updateBadges();
-  renderDeptSubmenus();
   generateBanptReport();
   generateLamptkesReport();
   showPage('dashboard');
 });
 
-/* ─── ACADEMIC YEAR ─── */
+/* ÔöÇÔöÇÔöÇ ACADEMIC YEAR ÔöÇÔöÇÔöÇ */
 function getAY(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr + 'T00:00:00');
@@ -1996,7 +2019,7 @@ function onAYearChange() {
   else if (currentPage==='analytics') renderAnalytics();
 }
 
-/* ─── DATA ─── */
+/* ÔöÇÔöÇÔöÇ DATA ÔöÇÔöÇÔöÇ */
 function checkKadaluarsa(tanggal) {
   if(!tanggal) return 'aman';
   const d = new Date(tanggal);
@@ -2022,18 +2045,16 @@ function processSnapshot(snapshot, collectionName) {
      if(ping) { ping.currentTime = 0; ping.play().catch(e=>console.log(e)); }
      
      if (isAppLoaded) {
-       populateAYearSelect();
        updateBadges();
        generateBanptReport();
        generateLamptkesReport();
-       renderDeptSubmenus();
-       
+       // Re-render visible page
        const activePage = document.querySelector('.page.active');
        if(activePage) {
           const id = activePage.id;
           if(id === 'page-dashboard') renderDashboard();
           else if(id === 'page-analytics') renderAnalytics();
-          else if(id === 'page-dept') renderDeptPage(currentDept);
+          else if(id === 'page-dept') renderDeptPage(document.getElementById('deptBannerName').dataset.dept);
           else if(id === 'page-lamptkes') generateLamptkesReport();
           else if(id === 'page-mahasiswa') renderMahasiswaPage();
           else if(id === 'page-sdm') renderSdmPage();
@@ -2199,7 +2220,7 @@ function sampleData() {
   ];
 }
 
-/* ─── HELPERS ─── */
+/* ÔöÇÔöÇÔöÇ HELPERS ÔöÇÔöÇÔöÇ */
 function getJenisLabel(bidang, jenis) {
   const list = [...(DEPT_JENIS[bidang]||[]), ...COMMON_JENIS];
   return list.find(t=>t.val===jenis)?.label || jenis.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
@@ -2207,7 +2228,7 @@ function getJenisLabel(bidang, jenis) {
 function getFormatCfg(fmt) { return FORMAT_MAP[fmt] || FORMAT_MAP.pdf; }
 
 function fmtBadge(a) {
-  if (!a.gdriveLink) return `<span class="no-file">—</span>`;
+  if (!a.gdriveLink) return `<span class="no-file">ÔÇö</span>`;
   if (a.gdriveLink === 'UPLOADING') return `<span style="color:#f59e0b;font-size:0.85rem;white-space:nowrap"><i class="fas fa-spinner fa-spin"></i> Mengunggah...</span>`;
   const f = getFormatCfg(a.format);
   return `<a href="${esc(a.gdriveLink)}" target="_blank" rel="noopener noreferrer" class="fmt-btn fmt-${a.format||'pdf'}" title="Buka Dokumen: ${esc(a.fileName||'')}"><i class="${f.icon}"></i> ${f.label}</a>`;
@@ -2218,45 +2239,39 @@ function logGDriveOpen(id, e) {
 }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmtDate(d) { if(!d)return'—'; return new Date(d+'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
-function fmtDateTime(d) { if(!d)return'—'; return new Date(d).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function fmtDate(d) { if(!d)return'ÔÇö'; return new Date(d+'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
+function fmtDateTime(d) { if(!d)return'ÔÇö'; return new Date(d).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
 function statusBadge(status) { const c=STATUS_CFG[status]||STATUS_CFG.arsip; return `<span class="s-badge ${c.cls}"><i class="fas ${c.icon}"></i>${c.label}</span>`; }
 function now() { return new Date().toISOString().slice(0,10); }
 
-/* ─── NAVIGATION ─── */
+/* ÔöÇÔöÇÔöÇ NAVIGATION ÔöÇÔöÇÔöÇ */
 function setupNav() {
   document.querySelectorAll('.sb-link').forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault();
       const page = link.dataset.page, dept = link.dataset.dept||'';
       
-      // Klik bidang yang sama: toggle sub-menu
       if (page === 'dept' && currentDept === dept && currentPage === 'dept') {
         const menu = document.getElementById(`dept-${dept}-sub-menu`);
         if (menu) menu.style.display = (menu.style.display === 'none') ? 'flex' : 'none';
         return;
       }
       
-      // Klik BAN-PT / LAM-PTKes yang sama: toggle sub-menu
       if ((page === 'banpt' || page === 'lamptkes') && currentPage === page) {
         const menu = document.getElementById(`${page}-sub-menu`);
         if (menu) menu.style.display = (menu.style.display === 'none') ? 'flex' : 'none';
         return;
       }
 
-      setActiveNav(link);
-      currentDept = dept;
+      setActiveNav(link); currentDept = dept;
       showPage(page);
-      
-      // Otomatis buka sub-menu untuk dept
+      // Otomatis buka sub-menu dept yang dipilih, tutup yang lain
       if (page === 'dept' && dept) {
-        // Tutup semua sub-menu dept lain
         Object.keys(DEPT).forEach(k => {
           const m = document.getElementById(`dept-${k}-sub-menu`);
           if (m) m.style.display = (k === dept) ? 'flex' : 'none';
         });
       }
-      
       if (window.innerWidth<=768) closeSidebar();
     });
   });
@@ -2309,7 +2324,7 @@ function updateBadges() {
   const bSdm=document.getElementById('badge-sdm-induk'); if(bSdm) bSdm.textContent=sdm.length;
 }
 
-/* ═════ DASHBOARD ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DASHBOARD ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderDashboard() {
   const data=arsip.filter(a=>!currentAY||a.ay===currentAY);
   initDashCharts(data); renderRecentList(data);
@@ -2324,7 +2339,7 @@ function renderRecentList(data) {
       <div class="ri-icon" style="background:${d.color||'#888'}18;color:${d.color||'#888'}"><i class="${d.icon||'fas fa-file'}"></i></div>
       <div class="ri-info">
         <div class="ri-title">${esc(a.judul)}</div>
-        <div class="ri-meta">${d.label||'—'} · ${getJenisLabel(a.bidang,a.jenis)} · ${fmtDate(a.tanggal)} ${a.gdriveLink?`<i class="fab fa-google-drive" style="color:#4285f4"></i>`:''}</div>
+        <div class="ri-meta">${d.label||'ÔÇö'} ┬À ${getJenisLabel(a.bidang,a.jenis)} ┬À ${fmtDate(a.tanggal)} ${a.gdriveLink?`<i class="fab fa-google-drive" style="color:#4285f4"></i>`:''}</div>
       </div>
     </div>`;
   }).join('');
@@ -2386,7 +2401,7 @@ function initDashCharts(data) {
   if(ctxS){const sL=['Aktif','Diproses','Selesai','Diarsipkan'],sK=['aktif','diproses','selesai','arsip'],sV=sK.map(s=>data.filter(a=>a.status===s).length),sC=['#22c55e','#f59e0b','#3b82f6','#94a3b8'];cStatus=new Chart(ctxS,{type:'doughnut',data:{labels:sL,datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]},options:chartOpts({plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},cutout:'65%'})})}
 }
 
-/* ═════ ARSIP TABLE ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ ARSIP TABLE ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function onFilterDeptChange() {
   const dept=document.getElementById('filterDept').value;
   populateFilterJenis(dept,'filterJenis');
@@ -2423,7 +2438,7 @@ function renderArsipTable() {
   if(!tbody)return;
   if(!data.length){tbody.innerHTML='';empty?.classList.remove('hidden');if(info)info.textContent='Tidak ada arsip ditemukan.';return;}
   empty?.classList.add('hidden');
-  if(info)info.textContent=`${data.length} dari ${arsip.filter(a=>!currentAY||a.ay===currentAY).length} arsip · TA ${currentAY}`;
+  if(info)info.textContent=`${data.length} dari ${arsip.filter(a=>!currentAY||a.ay===currentAY).length} arsip ┬À TA ${currentAY}`;
 
   tbody.innerHTML=data.map((a,i)=>{
     const d=DEPT[a.bidang]||{label:a.bidang,color:'#888',icon:'fas fa-file'};
@@ -2434,7 +2449,7 @@ function renderArsipTable() {
       <td><span class="d-badge" style="background:${d.color}18;color:${d.color}; white-space: normal !important; text-align: left; line-height: 1.2; min-width: 120px; display: inline-block;"><i class="${d.icon}"></i>${d.label}</span></td>
       <td style="font-size:.78rem;color:var(--t2);"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/"/g, '&quot;')}" style="white-space:normal; line-height:1.3; word-break:normal; overflow-wrap:break-word; font-size:0.72rem;">${getJenisLabel(a.bidang,a.jenis)}</div></td>
       <td style="font-size:.78rem;">${fmtDate(a.tanggal)}</td>
-      <td><span class="td-ta" style="white-space:normal;">${a.ay||'—'}</span></td>
+      <td><span class="td-ta" style="white-space:normal;">${a.ay||'ÔÇö'}</span></td>
       <td>${statusBadge(a.status)}</td>
       <td>${fmtBadge(a)}</td>
       <td><div class="act-group">
@@ -2452,7 +2467,7 @@ function clearFilters() {
   renderArsipTable();
 }
 
-/* ═════ DEPT PAGE ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DEPT PAGE ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderDeptPage(dept) {
   if(!dept)return;
   const d=DEPT[dept];
@@ -2461,7 +2476,7 @@ function renderDeptPage(dept) {
   document.getElementById('deptBanner').style.cssText=`--dept-bg:${d.color}18;--dept-color:${d.color};background:linear-gradient(135deg,${d.color}12,transparent)`;
   document.getElementById('deptBannerIcon').innerHTML=`<i class="${d.icon}"></i>`;
   document.getElementById('deptBannerName').textContent=d.label;
-  document.getElementById('deptBannerSub').textContent=`Manajemen arsip bidang ${d.label} · TA ${currentAY}`;
+  document.getElementById('deptBannerSub').textContent=`Manajemen arsip bidang ${d.label} ┬À TA ${currentAY}`;
 
   document.getElementById('deptStatRow').innerHTML=[
     {lb:'Total Arsip',val:all.length,ic:'archive',c:d.color},
@@ -2670,7 +2685,7 @@ function renderDeptTable() {
   }
 }
 
-/* ═════ DEPT CHARTS ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DEPT CHARTS ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function initDeptCharts(dept,data,color) {
   const months=getAYMonths(currentAY),labels=months.map(getMonthLabel);
   const counts=months.map(m=>data.filter(a=>a.tanggal?.startsWith(m)).length);
@@ -2682,7 +2697,7 @@ function initDeptCharts(dept,data,color) {
   if(ctxD){const sK=['aktif','diproses','selesai','arsip'],sL=['Aktif','Diproses','Selesai','Diarsipkan'],sV=sK.map(s=>data.filter(a=>a.status===s).length),sC=['#22c55e','#f59e0b','#3b82f6','#94a3b8'];cDeptDonut=new Chart(ctxD,{type:'doughnut',data:{labels:sL,datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]},options:chartOpts({plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},cutout:'65%'})})}
 }
 
-/* ═════ ANALYTICS ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ ANALYTICS ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderAnalytics() {
   document.getElementById('anSub1').textContent=`TA ${currentAY}`;
   destroyChart(cAnBar);
@@ -2711,7 +2726,7 @@ function renderDeptMatrix() {
   }).join('');
 }
 
-/* ─── CHART HELPER ─── */
+/* ÔöÇÔöÇÔöÇ CHART HELPER ÔöÇÔöÇÔöÇ */
 function destroyChart(c){try{c?.destroy()}catch{}}
 function chartOpts(extra={}) {
   return{responsive:true,maintainAspectRatio:true,animation:{duration:600,easing:'easeOutCubic'},
@@ -2719,7 +2734,7 @@ function chartOpts(extra={}) {
     scales:extra.scales,...Object.fromEntries(Object.entries(extra).filter(([k])=>!['plugins','scales'].includes(k)))};
 }
 
-/* ═════ FORM MODAL ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ FORM MODAL ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function openForm(prefillDept) {
     document.getElementById('arsipForm').reset();
     document.getElementById('editId').value='';
@@ -3128,7 +3143,7 @@ async function deleteArsip(id) {
   else if(currentPage==='analytics')renderAnalytics();
 }
 
-/* ═════ DETAIL MODAL ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DETAIL MODAL ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function viewDetail(id) {
   const a=arsip.find(x=>x.id===id); if(!a)return;
   const d=DEPT[a.bidang]||{};
@@ -3140,9 +3155,9 @@ function viewDetail(id) {
       <div class="detail-field" style="grid-column:1/-1"><label>Judul / Perihal</label><span style="font-size:.98rem;font-weight:700">${esc(a.judul)}</span></div>
       <div class="detail-field"><label>Bidang</label><span class="d-badge" style="background:${d.color||'#888'}18;color:${d.color||'#888'}"><i class="${d.icon||'fas fa-file'}"></i>${d.label||a.bidang}</span></div>
       <div class="detail-field"><label>Jenis Dokumen</label><span>${getJenisLabel(a.bidang,a.jenis)}</span></div>
-      <div class="detail-field"><label>Pengirim / Pembuat</label><span>${esc(a.pengirim||'—')}</span></div>
+      <div class="detail-field"><label>Pengirim / Pembuat</label><span>${esc(a.pengirim||'ÔÇö')}</span></div>
       <div class="detail-field"><label>Status</label>${statusBadge(a.status)}</div>
-      <div class="detail-field"><label>Tahun Akademik</label><span class="td-ta">${a.ay||'—'}</span></div>
+      <div class="detail-field"><label>Tahun Akademik</label><span class="td-ta">${a.ay||'ÔÇö'}</span></div>
       <div class="detail-field" style="grid-column:1/-1">
         <label>Dokumen Google Drive</label>
         ${a.gdriveLink && a.gdriveLink !== 'UPLOADING'
@@ -3158,7 +3173,7 @@ function viewDetail(id) {
             </div>
             ${a.fileName?`<div style="margin-top:6px;font-size:.75rem;color:var(--t3)"><i class="${f.icon}" style="color:${f.color}"></i> ${esc(a.fileName)}</div>`:''}
           `
-          :`<span style="color:var(--t3);font-size:.84rem">Belum ada file dilampirkan — Edit arsip untuk menambahkan link Google Drive.</span>`}
+          :`<span style="color:var(--t3);font-size:.84rem">Belum ada file dilampirkan ÔÇö Edit arsip untuk menambahkan link Google Drive.</span>`}
       </div>
     </div>
     ${a.keterangan?`<div><label style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3)">Keterangan</label><div class="detail-keterangan">${esc(a.keterangan)}</div></div>`:''}
@@ -3171,10 +3186,10 @@ function viewDetail(id) {
 function closeDetail(){ document.getElementById('overlayDetail').classList.remove('open'); }
 function closeDetailOut(e){ if(e.target===document.getElementById('overlayDetail'))closeDetail(); }
 
-/* ═════ DOCUMENT VIEWER (GDrive Preview) ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DOCUMENT VIEWER (GDrive Preview) ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function getGDriveEmbedUrl(url) {
   if(!url)return null;
-  // https://drive.google.com/file/d/ID/view → /preview
+  // https://drive.google.com/file/d/ID/view ÔåÆ /preview
   const m1=url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
   if(m1)return`https://drive.google.com/file/d/${m1[1]}/preview`;
   // ?id=ID
@@ -3212,7 +3227,7 @@ function openInGDrive() {
   else toast('Tidak ada link Google Drive.','error');
 }
 
-/* ═════ ACTIVITY ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ ACTIVITY ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function log(type,text){
   const item = { id: genId(), type, text, time: new Date().toISOString() };
   activity.unshift(item);
@@ -3246,7 +3261,7 @@ async function clearActivity(){
   }
 }
 
-/* ═════ EXPORT ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ EXPORT ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function toggleExportMenu(){ document.getElementById('exportMenu').classList.toggle('open'); }
 function getFilteredData(){ return arsip.filter(a=>!currentAY||a.ay===currentAY).sort((a,b)=>new Date(b.tanggal)-new Date(a.tanggal)); }
 
@@ -3260,7 +3275,7 @@ function exportJSON() {
   log('edit',`Backup JSON: ${fn}`);save();toast('Backup JSON berhasil diunduh!','success');
 }
 
-/* ─── TOAST ─── */
+/* ÔöÇÔöÇÔöÇ TOAST ÔöÇÔöÇÔöÇ */
 function toast(msg,type='success') {
   const stack=document.getElementById('toastStack'),el=document.createElement('div');
   el.className=`toast-item ${type}`;
@@ -3269,7 +3284,7 @@ function toast(msg,type='success') {
   setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(20px)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300);},3200);
 }
 
-/* ═════ MASTER DATA MAHASISWA ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ MASTER DATA MAHASISWA ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderMahasiswaPage() {
   const grid=document.getElementById('mhsGrid'), empty=document.getElementById('mhsEmpty');
   const q=document.getElementById('mhsSearch').value.toLowerCase();
@@ -3450,7 +3465,7 @@ async function deleteMhs(id) {
   mahasiswa=mahasiswa.filter(x=>x.id!==id); save(); renderMahasiswaPage(); updateBadges(); toast('Mahasiswa dihapus','success');
 }
 
-/* ═════ MASTER DATA SDM ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ MASTER DATA SDM ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderSdmPage() {
   const grid=document.getElementById('sdmGrid'), empty=document.getElementById('sdmEmpty');
   const q=document.getElementById('sdmSearch').value.toLowerCase();
@@ -3558,7 +3573,7 @@ async function deleteSdm(id) {
   sdm=sdm.filter(x=>x.id!==id); save(); renderSdmPage(); updateBadges(); toast('SDM dihapus','success');
 }
 
-/* ═════ HELPER MASTER DATA ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ HELPER MASTER DATA ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function getPersonColor(status) {
   if(['aktif'].includes(status)) return '#22c55e';
   if(['lulus','tugas_belajar'].includes(status)) return '#3b82f6';
@@ -3582,7 +3597,7 @@ function viewPersonDetail(id, type) {
       <div class="profile-img-wrap" style="width:120px;height:120px;margin:0"><img src="${convertGDriveImage(m.foto)}" class="profile-img" onerror="this.outerHTML='<i class=\\'fas fa-user profile-img-fallback\\' style=\\'font-size:3.5rem\\'></i>'"/></div>
       <div>
         <div style="font-weight:700;font-size:1.1rem;color:var(--t1)">${esc(m.nama)}</div>
-        <div style="font-size:.85rem;color:var(--t2)">${type==='mhs' ? 'NIM: '+esc(m.nim) + ' &bull; Semester ' + esc(m.semester||'—') : 'NIDN/NIK: '+esc(m.nik)}</div>
+        <div style="font-size:.85rem;color:var(--t2)">${type==='mhs' ? 'NIM: '+esc(m.nim) + ' &bull; Semester ' + esc(m.semester||'ÔÇö') : 'NIDN/NIK: '+esc(m.nik)}</div>
         <div style="font-size:.85rem;color:var(--t2)">${type==='mhs' ? 'Tgl Masuk: '+fmtDate(m.angkatan) : esc(m.jabatan)}</div>
       </div>
     </div>
@@ -3590,19 +3605,19 @@ function viewPersonDetail(id, type) {
     <div style="margin-bottom:10px;font-weight:600;color:var(--t1)"><i class="fas fa-address-book" style="color:var(--primary);margin-right:6px"></i> Biodata Lengkap</div>
     <table style="width:100%;border-collapse:collapse;font-size:.85rem;margin-bottom:20px">
       <tbody>
-        <tr><td style="padding:6px 0;width:35%;color:var(--t3)">Tempat, Tanggal Lahir</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.tempatLahir||'—')}, ${fmtDate(m.tanggalLahir)}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3)">Jenis Kelamin</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.jk||'—')}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3)">Agama</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.agama||'—')}</td></tr>
-        ${type==='mhs' ? `<tr><td style="padding:6px 0;color:var(--t3)">Nama Orang Tua</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.namaOrtu||'—')}</td></tr>` : ''}
-        <tr><td style="padding:6px 0;color:var(--t3)">No. Handphone (WA)</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.noHp||'—')}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3)">Email</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.email||'—')}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3);vertical-align:top">Alamat Lengkap</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.alamat||'—')}</td></tr>
+        <tr><td style="padding:6px 0;width:35%;color:var(--t3)">Tempat, Tanggal Lahir</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.tempatLahir||'ÔÇö')}, ${fmtDate(m.tanggalLahir)}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3)">Jenis Kelamin</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.jk||'ÔÇö')}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3)">Agama</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.agama||'ÔÇö')}</td></tr>
+        ${type==='mhs' ? `<tr><td style="padding:6px 0;color:var(--t3)">Nama Orang Tua</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.namaOrtu||'ÔÇö')}</td></tr>` : ''}
+        <tr><td style="padding:6px 0;color:var(--t3)">No. Handphone (WA)</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.noHp||'ÔÇö')}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3)">Email</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.email||'ÔÇö')}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3);vertical-align:top">Alamat Lengkap</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.alamat||'ÔÇö')}</td></tr>
       </tbody>
     </table>
     
     <div style="margin-bottom:10px;font-weight:600;color:var(--t1)"><i class="fas fa-notes-medical" style="color:#22c55e;margin-right:6px"></i> Jaminan Kesehatan</div>
     <div style="background:var(--bg3);padding:12px;border-radius:8px;font-size:.85rem;color:var(--t1);margin-bottom:20px;border:1px solid var(--b1)">
-      <span style="color:var(--t3)">No. BPJS / Jaminan:</span> <span style="font-weight:600">${esc(m.noBpjs||'—')}</span>
+      <span style="color:var(--t3)">No. BPJS / Jaminan:</span> <span style="font-weight:600">${esc(m.noBpjs||'ÔÇö')}</span>
     </div>
     
     <div style="margin-bottom:10px;font-weight:600;color:var(--t1)"><i class="fas fa-graduation-cap" style="color:var(--primary);margin-right:6px"></i> Catatan / Riwayat</div>
@@ -3654,7 +3669,7 @@ function previewImage(event, previewId, hiddenId) {
   reader.readAsDataURL(file);
 }
 
-/* ═════ AKREDITASI (BAN-PT & LAM-PTKes) ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ AKREDITASI (BAN-PT & LAM-PTKes) ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 
 // ==================== BAN-PT ====================
 let currentBanptTab = 1;

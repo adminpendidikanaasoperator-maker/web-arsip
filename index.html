@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -16,11 +16,12 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+  <script src="app.js?v=164" defer></script>
   <link rel="stylesheet" href="style.css?v=155" />
 </head>
 <body>
 
-<!-- ═══ SIDEBAR ═══ -->
+<!-- ÔòÉÔòÉÔòÉ SIDEBAR ÔòÉÔòÉÔòÉ -->
 <aside class="sidebar" id="sidebar">
   <div class="sb-brand">
     <div class="sb-logo-wrap"><img src="logo.jpg" alt="Logo AAS" class="sb-logo" /></div>
@@ -95,7 +96,7 @@
   <div class="sb-foot"><div id="sidebarDate" class="sb-date"></div></div>
 </aside>
 
-<!-- ═══ MAIN ═══ -->
+<!-- ÔòÉÔòÉÔòÉ MAIN ÔòÉÔòÉÔòÉ -->
 <div class="main" id="mainWrap">
 
   <!-- TOPBAR -->
@@ -126,11 +127,11 @@
     </div>
   </header>
 
-  <!-- ─── DASHBOARD ─── -->
+  <!-- ÔöÇÔöÇÔöÇ DASHBOARD ÔöÇÔöÇÔöÇ -->
   <main class="page" id="page-dashboard">
     <div class="portal-header">
       <h1>Portal SIMARSIP Akademik</h1>
-      <p>Sistem Informasi Manajemen Arsip Terpadu — Kelola dan pantau seluruh dokumen akademik, keuangan, dan data induk dalam satu platform tersentralisasi.</p>
+      <p>Sistem Informasi Manajemen Arsip Terpadu ÔÇö Kelola dan pantau seluruh dokumen akademik, keuangan, dan data induk dalam satu platform tersentralisasi.</p>
     </div>
     
 
@@ -168,7 +169,7 @@
     </div>
   </main>
 
-  <!-- ─── SEMUA ARSIP ─── -->
+  <!-- ÔöÇÔöÇÔöÇ SEMUA ARSIP ÔöÇÔöÇÔöÇ -->
   <main class="page hidden" id="page-arsip">
     <div class="filter-strip">
       <div class="search-field">
@@ -239,7 +240,7 @@
     </div>
   </main>
 
-  <!-- ─── PER BIDANG ─── -->
+  <!-- ÔöÇÔöÇÔöÇ PER BIDANG ÔöÇÔöÇÔöÇ -->
   <main class="page hidden" id="page-dept">
     <div class="dept-banner" id="deptBanner">
       <div class="dept-banner-icon" id="deptBannerIcon"></div>
@@ -345,7 +346,7 @@
     </div>
   </main>
 
-  <!-- ─── ANALITIK ─── -->
+  <!-- ÔöÇÔöÇÔöÇ ANALITIK ÔöÇÔöÇÔöÇ -->
   <main class="page hidden" id="page-analytics">
     <div class="page-section-header">
       <h2><i class="fas fa-chart-line"></i> Analitik & Perbandingan</h2>
@@ -367,10 +368,10 @@
     </div>
   </main>
 
-  <!-- ─── DATA MAHASISWA ─── -->
+  <!-- ÔöÇÔöÇÔöÇ DATA MAHASISWA ÔöÇÔöÇÔöÇ -->
 
 
-  <!-- ─── BORANG BAN-PT ─── -->
+  <!-- ÔöÇÔöÇÔöÇ BORANG BAN-PT ÔöÇÔöÇÔöÇ -->
   <main class="page hidden" id="page-banpt">
     <div class="dept-banner banpt-banner">
       <div class="dept-banner-icon"><i class="fas fa-building-columns"></i></div>
@@ -390,7 +391,7 @@
     </div>
   </main>
 
-  <!-- ─── BORANG LAM-PTKes ─── -->
+  <!-- ÔöÇÔöÇÔöÇ BORANG LAM-PTKes ÔöÇÔöÇÔöÇ -->
   <main class="page hidden" id="page-lamptkes">
     <div class="dept-banner lamptkes-banner">
       <div class="dept-banner-icon"><i class="fas fa-notes-medical"></i></div>
@@ -412,7 +413,7 @@
     </div>
   </main>
 
-  <!-- ─── AKTIVITAS ─── -->
+  <!-- ÔöÇÔöÇÔöÇ AKTIVITAS ÔöÇÔöÇÔöÇ -->
   <main class="page hidden" id="page-aktivitas">
     <div class="page-section-header row">
       <div>
@@ -426,7 +427,7 @@
 
 </div><!-- end main -->
 
-<!-- ═══ MODAL: FORM ARSIP ═══ -->
+<!-- ÔòÉÔòÉÔòÉ MODAL: FORM ARSIP ÔòÉÔòÉÔòÉ -->
 <div class="overlay" id="overlayForm" onclick="closeFormOut(event)">
   <div class="modal-box" id="formBox">
     <div class="modal-head">
@@ -492,7 +493,7 @@
           </div>
         </div>
 
-        <!-- ── DYNAMIC METADATA FIELDS ── -->
+        <!-- ÔöÇÔöÇ DYNAMIC METADATA FIELDS ÔöÇÔöÇ -->
         <div id="dynamicFieldsContainer"></div>
 
         <div class="form-row-2">
@@ -517,7 +518,7 @@
           </select>
         </div>
 
-        <!-- ── DOKUMEN GOOGLE DRIVE ── -->
+        <!-- ÔöÇÔöÇ DOKUMEN GOOGLE DRIVE ÔöÇÔöÇ -->
         <div class="gdrive-section">
           <div class="gdrive-section-title">
             <i class="fab fa-google-drive" style="color:#4285f4"></i>
@@ -528,10 +529,10 @@
             <div class="form-field">
               <label>Format Dokumen</label>
               <select id="fFormat">
-                <option value="pdf">📄 PDF</option>
-                <option value="excel">📊 Excel (.xlsx/.xls)</option>
-                <option value="word">📝 Word (.docx/.doc)</option>
-                <option value="image">🖼️ Gambar / Foto</option>
+                <option value="pdf">­ƒôä PDF</option>
+                <option value="excel">­ƒôè Excel (.xlsx/.xls)</option>
+                <option value="word">­ƒôØ Word (.docx/.doc)</option>
+                <option value="image">­ƒû╝´©Å Gambar / Foto</option>
               </select>
             </div>
             <div class="form-field">
@@ -579,7 +580,7 @@
   </div>
 </div>
 
-<!-- ═══ MODAL: DETAIL ═══ -->
+<!-- ÔòÉÔòÉÔòÉ MODAL: DETAIL ÔòÉÔòÉÔòÉ -->
 <div class="overlay" id="overlayDetail" onclick="closeDetailOut(event)">
   <div class="modal-box detail-box" id="detailBox">
     <div class="modal-head">
@@ -590,7 +591,7 @@
   </div>
 </div>
 
-<!-- ═══ MODAL: PRATINJAU DOKUMEN ═══ -->
+<!-- ÔòÉÔòÉÔòÉ MODAL: PRATINJAU DOKUMEN ÔòÉÔòÉÔòÉ -->
 <div class="overlay pdf-overlay" id="overlayPDF">
   <div class="pdf-box">
     <div class="pdf-head">
@@ -614,7 +615,7 @@
   </div>
 </div>
 
-<!-- ═══ MODAL: FORM MAHASISWA ═══ -->
+<!-- ÔòÉÔòÉÔòÉ MODAL: FORM MAHASISWA ÔòÉÔòÉÔòÉ -->
 <div class="overlay" id="overlayMhsForm" onclick="if(event.target===this)closeMhsForm()">
   <div class="modal-box">
     <div class="modal-head">
@@ -753,7 +754,7 @@
   </div>
 </div>
 
-<!-- ═══ MODAL: FORM SDM ═══ -->
+<!-- ÔòÉÔòÉÔòÉ MODAL: FORM SDM ÔòÉÔòÉÔòÉ -->
 <div class="overlay" id="overlaySdmForm" onclick="if(event.target===this)closeSdmForm()">
   <div class="modal-box">
     <div class="modal-head">
@@ -886,7 +887,7 @@
   </div>
 </div>
 
-<!-- ═══ MODAL: DETAIL PERSON (MHS / SDM) ═══ -->
+<!-- ÔòÉÔòÉÔòÉ MODAL: DETAIL PERSON (MHS / SDM) ÔòÉÔòÉÔòÉ -->
 <div class="overlay" id="overlayPerson" onclick="if(event.target===this)closePersonDetail()">
   <div class="modal-box detail-box">
     <div class="modal-head">
@@ -905,7 +906,7 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="app.js?v=163"></script>
+<script src="app.js?v=164"></script>
 
 <!-- Notification Sounds -->
 <audio id="soundPing" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
