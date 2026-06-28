@@ -1740,10 +1740,10 @@ function populateAYearSelect() {
   
   const yrs = allAYears();
   
-  const globalHtml = '<option value="">Semua Tahun</option>' + yrs.map(y=>`<option value="${y}"${y===currentAY?' selected':''}>${y}</option>`).join('');
+  const globalHtml = '<option value="">Semua</option>' + yrs.map(y=>`<option value="${y}"${y===currentAY?' selected':''}>${y}</option>`).join('');
   if (sel) sel.innerHTML = globalHtml;
   
-  const filterHtml = '<option value="">Semua Tahun</option>' + yrs.map(y=>`<option value="${y}">${y}</option>`).join('');
+  const filterHtml = '<option value="">Semua</option>' + yrs.map(y=>`<option value="${y}">${y}</option>`).join('');
   if (mhsAy && !mhsAy.value) mhsAy.innerHTML = filterHtml;
   if (sdmAy && !sdmAy.value) sdmAy.innerHTML = filterHtml;
 }
@@ -1776,7 +1776,10 @@ function processSnapshot(snapshot, collectionName) {
   const data = snapshot.docs.map(d => d.data());
   
   if (collectionName === 'arsip') { 
+      // Force recalculate ay from tanggal so old database strings are ignored
+      data.forEach(a => { a.ay = getAY(a.tanggal); });
       arsip = data; 
+ 
       
       // MIGRATION SCRIPT FOR ALL K1-K8
       if (!hasMigratedK9 && typeof db !== 'undefined') {
