@@ -1212,21 +1212,14 @@ function openForm(prefillDept) {
       document.getElementById('formTitle').innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload Dokumen LAM-PTKes';
       bidangField.parentElement.style.display = 'block';
       bidangField.required = true;
-      if(bidangLabel) bidangLabel.innerHTML = 'Kriteria / SPMI <span class="req">*</span>';
+      if(bidangLabel) bidangLabel.innerHTML = 'Pilih Kategori <span class="req">*</span>';
       
       bidangField.innerHTML = `
-        <option value="">-- Pilih Kriteria / SPMI --</option>
-        <option value="lamptkes_k1">Kriteria 1. Visi, Misi, Tujuan, dan Strategi</option>
-        <option value="lamptkes_k2">Kriteria 2. Kurikulum</option>
-        <option value="lamptkes_k3">Kriteria 3. Penilaian</option>
-        <option value="lamptkes_k4">Kriteria 4. Mahasiswa</option>
-        <option value="lamptkes_k5">Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, PkM</option>
-        <option value="lamptkes_k6">Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan</option>
-        <option value="lamptkes_k7">Kriteria 7. Penjaminan Mutu</option>
-        <option value="lamptkes_k8">Kriteria 8. Tata Kelola dan Administrasi</option>
-        <option value="lamptkes_spmi">SPMI Internal</option>
+        <option value="">-- Pilih LED / SPMI --</option>
+        <option value="lamptkes_led">Laporan Evaluasi Diri (LED)</option>
+        <option value="lamptkes_spmi">Sistem Penjaminan Mutu Internal (SPMI)</option>
       `;
-      document.getElementById('fJenisLabelText').textContent = '-- Pilih Kriteria / SPMI dulu --';
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih Kategori dulu --';
       document.getElementById('fJenisOptions').innerHTML = '';
       bidangField.value = '';
     } else {
@@ -1287,7 +1280,29 @@ function onBidangChange() {
     
     let types = [];
     if (isLamptkesMode) {
-      types = LAMPTKES_KRITERIA_JENIS[bidang] || [];
+      if (bidang === 'lamptkes_led') {
+         types = [
+            {val: 'led_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'led_k2', label: 'Kriteria 2. Kurikulum'},
+            {val: 'led_k3', label: 'Kriteria 3. Penilaian'},
+            {val: 'led_k4', label: 'Kriteria 4. Mahasiswa'},
+            {val: 'led_k5', label: 'Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
+            {val: 'led_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
+            {val: 'led_k7', label: 'Kriteria 7. Penjaminan Mutu'},
+            {val: 'led_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
+         ];
+      } else if (bidang === 'lamptkes_spmi') {
+         types = [
+            {val: 'spmi_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'spmi_k2', label: 'Kriteria 2. Kurikulum'},
+            {val: 'spmi_k3', label: 'Kriteria 3. Penilaian'},
+            {val: 'spmi_k4', label: 'Kriteria 4. Mahasiswa'},
+            {val: 'spmi_k5', label: 'Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
+            {val: 'spmi_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
+            {val: 'spmi_k7', label: 'Kriteria 7. Penjaminan Mutu'},
+            {val: 'spmi_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
+         ];
+      }
     } else {
       types = DEPT_JENIS[bidang] || [];
     }
@@ -1309,7 +1324,7 @@ function onBidangChange() {
       
       opts.innerHTML = html;
     } else {
-      document.getElementById('fJenisLabelText').textContent = isLamptkesMode ? '-- Pilih Kriteria dulu --' : '-- Pilih Bidang dulu --';
+      document.getElementById('fJenisLabelText').textContent = isLamptkesMode ? '-- Pilih Kategori dulu --' : '-- Pilih Bidang dulu --';
       document.getElementById('fJenis').value = '';
       opts.innerHTML = '';
     }
