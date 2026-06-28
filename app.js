@@ -1674,6 +1674,7 @@ function switchDeptSub(subId, element, deptId) {
 }
 
 let isLamptkesMode = false;
+let isBanptMode = false;
 let activity = [];
 let mahasiswa = [];
 let sdm = [];
@@ -2737,7 +2738,15 @@ function onBidangChange() {
     const opts=document.getElementById('fJenisOptions');
     
     let types = [];
-    if (isLamptkesMode) {
+    if (isLamptkesMode) {            if (bidang === 'banpt_led') {
+               level2 = 'Akreditasi BAN-PT';
+               level3 = 'Laporan Evaluasi Diri (LED)';
+               level4 = kMatch ? kMatch[1] : "Umum";
+            } else if (bidang === 'banpt_spmi') {
+               level2 = 'Akreditasi BAN-PT';
+               level3 = 'Sistem Penjaminan Mutu Internal (SPMI)';
+               level4 = kMatch ? kMatch[1] : "Umum";
+            } else 
       if (bidang === 'lamptkes_led') {
          types = [
             {val: 'led_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
@@ -3011,7 +3020,15 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
             let level2 = DEPT[bidang]?.label || bidang;
             let level3 = tahun ? "TA " + tahun : "TA Umum";
             let level4 = "Umum";
-            const kMatch = getJenisLabel(bidang, jenis).match(/\[?(Kriteria \d+)\]?/i);
+            const kMatch = getJenisLabel(bidang, jenis).match(/\[?(Kriteria \d+)\]?/i);            if (bidang === 'banpt_led') {
+               level2 = 'Akreditasi BAN-PT';
+               level3 = 'Laporan Evaluasi Diri (LED)';
+               level4 = kMatch ? kMatch[1] : "Umum";
+            } else if (bidang === 'banpt_spmi') {
+               level2 = 'Akreditasi BAN-PT';
+               level3 = 'Sistem Penjaminan Mutu Internal (SPMI)';
+               level4 = kMatch ? kMatch[1] : "Umum";
+            } else 
             
             if (bidang === 'lamptkes_led') {
                level2 = 'Akreditasi LAM-PTKes';
