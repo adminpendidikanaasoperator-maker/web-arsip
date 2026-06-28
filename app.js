@@ -3726,6 +3726,7 @@ function switchLamptkesTab(tabNum, element) {
 }
 
 function getKriteriaNumber(jenis) {
+  if (!jenis) return 0;
   if (jenis.startsWith('k1_')) return 1;
   if (jenis.startsWith('k2_')) return 2;
   if (jenis.startsWith('k3_')) return 3;
