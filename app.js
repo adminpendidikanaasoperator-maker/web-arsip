@@ -3280,6 +3280,21 @@ function getGDriveEmbedUrl(url) {
   return url;
 }
 
+// Konversi URL GDrive format apapun ke shareable link standar (bisa dibuka tanpa login)
+function getGDriveShareUrl(url) {
+  if (!url || url === '-' || url === 'UPLOADING' || url === '#') return url || '-';
+  // Format /file/d/ID/ - sudah benar, pastikan pakai /view?usp=sharing
+  const m1 = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (m1) return `https://drive.google.com/file/d/${m1[1]}/view?usp=sharing`;
+  // Format ?id=ID atau &id=ID (link lama dari getUrl())
+  const m2 = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (m2) return `https://drive.google.com/file/d/${m2[1]}/view?usp=sharing`;
+  // Docs/Sheets/Slides
+  const m3 = url.match(/docs\.google\.com\/(document|spreadsheets|presentation)\/d\/([a-zA-Z0-9_-]+)/);
+  if (m3) return `https://docs.google.com/${m3[1]}/d/${m3[2]}/edit?usp=sharing`;
+  return url;
+}
+
 function previewDoc(id) {
   const a=arsip.find(x=>x.id===id); if(!a)return;
   pendingPdfId=id;
@@ -4110,7 +4125,7 @@ async function exportLamptkes(type) {
         'Judul Dokumen': a.judul,
         'Bidang Terkait': (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
         'Deskripsi Dokumen': getLabel(a),
-        'Link GDrive': a.gdriveLink || '-'
+        'Link GDrive': getGDriveShareUrl(a.gdriveLink)
       };
     });
     const worksheet = XLSX.utils.json_to_sheet(excelData);
@@ -4141,7 +4156,7 @@ async function exportLamptkes(type) {
         a.judul,
         (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
         getLabel(a),
-        a.gdriveLink || '-'
+        getGDriveShareUrl(a.gdriveLink)
       ];
     });
 
@@ -4186,7 +4201,7 @@ async function exportLamptkes(type) {
       html += "<td style='padding:4px;'>" + a.judul + "</td>";
       html += "<td style='padding:4px;'>" + (DEPT[a.bidang]?.label || a.bidang).toUpperCase() + "</td>";
       html += "<td style='padding:4px;'>" + getLabel(a) + "</td>";
-      html += "<td style='padding:4px;'>" + (a.gdriveLink ? `<a href="${a.gdriveLink}">${a.gdriveLink}</a>` : '-') + "</td>";
+      html += "<td style='padding:4px;'>" + (a.gdriveLink ? `<a href="${getGDriveShareUrl(a.gdriveLink)}">${getGDriveShareUrl(a.gdriveLink)}</a>` : '-') + "</td>";
       html += "</tr>";
     });
     html += "</table></body></html>";
@@ -4229,7 +4244,7 @@ function exportToExcel() {
       'Tahun Akademik': a.ay,
       'Status': a.status === 'valid' ? 'Valid' : (a.status === 'pending' ? 'Pending' : 'Kadaluarsa'),
       'Keterangan': a.metadata?.keterangan || '-',
-      'Link GDrive': a.gdriveLink || '-'
+      'Link GDrive': getGDriveShareUrl(a.gdriveLink)
     };
   });
 
@@ -4387,7 +4402,7 @@ async function generateIntegratedReport(type, isDashboard = false) {
       if (a.keterangan) ket += a.keterangan + '\n';
       if (a.metadata) ket += formatMetadataClean(a.metadata);
       if (!ket.trim()) ket = '-';
-      return [i + 1, colDokumen, colKategori, colStatus, colPengirim, ket.trim(), a.gdriveLink || '-'];
+      return [i + 1, colDokumen, colKategori, colStatus, colPengirim, ket.trim(), getGDriveShareUrl(a.gdriveLink)];
     });
   };
 
@@ -4845,7 +4860,7 @@ async function exportBanpt(type) {
         'Judul Dokumen': a.judul,
         'Bidang Terkait': (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
         'Deskripsi Dokumen': getLabel(a),
-        'Link GDrive': a.gdriveLink || '-'
+        'Link GDrive': getGDriveShareUrl(a.gdriveLink)
       };
     });
     const worksheet = XLSX.utils.json_to_sheet(excelData);
@@ -4875,7 +4890,7 @@ async function exportBanpt(type) {
         a.judul,
         (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
         getLabel(a),
-        a.gdriveLink || '-'
+        getGDriveShareUrl(a.gdriveLink)
       ];
     });
 
@@ -4918,7 +4933,7 @@ async function exportBanpt(type) {
       html += "<td style='padding:4px;'>" + a.judul + "</td>";
       html += "<td style='padding:4px;'>" + (DEPT[a.bidang]?.label || a.bidang).toUpperCase() + "</td>";
       html += "<td style='padding:4px;'>" + getLabel(a) + "</td>";
-      html += "<td style='padding:4px;'>" + (a.gdriveLink ? `<a href="${a.gdriveLink}">${a.gdriveLink}</a>` : '-') + "</td>";
+      html += "<td style='padding:4px;'>" + (a.gdriveLink ? `<a href="${getGDriveShareUrl(a.gdriveLink)}">${getGDriveShareUrl(a.gdriveLink)}</a>` : '-') + "</td>";
       html += "</tr>";
     });
     html += "</table></body></html>";

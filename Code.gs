@@ -7,7 +7,7 @@ function doPost(e) {
     
     // 1. Dekode base64 menjadi blob
     var decoded = Utilities.base64Decode(base64Data);
-    var blob = Utilities.newBlob(decoded, "application/pdf", filename);
+    var blob = Utilities.newBlob(decoded, data.mimeType || "application/pdf", filename);
     
     // 2. Cari atau buat folder di My Drive
     var folder;
@@ -21,14 +21,18 @@ function doPost(e) {
     // 3. Simpan file
     var file = folder.createFile(blob);
     
-    // 4. Atur file agar BISA DIBUKA OLEH SIAPA SAJA (Public)
+    // 4. Atur file agar BISA DIBUKA OLEH SIAPA SAJA (Public) tanpa login
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    
+    // 5. Buat shareable link format standar (tidak perlu login)
+    var fileId = file.getId();
+    var shareableUrl = "https://drive.google.com/file/d/" + fileId + "/view?usp=sharing";
     
     return ContentService.createTextOutput(JSON.stringify({
       status: "success",
-      fileUrl: file.getUrl(),
+      fileUrl: shareableUrl,
       folderUrl: folder.getUrl(),
-      fileId: file.getId()
+      fileId: fileId
     })).setMimeType(ContentService.MimeType.JSON);
     
   } catch (error) {
