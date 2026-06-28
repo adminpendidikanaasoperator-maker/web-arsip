@@ -108,8 +108,8 @@ const DEPT_JENIS = {
     { val:'k6_jadwal_kuliah', label:'[Kriteria 6] Jadwal Perkuliahan' },
     { val:'k6_jadwal_praktik', label:'[Kriteria 6] Jadwal Praktik' },
     { val:'k7_evaluasi_pembelajaran', label:'[Kriteria 7] Laporan Evaluasi Mutu Pembelajaran' },
-    { val:'k9_data_ipk', label:'[Kriteria 9] Data IPK Lulusan' },
-    { val:'k9_capaian_pembelajaran', label:'[Kriteria 9] Data Capaian Pembelajaran Lulusan' },
+    { val:'k6_data_ipk', label:'[Kriteria 6] Data IPK Lulusan' },
+    { val:'k6_capaian_pembelajaran', label:'[Kriteria 6] Data Capaian Pembelajaran Lulusan' },
     { val:'lainnya', label:'Lainnya' }
   ],
   sistem_pendidikan: [
@@ -158,8 +158,8 @@ const DEPT_JENIS = {
     { val:'k5_bukti_paten', label:'[Kriteria 5] Bukti Paten' },
     { val:'k5_kebijakan_dana_penelitian', label:'[Kriteria 5] Kebijakan Dana Internal Penelitian' },
     { val:'k7_audit_kinerja_lppm', label:'[Kriteria 7] Laporan Audit Kinerja LPPM' },
-    { val:'k9_rekap_luaran_penelitian_dosen', label:'[Kriteria 9] Rekapitulasi Luaran Penelitian Dosen' },
-    { val:'k9_rekap_luaran_penelitian_mhs', label:'[Kriteria 9] Rekapitulasi Luaran Penelitian Mahasiswa' },
+    { val:'k7_rekap_luaran_penelitian_dosen', label:'[Kriteria 7] Rekapitulasi Luaran Penelitian Dosen' },
+    { val:'k7_rekap_luaran_penelitian_mhs', label:'[Kriteria 7] Rekapitulasi Luaran Penelitian Mahasiswa' },
     { val:'lainnya', label:'Lainnya' }
   ],
   kemahasiswaan: [
@@ -181,10 +181,10 @@ const DEPT_JENIS = {
     { val:'k4_laporan_penyaluran_beasiswa', label:'[Kriteria 4] Laporan Penyaluran Beasiswa' },
     { val:'k4_pedoman_rca', label:'[Kriteria 4] Pedoman RCA (Root Cause Analysis) Mahasiswa' },
     { val:'k7_laporan_survei_kepuasan_mhs', label:'[Kriteria 7] Laporan Survei Kepuasan Mahasiswa' },
-    { val:'k9_laporan_tracer_study', label:'[Kriteria 9] Laporan Tracer Study' },
-    { val:'k9_survei_kepuasan_pengguna_lulusan', label:'[Kriteria 9] Laporan Kepuasan Pengguna Lulusan' },
-    { val:'k9_data_waktu_tunggu_lulusan', label:'[Kriteria 9] Data Waktu Tunggu Lulusan' },
-    { val:'k9_data_pekerjaan_pertama', label:'[Kriteria 9] Data Kesesuaian Bidang Kerja Lulusan' },
+    { val:'k3_laporan_tracer_study', label:'[Kriteria 3] Laporan Tracer Study' },
+    { val:'k3_survei_kepuasan_pengguna_lulusan', label:'[Kriteria 3] Laporan Kepuasan Pengguna Lulusan' },
+    { val:'k3_data_waktu_tunggu_lulusan', label:'[Kriteria 3] Data Waktu Tunggu Lulusan' },
+    { val:'k3_data_pekerjaan_pertama', label:'[Kriteria 3] Data Kesesuaian Bidang Kerja Lulusan' },
     { val:'lainnya', label:'Lainnya' }
   ],
   pengabdian: [
@@ -194,9 +194,9 @@ const DEPT_JENIS = {
     { val:'k5_bukti_keterlibatan_mhs_pkm', label:'[Kriteria 5] Bukti Keterlibatan Mahasiswa dalam PkM' },
     { val:'k7_laporan_mutu_pkm', label:'[Kriteria 7] Laporan Mutu Pelaksanaan PkM' },
     { val:'k7_evaluasi_pelaksanaan_pkm', label:'[Kriteria 7] Evaluasi Pelaksanaan PkM' },
-    { val:'k9_luaran_pkm_artikel', label:'[Kriteria 9] Luaran PkM (Artikel Ilmiah/Media Massa)' },
-    { val:'k9_luaran_pkm_buku', label:'[Kriteria 9] Luaran PkM (Buku/Modul)' },
-    { val:'k9_luaran_pkm_teknologi', label:'[Kriteria 9] Luaran PkM (Teknologi Tepat Guna / HKI)' },
+    { val:'k8_luaran_pkm_artikel', label:'[Kriteria 8] Luaran PkM (Artikel Ilmiah/Media Massa)' },
+    { val:'k8_luaran_pkm_buku', label:'[Kriteria 8] Luaran PkM (Buku/Modul)' },
+    { val:'k8_luaran_pkm_teknologi', label:'[Kriteria 8] Luaran PkM (Teknologi Tepat Guna / HKI)' },
     { val:'lainnya', label:'Lainnya' }
   ],
 
@@ -2004,17 +2004,18 @@ function getKriteriaNumber(jenis) {
 }
 
 const KRITERIA_TITLES = {
-  1: "Visi, Misi, Tujuan dan Strategi",
-  2: "Tata Pamong, Tata Kelola dan Kerjasama",
-  3: "Mahasiswa",
-  4: "Sumber Daya Manusia",
-  5: "Keuangan, Sarana dan Prasarana",
-  6: "Pendidikan",
-  7: "Penelitian",
-  8: "Pengabdian kepada Masyarakat",
-  9: "Luaran dan Capaian Tridharma",
-  10: "Laporan Kinerja Program Studi (Bab II)"
-};
+    1: "Visi, Misi, Tujuan dan Strategi",
+    2: "Tata Pamong, Tata Kelola dan Kerjasama",
+    3: "Mahasiswa",
+    4: "Sumber Daya Manusia",
+    5: "Keuangan, Sarana dan Prasarana",
+    6: "Pendidikan",
+    7: "Penelitian",
+    8: "Pengabdian kepada Masyarakat",
+    10: "Laporan Kinerja Program Studi (Bab II)",
+    11: "Laporan Evaluasi Diri (Semua Kriteria)",
+    12: "Dokumen SPMI (Per Bidang)"
+  };
 
 function generateLamptkesReport() {
   const container = document.getElementById('lamptkesReportContainer');
