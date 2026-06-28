@@ -3047,11 +3047,13 @@ async function saveArsip(e) {
   if (fileToUpload) {
     toast(`Mulai mengunggah ${fileToUpload.name} ke GDrive... Jangan tutup halaman.`, 'info');
     uploadToGDrive(fileToUpload, bidang, jenis, tahun).then(res => {
-      if (res && res.fileUrl) {
+      console.log('GDrive Response:', res);
+      let gLink = res ? (res.fileUrl || res.url || res.link || res.webViewLink || '#') : '#';
+      if (res && (res.status === 'success' || gLink !== '#')) {
         const idx = arsip.findIndex(x => x.id === record.id);
         if (idx > -1) {
-          arsip[idx].gdriveLink = res.fileUrl;
-          arsip[idx].gdriveFolder = res.folderUrl || '';
+          arsip[idx].gdriveLink = gLink;
+          arsip[idx].gdriveFolder = res.folderUrl || res.folder || '';
           save();
           db.collection('arsip').doc(record.id).set(arsip[idx]).catch(e => console.error(e));
           toast(`Berhasil mengunggah ${fileToUpload.name}!`, 'success');
@@ -4581,3 +4583,17 @@ function openExpiryModal() {
 function closeExpiryModal() {
   document.getElementById('overlayExpiry').classList.remove('open');
 }
+
+window.resetUpload = function(id) {
+  if(!confirm('Apakah Anda ingin mereset status unggahan ini? Anda bisa mengunggah ulang file-nya setelah ini.')) return;
+  const idx = arsip.findIndex(x => x.id === id);
+  if(idx > -1) {
+    arsip[idx].gdriveLink = '';
+    save();
+    try { db.collection('arsip').doc(id).set(arsip[idx]); } catch(e){}
+    if (currentPage === 'arsip') renderArsipTable();
+    else if (currentPage === 'dept') renderDeptPage(currentDept);
+    else if (currentPage === 'banpt') generateBanptReport();
+    else if (currentPage === 'lamptkes') generateLamptkesReport();
+  }
+};
