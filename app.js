@@ -3058,6 +3058,8 @@ async function saveArsip(e) {
           // Refresh tabel jika di halaman arsip
           if (currentPage === 'arsip') renderArsipTable();
           else if (currentPage === 'dept') renderDeptPage(currentDept);
+          else if (currentPage === 'banpt') generateBanptReport();
+          else if (currentPage === 'lamptkes') generateLamptkesReport();
         }
       }
     }).catch(err => {
@@ -3071,6 +3073,8 @@ async function saveArsip(e) {
         } catch(e) {}
         if (currentPage === 'arsip') renderArsipTable();
         else if (currentPage === 'dept') renderDeptPage(currentDept);
+        else if (currentPage === 'banpt') generateBanptReport();
+        else if (currentPage === 'lamptkes') generateLamptkesReport();
       }
     });
   }
