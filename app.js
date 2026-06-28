@@ -3873,8 +3873,6 @@ async function generateIntegratedReport(type, isDashboard = false) {
   const institutionName = "AKADEMI AKUPUNKTUR SURABAYA";
   const addressStr = "JL Parangkusumo no 14 Surabaya, Jawa Timur";
   const KOP_KONTAK = "Telp: (031) 1234567 | Email: info@akupunktur-sby.ac.id";
-  const KOP_BANPT = "Akreditasi BAN-PT: B";
-  const KOP_LAMPTKES = "Akreditasi LAM-PTKes: B";
 
   let reportTitle = 'LAPORAN EKSEKUTIF ARSIP & AKREDITASI';
   let dataArsip = arsip;
@@ -3960,14 +3958,14 @@ async function generateIntegratedReport(type, isDashboard = false) {
     const doc = new jsPDF('l', 'mm', 'a4'); // Landscape A4 is best for 7 columns
     
     // Kop Surat
-    if (logoBase64) { doc.addImage(logoBase64, 'JPEG', 65, 10, 22, 22); }
+    if (logoBase64) { doc.addImage(logoBase64, 'JPEG', 45, 8, 30, 30); }
     doc.setFontSize(16); doc.setFont('times', 'bold');
-    doc.text(institutionName, 160, 14, { align: 'center' });
+    doc.text(institutionName, 150, 14, { align: 'center' });
     doc.setFontSize(11); doc.setFont('times', 'normal');
-    doc.text(addressStr, 160, 20, { align: 'center' });
-    doc.text(KOP_KONTAK, 160, 25, { align: 'center' });
+    doc.text(addressStr, 150, 20, { align: 'center' });
+    doc.text(KOP_KONTAK, 150, 25, { align: 'center' });
     doc.setFont('times', 'bold');
-    doc.text(KOP_BANPT + '  |  ' + KOP_LAMPTKES, 160, 30, { align: 'center' });
+    doc.text(KOP_BANPT + '  |  ' + KOP_LAMPTKES, 150, 30, { align: 'center' });
     
     // Garis Kop Ganda
     doc.setLineWidth(0.8); doc.line(14, 34, 283, 34);
