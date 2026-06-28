@@ -2084,7 +2084,7 @@ function fmtBadge(a) {
   if (!a.gdriveLink) return `<span class="no-file">—</span>`;
   if (a.gdriveLink === 'UPLOADING') return `<span style="color:#f59e0b;font-size:0.85rem;white-space:nowrap"><i class="fas fa-spinner fa-spin"></i> Mengunggah...</span>`;
   const f = getFormatCfg(a.format);
-  return `<button onclick="previewDoc('${a.id}')" class="fmt-btn fmt-${a.format||'pdf'}" title="Pratinjau: ${esc(a.fileName||a.judul||'')}"><i class="${f.icon}"></i> ${f.label}</button>`;
+  return `<a href="${esc(a.gdriveLink)}" target="_blank" rel="noopener noreferrer" class="fmt-btn fmt-${a.format||'pdf'}" title="Buka Dokumen: ${esc(a.fileName||a.judul||'')}"><i class="${f.icon}"></i> ${f.label}</a>`;
 }
 function logGDriveOpen(id, e) {
   const a = arsip.find(x=>x.id===id);
@@ -3086,9 +3086,9 @@ function viewDetail(id) {
                 <i class="fab fa-google-drive"></i> Buka di Google Drive
                 <span style="font-size:.7rem;opacity:.7">(${f.label})</span>
               </a>
-              <button class="btn-ghost" onclick="previewDoc('${a.id}');closeDetail()">
-                <i class="fas fa-eye"></i> Pratinjau
-              </button>
+              <a class="btn-ghost" href="${esc(a.gdriveLink)}" target="_blank" style="text-decoration:none;display:inline-block;line-height:normal;" onclick="logGDriveOpen(\'${a.id}\')">
+                <i class="fas fa-external-link-alt"></i> Buka Tab Baru
+              </a>
             </div>
             ${a.fileName?`<div style="margin-top:6px;font-size:.75rem;color:var(--t3)"><i class="${f.icon}" style="color:${f.color}"></i> ${esc(a.fileName)}</div>`:''}
           `
