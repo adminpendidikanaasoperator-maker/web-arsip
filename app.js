@@ -197,6 +197,67 @@ const LAMPTKES_SPECIAL_TYPES = [
 const DEPT_JENIS = {
   "pimpinan": [
     {
+      "group": "Arsip Umum (Per Kriteria)",
+      "items": [
+        {
+          "val": "sm_pimpinan_k1",
+          "label": "Surat Masuk - Kriteria 1 (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "skeluar_pimpinan_k1",
+          "label": "Surat Keluar - Kriteria 1 (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "sk_pimpinan_k1",
+          "label": "SK / Keputusan - Kriteria 1 (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "sop_pimpinan_k1",
+          "label": "SOP - Kriteria 1 (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "pedoman_pimpinan_k1",
+          "label": "Pedoman / Panduan - Kriteria 1 (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "nota_pimpinan_k1",
+          "label": "Nota Dinas / Memo - Kriteria 1 (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "dok_pimpinan_k1",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 1 (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "sm_pimpinan_k8",
+          "label": "Surat Masuk - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "skeluar_pimpinan_k8",
+          "label": "Surat Keluar - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "sk_pimpinan_k8",
+          "label": "SK / Keputusan - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "sop_pimpinan_k8",
+          "label": "SOP - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "pedoman_pimpinan_k8",
+          "label": "Pedoman / Panduan - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "nota_pimpinan_k8",
+          "label": "Nota Dinas / Memo - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "dok_pimpinan_k8",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 8 (Tata Kelola dan Administrasi)"
+        }
+      ]
+    },
+    {
       "group": "Kriteria 1 (LAM-PTKes)",
       "items": [
         {
@@ -252,6 +313,123 @@ const DEPT_JENIS = {
     }
   ],
   "akademik": [
+    {
+      "group": "Arsip Umum (Per Kriteria)",
+      "items": [
+        {
+          "val": "sm_akademik_k2",
+          "label": "Surat Masuk - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "skeluar_akademik_k2",
+          "label": "Surat Keluar - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "sk_akademik_k2",
+          "label": "SK / Keputusan - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "sop_akademik_k2",
+          "label": "SOP - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "pedoman_akademik_k2",
+          "label": "Pedoman / Panduan - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "nota_akademik_k2",
+          "label": "Nota Dinas / Memo - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "dok_akademik_k2",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "sm_akademik_k3",
+          "label": "Surat Masuk - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "skeluar_akademik_k3",
+          "label": "Surat Keluar - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "sk_akademik_k3",
+          "label": "SK / Keputusan - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "sop_akademik_k3",
+          "label": "SOP - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "pedoman_akademik_k3",
+          "label": "Pedoman / Panduan - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "nota_akademik_k3",
+          "label": "Nota Dinas / Memo - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "dok_akademik_k3",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "sm_akademik_k5",
+          "label": "Surat Masuk - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "skeluar_akademik_k5",
+          "label": "Surat Keluar - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "sk_akademik_k5",
+          "label": "SK / Keputusan - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "sop_akademik_k5",
+          "label": "SOP - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "pedoman_akademik_k5",
+          "label": "Pedoman / Panduan - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "nota_akademik_k5",
+          "label": "Nota Dinas / Memo - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "dok_akademik_k5",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "sm_akademik_k6",
+          "label": "Surat Masuk - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "skeluar_akademik_k6",
+          "label": "Surat Keluar - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sk_akademik_k6",
+          "label": "SK / Keputusan - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sop_akademik_k6",
+          "label": "SOP - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "pedoman_akademik_k6",
+          "label": "Pedoman / Panduan - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "nota_akademik_k6",
+          "label": "Nota Dinas / Memo - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "dok_akademik_k6",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 6 (Sarpras dan Keuangan)"
+        }
+      ]
+    },
     {
       "group": "Kriteria 2 (LAM-PTKes)",
       "items": [
@@ -335,6 +513,39 @@ const DEPT_JENIS = {
   ],
   "kemahasiswaan": [
     {
+      "group": "Arsip Umum (Per Kriteria)",
+      "items": [
+        {
+          "val": "sm_kemahasiswaan_k4",
+          "label": "Surat Masuk - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "skeluar_kemahasiswaan_k4",
+          "label": "Surat Keluar - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "sk_kemahasiswaan_k4",
+          "label": "SK / Keputusan - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "sop_kemahasiswaan_k4",
+          "label": "SOP - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "pedoman_kemahasiswaan_k4",
+          "label": "Pedoman / Panduan - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "nota_kemahasiswaan_k4",
+          "label": "Nota Dinas / Memo - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "dok_kemahasiswaan_k4",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 4 (Mahasiswa)"
+        }
+      ]
+    },
+    {
       "group": "Kriteria 4 (LAM-PTKes)",
       "items": [
         {
@@ -377,6 +588,39 @@ const DEPT_JENIS = {
     }
   ],
   "kepegawaian": [
+    {
+      "group": "Arsip Umum (Per Kriteria)",
+      "items": [
+        {
+          "val": "sm_kepegawaian_k5",
+          "label": "Surat Masuk - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "skeluar_kepegawaian_k5",
+          "label": "Surat Keluar - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "sk_kepegawaian_k5",
+          "label": "SK / Keputusan - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "sop_kepegawaian_k5",
+          "label": "SOP - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "pedoman_kepegawaian_k5",
+          "label": "Pedoman / Panduan - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "nota_kepegawaian_k5",
+          "label": "Nota Dinas / Memo - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "dok_kepegawaian_k5",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        }
+      ]
+    },
     {
       "group": "Kriteria 5 (LAM-PTKes)",
       "items": [
@@ -421,6 +665,67 @@ const DEPT_JENIS = {
   ],
   "keuangan": [
     {
+      "group": "Arsip Umum (Per Kriteria)",
+      "items": [
+        {
+          "val": "sm_keuangan_k6",
+          "label": "Surat Masuk - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "skeluar_keuangan_k6",
+          "label": "Surat Keluar - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sk_keuangan_k6",
+          "label": "SK / Keputusan - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sop_keuangan_k6",
+          "label": "SOP - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "pedoman_keuangan_k6",
+          "label": "Pedoman / Panduan - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "nota_keuangan_k6",
+          "label": "Nota Dinas / Memo - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "dok_keuangan_k6",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sm_keuangan_k8",
+          "label": "Surat Masuk - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "skeluar_keuangan_k8",
+          "label": "Surat Keluar - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "sk_keuangan_k8",
+          "label": "SK / Keputusan - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "sop_keuangan_k8",
+          "label": "SOP - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "pedoman_keuangan_k8",
+          "label": "Pedoman / Panduan - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "nota_keuangan_k8",
+          "label": "Nota Dinas / Memo - Kriteria 8 (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "dok_keuangan_k8",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 8 (Tata Kelola dan Administrasi)"
+        }
+      ]
+    },
+    {
       "group": "Kriteria 6 (LAM-PTKes)",
       "items": [
         {
@@ -440,6 +745,39 @@ const DEPT_JENIS = {
     }
   ],
   "sarpras": [
+    {
+      "group": "Arsip Umum (Per Kriteria)",
+      "items": [
+        {
+          "val": "sm_sarpras_k6",
+          "label": "Surat Masuk - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "skeluar_sarpras_k6",
+          "label": "Surat Keluar - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sk_sarpras_k6",
+          "label": "SK / Keputusan - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sop_sarpras_k6",
+          "label": "SOP - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "pedoman_sarpras_k6",
+          "label": "Pedoman / Panduan - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "nota_sarpras_k6",
+          "label": "Nota Dinas / Memo - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "dok_sarpras_k6",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 6 (Sarpras dan Keuangan)"
+        }
+      ]
+    },
     {
       "group": "Kriteria 6 (LAM-PTKes)",
       "items": [
@@ -472,6 +810,39 @@ const DEPT_JENIS = {
   ],
   "penelitian_pengabdian": [
     {
+      "group": "Arsip Umum (Per Kriteria)",
+      "items": [
+        {
+          "val": "sm_penelitian_pengabdian_k5",
+          "label": "Surat Masuk - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "skeluar_penelitian_pengabdian_k5",
+          "label": "Surat Keluar - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "sk_penelitian_pengabdian_k5",
+          "label": "SK / Keputusan - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "sop_penelitian_pengabdian_k5",
+          "label": "SOP - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "pedoman_penelitian_pengabdian_k5",
+          "label": "Pedoman / Panduan - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "nota_penelitian_pengabdian_k5",
+          "label": "Nota Dinas / Memo - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        },
+        {
+          "val": "dok_penelitian_pengabdian_k5",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 5 (SDM, Penelitian, dan PkM)"
+        }
+      ]
+    },
+    {
       "group": "Kriteria 5 (LAM-PTKes)",
       "items": [
         {
@@ -499,6 +870,67 @@ const DEPT_JENIS = {
   ],
   "kerjasama": [
     {
+      "group": "Arsip Umum (Per Kriteria)",
+      "items": [
+        {
+          "val": "sm_kerjasama_k2",
+          "label": "Surat Masuk - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "skeluar_kerjasama_k2",
+          "label": "Surat Keluar - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "sk_kerjasama_k2",
+          "label": "SK / Keputusan - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "sop_kerjasama_k2",
+          "label": "SOP - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "pedoman_kerjasama_k2",
+          "label": "Pedoman / Panduan - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "nota_kerjasama_k2",
+          "label": "Nota Dinas / Memo - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "dok_kerjasama_k2",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "sm_kerjasama_k6",
+          "label": "Surat Masuk - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "skeluar_kerjasama_k6",
+          "label": "Surat Keluar - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sk_kerjasama_k6",
+          "label": "SK / Keputusan - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sop_kerjasama_k6",
+          "label": "SOP - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "pedoman_kerjasama_k6",
+          "label": "Pedoman / Panduan - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "nota_kerjasama_k6",
+          "label": "Nota Dinas / Memo - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "dok_kerjasama_k6",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 6 (Sarpras dan Keuangan)"
+        }
+      ]
+    },
+    {
       "group": "Kriteria 2 (LAM-PTKes)",
       "items": [
         {
@@ -522,6 +954,151 @@ const DEPT_JENIS = {
     }
   ],
   "penjaminan_mutu": [
+    {
+      "group": "Arsip Umum (Per Kriteria)",
+      "items": [
+        {
+          "val": "sm_penjaminan_mutu_k2",
+          "label": "Surat Masuk - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "skeluar_penjaminan_mutu_k2",
+          "label": "Surat Keluar - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "sk_penjaminan_mutu_k2",
+          "label": "SK / Keputusan - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "sop_penjaminan_mutu_k2",
+          "label": "SOP - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "pedoman_penjaminan_mutu_k2",
+          "label": "Pedoman / Panduan - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "nota_penjaminan_mutu_k2",
+          "label": "Nota Dinas / Memo - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "dok_penjaminan_mutu_k2",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 2 (Kurikulum)"
+        },
+        {
+          "val": "sm_penjaminan_mutu_k3",
+          "label": "Surat Masuk - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "skeluar_penjaminan_mutu_k3",
+          "label": "Surat Keluar - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "sk_penjaminan_mutu_k3",
+          "label": "SK / Keputusan - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "sop_penjaminan_mutu_k3",
+          "label": "SOP - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "pedoman_penjaminan_mutu_k3",
+          "label": "Pedoman / Panduan - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "nota_penjaminan_mutu_k3",
+          "label": "Nota Dinas / Memo - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "dok_penjaminan_mutu_k3",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 3 (Penilaian)"
+        },
+        {
+          "val": "sm_penjaminan_mutu_k4",
+          "label": "Surat Masuk - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "skeluar_penjaminan_mutu_k4",
+          "label": "Surat Keluar - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "sk_penjaminan_mutu_k4",
+          "label": "SK / Keputusan - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "sop_penjaminan_mutu_k4",
+          "label": "SOP - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "pedoman_penjaminan_mutu_k4",
+          "label": "Pedoman / Panduan - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "nota_penjaminan_mutu_k4",
+          "label": "Nota Dinas / Memo - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "dok_penjaminan_mutu_k4",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 4 (Mahasiswa)"
+        },
+        {
+          "val": "sm_penjaminan_mutu_k6",
+          "label": "Surat Masuk - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "skeluar_penjaminan_mutu_k6",
+          "label": "Surat Keluar - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sk_penjaminan_mutu_k6",
+          "label": "SK / Keputusan - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sop_penjaminan_mutu_k6",
+          "label": "SOP - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "pedoman_penjaminan_mutu_k6",
+          "label": "Pedoman / Panduan - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "nota_penjaminan_mutu_k6",
+          "label": "Nota Dinas / Memo - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "dok_penjaminan_mutu_k6",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 6 (Sarpras dan Keuangan)"
+        },
+        {
+          "val": "sm_penjaminan_mutu_k7",
+          "label": "Surat Masuk - Kriteria 7 (Penjaminan Mutu)"
+        },
+        {
+          "val": "skeluar_penjaminan_mutu_k7",
+          "label": "Surat Keluar - Kriteria 7 (Penjaminan Mutu)"
+        },
+        {
+          "val": "sk_penjaminan_mutu_k7",
+          "label": "SK / Keputusan - Kriteria 7 (Penjaminan Mutu)"
+        },
+        {
+          "val": "sop_penjaminan_mutu_k7",
+          "label": "SOP - Kriteria 7 (Penjaminan Mutu)"
+        },
+        {
+          "val": "pedoman_penjaminan_mutu_k7",
+          "label": "Pedoman / Panduan - Kriteria 7 (Penjaminan Mutu)"
+        },
+        {
+          "val": "nota_penjaminan_mutu_k7",
+          "label": "Nota Dinas / Memo - Kriteria 7 (Penjaminan Mutu)"
+        },
+        {
+          "val": "dok_penjaminan_mutu_k7",
+          "label": "Dokumentasi Kegiatan / Notulen - Kriteria 7 (Penjaminan Mutu)"
+        }
+      ]
+    },
     {
       "group": "Kriteria 2 (LAM-PTKes)",
       "items": [
@@ -621,17 +1198,6 @@ const DEPT_JENIS = {
     }
   ]
 };
-
-
-
-
-const COMMON_JENIS = [
-  { val:'surat_masuk',  label:'Surat Masuk' },
-  { val:'surat_keluar', label:'Surat Keluar' },
-  { val:'sk',           label:'SK / Keputusan / Peraturan' },
-  { val:'nota_dinas',   label:'Nota Dinas / Memo Internal' },
-  { val:'dokumentasi',  label:'Dokumentasi Kegiatan / Notulen' }
-];
 
 /* Format file */
 const FORMAT_MAP = {
@@ -1098,10 +1664,7 @@ function getJenisLabel(bidang, jenis) {
       if (item) { found = item.label; break; }
     }
   }
-  if (!found) {
-    let commonItem = COMMON_JENIS.find(t => t.val === jenis);
-    if (commonItem) found = commonItem.label;
-  }
+
   return found || jenis.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 }
 function getFormatCfg(fmt) { return FORMAT_MAP[fmt] || FORMAT_MAP.pdf; }
@@ -1338,10 +1901,6 @@ function populateFilterJenis(dept, elId) {
         html += `<option value="${t.val}">${t.label}</option>`;
       });
       html += `</optgroup>`;
-    });
-  } else {
-    COMMON_JENIS.forEach(t => {
-      html += `<option value="${t.val}">${t.label}</option>`;
     });
   }
   
