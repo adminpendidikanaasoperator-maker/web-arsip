@@ -2084,407 +2084,29 @@ function onBidangChange() {
     const opts=document.getElementById('fJenisOptions');
     
     let types = [];
-    if (isLamptkesMode) {
-      if (bidang === 'lamptkes_led') {
-         types = [
-    {
-        "group": "Visi, Misi, Tujuan, dan Strategi",
-        "items": [
-            {
-                "val": "k1_1",
-                "label": "Laporan kegiatan atau notulen rapat pada saat perumusan visi, misi, dan unggulan Program Studi yang berasal dari visi, misi, dan unggulan fakultas dan universitas. Visi, misi, dan unggulan tersebut mencakup peran UPPS dalam meningkatkan derajat kesehatan masyarakat."
-            },
-            {
-                "val": "k1_2",
-                "label": "Bukti kegiatan keterlibatan pemangku kepentingan internal (mahasiswa, dosen, tendik, pengelola) dan eksternal (lulusan, pengguna lulusan, mitra, pakar, organisasi profesi dan pemerintah) seperti daftar hadir, rekaman foto/video pada saat pertemuan."
-            },
-            {
-                "val": "k1_3",
-                "label": "Media yang digunakan untuk publikasi/sosialisasi visi, misi, dan unggulan."
-            },
-            {
-                "val": "k1_4",
-                "label": "Dokumen rencana strategi (renstra) dan rencana operasional (renop)"
-            }
-        ]
-    },
-    {
-        "group": "Kurikulum",
-        "items": [
-            {
-                "val": "k2_1",
-                "label": "Notulen rapat komite kurikulum untuk merumuskan capaian pembelajaran lulusan setiap mata kuliah (termasuk pengetahuan, keterampilan, dan perilaku) berdasarkan visi, misi, dan unggulan program studi dengan pelibatan pemangku kepentingan internal dan eksternal."
-            },
-            {
-                "val": "k2_2",
-                "label": "Buku kurikulum (kurikulum: prinsip, struktur, isi, urutan), peta kompetensi, rencana pembelajaran semester (RPS), hasil pembelajaran, metode pendidikan, penilaian."
-            },
-            {
-                "val": "k2_3",
-                "label": "Daftar departemen klinis untuk penempatan mahasiswa, Daftar penempatan mahasiswa untuk orientasi pembelajaran klinik profesional (early clinical exposure) pada tahap akademik dan praktek klinik profesional tahap profesi."
-            },
-            {
-                "val": "k2_4",
-                "label": "Daftar rumah sakit pendidikan, Daftar wahana praktek yang digunakan dan memenuhi persyaratan praktek klinik profesional mahasiswa"
-            },
-            {
-                "val": "k2_5",
-                "label": "Notulen rapat komite kurikulum tentang metode pendidikan, telaah kurikulum, evaluasi dan peninjauan kurikulum."
-            },
-            {
-                "val": "k2_6",
-                "label": "Modul dan Panduan praktek klinik profesional mahasiswa"
-            },
-            {
-                "val": "k2_7",
-                "label": "Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien"
-            },
-            {
-                "val": "k2_8",
-                "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
-            },
-            {
-                "val": "k2_9",
-                "label": "Kebijakan dan prosedur mitigasi kasus risiko kecelakaan"
-            }
-        ]
-    },
-    {
-        "group": "Penilaian",
-        "items": [
-            {
-                "val": "k3_1",
-                "label": "Prosedur operasional standar penilaian"
-            },
-            {
-                "val": "k3_2",
-                "label": "Buku catatan mahasiswa (logbook), dokumen revisi strategi pengajaran: penilaian mahasiswa (evaluasi dan pemantauan kemajuan mahasiswa) dan umpan balik dosen (strategi mengajar dosen)"
-            },
-            {
-                "val": "k3_3",
-                "label": "Mekanisme remedial dan konseling"
-            },
-            {
-                "val": "k3_4",
-                "label": "Cetak (blueprint) penilaian"
-            },
-            {
-                "val": "k3_5",
-                "label": "Prosedur mekanisme banding"
-            },
-            {
-                "val": "k3_6",
-                "label": "Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan"
-            },
-            {
-                "val": "k3_7",
-                "label": "Kebijakan dan prosedur penilaian sesuai tempat pembelajaran"
-            },
-            {
-                "val": "k3_8",
-                "label": "Lampiran hasil Uji Kompetensi CBT dan OSCE"
-            }
-        ]
-    },
-    {
-        "group": "Mahasiswa",
-        "items": [
-            {
-                "val": "k4_1",
-                "label": "Peraturan tentang kebijakan seleksi dan penerimaan: penyelarasan dengan misi dan akreditasi/persyaratan, publisitas/sosialisasi, peninjauan, dan revisi."
-            },
-            {
-                "val": "k4_2",
-                "label": "Kebijakan, peraturan, prosedur dukungan/layanan mahasiswa, dan keselamatan lingkungan kerja"
-            },
-            {
-                "val": "k4_3",
-                "label": "Kebijakan, peraturan, dan prosedur konseling mahasiswa."
-            },
-            {
-                "val": "k4_4",
-                "label": "Pendukung sumber daya manusia, fasilitas, dan keuangan untuk sistem pendukung/layanan mahasiswa."
-            },
-            {
-                "val": "k4_5",
-                "label": "Monitoring dan evaluasi penerapan sistem pendukung/layanan kemahasiswaan."
-            },
-            {
-                "val": "k4_6",
-                "label": "Dokumen hasil survey kepuasaan mahasiswa terhadap layanan mahasiswa."
-            },
-            {
-                "val": "k4_7",
-                "label": "Dokumen hasil survey kepuasaan mahasiswa terhadap layanan manajemen"
-            },
-            {
-                "val": "k4_8",
-                "label": "Kebijakan, peraturan mengenai \u2018kampus sehat\u2019 termasuk bebas dari kekerasan seksual, perundungan, intoleransi, bebas dari rokok dan narkotika."
-            },
-            {
-                "val": "k4_9",
-                "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
-            },
-            {
-                "val": "k4_10",
-                "label": "Pemantauan dan evaluasi penerapan sistem pendukung mahasiswa dan keselamatan lingkungan kerja."
-            },
-            {
-                "val": "k4_11",
-                "label": "Pedoman RCA (Root Cause Analysis)."
-            }
-        ]
-    },
-    {
-        "group": "Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat",
-        "items": [
-            {
-                "val": "k5_1",
-                "label": "Rencana pengembangan sumber daya manusia (SDM) sesuai dengan kebutuhan masing-masing disiplin ilmu dan perkembangan ilmu pengetahuan."
-            },
-            {
-                "val": "k5_2",
-                "label": "Kebijakan dan prosedur pengembangan SDM (dosen dan tendik)."
-            },
-            {
-                "val": "k5_3",
-                "label": "Notulen/risalah rapat dan daftar kehadiran terkait kegiatan pengembangan SDM."
-            },
-            {
-                "val": "k5_4",
-                "label": "Pemetaan disiplin kurikulum (kesesuaian bidang ilmu dengan mata kuliah yang diampu dan beban kerja)."
-            },
-            {
-                "val": "k5_5",
-                "label": "Formulir monitoring dan evaluasi kinerja dosen, sampel formulir yang sudah diisi dari beberapa dosen, hasil penilaian kinerja setiap semester."
-            },
-            {
-                "val": "k5_6",
-                "label": "Laporan program pelatihan orientasi."
-            },
-            {
-                "val": "k5_7",
-                "label": "Laporan program pelatihan untuk dosen baru dan lama."
-            },
-            {
-                "val": "k5_8",
-                "label": "Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen."
-            },
-            {
-                "val": "k5_9",
-                "label": "Laporan penelitian dosen dan PkM dosen serta publikasinya."
-            },
-            {
-                "val": "k5_10",
-                "label": "Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten)."
-            },
-            {
-                "val": "k5_11",
-                "label": "Kebijakan penelitian dan PkM serta integrasinya."
-            },
-            {
-                "val": "k5_12",
-                "label": "Sertifikat Pendidik/Dosen, Sertifikat Kompetensi, dan Ijazah"
-            },
-            {
-                "val": "k5_13",
-                "label": "HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional"
-            },
-            {
-                "val": "k5_14",
-                "label": "Formulir monitoring dan evaluasi kinerja tendik."
-            },
-            {
-                "val": "k5_15",
-                "label": "Laporan program pelatihan tendik."
-            }
-        ]
-    },
-    {
-        "group": "Sarana, Prasarana Pendidikan, dan Keuangan",
-        "items": [
-            {
-                "val": "k6_1",
-                "label": "Daftar infrastruktur fisik/sarana dan prasarana"
-            },
-            {
-                "val": "k6_2",
-                "label": "Daftar sistem pendukung pembelajaran lainnya. Sistem manajemen pembelajaran dan dukungan internet"
-            },
-            {
-                "val": "k6_3",
-                "label": "Daftar rumah sakit pendidikan dan wahana praktek klinik."
-            },
-            {
-                "val": "k6_4",
-                "label": "Daftar fasilitas di rumah sakit pendidikan dan pengajaran klinik (ruang diskusi, ruang shift malam, perpustakaan, dll.)"
-            },
-            {
-                "val": "k6_5",
-                "label": "Daftar manekin yang tersedia untuk pelatihan keterampilan klinis mahasiswa."
-            },
-            {
-                "val": "k6_6",
-                "label": "Kebijakan mengenai keselamatan dan kesehatan kerja civitas akademika."
-            },
-            {
-                "val": "k6_7",
-                "label": "Daftar pasien standar dan laporan pelatihannya."
-            },
-            {
-                "val": "k6_8",
-                "label": "Daftar pelatihan dan laporannya dari dosen klinis dan pembimbing"
-            },
-            {
-                "val": "k6_9",
-                "label": "Daftar database jurnal yang tersedia"
-            },
-            {
-                "val": "k6_10",
-                "label": "Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
-            },
-            {
-                "val": "k6_11",
-                "label": "Fasilitas untuk mengakses sumber informasi dan sumber belajar."
-            },
-            {
-                "val": "k6_12",
-                "label": "Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
-            },
-            {
-                "val": "k6_13",
-                "label": "Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
-            },
-            {
-                "val": "k6_14",
-                "label": "Dokumen audit: keuangan dan sarana prasarana."
-            }
-        ]
-    },
-    {
-        "group": "Penjaminan Mutu",
-        "items": [
-            {
-                "val": "k7_1",
-                "label": "Sistem penjaminan mutu: struktur dan tupoksi."
-            },
-            {
-                "val": "k7_2",
-                "label": "Dokumen mutu: kebijakan, standar, manual, formulir, dan dokumen pendukung lainnya."
-            },
-            {
-                "val": "k7_3",
-                "label": "Laporan audit mutu internal."
-            },
-            {
-                "val": "k7_4",
-                "label": "Laporan rapat tinjauan manajemen."
-            },
-            {
-                "val": "k7_5",
-                "label": "Sumber daya yang dialokasikan untuk penjaminan mutu."
-            },
-            {
-                "val": "k7_6",
-                "label": "Notulen/risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem penjaminan mutu dan strategi keselamatan pasien."
-            },
-            {
-                "val": "k7_7",
-                "label": "Dokumen tindak lanjut atas umpan balik penjaminan mutu untuk peningkatan mutu berkelanjutan."
-            },
-            {
-                "val": "k7_8",
-                "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
-            },
-            {
-                "val": "k7_9",
-                "label": "Kebijakan dan prosedur mitigasi kasus risiko."
-            }
-        ]
-    },
-    {
-        "group": "Tata Kelola dan Administrasi",
-        "items": [
-            {
-                "val": "k8_1",
-                "label": "Bagan organisasi pengelolaan dan administrasi beserta tupoksi."
-            },
-            {
-                "val": "k8_2",
-                "label": "Prosedur operasional standar pengalokasian anggaran."
-            },
-            {
-                "val": "k8_3",
-                "label": "Laporkan tinjauan kinerja institusi/UPPS"
-            },
-            {
-                "val": "k8_4",
-                "label": "Dokumen identifikasi dan mitigasi risiko."
-            },
-            {
-                "val": "k8_5",
-                "label": "Laporan/risalah rapat keterlibatan mahasiswa dan dosen dalam pengambilan keputusan dan fungsi UPPS"
-            },
-            {
-                "val": "k8_6",
-                "label": "Standar prosedur operasional (SPO) untuk proses pengambilan keputusan."
-            },
-            {
-                "val": "k8_7",
-                "label": "Standar prosedur operasional (SPO) pelaporan pembelajaran, penelitian, dan pengabdian kepada masyarakat."
-            },
-            {
-                "val": "k8_8",
-                "label": "Dokumen indikator kinerja utama dan kinerja tambahan."
-            }
-        ]
-    }
-];
-      
-      } else if (bidang === 'lamptkes_spmi') {
-         types = [{ group: 'Sistem Penjaminan Mutu Internal (SPMI)', items: [
-            {val: 'spmi_k1', label: 'Visi, Misi, Tujuan, dan Strategi'},
-            {val: 'spmi_k2', label: 'Kurikulum'},
-            {val: 'spmi_k3', label: 'Penilaian'},
-            {val: 'spmi_k4', label: 'Mahasiswa'},
-            {val: 'spmi_k5', label: 'Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
-            {val: 'spmi_k6', label: 'Sarana, Prasarana Pendidikan, dan Keuangan'},
-            {val: 'spmi_k7', label: 'Penjaminan Mutu'},
-            {val: 'spmi_k8', label: 'Tata Kelola dan Administrasi'}
-         ]}];
-      }
-    } else if (isBanptMode) {
-      if (bidang === 'banpt_led') {
-         types = [{ group: 'Laporan Evaluasi Diri (LED)', items: [
-            {val: 'banpt_led_k1', label: 'Visi, Misi, Tujuan, dan Strategi'},
-            {val: 'banpt_led_k2', label: 'Tata Pamong, Tata Kelola, dan Kerjasama'},
-            {val: 'banpt_led_k3', label: 'Mahasiswa'},
-            {val: 'banpt_led_k4', label: 'Sumber Daya Manusia'},
-            {val: 'banpt_led_k5', label: 'Keuangan, Sarana, dan Prasarana'},
-            {val: 'banpt_led_k6', label: 'Pendidikan'},
-            {val: 'banpt_led_k7', label: 'Penelitian'},
-            {val: 'banpt_led_k8', label: 'Pengabdian kepada Masyarakat'},
-            {val: 'banpt_led_k9', label: 'Luaran dan Capaian Tridharma'}
-         ]}];
-      } else if (bidang === 'banpt_spmi') {
-         types = [{ group: 'Sistem Penjaminan Mutu Internal (SPMI)', items: [
-            {val: 'banpt_spmi_k1', label: 'Visi, Misi, Tujuan, dan Strategi'},
-            {val: 'banpt_spmi_k2', label: 'Tata Pamong, Tata Kelola, dan Kerjasama'},
-            {val: 'banpt_spmi_k3', label: 'Mahasiswa'},
-            {val: 'banpt_spmi_k4', label: 'Sumber Daya Manusia'},
-            {val: 'banpt_spmi_k5', label: 'Keuangan, Sarana, dan Prasarana'},
-            {val: 'banpt_spmi_k6', label: 'Pendidikan'},
-            {val: 'banpt_spmi_k7', label: 'Penelitian'},
-            {val: 'banpt_spmi_k8', label: 'Pengabdian kepada Masyarakat'},
-            {val: 'banpt_spmi_k9', label: 'Luaran dan Capaian Tridharma'}
-         ]}];
+    if (isLamptkesMode || isBanptMode) {
+      if (bidang === 'lamptkes_led' || bidang === 'banpt_led' || bidang === 'lamptkes_spmi' || bidang === 'banpt_spmi') {
+         // Create types from DEPT_JENIS so it is sorted by Bidang!
+         types = [];
+         for (let b in DEPT_JENIS) {
+             let groupLabel = b.toUpperCase().replace('_', ' ');
+             let items = [];
+             for (let g of DEPT_JENIS[b]) {
+                 for (let i of g.items) {
+                     items.push(i);
+                 }
+             }
+             if (items.length > 0) {
+                 types.push({ group: groupLabel, items: items });
+             }
+         }
       }
     } else {
       types = DEPT_JENIS[bidang] || [];
     }
     
-    if(types.length > 0) {
-      document.getElementById('fJenisLabelText').textContent = '-- Pilih Jenis Dokumen --';
+    if (types.length > 0) {
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih Kategori --';
       document.getElementById('fJenis').value = '';
       let html = '';
       
@@ -2503,12 +2125,12 @@ function onBidangChange() {
       
       opts.innerHTML = html;
     } else {
-      document.getElementById('fJenisLabelText').textContent = isLamptkesMode ? '-- Pilih Kategori dulu --' : '-- Pilih Bidang dulu --';
+      document.getElementById('fJenisLabelText').textContent = (isLamptkesMode || isBanptMode) ? '-- Pilih Bidang Khusus --' : '-- Pilih Bidang Dulu --';
       document.getElementById('fJenis').value = '';
       opts.innerHTML = '';
     }
-    onJenisChange();
-  }
+}
+
 
 const DYNAMIC_FIELDS = {
   mutu_notulen_visi: [{ id: 'meta_pihak_terlibat', label: 'Pihak yang Terlibat', type: 'text' }],
@@ -4123,130 +3745,12 @@ function generateLamptkesReport() {
 }
 
 async function exportLamptkes(type) {
-  let data = arsip.filter(a => getKriteriaNumber(a.jenis) > 0);
-
-  if (data.length === 0) {
-    toast('Tidak ada dokumen LAM-PTKes untuk diekspor!', 'warning');
-    return;
-  }
-
-  data.sort((a, b) => getKriteriaNumber(a.jenis) - getKriteriaNumber(b.jenis));
-  const dateStr = new Date().toLocaleDateString('id-ID');
-  const fileName = "Borang_LAMPTKes_" + new Date().toISOString().slice(0,10);
-
-  const getLabel = (a) => getJenisLabel(a.bidang, a.jenis);
-  
-  if (type === 'excel') {
-    if (typeof XLSX === 'undefined') { toast('Library Excel belum dimuat!', 'error'); return; }
-    const kopLampRows = buildKopExcelRows('DOKUMEN PENDUKUNG BORANG LAM-PTKes & LKPS', dateStr);
-    const dataLampRows = data.map((a, index) => {
-      let k = getKriteriaNumber(a.jenis);
-      let kLabel = 'Kriteria ' + k;
-      if (a.bidang === 'lamptkes_spmi' || (a.jenis && a.jenis.startsWith('spmi_'))) kLabel = 'SPMI K' + k;
-      if (a.bidang === 'lamptkes_led' || (a.jenis && a.jenis.startsWith('led_'))) kLabel = 'LED K' + k;
-      if (a.jenis && a.jenis.startsWith('lkps_')) kLabel = 'Bab II (LKPS)';
-      return [index+1, kLabel, a.tanggal, a.judul, (DEPT[a.bidang]?.label||a.bidang).toUpperCase(), getLabel(a), getGDriveShareUrl(a.gdriveLink)];
-    });
-    const headerLampRow = ['No','Kriteria','Tanggal','Judul Dokumen','Bidang Terkait','Deskripsi Dokumen','Tautan GDrive'];
-    const allLampRows = [...kopLampRows, headerLampRow, ...dataLampRows];
-    const worksheet = XLSX.utils.aoa_to_sheet(allLampRows);
-    worksheet['!cols'] = [{wch:5},{wch:15},{wch:12},{wch:40},{wch:30},{wch:50},{wch:45}];
-    worksheet['!merges'] = [];
-    for (let r = 0; r < 7; r++) {
-      if (r !== 5) worksheet['!merges'].push({s:{r,c:0}, e:{r,c:6}});
+    if (['excel', 'pdf', 'word'].includes(type)) {
+        generateIntegratedReport(type, false);
+    } else {
+        toast('Format tidak didukung', 'error');
     }
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'LAM-PTKes');
-    XLSX.writeFile(workbook, fileName + ".xlsx");
-    toast("Berhasil mengunduh Excel", 'success');
-  } 
-  else if (type === 'pdf') {
-    if (typeof window.jspdf === 'undefined') { toast('Library jsPDF belum dimuat', 'error'); return; }
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l', 'mm', 'a4'); 
-    
-    const lampStartY = await addKopPdf(doc, 'DOKUMEN PENDUKUNG BORANG LAM-PTKes & LKPS', dateStr);
-    
-    let tableData = data.map((a, i) => {
-      let k = getKriteriaNumber(a.jenis);
-      let kLabel = 'K' + k;
-      if (a.bidang === 'lamptkes_spmi' || (a.jenis && a.jenis.startsWith('spmi_'))) kLabel = 'SPMI K' + k;
-      if (a.bidang === 'lamptkes_led' || (a.jenis && a.jenis.startsWith('led_'))) kLabel = 'LED K' + k;
-      if (a.jenis && a.jenis.startsWith('lkps_')) kLabel = 'Bab II';
-      return [
-        i+1,
-        kLabel,
-        a.judul,
-        (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
-        getLabel(a),
-        getGDriveShareUrl(a.gdriveLink)
-      ];
-    });
-
-    doc.autoTable({
-      startY: lampStartY,
-      head: [['No', 'Kriteria', 'Judul Dokumen', 'Bidang', 'Deskripsi / Tabel', 'Tautan GDrive']],
-      body: tableData,
-      theme: 'striped',
-      headStyles: { fillColor: [5, 150, 105], textColor: 255, fontStyle: 'bold', fontSize: 8 },
-      alternateRowStyles: { fillColor: [236, 253, 245] },
-      columnStyles: {
-        0: {cellWidth: 9,  halign: 'center'},
-        1: {cellWidth: 18},
-        2: {cellWidth: 65},
-        3: {cellWidth: 40},
-        4: {cellWidth: 85},
-        5: {cellWidth: 52}
-      },
-      styles: { fontSize: 8, cellPadding: 2.5, overflow: 'linebreak', valign: 'middle' },
-      didDrawPage: (data) => {
-        doc.setFontSize(7); doc.setFont('helvetica','italic');
-        doc.text('Halaman ' + doc.getCurrentPageInfo().pageNumber + ' | ' + KOP_NAMA, doc.internal.pageSize.width/2, doc.internal.pageSize.height - 5, {align:'center'});
-      }
-    });
-    
-    doc.save(fileName + ".pdf");
-    toast("Berhasil mengunduh PDF", 'success');
-  }
-  else if (type === 'word') {
-    const kopLamptkes = await buildKopHtml('DOKUMEN PENDUKUNG BORANG LAM-PTKes & LKPS', dateStr);
-    let html = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>";
-    html += "<head><meta charset='utf-8'><style>body{font-family:Arial,sans-serif;font-size:11pt;} table{border-collapse:collapse;width:100%;} th,td{border:1px solid #666;padding:5px 6px;font-size:9pt;} th{background:#059669;color:#fff;font-weight:bold;} tr:nth-child(even){background:#ecfdf5;}</style></head><body>";
-    html += kopLamptkes;
-    html += "<table>";
-    html += "<tr><th>No</th><th>Kriteria</th><th>Judul Dokumen</th><th>Bidang</th><th>Deskripsi Dokumen</th><th>Tautan GDrive</th></tr>";
-    
-    data.forEach((a, index) => {
-      let k = getKriteriaNumber(a.jenis);
-      let kLabel = 'Kriteria ' + k;
-      if (a.bidang === 'lamptkes_spmi' || (a.jenis && a.jenis.startsWith('spmi_'))) kLabel = 'SPMI K' + k;
-      if (a.bidang === 'lamptkes_led' || (a.jenis && a.jenis.startsWith('led_'))) kLabel = 'LED K' + k;
-      if (a.jenis && a.jenis.startsWith('lkps_')) kLabel = 'Bab II (LKPS)';
-      
-      html += "<tr>";
-      html += "<td style='padding:4px;'>" + (index + 1) + "</td>";
-      html += "<td style='padding:4px;'>" + kLabel + "</td>";
-      html += "<td style='padding:4px;'>" + a.judul + "</td>";
-      html += "<td style='padding:4px;'>" + (DEPT[a.bidang]?.label || a.bidang).toUpperCase() + "</td>";
-      html += "<td style='padding:4px;'>" + getLabel(a) + "</td>";
-      html += "<td style='padding:4px;'>" + (a.gdriveLink ? `<a href="${getGDriveShareUrl(a.gdriveLink)}">${getGDriveShareUrl(a.gdriveLink)}</a>` : '-') + "</td>";
-      html += "</tr>";
-    });
-    html += "</table></body></html>";
-    
-    let blob = new Blob(['\xef\xbb\xbf', html], { type: 'application/msword' });
-    let url = URL.createObjectURL(blob);
-    let link = document.createElement('a');
-    link.href = url;
-    link.download = fileName + ".doc";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    toast("Berhasil mengunduh Word", 'success');
-  }
 }
-
 
 function exportToExcel() {
   if (typeof XLSX === 'undefined') {
@@ -4362,12 +3866,15 @@ const formatMetadataClean = (meta) => {
   }).join('\n');
 };
 
-async function generateIntegratedReport(type, isDashboard = false) {
+async async function generateIntegratedReport(type, isDashboard = false) {
   toast('Menyiapkan laporan, mohon tunggu...', 'info');
 
   const logoBase64 = await getBase64FromUrl('logo.jpg');
   const institutionName = "AKADEMI AKUPUNKTUR SURABAYA";
-  const addressStr = "JL Parangkusumo no 14 Surabaya";
+  const addressStr = "JL Parangkusumo no 14 Surabaya, Jawa Timur";
+  const KOP_KONTAK = "Telp: (031) 1234567 | Email: info@akupunktur-sby.ac.id";
+  const KOP_BANPT = "Akreditasi BAN-PT: B";
+  const KOP_LAMPTKES = "Akreditasi LAM-PTKes: B";
 
   let reportTitle = 'LAPORAN EKSEKUTIF ARSIP & AKREDITASI';
   let dataArsip = arsip;
@@ -4378,7 +3885,7 @@ async function generateIntegratedReport(type, isDashboard = false) {
 
   if (isDashboard) {
     dataArsip = getFilteredData(); 
-    reportTitle = 'LAPORAN ARSIP TAHUN AKADEMIK: ' + currentAY;
+    reportTitle = 'LAPORAN ARSIP TAHUN AKADEMIK: ' + (currentAY || 'Semua');
     chart1Canvas = document.getElementById('chartDoughnut');
     chart2Canvas = document.getElementById('chartStatus'); 
   } else {
@@ -4392,6 +3899,15 @@ async function generateIntegratedReport(type, isDashboard = false) {
       chart1Canvas = document.getElementById('chartDoughnut');
       chart2Canvas = document.getElementById('chartLine');
     }
+  }
+
+  // Filter based on LAM-PTKes and BAN-PT if necessary
+  if (currentPage === 'lamptkes') {
+      dataArsip = arsip.filter(a => getLamptkesCriteriaForUpload(a.jenis) > 0);
+      reportTitle = 'LAPORAN ARSIP LAM-PTKES';
+  } else if (currentPage === 'banpt') {
+      dataArsip = arsip.filter(a => getBanptCriteriaForUpload(a.bidang, a.jenis) > 0);
+      reportTitle = 'LAPORAN ARSIP BAN-PT';
   }
 
   const groupedData = {};
@@ -4422,8 +3938,10 @@ async function generateIntegratedReport(type, isDashboard = false) {
   
   const mapDataToRows = (arr) => {
     return arr.map((a, i) => {
-      const colDokumen = a.nomor + '\n' + a.judul + '\n(Tgl: ' + a.tanggal + ')';
-      const colKategori = (DEPT[a.bidang]?.label?.toUpperCase() || a.bidang.toUpperCase()) + '\n' + getJenisLabel(a.bidang, a.jenis);
+      const colDokumen = (a.nomor ? a.nomor + '\n' : '') + a.judul + '\n(Tgl: ' + a.tanggal + ')';
+      const kLabel = getJenisLabel(a.bidang, a.jenis);
+      const bLabel = DEPT[a.bidang] ? DEPT[a.bidang].label.toUpperCase() : a.bidang.toUpperCase();
+      const colKategori = bLabel + '\n' + kLabel;
       const colStatus = (a.status === 'valid' ? 'Valid' : (a.status === 'pending' ? 'Pending' : 'Kadaluarsa')) + '\n(TA: ' + (a.ay || '-') + ')';
       const colPengirim = a.pengirim || '-';
       let ket = '';
@@ -4439,25 +3957,31 @@ async function generateIntegratedReport(type, isDashboard = false) {
   if (type === 'pdf') {
     if (typeof window.jspdf === 'undefined') { toast('Library jsPDF belum dimuat', 'error'); return; }
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l', 'mm', 'a4'); 
+    const doc = new jsPDF('l', 'mm', 'a4'); // Landscape A4 is best for 7 columns
     
-    if (logoBase64) { doc.addImage(logoBase64, 'JPEG', 14, 10, 20, 20); }
-    doc.setFontSize(16); doc.setFont('helvetica', 'bold');
-    doc.text(institutionName, 38, 14);
-    doc.setFontSize(8); doc.setFont('helvetica', 'normal');
-    doc.text(addressStr, 38, 19);
-    doc.text(KOP_KONTAK, 38, 23);
-    doc.setFont('helvetica', 'bold');
-    doc.text(KOP_BANPT + '  |  ' + KOP_LAMPTKES, 38, 27);
-    doc.setLineWidth(0.8); doc.line(14, 30, 283, 30);
-    doc.setLineWidth(0.3); doc.line(14, 31, 283, 31);
+    // Kop Surat
+    if (logoBase64) { doc.addImage(logoBase64, 'JPEG', 14, 10, 22, 22); }
+    doc.setFontSize(16); doc.setFont('times', 'bold');
+    doc.text(institutionName, 148, 14, { align: 'center' });
+    doc.setFontSize(11); doc.setFont('times', 'normal');
+    doc.text(addressStr, 148, 20, { align: 'center' });
+    doc.text(KOP_KONTAK, 148, 25, { align: 'center' });
+    doc.setFont('times', 'bold');
+    doc.text(KOP_BANPT + '  |  ' + KOP_LAMPTKES, 148, 30, { align: 'center' });
     
-    doc.setFontSize(14); doc.setFont('helvetica', 'bold');
-    doc.text(reportTitle, 14, 42);
-    doc.setFontSize(10); doc.text('Tanggal Cetak: ' + dateStr, 14, 48);
+    // Garis Kop Ganda
+    doc.setLineWidth(0.8); doc.line(14, 34, 283, 34);
+    doc.setLineWidth(0.3); doc.line(14, 35.5, 283, 35.5);
+    
+    // Judul
+    doc.setFontSize(14); doc.setFont('times', 'bold');
+    doc.text(reportTitle, 148, 45, { align: 'center' });
+    doc.setFontSize(10); doc.setFont('times', 'normal');
+    doc.text('Tanggal Cetak: ' + dateStr, 14, 52);
 
     let startY = 58;
     if (c1Img && c2Img) {
+      doc.setFontSize(11); doc.setFont('times', 'bold');
       doc.text('A. VISUALISASI DATA', 14, startY);
       doc.addImage(c1Img, 'PNG', 14, startY+4, 100, 100);
       doc.addImage(c2Img, 'PNG', 120, startY+4, 150, 75);
@@ -4465,220 +3989,137 @@ async function generateIntegratedReport(type, isDashboard = false) {
       startY = 15;
     }
 
-    if (!isSingleDept) {
-      doc.setFontSize(12); doc.setFont('helvetica', 'bold');
-      doc.text('B. REKAPITULASI ARSIP PER BIDANG', 14, startY);
-      const summaryData = Object.keys(groupedData).map((k, i) => [
-        i+1, DEPT[k]?.label?.toUpperCase() || k.toUpperCase(), groupedData[k].length + ' Arsip'
-      ]);
-      doc.autoTable({
+    doc.setFontSize(11); doc.setFont('times', 'bold');
+    doc.text(c1Img ? 'B. TABEL ARSIP' : 'A. TABEL ARSIP', 14, startY);
+    
+    const allDataRows = mapDataToRows(dataArsip);
+    
+    doc.autoTable({
         startY: startY + 5,
-        head: [['No', 'Nama Bidang', 'Total Arsip']],
-        body: summaryData,
-        theme: 'grid',
-        headStyles: { fillColor: [40, 40, 40] }
-      });
-      doc.addPage();
-      startY = 15;
-    }
-
-    doc.setFontSize(12); doc.setFont('helvetica', 'bold');
-    doc.text(isSingleDept ? 'B. DAFTAR ARSIP LENGKAP' : 'C. RINCIAN ARSIP PER BIDANG', 14, startY);
-    
-    let currentY = startY + 8;
-
-    for (const bidang of Object.keys(groupedData)) {
-      if (!isSingleDept) {
-        doc.setFontSize(11); doc.setFont('helvetica', 'bold');
-        doc.text('Bidang: ' + (DEPT[bidang]?.label?.toUpperCase() || bidang.toUpperCase()), 14, currentY);
-        currentY += 4;
-      }
-      
-      const rows = mapDataToRows(groupedData[bidang]);
-      doc.autoTable({
-        startY: currentY,
         head: [headers],
-        body: rows,
+        body: allDataRows,
         theme: 'grid',
-        styles: { fontSize: 8, cellPadding: 2, valign: 'middle', overflow: 'linebreak' },
-        headStyles: { fillColor: [16, 124, 65], halign: 'center' },
+        styles: { font: 'times', fontSize: 10, textColor: 20, valign: 'middle' },
+        headStyles: { fillColor: [230, 230, 230], textColor: 20, fontStyle: 'bold', halign: 'center' },
         columnStyles: {
-          0: { cellWidth: 8, halign: 'center' },
-          1: { cellWidth: 55 },
-          2: { cellWidth: 35 },
-          3: { cellWidth: 22, halign: 'center' },
-          4: { cellWidth: 28 },
-          5: { cellWidth: 50 },
-          6: { cellWidth: 45 }
+            0: { halign: 'center', cellWidth: 10 },
+            6: { textColor: [0, 0, 255] } // link color
+        },
+        didDrawCell: function(data) {
+            // Check if it's the GDrive link column (index 6) and in the body
+            if (data.section === 'body' && data.column.index === 6 && data.cell.raw && data.cell.raw.startsWith('http')) {
+                doc.link(data.cell.x, data.cell.y, data.cell.width, data.cell.height, { url: data.cell.raw });
+            }
         }
-      });
-      currentY = doc.lastAutoTable.finalY + 10;
-      
-      if (currentY > 180 && !isSingleDept) {
-        doc.addPage();
-        currentY = 15;
-      }
-    }
+    });
 
-    doc.save('Laporan_' + dateStr + '.pdf');
-    toast('Berhasil mengunduh PDF', 'success');
-
-  } else if (type === 'excel') {
-    if (typeof ExcelJS === 'undefined') { toast('Library ExcelJS belum dimuat', 'error'); return; }
-    const wb = new ExcelJS.Workbook();
-    
-    const ws1 = wb.addWorksheet('Dashboard Visual');
-    ws1.mergeCells('B2:H2'); ws1.getCell('B2').value = institutionName; ws1.getCell('B2').font = { size: 16, bold: true };
-    ws1.mergeCells('B3:H3'); ws1.getCell('B3').value = addressStr;
-    
-    if (logoBase64) {
-      const base64Data = logoBase64.split(';base64,').pop();
-      const logoId = wb.addImage({ base64: base64Data, extension: 'jpeg' });
-      ws1.addImage(logoId, { tl: { col: 0, row: 1 }, ext: { width: 80, height: 80 } });
-    }
-
-    ws1.mergeCells('A5:E5'); ws1.getCell('A5').value = reportTitle; ws1.getCell('A5').font = { size: 14, bold: true };
-
-    let summaryRowStart = 7;
-    if (c1Img && c2Img) {
-      const c1Base64 = c1Img.split(';base64,').pop();
-      const id1 = wb.addImage({ base64: c1Base64, extension: 'png' });
-      ws1.addImage(id1, { tl: { col: 0, row: 7 }, ext: { width: 400, height: 400 } });
-
-      const c2Base64 = c2Img.split(';base64,').pop();
-      const id2 = wb.addImage({ base64: c2Base64, extension: 'png' });
-      ws1.addImage(id2, { tl: { col: 7, row: 7 }, ext: { width: 600, height: 300 } });
-      summaryRowStart = 30; 
-    }
-
-    if (!isSingleDept) {
-      ws1.getCell('B'+summaryRowStart).value = 'REKAPITULASI PER BIDANG';
-      ws1.getCell('B'+summaryRowStart).font = { bold: true, size: 12 };
-      ws1.getCell('B'+(summaryRowStart+1)).value = 'Nama Bidang';
-      ws1.getCell('C'+(summaryRowStart+1)).value = 'Total Arsip';
-      ws1.getCell('D'+(summaryRowStart+1)).value = 'Navigasi';
-      
-      let sr = summaryRowStart + 2;
-      Object.keys(groupedData).forEach(k => {
-        const sheetName = (DEPT[k]?.label || k).substring(0,30).replace(/[:\\\/?*\[\]]/g, '');
-        ws1.getCell('B'+sr).value = sheetName.toUpperCase();
-        ws1.getCell('C'+sr).value = groupedData[k].length;
-        ws1.getCell('D'+sr).value = { text: 'Ke Sheet >>', hyperlink: "#'" + sheetName + "'!A1" };
-        ws1.getCell('D'+sr).font = { color: { argb: 'FF0563C1' }, underline: true };
-        sr++;
-      });
-    }
-
-    for (const bidang of Object.keys(groupedData)) {
-      const sheetName = isSingleDept ? 'Data Arsip' : (DEPT[bidang]?.label || bidang).substring(0,30).replace(/[:\\\/?*\[\]]/g, '');
-      const ws2 = wb.addWorksheet(sheetName);
-      ws2.addRow(headers); ws2.getRow(1).font = { bold: true };
-      
-      ws2.columns = [
-        { width: 5 }, { width: 40 }, { width: 25 }, { width: 15 }, { width: 20 }, { width: 40 }, { width: 40 }
-      ];
-
-      const rows = mapDataToRows(groupedData[bidang]);
-      rows.forEach(row => {
-        const r = ws2.addRow(row);
-        r.alignment = { wrapText: true, vertical: 'middle' };
-      });
-    }
-
-    const buffer = await wb.xlsx.writeBuffer();
-    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-    saveAs(blob, 'Laporan_' + dateStr + '.xlsx');
-    toast('Berhasil mengunduh Excel', 'success');
+    doc.save(`Laporan_AAS_${dateStr}.pdf`);
+    toast('Laporan PDF berhasil diunduh', 'success');
 
   } else if (type === 'word') {
-    if (typeof docx === 'undefined') { toast('Library docx belum dimuat', 'error'); return; }
-    const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun, WidthType } = docx;
-
-    const children = [];
-    const headerChildren = [];
-    if (logoBase64) {
-      const base64Data = logoBase64.split(';base64,').pop();
-      const byteCharacters = atob(base64Data);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) byteNumbers[i] = byteCharacters.charCodeAt(i);
-      headerChildren.push(new ImageRun({ data: new Uint8Array(byteNumbers), transformation: { width: 60, height: 60 } }));
-    }
     
-    headerChildren.push(new TextRun({ text: '  ' + institutionName, bold: true, size: 28 }));
-    children.push(new Paragraph({ children: headerChildren }));
-    children.push(new Paragraph({ children: [new TextRun({ text: addressStr, size: 18 })] }));
-    children.push(new Paragraph({ children: [new TextRun({ text: KOP_KONTAK, size: 18 })] }));
-    children.push(new Paragraph({ children: [new TextRun({ text: KOP_BANPT, size: 18, bold: true })] }));
-    children.push(new Paragraph({ children: [new TextRun({ text: KOP_LAMPTKES, size: 18, bold: true })] }));
-    children.push(new Paragraph({ text: '' }));
-    children.push(new Paragraph({ children: [new TextRun({ text: reportTitle, bold: true, size: 24 })] }));
-    children.push(new Paragraph({ children: [new TextRun({ text: 'Tanggal Cetak: ' + dateStr, size: 20 })] }));
-    children.push(new Paragraph({ text: '' }));
+    let htmlContent = `
+      <div style="font-family: 'Times New Roman', serif;">
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 5px;">
+            <tr>
+                <td style="width: 80px; text-align: center; vertical-align: middle;">
+                    ${logoBase64 ? `<img src="${logoBase64}" style="width:70px; height:70px;">` : ''}
+                </td>
+                <td style="text-align: center; vertical-align: middle;">
+                    <div style="font-size: 18pt; font-weight: bold;">${institutionName}</div>
+                    <div style="font-size: 11pt;">${addressStr}</div>
+                    <div style="font-size: 11pt;">${KOP_KONTAK}</div>
+                    <div style="font-size: 11pt; font-weight: bold;">${KOP_BANPT} | ${KOP_LAMPTKES}</div>
+                </td>
+            </tr>
+        </table>
+        <div style="border-top: 3px solid black; margin-top: 5px;"></div>
+        <div style="border-top: 1px solid black; margin-top: 2px; margin-bottom: 20px;"></div>
+        
+        <h3 style="text-align: center; font-size: 14pt;">${reportTitle}</h3>
+        <p style="font-size: 11pt;">Tanggal Cetak: ${dateStr}</p>
+    `;
 
-    if (c1Img && c2Img) {
-      children.push(new Paragraph({ children: [new TextRun({ text: 'A. Visualisasi Data', bold: true, size: 22 })] }));
-      const toUint8 = (b64) => {
-        const d = atob(b64.split(';base64,').pop());
-        const arr = new Uint8Array(d.length);
-        for (let i=0; i<d.length; i++) arr[i] = d.charCodeAt(i);
-        return arr;
-      };
-      children.push(new Paragraph({ children: [new ImageRun({ data: toUint8(c1Img), transformation: { width: 300, height: 300 } })] }));
-      children.push(new Paragraph({ children: [new ImageRun({ data: toUint8(c2Img), transformation: { width: 450, height: 225 } })] }));
-    }
+    htmlContent += `
+      <table style="width: 100%; border-collapse: collapse; font-size: 11pt;" border="1">
+        <thead>
+          <tr style="background-color: #f2f2f2;">
+            ${headers.map(h => `<th style="padding: 5px; text-align: center;">${h}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+    `;
 
-    children.push(new Paragraph({ text: '' }));
-    
-    if (!isSingleDept) {
-      children.push(new Paragraph({ children: [new TextRun({ text: 'B. Rekapitulasi Per Bidang', bold: true, size: 22 })] }));
-      const sumRows = [new TableRow({ children: ['No','Nama Bidang','Total Arsip'].map(h=>new TableCell({children:[new Paragraph({text:h,bold:true})], shading:{fill:'E0E0E0'}})) })];
-      Object.keys(groupedData).forEach((k,i) => {
-        sumRows.push(new TableRow({ children: [
-          new TableCell({children:[new Paragraph({text:String(i+1)})]}),
-          new TableCell({children:[new Paragraph({text:DEPT[k]?.label?.toUpperCase()||k.toUpperCase()})]}),
-          new TableCell({children:[new Paragraph({text:groupedData[k].length + ' Arsip'})]})
-        ]}));
-      });
-      children.push(new Table({ rows: sumRows, width: { size: 100, type: WidthType.PERCENTAGE } }));
-      children.push(new Paragraph({ text: '' }));
-      children.push(new Paragraph({ children: [new TextRun({ text: 'C. Rincian Arsip Per Bidang', bold: true, size: 22 })] }));
-    } else {
-      children.push(new Paragraph({ children: [new TextRun({ text: 'B. Daftar Arsip Lengkap', bold: true, size: 22 })] }));
-    }
-
-    for (const bidang of Object.keys(groupedData)) {
-      if (!isSingleDept) {
-        children.push(new Paragraph({ text: '' }));
-        children.push(new Paragraph({ children: [new TextRun({ text: '[Bidang: ' + (DEPT[bidang]?.label?.toUpperCase()||bidang.toUpperCase()) + ']', bold: true, size: 18 })] }));
-      }
-      
-      const tableRows = [];
-      tableRows.push(new TableRow({
-        children: headers.map(h => new TableCell({ children: [new Paragraph({ text: h, bold:true, color:'FFFFFF' })], shading:{fill:'167C41'} }))
-      }));
-
-      const rows = mapDataToRows(groupedData[bidang]);
-      rows.forEach(row => {
-        tableRows.push(new TableRow({
-          children: row.map((cellText, colIdx) => {
-            // Last column (colIdx === 6) = GDrive link
-            if (colIdx === 6 && cellText && cellText !== '-' && cellText.startsWith('http')) {
-              return new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: cellText, color: '0563C1', underline: {} })] })] });
+    const allDataRows = mapDataToRows(dataArsip);
+    allDataRows.forEach(row => {
+        htmlContent += `<tr>`;
+        row.forEach((cell, i) => {
+            let val = String(cell).replace(/\n/g, '<br>');
+            if (i === 6 && val.startsWith('http')) {
+                val = `<a href="${val}">${val}</a>`;
             }
-            const paras = String(cellText).split('\n').map(line => new Paragraph({ text: line }));
-            return new TableCell({ children: paras });
-          })
-        }));
-      });
-
-      children.push(new Table({ rows: tableRows, width: { size: 100, type: WidthType.PERCENTAGE } }));
-    }
-
-    const docxObj = new Document({ sections: [{ properties: {}, children: children }] });
-    Packer.toBlob(docxObj).then(blob => {
-      saveAs(blob, 'Laporan_' + dateStr + '.docx');
-      toast('Berhasil mengunduh Word', 'success');
+            htmlContent += `<td style="padding: 5px;">${val}</td>`;
+        });
+        htmlContent += `</tr>`;
     });
+
+    htmlContent += `</tbody></table></div>`;
+
+    const opt = {
+      margin: { top: 720, right: 720, bottom: 720, left: 720 }, // 0.5 inch margins
+      orientation: 'landscape'
+    };
+
+    const converted = htmlDocx.asBlob(htmlContent, opt);
+    saveAs(converted, `Laporan_AAS_${dateStr}.docx`);
+    toast('Laporan Word berhasil diunduh', 'success');
+
+  } else if (type === 'excel') {
+    if (typeof XLSX === 'undefined') { toast('Library Excel belum dimuat!', 'error'); return; }
+    
+    // KOP SURAT (4 Baris)
+    const row1 = [institutionName, '', '', '', '', '', ''];
+    const row2 = [addressStr, '', '', '', '', '', ''];
+    const row3 = [KOP_KONTAK, '', '', '', '', '', ''];
+    const row4 = [KOP_BANPT + ' | ' + KOP_LAMPTKES, '', '', '', '', '', ''];
+    const row5 = ['', '', '', '', '', '', '']; // Spacing
+    const row6 = [reportTitle, '', '', '', '', '', ''];
+    const row7 = ['Tanggal Cetak: ' + dateStr, '', '', '', '', '', ''];
+    
+    const allDataRows = mapDataToRows(dataArsip);
+    
+    // Replace newline chars for excel
+    const cleanDataRows = allDataRows.map(row => {
+        return row.map(cell => String(cell).replace(/\n/g, '  |  '));
+    });
+
+    const allRows = [row1, row2, row3, row4, row5, row6, row7, headers, ...cleanDataRows];
+    const ws = XLSX.utils.aoa_to_sheet(allRows);
+    
+    // Merge Kop Surat
+    ws['!merges'] = [
+        {s:{r:0,c:0}, e:{r:0,c:6}},
+        {s:{r:1,c:0}, e:{r:1,c:6}},
+        {s:{r:2,c:0}, e:{r:2,c:6}},
+        {s:{r:3,c:0}, e:{r:3,c:6}},
+        {s:{r:5,c:0}, e:{r:5,c:6}},
+    ];
+    
+    // Set column widths
+    ws['!cols'] = [
+        {wch: 5},   // No
+        {wch: 35},  // Dokumen
+        {wch: 30},  // Kategori
+        {wch: 15},  // Status
+        {wch: 20},  // Pengirim
+        {wch: 40},  // Keterangan
+        {wch: 40}   // Link
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Laporan");
+    XLSX.writeFile(wb, `Laporan_AAS_${dateStr}.xlsx`);
+    toast('Laporan Excel berhasil diunduh', 'success');
   }
 }
 
@@ -4868,124 +4309,9 @@ window.showUploadOverlay = function(show) {
 
 
 async function exportBanpt(type) {
-  let data = arsip.filter(a => getBanptCriteriaForUpload(a.bidang, a.jenis) > 0);
-
-  if (data.length === 0) {
-    toast('Tidak ada dokumen BAN-PT untuk diekspor!', 'warning');
-    return;
-  }
-
-  data.sort((a, b) => getBanptCriteriaForUpload(a.bidang, a.jenis) - getBanptCriteriaForUpload(b.bidang, b.jenis));
-  const dateStr = new Date().toLocaleDateString('id-ID');
-  const fileName = "Borang_BANPT_" + new Date().toISOString().slice(0,10);
-
-  const getLabel = (a) => getJenisLabel(a.bidang, a.jenis);
-  
-  if (type === 'excel') {
-    if (typeof XLSX === 'undefined') { toast('Library Excel belum dimuat!', 'error'); return; }
-    const kopRows = buildKopExcelRows('DOKUMEN PENDUKUNG BORANG BAN-PT', dateStr);
-    const dataRows = data.map((a, index) => {
-      let k = getBanptCriteriaForUpload(a.bidang, a.jenis);
-      let kLabel = 'Kriteria ' + k;
-      if (a.bidang === 'banpt_spmi' || (a.jenis && a.jenis.startsWith('banpt_spmi'))) kLabel = 'SPMI K' + k;
-      if (a.bidang === 'banpt_led' || (a.jenis && a.jenis.startsWith('banpt_led'))) kLabel = 'LED K' + k;
-      return [index+1, kLabel, a.tanggal, a.judul, (DEPT[a.bidang]?.label||a.bidang).toUpperCase(), getLabel(a), getGDriveShareUrl(a.gdriveLink)];
-    });
-    const headerRow = ['No','Kriteria','Tanggal','Judul Dokumen','Bidang Terkait','Deskripsi Dokumen','Tautan GDrive'];
-    const allRows = [...kopRows, headerRow, ...dataRows];
-    const worksheet = XLSX.utils.aoa_to_sheet(allRows);
-    // Style kolom lebar
-    worksheet['!cols'] = [{wch:5},{wch:15},{wch:12},{wch:40},{wch:30},{wch:50},{wch:45}];
-    // Merge header kop (kolom A s/d G)
-    worksheet['!merges'] = [];
-    for (let r = 0; r < 7; r++) {
-      if (r !== 5) worksheet['!merges'].push({s:{r,c:0}, e:{r,c:6}});
+    if (['excel', 'pdf', 'word'].includes(type)) {
+        generateIntegratedReport(type, false);
+    } else {
+        toast('Format tidak didukung', 'error');
     }
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'BAN-PT');
-    XLSX.writeFile(workbook, fileName + ".xlsx");
-    toast("Berhasil mengunduh Excel", 'success');
-  } 
-  else if (type === 'pdf') {
-    if (typeof window.jspdf === 'undefined') { toast('Library jsPDF belum dimuat', 'error'); return; }
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF('l', 'mm', 'a4'); 
-    
-    const banptStartY = await addKopPdf(doc, 'DOKUMEN PENDUKUNG BORANG BAN-PT', dateStr);
-    
-    let tableData = data.map((a, i) => {
-      let k = getBanptCriteriaForUpload(a.bidang, a.jenis);
-      let kLabel = 'K' + k;
-      if (a.bidang === 'banpt_spmi' || (a.jenis && a.jenis.startsWith('banpt_spmi'))) kLabel = 'SPMI K' + k;
-      if (a.bidang === 'banpt_led' || (a.jenis && a.jenis.startsWith('banpt_led'))) kLabel = 'LED K' + k;
-      return [
-        i+1,
-        kLabel,
-        a.judul,
-        (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
-        getLabel(a),
-        getGDriveShareUrl(a.gdriveLink)
-      ];
-    });
-
-    doc.autoTable({
-      startY: banptStartY,
-      head: [['No', 'Kriteria', 'Judul Dokumen', 'Bidang', 'Deskripsi / Tabel', 'Tautan GDrive']],
-      body: tableData,
-      theme: 'striped',
-      headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold', fontSize: 8 },
-      alternateRowStyles: { fillColor: [239, 246, 255] },
-      columnStyles: {
-        0: {cellWidth: 9,  halign: 'center'},
-        1: {cellWidth: 18},
-        2: {cellWidth: 65},
-        3: {cellWidth: 40},
-        4: {cellWidth: 85},
-        5: {cellWidth: 52}
-      },
-      styles: { fontSize: 8, cellPadding: 2.5, overflow: 'linebreak', valign: 'middle' },
-      didDrawPage: (data) => {
-        doc.setFontSize(7); doc.setFont('helvetica','italic');
-        doc.text('Halaman ' + doc.getCurrentPageInfo().pageNumber + ' | ' + KOP_NAMA, doc.internal.pageSize.width/2, doc.internal.pageSize.height - 5, {align:'center'});
-      }
-    });
-    
-    doc.save(fileName + ".pdf");
-    toast("Berhasil mengunduh PDF", 'success');
-  }
-  else if (type === 'word') {
-    const kopBanpt = await buildKopHtml('DOKUMEN PENDUKUNG BORANG BAN-PT', dateStr);
-    let html = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>";
-    html += "<head><meta charset='utf-8'><style>body{font-family:Arial,sans-serif;font-size:11pt;} table{border-collapse:collapse;width:100%;} th,td{border:1px solid #666;padding:5px 6px;font-size:9pt;} th{background:#2563eb;color:#fff;font-weight:bold;} tr:nth-child(even){background:#eff6ff;}</style></head><body>";
-    html += kopBanpt;
-    html += "<table>";
-    html += "<tr><th>No</th><th>Kriteria</th><th>Judul Dokumen</th><th>Bidang</th><th>Deskripsi Dokumen</th><th>Tautan GDrive</th></tr>";
-    
-    data.forEach((a, index) => {
-      let k = getBanptCriteriaForUpload(a.bidang, a.jenis);
-      let kLabel = 'Kriteria ' + k;
-      if (a.bidang === 'banpt_spmi' || (a.jenis && a.jenis.startsWith('banpt_spmi'))) kLabel = 'SPMI K' + k;
-      if (a.bidang === 'banpt_led' || (a.jenis && a.jenis.startsWith('banpt_led'))) kLabel = 'LED K' + k;
-      html += "<tr>";
-      html += "<td style='padding:4px;'>" + (index + 1) + "</td>";
-      html += "<td style='padding:4px;'>" + kLabel + "</td>";
-      html += "<td style='padding:4px;'>" + a.judul + "</td>";
-      html += "<td style='padding:4px;'>" + (DEPT[a.bidang]?.label || a.bidang).toUpperCase() + "</td>";
-      html += "<td style='padding:4px;'>" + getLabel(a) + "</td>";
-      html += "<td style='padding:4px;'>" + (a.gdriveLink ? `<a href="${getGDriveShareUrl(a.gdriveLink)}">${getGDriveShareUrl(a.gdriveLink)}</a>` : '-') + "</td>";
-      html += "</tr>";
-    });
-    html += "</table></body></html>";
-    
-    let blob = new Blob(['\xef\xbb\xbf', html], { type: 'application/msword' });
-    let url = URL.createObjectURL(blob);
-    let link = document.createElement('a');
-    link.href = url;
-    link.download = fileName + ".doc";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    toast("Berhasil mengunduh Word", 'success');
-  }
 }
