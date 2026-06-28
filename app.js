@@ -2225,24 +2225,31 @@ function switchBanptTab(tabNum, element) {
   generateBanptReport();
 }
 
+function getBanptCriteriaForUpload(bidang, jenis) {
+    const j = (jenis || '').toLowerCase();
+    const b = (bidang || '');
+    if(j.includes('lulusan') || j.includes('ipk') || j.includes('publikasi') || j.includes('jurnal') || j.includes('ukom') || j.includes('tracer')) return 9;
+    if(j.includes('renstra') || j.includes('renop') || j.includes('vmts') || j.includes('visi')) return 1;
+    if(j.includes('spmi') || j.includes('sotk') || j.includes('mou') || j.includes('moa') || j.includes('audit')) return 2;
+    if(b === 'kemahasiswaan' || j.includes('mahasiswa') || j.includes('alumni')) return 3;
+    if(b === 'kepegawaian' || j.includes('dosen') || j.includes('tendik') || j.includes('ijazah') || j.includes('sk_')) return 4;
+    if(b === 'keuangan' || b === 'laboratorium' || j.includes('anggaran') || j.includes('sarana') || j.includes('inventaris')) return 5;
+    if(b === 'lppm' || j.includes('penelitian') || (j.includes('luaran') && !j.includes('pkm'))) return 7;
+    if(b === 'pengabdian' || j.includes('pkm') || j.includes('pengabdian')) return 8;
+    if(b === 'akademik' || b === 'sistem_pendidikan' || b === 'perpustakaan' || j.includes('kurikulum') || j.includes('rps') || j.includes('pembelajaran')) return 6;
+    if(b === 'umum' || b === 'penjaminan_mutu') return 2;
+    return 0;
+}
+
+function getLamptkesCriteriaForUpload(jenis) {
+    if(!jenis) return 0;
+    const match = jenis.match(/^k(\d)_/);
+    if(match) return parseInt(match[1]);
+    return 0;
+}
+
 function getBanptData(k) {
-  return arsip.filter(a => {
-    const j = (a.jenis || '').toLowerCase();
-    const b = a.bidang;
-    
-    // Auto-map based on keywords and specific document types
-    if(k === 1) return j.includes('renstra') || j.includes('renop') || j.includes('vmts') || j.includes('tracer') || j.includes('visi');
-    if(k === 2) return b === 'umum' || b === 'penjaminan_mutu' || j.includes('spmi') || j.includes('sotk') || j.includes('mou') || j.includes('moa') || j.includes('audit');
-    if(k === 3) return b === 'kemahasiswaan' || j.includes('mahasiswa') || j.includes('alumni');
-    if(k === 4) return b === 'kepegawaian' || j.includes('dosen') || j.includes('tendik') || j.includes('ijazah') || j.includes('sk_');
-    if(k === 5) return b === 'keuangan' || b === 'laboratorium' || j.includes('anggaran') || j.includes('sarana') || j.includes('inventaris');
-    if(k === 6) return b === 'akademik' || b === 'sistem_pendidikan' || b === 'perpustakaan' || j.includes('kurikulum') || j.includes('rps') || j.includes('pembelajaran');
-    if(k === 7) return b === 'lppm' || j.includes('penelitian') || (j.includes('luaran') && !j.includes('pkm'));
-    if(k === 8) return b === 'pengabdian' || j.includes('pkm') || j.includes('pengabdian');
-    if(k === 9) return j.includes('lulusan') || j.includes('ipk') || j.includes('publikasi') || j.includes('jurnal') || j.includes('ukom');
-    
-    return false;
-  });
+  return arsip.filter(a => getBanptCriteriaForUpload(a.bidang, a.jenis) === k);
 }
 
 function generateBanptReport() {
