@@ -591,7 +591,7 @@ function processSnapshot(snapshot, collectionName) {
           if(id === 'page-dashboard') renderDashboard();
           else if(id === 'page-analytics') renderAnalytics();
           else if(id === 'page-dept') renderDeptPage(document.getElementById('deptBannerName').dataset.dept);
-          else if(id === 'page-lamptkes') renderLamptkesTab(window.currentLamptkesTab || '1');
+          else if(id === 'page-lamptkes') generateLamptkesReport();
           else if(id === 'page-mahasiswa') renderMahasiswaPage();
           else if(id === 'page-sdm') renderSdmPage();
           else if(id === 'page-arsip') renderArsipTable();
@@ -1618,12 +1618,25 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
           bidang: DEPT[bidang]?.label || bidang,
           jenis: jenis,
           tahun: tahun,
-          folderPath: [
-            "SIMARSIP AAS",
-            (DEPT[bidang]?.label || bidang),
-            (tahun ? "TA " + tahun : "TA Umum"),
-            (getJenisLabel(bidang, jenis).match(/\[(Kriteria \d+)\]/i) ? getJenisLabel(bidang, jenis).match(/\[(Kriteria \d+)\]/i)[1] : "Umum")
-          ]
+          folderPath: (function() {
+            let level2 = DEPT[bidang]?.label || bidang;
+            let level3 = tahun ? "TA " + tahun : "TA Umum";
+            let level4 = "Umum";
+            const kMatch = getJenisLabel(bidang, jenis).match(/\[?(Kriteria \d+)\]?/i);
+            
+            if (bidang === 'lamptkes_led') {
+               level2 = 'Akreditasi LAM-PTKes';
+               level3 = 'Laporan Evaluasi Diri (LED)';
+               level4 = kMatch ? kMatch[1] : "Umum";
+            } else if (bidang === 'lamptkes_spmi') {
+               level2 = 'Akreditasi LAM-PTKes';
+               level3 = 'Sistem Penjaminan Mutu Internal (SPMI)';
+               level4 = kMatch ? kMatch[1] : "Umum";
+            } else {
+               level4 = kMatch ? kMatch[1] : "Umum";
+            }
+            return ["SIMARSIP AAS", level2, level3, level4];
+          })()
         };
 
       try {
