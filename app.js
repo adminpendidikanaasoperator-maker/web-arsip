@@ -550,44 +550,113 @@ function onAYearChange() {
 }
 
 /* ─── DATA ─── */
-async function loadData() {
+function checkKadaluarsa(tanggal) {
+  if(!tanggal) return 'aman';
+  const d = new Date(tanggal);
+  const now = new Date();
+  const diffYears = (now - d) / (1000 * 60 * 60 * 24 * 365.25);
+  if (diffYears >= 5) return 'kadaluarsa';
+  if (diffYears >= 4) return 'perlu_diperbarui';
+  return 'aman';
+}
 
+let isInitialLoad = { arsip: true, activity: true, mahasiswa: true, sdm: true };
+
+function processSnapshot(snapshot, collectionName) {
+  const data = snapshot.docs.map(d => d.data());
+  
+  if (collectionName === 'arsip') { arsip = data; }
+  else if (collectionName === 'activity') { activity = data; }
+  else if (collectionName === 'mahasiswa') { mahasiswa = data; }
+  else if (collectionName === 'sdm') { sdm = data; }
+
+  if (!isInitialLoad[collectionName]) {
+     const ping = document.getElementById('soundPing');
+     if(ping) { ping.currentTime = 0; ping.play().catch(e=>console.log(e)); }
+     
+     if (typeof isAppLoaded !== 'undefined' && isAppLoaded) {
+       populateAYFilters();
+       if(typeof populateMhsAyFilters === 'function') populateMhsAyFilters();
+       
+       if(currentUser) {
+         if(currentUser.role==='admin') renderTable(arsip);
+         else renderTable(arsip.filter(a=>a.bidang===currentUser.bidang));
+       }
+       updateStats();
+       
+       // Re-render visible page
+       const activePage = document.querySelector('.page.active');
+       if(activePage) {
+          const id = activePage.id;
+          if(id === 'page-dashboard') renderDashboard();
+          else if(id === 'page-analytics') renderAnalytics();
+          else if(id === 'page-dept') renderDeptPage(document.getElementById('deptBannerName').dataset.dept);
+          else if(id === 'page-lamptkes') renderLamptkesTab(window.currentLamptkesTab || '1');
+          else if(id === 'page-mahasiswa') renderMahasiswaPage();
+          else if(id === 'page-sdm') renderSdmPage();
+          else if(id === 'page-arsip') renderArsipTable();
+       }
+     }
+  }
+}
+
+async function loadData() {
 // Migration: Update old bidang keys to new keys
 let dataMigrated = false;
 arsip.forEach(a => {
   if (a.bidang === 'pendidikan') { a.bidang = 'akademik'; dataMigrated = true; }
   if (a.bidang === 'sdm') { a.bidang = 'kepegawaian'; dataMigrated = true; }
-  // Update old jenis keys if needed (e.g. k5_aktivitas_mengajar is still the same)
 });
 if (dataMigrated) {
   save(); // Save to localStorage
   console.log('Migrated old arsip data to new Bidang keys');
 }
 
-  try {
-    const [arsipSnap, activitySnap, mhsSnap, sdmSnap] = await Promise.all([
-      db.collection('arsip').get(),
-      db.collection('activity').get(),
-      db.collection('mahasiswa').get(),
-      db.collection('sdm').get()
-    ]);
-    
-    arsip = arsipSnap.docs.map(d => d.data());
-    activity = activitySnap.docs.map(d => d.data());
-    mahasiswa = mhsSnap.docs.map(d => d.data());
-    sdm = sdmSnap.docs.map(d => d.data());
-  } catch(err) {
-    console.error('Failed to load from Firestore', err);
+  return new Promise((resolve) => {
+    let loadedCount = 0;
+    const checkDone = () => {
+      loadedCount++;
+      if(loadedCount === 4) {
+         // Check kadaluarsa
+         if(arsip.some(a => checkKadaluarsa(a.tanggal) !== 'aman')) {
+            const alert = document.getElementById('soundAlert');
+            if(alert) { alert.currentTime = 0; alert.play().catch(e=>console.log('Audio restricted', e)); }
+         }
+         resolve();
+      }
+    };
+
     try {
-      arsip = JSON.parse(localStorage.getItem('SIMARSIP_AAS'))||[];
-      activity = JSON.parse(localStorage.getItem('SIMARSIP_ACT'))||[];
-      mahasiswa = JSON.parse(localStorage.getItem('SIMARSIP_MHS'))||[];
-      sdm = JSON.parse(localStorage.getItem('SIMARSIP_SDM'))||[];
-    } catch { arsip=[]; activity=[]; mahasiswa=[]; sdm=[]; }
-    if (!arsip.length) { arsip = sampleData(); }
-    if (!mahasiswa.length) { mahasiswa = sampleDataMahasiswa(); }
-    if (!sdm.length) { sdm = sampleDataSDM(); }
-  } finally {
+      db.collection('arsip').onSnapshot(snap => {
+        processSnapshot(snap, 'arsip');
+        if (isInitialLoad.arsip) { isInitialLoad.arsip = false; checkDone(); }
+      });
+      db.collection('activity').onSnapshot(snap => {
+        processSnapshot(snap, 'activity');
+        if (isInitialLoad.activity) { isInitialLoad.activity = false; checkDone(); }
+      });
+      db.collection('mahasiswa').onSnapshot(snap => {
+        processSnapshot(snap, 'mahasiswa');
+        if (isInitialLoad.mahasiswa) { isInitialLoad.mahasiswa = false; checkDone(); }
+      });
+      db.collection('sdm').onSnapshot(snap => {
+        processSnapshot(snap, 'sdm');
+        if (isInitialLoad.sdm) { isInitialLoad.sdm = false; checkDone(); }
+      });
+    } catch(err) {
+      console.error('Failed to set up onSnapshot', err);
+      try {
+        arsip = JSON.parse(localStorage.getItem('SIMARSIP_AAS'))||[];
+        activity = JSON.parse(localStorage.getItem('SIMARSIP_ACT'))||[];
+        mahasiswa = JSON.parse(localStorage.getItem('SIMARSIP_MHS'))||[];
+        sdm = JSON.parse(localStorage.getItem('SIMARSIP_SDM'))||[];
+      } catch { arsip=[]; activity=[]; mahasiswa=[]; sdm=[]; }
+      if (!arsip.length) { arsip = sampleData(); }
+      if (!mahasiswa.length) { mahasiswa = sampleDataMahasiswa(); }
+      if (!sdm.length) { sdm = sampleDataSDM(); }
+      resolve();
+    }
+  });
     // Migration: K9 to respective criteria
     let k9Migrated = false;
     if (typeof db !== 'undefined') {
