@@ -3295,6 +3295,79 @@ function getGDriveShareUrl(url) {
   return url;
 }
 
+/* ─── KOP SURAT HELPERS ─── */
+const KOP_NAMA   = 'AKADEMI AKUPUNKTUR SURABAYA';
+const KOP_ALAMAT = 'Jl Parang Kusumo 14 Surabaya - 60176  Telp. 031.3526916';
+const KOP_KONTAK = 'Email : akademi.akupunktur@gmail.com  /  www.akademiakupunktursurabaya.ac.id';
+const KOP_BANPT  = 'Akreditasi BAN-PT No : 2523/SK/BAN-PT/Ak.S/2.0/PT/IX/2025';
+const KOP_LAMPTKES = 'Akreditasi LAM-PTKes No : 0179/LAM-PTKes/Akr/Dip/V/2021';
+
+// Buat KOP HTML untuk Word/HTML exports
+async function buildKopHtml(docTitle, dateStr) {
+  const logoB64 = await getBase64FromUrl('logo.jpg');
+  const logoTag = logoB64
+    ? `<img src="${logoB64}" style="height:80px; width:auto; display:block; margin:auto;" />`
+    : '<div style="width:80px; height:80px; background:#eee; display:inline-block;"></div>';
+  let k = '';
+  k += "<table style='width:100%; border-collapse:collapse; border-bottom:3px double #1a1a1a; margin-bottom:6px; font-family:Arial,sans-serif;'><tr>";
+  k += `<td style='width:95px; text-align:center; vertical-align:middle; padding:6px;'>${logoTag}</td>`;
+  k += "<td style='text-align:center; vertical-align:middle; padding:4px;'>";
+  k += `<div style='font-size:18pt; font-weight:bold; letter-spacing:1px; font-family:Arial;'>${KOP_NAMA}</div>`;
+  k += `<div style='font-size:9pt; font-family:Arial; margin-top:2px;'>${KOP_ALAMAT}</div>`;
+  k += `<div style='font-size:9pt; font-family:Arial;'>${KOP_KONTAK}</div>`;
+  k += `<div style='font-size:9pt; font-weight:bold; font-family:Arial; margin-top:2px;'>${KOP_BANPT}</div>`;
+  k += `<div style='font-size:9pt; font-weight:bold; font-family:Arial;'>${KOP_LAMPTKES}</div>`;
+  k += "</td></tr></table>";
+  k += `<h3 style='text-align:center; font-family:Arial; margin:6px 0 2px 0; font-size:13pt;'>${docTitle}</h3>`;
+  k += `<p style='text-align:center; font-size:9pt; font-family:Arial; margin:0 0 8px 0;'>Dicetak pada: ${dateStr}</p>`;
+  k += "<hr style='border:1px solid #555; margin-bottom:8px;'>";
+  return k;
+}
+
+// Tambah KOP ke PDF (jsPDF)
+async function addKopPdf(doc, docTitle, dateStr) {
+  const logoB64 = await getBase64FromUrl('logo.jpg');
+  const pageW = doc.internal.pageSize.width;
+  // Garis atas
+  doc.setDrawColor(26,26,26); doc.setLineWidth(0.5);
+  doc.line(8, 6, pageW - 8, 6);
+  // Logo
+  if (logoB64) { doc.addImage(logoB64, 'JPEG', 10, 8, 20, 20); }
+  // Nama institusi
+  doc.setFontSize(14); doc.setFont('helvetica', 'bold');
+  doc.text(KOP_NAMA, pageW / 2, 13, { align: 'center' });
+  // Alamat & kontak
+  doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+  doc.text(KOP_ALAMAT, pageW / 2, 18, { align: 'center' });
+  doc.text(KOP_KONTAK, pageW / 2, 22, { align: 'center' });
+  // Akreditasi
+  doc.setFont('helvetica', 'bold');
+  doc.text(KOP_BANPT + '  |  ' + KOP_LAMPTKES, pageW / 2, 26, { align: 'center' });
+  // Garis bawah kop
+  doc.setLineWidth(0.8); doc.line(8, 29, pageW - 8, 29);
+  doc.setLineWidth(0.3); doc.line(8, 30, pageW - 8, 30);
+  // Judul dokumen
+  doc.setFontSize(11); doc.setFont('helvetica', 'bold');
+  doc.text(docTitle, pageW / 2, 36, { align: 'center' });
+  doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+  doc.text('Dicetak pada: ' + dateStr, pageW / 2, 41, { align: 'center' });
+  return 47; // startY untuk tabel
+}
+
+// Buat baris header Excel (AOA format)
+function buildKopExcelRows(docTitle, dateStr) {
+  return [
+    [KOP_NAMA],
+    [KOP_ALAMAT],
+    [KOP_KONTAK],
+    [KOP_BANPT],
+    [KOP_LAMPTKES],
+    [],
+    [docTitle + ' — Dicetak: ' + dateStr],
+    []
+  ];
+}
+
 function previewDoc(id) {
   const a=arsip.find(x=>x.id===id); if(!a)return;
   pendingPdfId=id;
@@ -4112,23 +4185,23 @@ async function exportLamptkes(type) {
   
   if (type === 'excel') {
     if (typeof XLSX === 'undefined') { toast('Library Excel belum dimuat!', 'error'); return; }
-    const excelData = data.map((a, index) => {
+    const kopLampRows = buildKopExcelRows('DOKUMEN PENDUKUNG BORANG LAM-PTKes & LKPS', dateStr);
+    const dataLampRows = data.map((a, index) => {
       let k = getKriteriaNumber(a.jenis);
       let kLabel = 'Kriteria ' + k;
       if (a.bidang === 'lamptkes_spmi' || (a.jenis && a.jenis.startsWith('spmi_'))) kLabel = 'SPMI K' + k;
       if (a.bidang === 'lamptkes_led' || (a.jenis && a.jenis.startsWith('led_'))) kLabel = 'LED K' + k;
       if (a.jenis && a.jenis.startsWith('lkps_')) kLabel = 'Bab II (LKPS)';
-      return {
-        'No': index + 1,
-        'Kriteria': kLabel,
-        'Tanggal': a.tanggal,
-        'Judul Dokumen': a.judul,
-        'Bidang Terkait': (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
-        'Deskripsi Dokumen': getLabel(a),
-        'Link GDrive': getGDriveShareUrl(a.gdriveLink)
-      };
+      return [index+1, kLabel, a.tanggal, a.judul, (DEPT[a.bidang]?.label||a.bidang).toUpperCase(), getLabel(a), getGDriveShareUrl(a.gdriveLink)];
     });
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const headerLampRow = ['No','Kriteria','Tanggal','Judul Dokumen','Bidang Terkait','Deskripsi Dokumen','Tautan GDrive'];
+    const allLampRows = [...kopLampRows, headerLampRow, ...dataLampRows];
+    const worksheet = XLSX.utils.aoa_to_sheet(allLampRows);
+    worksheet['!cols'] = [{wch:5},{wch:15},{wch:12},{wch:40},{wch:30},{wch:50},{wch:45}];
+    worksheet['!merges'] = [];
+    for (let r = 0; r < 7; r++) {
+      if (r !== 5) worksheet['!merges'].push({s:{r,c:0}, e:{r,c:6}});
+    }
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'LAM-PTKes');
     XLSX.writeFile(workbook, fileName + ".xlsx");
@@ -4139,10 +4212,7 @@ async function exportLamptkes(type) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('l', 'mm', 'a4'); 
     
-    doc.setFontSize(14); doc.setFont('helvetica', 'bold');
-    doc.text("DOKUMEN PENDUKUNG BORANG LAM-PTKES & LKPS", 14, 20);
-    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-    doc.text("AKADEMI AKUPUNKTUR SURABAYA - Dicetak pada: " + dateStr, 14, 26);
+    const lampStartY = await addKopPdf(doc, 'DOKUMEN PENDUKUNG BORANG LAM-PTKes & LKPS', dateStr);
     
     let tableData = data.map((a, i) => {
       let k = getKriteriaNumber(a.jenis);
@@ -4161,32 +4231,37 @@ async function exportLamptkes(type) {
     });
 
     doc.autoTable({
-      startY: 32,
-      head: [['No', 'Krit', 'Judul Arsip', 'Bidang', 'Deskripsi Dokumen / Tabel', 'Tautan GDrive']],
+      startY: lampStartY,
+      head: [['No', 'Kriteria', 'Judul Dokumen', 'Bidang', 'Deskripsi / Tabel', 'Tautan GDrive']],
       body: tableData,
-      theme: 'grid',
-      headStyles: { fillColor: [16, 185, 129] },
+      theme: 'striped',
+      headStyles: { fillColor: [5, 150, 105], textColor: 255, fontStyle: 'bold', fontSize: 8 },
+      alternateRowStyles: { fillColor: [236, 253, 245] },
       columnStyles: {
-        0: {cellWidth: 10},
-        1: {cellWidth: 15},
-        2: {cellWidth: 50},
-        3: {cellWidth: 35},
-        4: {cellWidth: 100},
-        5: {cellWidth: 60}
+        0: {cellWidth: 9,  halign: 'center'},
+        1: {cellWidth: 18},
+        2: {cellWidth: 65},
+        3: {cellWidth: 40},
+        4: {cellWidth: 85},
+        5: {cellWidth: 52}
       },
-      styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak' }
+      styles: { fontSize: 8, cellPadding: 2.5, overflow: 'linebreak', valign: 'middle' },
+      didDrawPage: (data) => {
+        doc.setFontSize(7); doc.setFont('helvetica','italic');
+        doc.text('Halaman ' + doc.getCurrentPageInfo().pageNumber + ' | ' + KOP_NAMA, doc.internal.pageSize.width/2, doc.internal.pageSize.height - 5, {align:'center'});
+      }
     });
     
     doc.save(fileName + ".pdf");
     toast("Berhasil mengunduh PDF", 'success');
   }
   else if (type === 'word') {
+    const kopLamptkes = await buildKopHtml('DOKUMEN PENDUKUNG BORANG LAM-PTKes & LKPS', dateStr);
     let html = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>";
-    html += "<head><meta charset='utf-8'><title>Export HTML to Word</title></head><body>";
-    html += "<h2>DOKUMEN PENDUKUNG BORANG LAM-PTKES & LKPS</h2>";
-    html += "<p>AKADEMI AKUPUNKTUR SURABAYA<br>Dicetak pada: " + dateStr + "</p>";
-    html += "<table border='1' style='border-collapse:collapse; width:100%; font-family:sans-serif; font-size:12px;'>";
-    html += "<tr style='background:#10b981; color:#fff;'><th>No</th><th>Kriteria</th><th>Judul Arsip</th><th>Bidang</th><th>Deskripsi Dokumen</th><th>Tautan GDrive</th></tr>";
+    html += "<head><meta charset='utf-8'><style>body{font-family:Arial,sans-serif;font-size:11pt;} table{border-collapse:collapse;width:100%;} th,td{border:1px solid #666;padding:5px 6px;font-size:9pt;} th{background:#059669;color:#fff;font-weight:bold;} tr:nth-child(even){background:#ecfdf5;}</style></head><body>";
+    html += kopLamptkes;
+    html += "<table>";
+    html += "<tr><th>No</th><th>Kriteria</th><th>Judul Dokumen</th><th>Bidang</th><th>Deskripsi Dokumen</th><th>Tautan GDrive</th></tr>";
     
     data.forEach((a, index) => {
       let k = getKriteriaNumber(a.jenis);
@@ -4415,10 +4490,14 @@ async function generateIntegratedReport(type, isDashboard = false) {
     
     if (logoBase64) { doc.addImage(logoBase64, 'JPEG', 14, 10, 20, 20); }
     doc.setFontSize(16); doc.setFont('helvetica', 'bold');
-    doc.text(institutionName, 38, 18);
-    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-    doc.text(addressStr, 38, 25);
-    doc.setLineWidth(0.5); doc.line(14, 33, 283, 33);
+    doc.text(institutionName, 38, 14);
+    doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+    doc.text(addressStr, 38, 19);
+    doc.text(KOP_KONTAK, 38, 23);
+    doc.setFont('helvetica', 'bold');
+    doc.text(KOP_BANPT + '  |  ' + KOP_LAMPTKES, 38, 27);
+    doc.setLineWidth(0.8); doc.line(14, 30, 283, 30);
+    doc.setLineWidth(0.3); doc.line(14, 31, 283, 31);
     
     doc.setFontSize(14); doc.setFont('helvetica', 'bold');
     doc.text(reportTitle, 14, 42);
@@ -4574,7 +4653,10 @@ async function generateIntegratedReport(type, isDashboard = false) {
     
     headerChildren.push(new TextRun({ text: '  ' + institutionName, bold: true, size: 28 }));
     children.push(new Paragraph({ children: headerChildren }));
-    children.push(new Paragraph({ children: [new TextRun({ text: addressStr, size: 20 })] }));
+    children.push(new Paragraph({ children: [new TextRun({ text: addressStr, size: 18 })] }));
+    children.push(new Paragraph({ children: [new TextRun({ text: KOP_KONTAK, size: 18 })] }));
+    children.push(new Paragraph({ children: [new TextRun({ text: KOP_BANPT, size: 18, bold: true })] }));
+    children.push(new Paragraph({ children: [new TextRun({ text: KOP_LAMPTKES, size: 18, bold: true })] }));
     children.push(new Paragraph({ text: '' }));
     children.push(new Paragraph({ children: [new TextRun({ text: reportTitle, bold: true, size: 24 })] }));
     children.push(new Paragraph({ children: [new TextRun({ text: 'Tanggal Cetak: ' + dateStr, size: 20 })] }));
@@ -4848,22 +4930,24 @@ async function exportBanpt(type) {
   
   if (type === 'excel') {
     if (typeof XLSX === 'undefined') { toast('Library Excel belum dimuat!', 'error'); return; }
-    const excelData = data.map((a, index) => {
+    const kopRows = buildKopExcelRows('DOKUMEN PENDUKUNG BORANG BAN-PT', dateStr);
+    const dataRows = data.map((a, index) => {
       let k = getBanptCriteriaForUpload(a.bidang, a.jenis);
       let kLabel = 'Kriteria ' + k;
       if (a.bidang === 'banpt_spmi' || (a.jenis && a.jenis.startsWith('banpt_spmi'))) kLabel = 'SPMI K' + k;
       if (a.bidang === 'banpt_led' || (a.jenis && a.jenis.startsWith('banpt_led'))) kLabel = 'LED K' + k;
-      return {
-        'No': index + 1,
-        'Kriteria': kLabel,
-        'Tanggal': a.tanggal,
-        'Judul Dokumen': a.judul,
-        'Bidang Terkait': (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
-        'Deskripsi Dokumen': getLabel(a),
-        'Link GDrive': getGDriveShareUrl(a.gdriveLink)
-      };
+      return [index+1, kLabel, a.tanggal, a.judul, (DEPT[a.bidang]?.label||a.bidang).toUpperCase(), getLabel(a), getGDriveShareUrl(a.gdriveLink)];
     });
-    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const headerRow = ['No','Kriteria','Tanggal','Judul Dokumen','Bidang Terkait','Deskripsi Dokumen','Tautan GDrive'];
+    const allRows = [...kopRows, headerRow, ...dataRows];
+    const worksheet = XLSX.utils.aoa_to_sheet(allRows);
+    // Style kolom lebar
+    worksheet['!cols'] = [{wch:5},{wch:15},{wch:12},{wch:40},{wch:30},{wch:50},{wch:45}];
+    // Merge header kop (kolom A s/d G)
+    worksheet['!merges'] = [];
+    for (let r = 0; r < 7; r++) {
+      if (r !== 5) worksheet['!merges'].push({s:{r,c:0}, e:{r,c:6}});
+    }
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'BAN-PT');
     XLSX.writeFile(workbook, fileName + ".xlsx");
@@ -4874,10 +4958,7 @@ async function exportBanpt(type) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('l', 'mm', 'a4'); 
     
-    doc.setFontSize(14); doc.setFont('helvetica', 'bold');
-    doc.text("DOKUMEN PENDUKUNG BORANG BAN-PT", 14, 20);
-    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-    doc.text("AKADEMI AKUPUNKTUR SURABAYA - Dicetak pada: " + dateStr, 14, 26);
+    const banptStartY = await addKopPdf(doc, 'DOKUMEN PENDUKUNG BORANG BAN-PT', dateStr);
     
     let tableData = data.map((a, i) => {
       let k = getBanptCriteriaForUpload(a.bidang, a.jenis);
@@ -4895,32 +4976,37 @@ async function exportBanpt(type) {
     });
 
     doc.autoTable({
-      startY: 32,
-      head: [['No', 'Krit', 'Judul Arsip', 'Bidang', 'Deskripsi Dokumen / Tabel', 'Tautan GDrive']],
+      startY: banptStartY,
+      head: [['No', 'Kriteria', 'Judul Dokumen', 'Bidang', 'Deskripsi / Tabel', 'Tautan GDrive']],
       body: tableData,
-      theme: 'grid',
-      headStyles: { fillColor: [59, 130, 246] },
+      theme: 'striped',
+      headStyles: { fillColor: [37, 99, 235], textColor: 255, fontStyle: 'bold', fontSize: 8 },
+      alternateRowStyles: { fillColor: [239, 246, 255] },
       columnStyles: {
-        0: {cellWidth: 10},
+        0: {cellWidth: 9,  halign: 'center'},
         1: {cellWidth: 18},
-        2: {cellWidth: 50},
-        3: {cellWidth: 35},
-        4: {cellWidth: 97},
-        5: {cellWidth: 60}
+        2: {cellWidth: 65},
+        3: {cellWidth: 40},
+        4: {cellWidth: 85},
+        5: {cellWidth: 52}
       },
-      styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak' }
+      styles: { fontSize: 8, cellPadding: 2.5, overflow: 'linebreak', valign: 'middle' },
+      didDrawPage: (data) => {
+        doc.setFontSize(7); doc.setFont('helvetica','italic');
+        doc.text('Halaman ' + doc.getCurrentPageInfo().pageNumber + ' | ' + KOP_NAMA, doc.internal.pageSize.width/2, doc.internal.pageSize.height - 5, {align:'center'});
+      }
     });
     
     doc.save(fileName + ".pdf");
     toast("Berhasil mengunduh PDF", 'success');
   }
   else if (type === 'word') {
+    const kopBanpt = await buildKopHtml('DOKUMEN PENDUKUNG BORANG BAN-PT', dateStr);
     let html = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>";
-    html += "<head><meta charset='utf-8'><title>Export HTML to Word</title></head><body>";
-    html += "<h2>DOKUMEN PENDUKUNG BORANG BAN-PT</h2>";
-    html += "<p>AKADEMI AKUPUNKTUR SURABAYA<br>Dicetak pada: " + dateStr + "</p>";
-    html += "<table border='1' style='border-collapse:collapse; width:100%; font-family:sans-serif; font-size:12px;'>";
-    html += "<tr style='background:#3b82f6; color:#fff;'><th>No</th><th>Kriteria</th><th>Judul Arsip</th><th>Bidang</th><th>Deskripsi Dokumen</th><th>Tautan GDrive</th></tr>";
+    html += "<head><meta charset='utf-8'><style>body{font-family:Arial,sans-serif;font-size:11pt;} table{border-collapse:collapse;width:100%;} th,td{border:1px solid #666;padding:5px 6px;font-size:9pt;} th{background:#2563eb;color:#fff;font-weight:bold;} tr:nth-child(even){background:#eff6ff;}</style></head><body>";
+    html += kopBanpt;
+    html += "<table>";
+    html += "<tr><th>No</th><th>Kriteria</th><th>Judul Dokumen</th><th>Bidang</th><th>Deskripsi Dokumen</th><th>Tautan GDrive</th></tr>";
     
     data.forEach((a, index) => {
       let k = getBanptCriteriaForUpload(a.bidang, a.jenis);
