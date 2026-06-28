@@ -16,7 +16,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <script src="app.js?v=192" defer></script>
+  <script src="app.js?v=193" defer></script>
   <link rel="stylesheet" href="style.css?v=155" />
 </head>
 <body>
@@ -62,7 +62,7 @@
     <div class="sb-section">Laporan & Sistem</div>
     <a class="sb-link" href="#" data-page="banpt" id="nav-banpt"><i class="fas fa-building-columns" style="color:#3b82f6"></i><span>Borang BAN-PT</span></a>
     <ul class="sb-sub-menu" id="banpt-sub-menu" style="display:none;">
-      <li onclick="isBanptMode=true; openForm();" style="color:#3b82f6; font-weight:600;"><i class="fas fa-cloud-upload-alt"></i> Upload LED / SPMI</li>
+      <li onclick="isBanptMode=true; isLamptkesMode=false; openForm();" style="color:#3b82f6; font-weight:600;"><i class="fas fa-cloud-upload-alt"></i> Upload LED / SPMI</li>
       <li class="active" onclick="switchBanptTab(1, this)"><i class="fas fa-bullseye"></i> K1. Visi Misi & Strategi</li>
       <li onclick="switchBanptTab(2, this)"><i class="fas fa-sitemap"></i> K2. Tata Pamong & Kerjasama</li>
       <li onclick="switchBanptTab(3, this)"><i class="fas fa-user-graduate"></i> K3. Mahasiswa</li>
@@ -89,7 +89,7 @@
       <li onclick="switchLamptkesTab(11, this)"><i class="fas fa-book-open"></i> LED (Semua Kriteria)</li>
       <li onclick="switchLamptkesTab(12, this)"><i class="fas fa-tasks"></i> SPMI (Per Bidang)</li>
       <hr style="border-color: rgba(255,255,255,0.05); margin: 4px 15px;">
-      <li onclick="isLamptkesMode=true; openForm();" style="color:#10b981; font-weight:600;"><i class="fas fa-cloud-upload-alt"></i> Upload LED / SPMI</li>
+      <li onclick="isLamptkesMode=true; isBanptMode=false; openForm();" style="color:#10b981; font-weight:600;"><i class="fas fa-cloud-upload-alt"></i> Upload LED / SPMI</li>
     </ul>
     <a class="sb-link" href="#" data-page="analytics" id="nav-analytics"><i class="fas fa-chart-pie"></i><span>Analitik & Laporan</span></a>
     <a class="sb-link" href="#" data-page="aktivitas" id="nav-aktivitas"><i class="fas fa-clock-rotate-left"></i><span>Riwayat Aktivitas</span></a>
@@ -128,7 +128,7 @@
         <span class="badge" id="expiryBadge">0</span>
       </button>
       <button id="btnGlobalAdd"
- class="tb-btn tb-btn-primary" onclick="isLamptkesMode=false; openForm();">
+ class="tb-btn tb-btn-primary" onclick="isLamptkesMode=false; isBanptMode=false; openForm();">
         <i class="fas fa-plus"></i> <span>Tambah Arsip</span>
       </button>
     </div>
@@ -240,7 +240,7 @@
       <div class="empty-state hidden" id="tableEmpty">
         <i class="fas fa-folder-open"></i>
         <p>Tidak ada arsip ditemukan</p>
-        <button class="tb-btn tb-btn-primary" onclick="isLamptkesMode=false; openForm();"><i class="fas fa-plus"></i> Tambah Arsip</button>
+        <button class="tb-btn tb-btn-primary" onclick="isLamptkesMode=false; isBanptMode=false; openForm();"><i class="fas fa-plus"></i> Tambah Arsip</button>
       </div>
       <div class="table-foot" id="tableInfo"></div>
     </div>
