@@ -4097,7 +4097,7 @@ async function exportLamptkes(type) {
   
   if (type === 'excel') {
     if (typeof XLSX === 'undefined') { toast('Library Excel belum dimuat!', 'error'); return; }
-        const excelData = data.map((a, index) => {
+    const excelData = data.map((a, index) => {
       let k = getKriteriaNumber(a.jenis);
       let kLabel = 'Kriteria ' + k;
       if (a.bidang === 'lamptkes_spmi' || (a.jenis && a.jenis.startsWith('spmi_'))) kLabel = 'SPMI K' + k;
@@ -4129,7 +4129,7 @@ async function exportLamptkes(type) {
     doc.setFontSize(10); doc.setFont('helvetica', 'normal');
     doc.text("AKADEMI AKUPUNKTUR SURABAYA - Dicetak pada: " + dateStr, 14, 26);
     
-        let tableData = data.map((a, i) => {
+    let tableData = data.map((a, i) => {
       let k = getKriteriaNumber(a.jenis);
       let kLabel = 'K' + k;
       if (a.bidang === 'lamptkes_spmi' || (a.jenis && a.jenis.startsWith('spmi_'))) kLabel = 'SPMI K' + k;
@@ -4173,7 +4173,7 @@ async function exportLamptkes(type) {
     html += "<table border='1' style='border-collapse:collapse; width:100%; font-family:sans-serif; font-size:12px;'>";
     html += "<tr style='background:#10b981; color:#fff;'><th>No</th><th>Kriteria</th><th>Judul Arsip</th><th>Bidang</th><th>Deskripsi Dokumen</th><th>Tautan GDrive</th></tr>";
     
-        data.forEach((a, index) => {
+    data.forEach((a, index) => {
       let k = getKriteriaNumber(a.jenis);
       let kLabel = 'Kriteria ' + k;
       if (a.bidang === 'lamptkes_spmi' || (a.jenis && a.jenis.startsWith('spmi_'))) kLabel = 'SPMI K' + k;
