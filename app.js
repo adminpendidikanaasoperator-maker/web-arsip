@@ -197,7 +197,7 @@ const LAMPTKES_SPECIAL_TYPES = [
 const DEPT_JENIS = {
   "pimpinan": [
     {
-      "group": "Kriteria 1 (LAM-PTKes)",
+      "group": "1. Visi, Misi, Tujuan, dan Strategi",
       "items": [
         {
           "val": "k1_1",
@@ -218,7 +218,7 @@ const DEPT_JENIS = {
       ]
     },
     {
-      "group": "Kriteria 8 (LAM-PTKes)",
+      "group": "8. Tata Kelola dan Administrasi",
       "items": [
         {
           "val": "k8_1",
@@ -255,43 +255,43 @@ const DEPT_JENIS = {
       "items": [
         {
           "val": "umum_sk_k1",
-          "label": "SK (Kriteria 1. Visi, Misi, Tujuan, dan Strategi)"
+          "label": "SK (Visi, Misi, Tujuan, dan Strategi)"
         },
         {
           "val": "umum_sop_k1",
-          "label": "SOP (Kriteria 1. Visi, Misi, Tujuan, dan Strategi)"
+          "label": "SOP (Visi, Misi, Tujuan, dan Strategi)"
         },
         {
           "val": "umum_pedoman_k1",
-          "label": "Pedoman (Kriteria 1. Visi, Misi, Tujuan, dan Strategi)"
+          "label": "Pedoman (Visi, Misi, Tujuan, dan Strategi)"
         },
         {
           "val": "umum_notulen_k1",
-          "label": "Notulen Rapat (Kriteria 1. Visi, Misi, Tujuan, dan Strategi)"
+          "label": "Notulen Rapat (Visi, Misi, Tujuan, dan Strategi)"
         },
         {
           "val": "umum_laporan_k1",
-          "label": "Laporan Kegiatan (Kriteria 1. Visi, Misi, Tujuan, dan Strategi)"
+          "label": "Laporan Kegiatan (Visi, Misi, Tujuan, dan Strategi)"
         },
         {
           "val": "umum_sk_k8",
-          "label": "SK (Kriteria 8. Tata Kelola dan Administrasi)"
+          "label": "SK (Tata Kelola dan Administrasi)"
         },
         {
           "val": "umum_sop_k8",
-          "label": "SOP (Kriteria 8. Tata Kelola dan Administrasi)"
+          "label": "SOP (Tata Kelola dan Administrasi)"
         },
         {
           "val": "umum_pedoman_k8",
-          "label": "Pedoman (Kriteria 8. Tata Kelola dan Administrasi)"
+          "label": "Pedoman (Tata Kelola dan Administrasi)"
         },
         {
           "val": "umum_notulen_k8",
-          "label": "Notulen Rapat (Kriteria 8. Tata Kelola dan Administrasi)"
+          "label": "Notulen Rapat (Tata Kelola dan Administrasi)"
         },
         {
           "val": "umum_laporan_k8",
-          "label": "Laporan Kegiatan (Kriteria 8. Tata Kelola dan Administrasi)"
+          "label": "Laporan Kegiatan (Tata Kelola dan Administrasi)"
         },
         {
           "val": "umum_surat_masuk",
@@ -322,7 +322,7 @@ const DEPT_JENIS = {
   ],
   "akademik": [
     {
-      "group": "Kriteria 2 (LAM-PTKes)",
+      "group": "2. Kurikulum",
       "items": [
         {
           "val": "k2_1",
@@ -347,7 +347,7 @@ const DEPT_JENIS = {
       ]
     },
     {
-      "group": "Kriteria 3 (LAM-PTKes)",
+      "group": "3. Penilaian",
       "items": [
         {
           "val": "k3_1",
@@ -380,7 +380,7 @@ const DEPT_JENIS = {
       ]
     },
     {
-      "group": "Kriteria 5 (LAM-PTKes)",
+      "group": "5. SDM / Dosen / Tenaga Kependidikan",
       "items": [
         {
           "val": "k5_4",
@@ -389,7 +389,7 @@ const DEPT_JENIS = {
       ]
     },
     {
-      "group": "Kriteria 6 (LAM-PTKes)",
+      "group": "6. Sarana Prasarana & Keuangan",
       "items": [
         {
           "val": "k6_7",
@@ -406,83 +406,83 @@ const DEPT_JENIS = {
       "items": [
         {
           "val": "umum_sk_k2",
-          "label": "SK (Kriteria 2. Kurikulum)"
+          "label": "SK (Kurikulum)"
         },
         {
           "val": "umum_sop_k2",
-          "label": "SOP (Kriteria 2. Kurikulum)"
+          "label": "SOP (Kurikulum)"
         },
         {
           "val": "umum_pedoman_k2",
-          "label": "Pedoman (Kriteria 2. Kurikulum)"
+          "label": "Pedoman (Kurikulum)"
         },
         {
           "val": "umum_notulen_k2",
-          "label": "Notulen Rapat (Kriteria 2. Kurikulum)"
+          "label": "Notulen Rapat (Kurikulum)"
         },
         {
           "val": "umum_laporan_k2",
-          "label": "Laporan Kegiatan (Kriteria 2. Kurikulum)"
+          "label": "Laporan Kegiatan (Kurikulum)"
         },
         {
           "val": "umum_sk_k3",
-          "label": "SK (Kriteria 3. Penilaian)"
+          "label": "SK (Penilaian)"
         },
         {
           "val": "umum_sop_k3",
-          "label": "SOP (Kriteria 3. Penilaian)"
+          "label": "SOP (Penilaian)"
         },
         {
           "val": "umum_pedoman_k3",
-          "label": "Pedoman (Kriteria 3. Penilaian)"
+          "label": "Pedoman (Penilaian)"
         },
         {
           "val": "umum_notulen_k3",
-          "label": "Notulen Rapat (Kriteria 3. Penilaian)"
+          "label": "Notulen Rapat (Penilaian)"
         },
         {
           "val": "umum_laporan_k3",
-          "label": "Laporan Kegiatan (Kriteria 3. Penilaian)"
+          "label": "Laporan Kegiatan (Penilaian)"
         },
         {
           "val": "umum_sk_k5",
-          "label": "SK (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "SK (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_sop_k5",
-          "label": "SOP (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "SOP (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_pedoman_k5",
-          "label": "Pedoman (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "Pedoman (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_notulen_k5",
-          "label": "Notulen Rapat (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "Notulen Rapat (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_laporan_k5",
-          "label": "Laporan Kegiatan (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "Laporan Kegiatan (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_sk_k6",
-          "label": "SK (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "SK (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_sop_k6",
-          "label": "SOP (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "SOP (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_pedoman_k6",
-          "label": "Pedoman (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Pedoman (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_notulen_k6",
-          "label": "Notulen Rapat (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Notulen Rapat (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_laporan_k6",
-          "label": "Laporan Kegiatan (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Laporan Kegiatan (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_surat_masuk",
@@ -513,7 +513,7 @@ const DEPT_JENIS = {
   ],
   "kemahasiswaan": [
     {
-      "group": "Kriteria 4 (LAM-PTKes)",
+      "group": "4. Mahasiswa",
       "items": [
         {
           "val": "k4_1",
@@ -558,23 +558,23 @@ const DEPT_JENIS = {
       "items": [
         {
           "val": "umum_sk_k4",
-          "label": "SK (Kriteria 4. Mahasiswa)"
+          "label": "SK (Mahasiswa)"
         },
         {
           "val": "umum_sop_k4",
-          "label": "SOP (Kriteria 4. Mahasiswa)"
+          "label": "SOP (Mahasiswa)"
         },
         {
           "val": "umum_pedoman_k4",
-          "label": "Pedoman (Kriteria 4. Mahasiswa)"
+          "label": "Pedoman (Mahasiswa)"
         },
         {
           "val": "umum_notulen_k4",
-          "label": "Notulen Rapat (Kriteria 4. Mahasiswa)"
+          "label": "Notulen Rapat (Mahasiswa)"
         },
         {
           "val": "umum_laporan_k4",
-          "label": "Laporan Kegiatan (Kriteria 4. Mahasiswa)"
+          "label": "Laporan Kegiatan (Mahasiswa)"
         },
         {
           "val": "umum_surat_masuk",
@@ -605,7 +605,7 @@ const DEPT_JENIS = {
   ],
   "kepegawaian": [
     {
-      "group": "Kriteria 5 (LAM-PTKes)",
+      "group": "5. SDM / Dosen / Tenaga Kependidikan",
       "items": [
         {
           "val": "k5_1",
@@ -650,23 +650,23 @@ const DEPT_JENIS = {
       "items": [
         {
           "val": "umum_sk_k5",
-          "label": "SK (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "SK (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_sop_k5",
-          "label": "SOP (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "SOP (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_pedoman_k5",
-          "label": "Pedoman (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "Pedoman (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_notulen_k5",
-          "label": "Notulen Rapat (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "Notulen Rapat (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_laporan_k5",
-          "label": "Laporan Kegiatan (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "Laporan Kegiatan (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_surat_masuk",
@@ -697,7 +697,7 @@ const DEPT_JENIS = {
   ],
   "keuangan": [
     {
-      "group": "Kriteria 6 (LAM-PTKes)",
+      "group": "6. Sarana Prasarana & Keuangan",
       "items": [
         {
           "val": "k6_14",
@@ -706,7 +706,7 @@ const DEPT_JENIS = {
       ]
     },
     {
-      "group": "Kriteria 8 (LAM-PTKes)",
+      "group": "8. Tata Kelola dan Administrasi",
       "items": [
         {
           "val": "k8_2",
@@ -719,43 +719,43 @@ const DEPT_JENIS = {
       "items": [
         {
           "val": "umum_sk_k6",
-          "label": "SK (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "SK (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_sop_k6",
-          "label": "SOP (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "SOP (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_pedoman_k6",
-          "label": "Pedoman (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Pedoman (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_notulen_k6",
-          "label": "Notulen Rapat (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Notulen Rapat (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_laporan_k6",
-          "label": "Laporan Kegiatan (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Laporan Kegiatan (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_sk_k8",
-          "label": "SK (Kriteria 8. Tata Kelola dan Administrasi)"
+          "label": "SK (Tata Kelola dan Administrasi)"
         },
         {
           "val": "umum_sop_k8",
-          "label": "SOP (Kriteria 8. Tata Kelola dan Administrasi)"
+          "label": "SOP (Tata Kelola dan Administrasi)"
         },
         {
           "val": "umum_pedoman_k8",
-          "label": "Pedoman (Kriteria 8. Tata Kelola dan Administrasi)"
+          "label": "Pedoman (Tata Kelola dan Administrasi)"
         },
         {
           "val": "umum_notulen_k8",
-          "label": "Notulen Rapat (Kriteria 8. Tata Kelola dan Administrasi)"
+          "label": "Notulen Rapat (Tata Kelola dan Administrasi)"
         },
         {
           "val": "umum_laporan_k8",
-          "label": "Laporan Kegiatan (Kriteria 8. Tata Kelola dan Administrasi)"
+          "label": "Laporan Kegiatan (Tata Kelola dan Administrasi)"
         },
         {
           "val": "umum_surat_masuk",
@@ -786,7 +786,7 @@ const DEPT_JENIS = {
   ],
   "sarpras": [
     {
-      "group": "Kriteria 6 (LAM-PTKes)",
+      "group": "6. Sarana Prasarana & Keuangan",
       "items": [
         {
           "val": "k6_1",
@@ -819,23 +819,23 @@ const DEPT_JENIS = {
       "items": [
         {
           "val": "umum_sk_k6",
-          "label": "SK (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "SK (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_sop_k6",
-          "label": "SOP (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "SOP (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_pedoman_k6",
-          "label": "Pedoman (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Pedoman (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_notulen_k6",
-          "label": "Notulen Rapat (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Notulen Rapat (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_laporan_k6",
-          "label": "Laporan Kegiatan (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Laporan Kegiatan (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_surat_masuk",
@@ -866,7 +866,7 @@ const DEPT_JENIS = {
   ],
   "penelitian_pengabdian": [
     {
-      "group": "Kriteria 5 (LAM-PTKes)",
+      "group": "5. SDM / Dosen / Tenaga Kependidikan",
       "items": [
         {
           "val": "k5_8",
@@ -895,23 +895,23 @@ const DEPT_JENIS = {
       "items": [
         {
           "val": "umum_sk_k5",
-          "label": "SK (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "SK (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_sop_k5",
-          "label": "SOP (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "SOP (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_pedoman_k5",
-          "label": "Pedoman (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "Pedoman (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_notulen_k5",
-          "label": "Notulen Rapat (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "Notulen Rapat (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_laporan_k5",
-          "label": "Laporan Kegiatan (Kriteria 5. SDM / Dosen / Tenaga Kependidikan)"
+          "label": "Laporan Kegiatan (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_surat_masuk",
@@ -942,7 +942,7 @@ const DEPT_JENIS = {
   ],
   "kerjasama": [
     {
-      "group": "Kriteria 2 (LAM-PTKes)",
+      "group": "2. Kurikulum",
       "items": [
         {
           "val": "k2_4",
@@ -951,7 +951,7 @@ const DEPT_JENIS = {
       ]
     },
     {
-      "group": "Kriteria 6 (LAM-PTKes)",
+      "group": "6. Sarana Prasarana & Keuangan",
       "items": [
         {
           "val": "k6_3",
@@ -968,43 +968,43 @@ const DEPT_JENIS = {
       "items": [
         {
           "val": "umum_sk_k2",
-          "label": "SK (Kriteria 2. Kurikulum)"
+          "label": "SK (Kurikulum)"
         },
         {
           "val": "umum_sop_k2",
-          "label": "SOP (Kriteria 2. Kurikulum)"
+          "label": "SOP (Kurikulum)"
         },
         {
           "val": "umum_pedoman_k2",
-          "label": "Pedoman (Kriteria 2. Kurikulum)"
+          "label": "Pedoman (Kurikulum)"
         },
         {
           "val": "umum_notulen_k2",
-          "label": "Notulen Rapat (Kriteria 2. Kurikulum)"
+          "label": "Notulen Rapat (Kurikulum)"
         },
         {
           "val": "umum_laporan_k2",
-          "label": "Laporan Kegiatan (Kriteria 2. Kurikulum)"
+          "label": "Laporan Kegiatan (Kurikulum)"
         },
         {
           "val": "umum_sk_k6",
-          "label": "SK (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "SK (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_sop_k6",
-          "label": "SOP (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "SOP (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_pedoman_k6",
-          "label": "Pedoman (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Pedoman (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_notulen_k6",
-          "label": "Notulen Rapat (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Notulen Rapat (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_laporan_k6",
-          "label": "Laporan Kegiatan (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Laporan Kegiatan (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_surat_masuk",
@@ -1035,7 +1035,7 @@ const DEPT_JENIS = {
   ],
   "penjaminan_mutu": [
     {
-      "group": "Kriteria 2 (LAM-PTKes)",
+      "group": "2. Kurikulum",
       "items": [
         {
           "val": "k2_7",
@@ -1052,7 +1052,7 @@ const DEPT_JENIS = {
       ]
     },
     {
-      "group": "Kriteria 3 (LAM-PTKes)",
+      "group": "3. Penilaian",
       "items": [
         {
           "val": "k3_6",
@@ -1061,7 +1061,7 @@ const DEPT_JENIS = {
       ]
     },
     {
-      "group": "Kriteria 4 (LAM-PTKes)",
+      "group": "4. Mahasiswa",
       "items": [
         {
           "val": "k4_9",
@@ -1074,7 +1074,7 @@ const DEPT_JENIS = {
       ]
     },
     {
-      "group": "Kriteria 6 (LAM-PTKes)",
+      "group": "6. Sarana Prasarana & Keuangan",
       "items": [
         {
           "val": "k6_10",
@@ -1091,7 +1091,7 @@ const DEPT_JENIS = {
       ]
     },
     {
-      "group": "Kriteria 7 (LAM-PTKes)",
+      "group": "7. Penjaminan Mutu",
       "items": [
         {
           "val": "k7_1",
@@ -1136,103 +1136,103 @@ const DEPT_JENIS = {
       "items": [
         {
           "val": "umum_sk_k2",
-          "label": "SK (Kriteria 2. Kurikulum)"
+          "label": "SK (Kurikulum)"
         },
         {
           "val": "umum_sop_k2",
-          "label": "SOP (Kriteria 2. Kurikulum)"
+          "label": "SOP (Kurikulum)"
         },
         {
           "val": "umum_pedoman_k2",
-          "label": "Pedoman (Kriteria 2. Kurikulum)"
+          "label": "Pedoman (Kurikulum)"
         },
         {
           "val": "umum_notulen_k2",
-          "label": "Notulen Rapat (Kriteria 2. Kurikulum)"
+          "label": "Notulen Rapat (Kurikulum)"
         },
         {
           "val": "umum_laporan_k2",
-          "label": "Laporan Kegiatan (Kriteria 2. Kurikulum)"
+          "label": "Laporan Kegiatan (Kurikulum)"
         },
         {
           "val": "umum_sk_k3",
-          "label": "SK (Kriteria 3. Penilaian)"
+          "label": "SK (Penilaian)"
         },
         {
           "val": "umum_sop_k3",
-          "label": "SOP (Kriteria 3. Penilaian)"
+          "label": "SOP (Penilaian)"
         },
         {
           "val": "umum_pedoman_k3",
-          "label": "Pedoman (Kriteria 3. Penilaian)"
+          "label": "Pedoman (Penilaian)"
         },
         {
           "val": "umum_notulen_k3",
-          "label": "Notulen Rapat (Kriteria 3. Penilaian)"
+          "label": "Notulen Rapat (Penilaian)"
         },
         {
           "val": "umum_laporan_k3",
-          "label": "Laporan Kegiatan (Kriteria 3. Penilaian)"
+          "label": "Laporan Kegiatan (Penilaian)"
         },
         {
           "val": "umum_sk_k4",
-          "label": "SK (Kriteria 4. Mahasiswa)"
+          "label": "SK (Mahasiswa)"
         },
         {
           "val": "umum_sop_k4",
-          "label": "SOP (Kriteria 4. Mahasiswa)"
+          "label": "SOP (Mahasiswa)"
         },
         {
           "val": "umum_pedoman_k4",
-          "label": "Pedoman (Kriteria 4. Mahasiswa)"
+          "label": "Pedoman (Mahasiswa)"
         },
         {
           "val": "umum_notulen_k4",
-          "label": "Notulen Rapat (Kriteria 4. Mahasiswa)"
+          "label": "Notulen Rapat (Mahasiswa)"
         },
         {
           "val": "umum_laporan_k4",
-          "label": "Laporan Kegiatan (Kriteria 4. Mahasiswa)"
+          "label": "Laporan Kegiatan (Mahasiswa)"
         },
         {
           "val": "umum_sk_k6",
-          "label": "SK (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "SK (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_sop_k6",
-          "label": "SOP (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "SOP (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_pedoman_k6",
-          "label": "Pedoman (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Pedoman (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_notulen_k6",
-          "label": "Notulen Rapat (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Notulen Rapat (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_laporan_k6",
-          "label": "Laporan Kegiatan (Kriteria 6. Sarana Prasarana & Keuangan)"
+          "label": "Laporan Kegiatan (Sarana Prasarana & Keuangan)"
         },
         {
           "val": "umum_sk_k7",
-          "label": "SK (Kriteria 7. Penjaminan Mutu)"
+          "label": "SK (Penjaminan Mutu)"
         },
         {
           "val": "umum_sop_k7",
-          "label": "SOP (Kriteria 7. Penjaminan Mutu)"
+          "label": "SOP (Penjaminan Mutu)"
         },
         {
           "val": "umum_pedoman_k7",
-          "label": "Pedoman (Kriteria 7. Penjaminan Mutu)"
+          "label": "Pedoman (Penjaminan Mutu)"
         },
         {
           "val": "umum_notulen_k7",
-          "label": "Notulen Rapat (Kriteria 7. Penjaminan Mutu)"
+          "label": "Notulen Rapat (Penjaminan Mutu)"
         },
         {
           "val": "umum_laporan_k7",
-          "label": "Laporan Kegiatan (Kriteria 7. Penjaminan Mutu)"
+          "label": "Laporan Kegiatan (Penjaminan Mutu)"
         },
         {
           "val": "umum_surat_masuk",
