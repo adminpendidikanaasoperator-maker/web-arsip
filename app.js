@@ -4375,7 +4375,7 @@ async function generateIntegratedReport(type, isDashboard = false) {
   const c1Img = getWhiteBgBase64(chart1Canvas);
   const c2Img = getWhiteBgBase64(chart2Canvas);
 
-  const headers = ['No', 'Dokumen & Tanggal', 'Kategori', 'Status & TA', 'Asal / Pengirim', 'Keterangan Lengkap'];
+  const headers = ['No', 'Dokumen & Tanggal', 'Kategori', 'Status & TA', 'Asal / Pengirim', 'Keterangan Lengkap', 'Tautan GDrive'];
   
   const mapDataToRows = (arr) => {
     return arr.map((a, i) => {
@@ -4453,15 +4453,16 @@ async function generateIntegratedReport(type, isDashboard = false) {
         head: [headers],
         body: rows,
         theme: 'grid',
-        styles: { fontSize: 9, cellPadding: 3, valign: 'middle' },
+        styles: { fontSize: 8, cellPadding: 2, valign: 'middle', overflow: 'linebreak' },
         headStyles: { fillColor: [16, 124, 65], halign: 'center' },
         columnStyles: {
-          0: { cellWidth: 10, halign: 'center' },
-          1: { cellWidth: 70 },
-          2: { cellWidth: 40 },
-          3: { cellWidth: 30, halign: 'center' },
-          4: { cellWidth: 40 },
-          5: { cellWidth: 70 }
+          0: { cellWidth: 8, halign: 'center' },
+          1: { cellWidth: 55 },
+          2: { cellWidth: 35 },
+          3: { cellWidth: 22, halign: 'center' },
+          4: { cellWidth: 28 },
+          5: { cellWidth: 50 },
+          6: { cellWidth: 45 }
         }
       });
       currentY = doc.lastAutoTable.finalY + 10;
@@ -4609,8 +4610,12 @@ async function generateIntegratedReport(type, isDashboard = false) {
       const rows = mapDataToRows(groupedData[bidang]);
       rows.forEach(row => {
         tableRows.push(new TableRow({
-          children: row.map(cellText => {
-            const paras = cellText.split('\n').map(line => new Paragraph({ text: line }));
+          children: row.map((cellText, colIdx) => {
+            // Last column (colIdx === 6) = GDrive link
+            if (colIdx === 6 && cellText && cellText !== '-' && cellText.startsWith('http')) {
+              return new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: cellText, color: '0563C1', underline: {} })] })] });
+            }
+            const paras = String(cellText).split('\n').map(line => new Paragraph({ text: line }));
             return new TableCell({ children: paras });
           })
         }));
