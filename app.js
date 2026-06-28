@@ -493,10 +493,15 @@ if (dataMigrated) {
          if (a.jenis === 'k9_luaran_pkm_artikel') { a.jenis = 'k8_luaran_pkm_artikel'; changed = true; }
          if (a.jenis === 'k9_luaran_pkm_buku') { a.jenis = 'k8_luaran_pkm_buku'; changed = true; }
          if (a.jenis === 'k9_luaran_pkm_teknologi') { a.jenis = 'k8_luaran_pkm_teknologi'; changed = true; }
-         if (a.jenis === 'k9_led') { a.jenis = 'led_semua'; changed = true; }
-         if (a.jenis === 'k9_spmi') { a.jenis = 'spmi_semua'; changed = true; }
+         if (a.jenis === 'k9_led') { a.jenis = 'led_finish'; changed = true; }
+         if (a.jenis === 'k9_spmi') { a.jenis = 'spmi_finish'; changed = true; }
          if (a.jenis && a.jenis.match(/^k[0-9]_spmi$/)) {
-             a.jenis = 'spmi_semua'; changed = true;
+             a.jenis = 'spmi_finish'; changed = true;
+         }
+         // Fallback catch-all for any other k9 data
+         if (a.jenis && a.jenis.startsWith('k9_') && !changed) {
+             a.jenis = a.jenis.replace('k9_', 'k8_');
+             changed = true;
          }
          
          if (changed) {
@@ -508,8 +513,13 @@ if (dataMigrated) {
          }
       });
       if (k9Migrated) {
+         save(); // Ensure localStorage is also updated
          try {
-           batch.commit().then(() => console.log("Migrated K9 documents to Firestore"));
+           batch.commit().then(() => {
+              console.log("Migrated K9 documents to Firestore");
+              if (currentPage === 'lamptkes') generateLamptkesReport();
+              if (currentPage === 'arsip') renderArsipTable();
+           });
          } catch(e){}
       }
     }
