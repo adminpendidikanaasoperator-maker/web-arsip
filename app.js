@@ -195,154 +195,21 @@ const LAMPTKES_SPECIAL_TYPES = [
   ];
 
 const DEPT_JENIS = {
-  "pimpinan": [
-    {
-      "group": "1. Visi, Misi, Tujuan, dan Strategi",
-      "items": [
-        {
-          "val": "k1_1",
-          "label": "K1.1 - Laporan kegiatan atau notulen rapat perumusan visi, misi, dan keunggulan Program Studi"
-        },
-        {
-          "val": "k1_2",
-          "label": "K1.2 - Bukti kegiatan keterlibatan pemangku kepentingan internal dan eksternal"
-        },
-        {
-          "val": "k1_3",
-          "label": "K1.3 - Media publikasi/sosialisasi visi, misi, dan keunggulan"
-        },
-        {
-          "val": "k1_4",
-          "label": "K1.4 - Dokumen rencana strategi (renstra) dan rencana operasional (renop)"
-        }
-      ]
-    },
-    {
-      "group": "8. Tata Kelola dan Administrasi",
-      "items": [
-        {
-          "val": "k8_1",
-          "label": "K8.1 - Bagan organisasi pengelolaan dan administrasi beserta tupoksi"
-        },
-        {
-          "val": "k8_3",
-          "label": "K8.3 - Laporan tinjauan kinerja institusi/UPPS"
-        },
-        {
-          "val": "k8_4",
-          "label": "K8.4 - Dokumen identifikasi dan mitigasi risiko"
-        },
-        {
-          "val": "k8_5",
-          "label": "K8.5 - Risalah rapat keterlibatan mahasiswa/dosen dlm keputusan UPPS"
-        },
-        {
-          "val": "k8_6",
-          "label": "K8.6 - Standar prosedur operasional (SPO) pengambilan keputusan"
-        },
-        {
-          "val": "k8_7",
-          "label": "K8.7 - Standar prosedur operasional (SPO) pelaporan pembelajaran/PkM"
-        },
-        {
-          "val": "k8_8",
-          "label": "K8.8 - Dokumen indikator kinerja utama dan kinerja tambahan"
-        }
-      ]
-    },
-    {
-      "group": "Arsip Umum",
-      "items": [
-        {
-          "val": "umum_sk_k1",
-          "label": "SK (Visi, Misi, Tujuan, dan Strategi)"
-        },
-        {
-          "val": "umum_sop_k1",
-          "label": "SOP (Visi, Misi, Tujuan, dan Strategi)"
-        },
-        {
-          "val": "umum_pedoman_k1",
-          "label": "Pedoman (Visi, Misi, Tujuan, dan Strategi)"
-        },
-        {
-          "val": "umum_notulen_k1",
-          "label": "Notulen Rapat (Visi, Misi, Tujuan, dan Strategi)"
-        },
-        {
-          "val": "umum_laporan_k1",
-          "label": "Laporan Kegiatan (Visi, Misi, Tujuan, dan Strategi)"
-        },
-        {
-          "val": "umum_sk_k8",
-          "label": "SK (Tata Kelola dan Administrasi)"
-        },
-        {
-          "val": "umum_sop_k8",
-          "label": "SOP (Tata Kelola dan Administrasi)"
-        },
-        {
-          "val": "umum_pedoman_k8",
-          "label": "Pedoman (Tata Kelola dan Administrasi)"
-        },
-        {
-          "val": "umum_notulen_k8",
-          "label": "Notulen Rapat (Tata Kelola dan Administrasi)"
-        },
-        {
-          "val": "umum_laporan_k8",
-          "label": "Laporan Kegiatan (Tata Kelola dan Administrasi)"
-        },
-        {
-          "val": "umum_surat_masuk",
-          "label": "Surat Masuk"
-        },
-        {
-          "val": "umum_surat_keluar",
-          "label": "Surat Keluar"
-        },
-        {
-          "val": "umum_surat_tugas",
-          "label": "Surat Tugas"
-        },
-        {
-          "val": "umum_undangan",
-          "label": "Undangan"
-        },
-        {
-          "val": "umum_mou",
-          "label": "MoU / Perjanjian Kerjasama"
-        },
-        {
-          "val": "umum_sertifikat",
-          "label": "Sertifikat / Piagam"
-        }
-      ]
-    }
-  ],
   "akademik": [
     {
       "group": "2. Kurikulum",
       "items": [
         {
-          "val": "k2_1",
-          "label": "K2.1 - Notulen rapat komite kurikulum untuk merumuskan capaian pembelajaran"
+          "val": "k2_7",
+          "label": "K2.7 - Risalah rapat keterlibatan pemangku kepentingan eksternal (mutu & keselamatan pasien)"
         },
         {
-          "val": "k2_2",
-          "label": "K2.2 - Buku kurikulum, peta kompetensi, RPS, evaluasi hasil pembelajaran"
+          "val": "k2_8",
+          "label": "K2.8 - Pedoman pelaksanaan RCA (Root Cause Analysis)"
         },
         {
-          "val": "k2_3",
-          "label": "K2.3 - Daftar penempatan mahasiswa untuk pembelajaran klinik profesional"
-        },
-        {
-          "val": "k2_5",
-          "label": "K2.5 - Notulen rapat evaluasi dan peninjauan kurikulum"
-        },
-        {
-          "val": "k2_6",
-          "label": "K2.6 - Modul dan Panduan praktek klinik mahasiswa"
+          "val": "k2_9",
+          "label": "K2.9 - Kebijakan dan prosedur mitigasi / manajemen risiko kecelakaan"
         }
       ]
     },
@@ -350,54 +217,21 @@ const DEPT_JENIS = {
       "group": "3. Penilaian",
       "items": [
         {
-          "val": "k3_1",
-          "label": "K3.1 - Prosedur operasional standar penilaian"
-        },
-        {
-          "val": "k3_2",
-          "label": "K3.2 - Buku catatan mahasiswa (logbook), umpan balik dosen"
-        },
-        {
-          "val": "k3_3",
-          "label": "K3.3 - Mekanisme remedial dan konseling"
-        },
-        {
-          "val": "k3_4",
-          "label": "K3.4 - Cetak biru (blueprint) penilaian"
-        },
-        {
-          "val": "k3_5",
-          "label": "K3.5 - Prosedur mekanisme banding"
-        },
-        {
-          "val": "k3_7",
-          "label": "K3.7 - Kebijakan dan prosedur penilaian sesuai tempat pembelajaran"
-        },
-        {
-          "val": "k3_8",
-          "label": "K3.8 - Lampiran hasil Uji Kompetensi CBT dan OSCE"
+          "val": "k3_6",
+          "label": "K3.6 - Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan penilaian"
         }
       ]
     },
     {
-      "group": "5. SDM / Dosen / Tenaga Kependidikan",
+      "group": "4. Mahasiswa",
       "items": [
         {
-          "val": "k5_4",
-          "label": "K5.4 - Pemetaan disiplin kurikulum dengan mata kuliah (beban kerja dosen)"
-        }
-      ]
-    },
-    {
-      "group": "6. Sarana Prasarana & Keuangan",
-      "items": [
-        {
-          "val": "k6_7",
-          "label": "K6.7 - Daftar pasien standar dan laporan pelatihannya"
+          "val": "k4_9",
+          "label": "K4.9 - Pedoman pelaksanaan RCA (Root Cause Analysis)"
         },
         {
-          "val": "k6_8",
-          "label": "K6.8 - Daftar pelatih dan laporannya dari dosen klinis"
+          "val": "k4_11",
+          "label": "K4.11 - Pedoman RCA"
         }
       ]
     },
@@ -445,118 +279,6 @@ const DEPT_JENIS = {
           "label": "Laporan Kegiatan (Penilaian)"
         },
         {
-          "val": "umum_sk_k5",
-          "label": "SK (SDM / Dosen / Tenaga Kependidikan)"
-        },
-        {
-          "val": "umum_sop_k5",
-          "label": "SOP (SDM / Dosen / Tenaga Kependidikan)"
-        },
-        {
-          "val": "umum_pedoman_k5",
-          "label": "Pedoman (SDM / Dosen / Tenaga Kependidikan)"
-        },
-        {
-          "val": "umum_notulen_k5",
-          "label": "Notulen Rapat (SDM / Dosen / Tenaga Kependidikan)"
-        },
-        {
-          "val": "umum_laporan_k5",
-          "label": "Laporan Kegiatan (SDM / Dosen / Tenaga Kependidikan)"
-        },
-        {
-          "val": "umum_sk_k6",
-          "label": "SK (Sarana Prasarana & Keuangan)"
-        },
-        {
-          "val": "umum_sop_k6",
-          "label": "SOP (Sarana Prasarana & Keuangan)"
-        },
-        {
-          "val": "umum_pedoman_k6",
-          "label": "Pedoman (Sarana Prasarana & Keuangan)"
-        },
-        {
-          "val": "umum_notulen_k6",
-          "label": "Notulen Rapat (Sarana Prasarana & Keuangan)"
-        },
-        {
-          "val": "umum_laporan_k6",
-          "label": "Laporan Kegiatan (Sarana Prasarana & Keuangan)"
-        },
-        {
-          "val": "umum_surat_masuk",
-          "label": "Surat Masuk"
-        },
-        {
-          "val": "umum_surat_keluar",
-          "label": "Surat Keluar"
-        },
-        {
-          "val": "umum_surat_tugas",
-          "label": "Surat Tugas"
-        },
-        {
-          "val": "umum_undangan",
-          "label": "Undangan"
-        },
-        {
-          "val": "umum_mou",
-          "label": "MoU / Perjanjian Kerjasama"
-        },
-        {
-          "val": "umum_sertifikat",
-          "label": "Sertifikat / Piagam"
-        }
-      ]
-    }
-  ],
-  "kemahasiswaan": [
-    {
-      "group": "4. Mahasiswa",
-      "items": [
-        {
-          "val": "k4_1",
-          "label": "K4.1 - Peraturan tentang kebijakan seleksi dan penerimaan mahasiswa baru"
-        },
-        {
-          "val": "k4_2",
-          "label": "K4.2 - Kebijakan prosedur layanan mahasiswa dan keselamatan lingkungan"
-        },
-        {
-          "val": "k4_3",
-          "label": "K4.3 - Kebijakan dan prosedur konseling mahasiswa"
-        },
-        {
-          "val": "k4_4",
-          "label": "K4.4 - Dukungan sumber daya, fasilitas, dan keuangan sistem layanan mahasiswa"
-        },
-        {
-          "val": "k4_5",
-          "label": "K4.5 - Monitoring dan evaluasi penerapan sistem pendukung kemahasiswaan"
-        },
-        {
-          "val": "k4_6",
-          "label": "K4.6 - Hasil survey kepuasan mahasiswa terhadap layanan mahasiswa"
-        },
-        {
-          "val": "k4_7",
-          "label": "K4.7 - Hasil survey kepuasan mahasiswa terhadap layanan manajemen"
-        },
-        {
-          "val": "k4_8",
-          "label": "K4.8 - Kebijakan kampus sehat (bebas kekerasan, perundungan, narkotika)"
-        },
-        {
-          "val": "k4_10",
-          "label": "K4.10 - Pemantauan dan evaluasi keselamatan lingkungan kerja"
-        }
-      ]
-    },
-    {
-      "group": "Arsip Umum",
-      "items": [
-        {
           "val": "umum_sk_k4",
           "label": "SK (Mahasiswa)"
         },
@@ -603,105 +325,30 @@ const DEPT_JENIS = {
       ]
     }
   ],
-  "kepegawaian": [
+  "sistem_pendidikan": [
     {
-      "group": "5. SDM / Dosen / Tenaga Kependidikan",
+      "group": "2. Kurikulum",
       "items": [
         {
-          "val": "k5_1",
-          "label": "K5.1 - Rencana pengembangan sumber daya manusia (SDM)"
+          "val": "k2_7",
+          "label": "K2.7 - Risalah rapat keterlibatan pemangku kepentingan eksternal (mutu & keselamatan pasien)"
         },
         {
-          "val": "k5_2",
-          "label": "K5.2 - Kebijakan dan prosedur pengembangan SDM (dosen dan tendik)"
+          "val": "k2_8",
+          "label": "K2.8 - Pedoman pelaksanaan RCA (Root Cause Analysis)"
         },
         {
-          "val": "k5_3",
-          "label": "K5.3 - Notulen rapat kegiatan pengembangan SDM"
-        },
-        {
-          "val": "k5_5",
-          "label": "K5.5 - Formulir monitoring dan evaluasi kinerja dosen"
-        },
-        {
-          "val": "k5_6",
-          "label": "K5.6 - Laporan program pelatihan orientasi"
-        },
-        {
-          "val": "k5_7",
-          "label": "K5.7 - Laporan program pelatihan untuk dosen baru dan lama"
-        },
-        {
-          "val": "k5_12",
-          "label": "K5.12 - Sertifikat Pendidik/Dosen, Sertifikat Kompetensi, Ijazah"
-        },
-        {
-          "val": "k5_14",
-          "label": "K5.14 - Formulir monitoring dan evaluasi kinerja tendik"
-        },
-        {
-          "val": "k5_15",
-          "label": "K5.15 - Laporan program pelatihan tendik"
+          "val": "k2_9",
+          "label": "K2.9 - Kebijakan dan prosedur mitigasi / manajemen risiko kecelakaan"
         }
       ]
     },
     {
-      "group": "Arsip Umum",
+      "group": "3. Penilaian",
       "items": [
         {
-          "val": "umum_sk_k5",
-          "label": "SK (SDM / Dosen / Tenaga Kependidikan)"
-        },
-        {
-          "val": "umum_sop_k5",
-          "label": "SOP (SDM / Dosen / Tenaga Kependidikan)"
-        },
-        {
-          "val": "umum_pedoman_k5",
-          "label": "Pedoman (SDM / Dosen / Tenaga Kependidikan)"
-        },
-        {
-          "val": "umum_notulen_k5",
-          "label": "Notulen Rapat (SDM / Dosen / Tenaga Kependidikan)"
-        },
-        {
-          "val": "umum_laporan_k5",
-          "label": "Laporan Kegiatan (SDM / Dosen / Tenaga Kependidikan)"
-        },
-        {
-          "val": "umum_surat_masuk",
-          "label": "Surat Masuk"
-        },
-        {
-          "val": "umum_surat_keluar",
-          "label": "Surat Keluar"
-        },
-        {
-          "val": "umum_surat_tugas",
-          "label": "Surat Tugas"
-        },
-        {
-          "val": "umum_undangan",
-          "label": "Undangan"
-        },
-        {
-          "val": "umum_mou",
-          "label": "MoU / Perjanjian Kerjasama"
-        },
-        {
-          "val": "umum_sertifikat",
-          "label": "Sertifikat / Piagam"
-        }
-      ]
-    }
-  ],
-  "keuangan": [
-    {
-      "group": "6. Sarana Prasarana & Keuangan",
-      "items": [
-        {
-          "val": "k6_14",
-          "label": "K6.14 - Dokumen audit keuangan dan sarana prasarana"
+          "val": "k3_6",
+          "label": "K3.6 - Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan penilaian"
         }
       ]
     },
@@ -718,24 +365,44 @@ const DEPT_JENIS = {
       "group": "Arsip Umum",
       "items": [
         {
-          "val": "umum_sk_k6",
-          "label": "SK (Sarana Prasarana & Keuangan)"
+          "val": "umum_sk_k2",
+          "label": "SK (Kurikulum)"
         },
         {
-          "val": "umum_sop_k6",
-          "label": "SOP (Sarana Prasarana & Keuangan)"
+          "val": "umum_sop_k2",
+          "label": "SOP (Kurikulum)"
         },
         {
-          "val": "umum_pedoman_k6",
-          "label": "Pedoman (Sarana Prasarana & Keuangan)"
+          "val": "umum_pedoman_k2",
+          "label": "Pedoman (Kurikulum)"
         },
         {
-          "val": "umum_notulen_k6",
-          "label": "Notulen Rapat (Sarana Prasarana & Keuangan)"
+          "val": "umum_notulen_k2",
+          "label": "Notulen Rapat (Kurikulum)"
         },
         {
-          "val": "umum_laporan_k6",
-          "label": "Laporan Kegiatan (Sarana Prasarana & Keuangan)"
+          "val": "umum_laporan_k2",
+          "label": "Laporan Kegiatan (Kurikulum)"
+        },
+        {
+          "val": "umum_sk_k3",
+          "label": "SK (Penilaian)"
+        },
+        {
+          "val": "umum_sop_k3",
+          "label": "SOP (Penilaian)"
+        },
+        {
+          "val": "umum_pedoman_k3",
+          "label": "Pedoman (Penilaian)"
+        },
+        {
+          "val": "umum_notulen_k3",
+          "label": "Notulen Rapat (Penilaian)"
+        },
+        {
+          "val": "umum_laporan_k3",
+          "label": "Laporan Kegiatan (Penilaian)"
         },
         {
           "val": "umum_sk_k8",
@@ -784,33 +451,126 @@ const DEPT_JENIS = {
       ]
     }
   ],
-  "sarpras": [
+  "laboratorium": [
+    {
+      "group": "2. Kurikulum",
+      "items": [
+        {
+          "val": "k2_7",
+          "label": "K2.7 - Risalah rapat keterlibatan pemangku kepentingan eksternal (mutu & keselamatan pasien)"
+        },
+        {
+          "val": "k2_8",
+          "label": "K2.8 - Pedoman pelaksanaan RCA (Root Cause Analysis)"
+        },
+        {
+          "val": "k2_9",
+          "label": "K2.9 - Kebijakan dan prosedur mitigasi / manajemen risiko kecelakaan"
+        }
+      ]
+    },
     {
       "group": "6. Sarana Prasarana & Keuangan",
       "items": [
         {
-          "val": "k6_1",
-          "label": "K6.1 - Daftar infrastruktur fisik / sarana dan prasarana"
+          "val": "k6_10",
+          "label": "K6.10 - Formulir evaluasi dan umpan balik fasilitas"
         },
         {
-          "val": "k6_2",
-          "label": "K6.2 - Daftar sistem pendukung pembelajaran (LMS / E-Learning)"
+          "val": "k6_12",
+          "label": "K6.12 - Data hasil survey kepuasan atas pelayanan pemangku kepentingan"
         },
         {
-          "val": "k6_5",
-          "label": "K6.5 - Daftar manekin untuk pelatihan keterampilan klinis"
+          "val": "k6_13",
+          "label": "K6.13 - Data survey kepuasan kecukupan & akses fasilitas"
+        }
+      ]
+    },
+    {
+      "group": "Arsip Umum",
+      "items": [
+        {
+          "val": "umum_sk_k2",
+          "label": "SK (Kurikulum)"
         },
         {
-          "val": "k6_6",
-          "label": "K6.6 - Kebijakan keselamatan dan kesehatan kerja sivitas akademika"
+          "val": "umum_sop_k2",
+          "label": "SOP (Kurikulum)"
         },
         {
-          "val": "k6_9",
-          "label": "K6.9 - Daftar database jurnal yang tersedia"
+          "val": "umum_pedoman_k2",
+          "label": "Pedoman (Kurikulum)"
         },
         {
-          "val": "k6_11",
-          "label": "K6.11 - Fasilitas untuk mengakses sumber informasi dan sumber belajar"
+          "val": "umum_notulen_k2",
+          "label": "Notulen Rapat (Kurikulum)"
+        },
+        {
+          "val": "umum_laporan_k2",
+          "label": "Laporan Kegiatan (Kurikulum)"
+        },
+        {
+          "val": "umum_sk_k6",
+          "label": "SK (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_sop_k6",
+          "label": "SOP (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_pedoman_k6",
+          "label": "Pedoman (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_notulen_k6",
+          "label": "Notulen Rapat (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_laporan_k6",
+          "label": "Laporan Kegiatan (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_surat_masuk",
+          "label": "Surat Masuk"
+        },
+        {
+          "val": "umum_surat_keluar",
+          "label": "Surat Keluar"
+        },
+        {
+          "val": "umum_surat_tugas",
+          "label": "Surat Tugas"
+        },
+        {
+          "val": "umum_undangan",
+          "label": "Undangan"
+        },
+        {
+          "val": "umum_mou",
+          "label": "MoU / Perjanjian Kerjasama"
+        },
+        {
+          "val": "umum_sertifikat",
+          "label": "Sertifikat / Piagam"
+        }
+      ]
+    }
+  ],
+  "perpustakaan": [
+    {
+      "group": "6. Sarana Prasarana & Keuangan",
+      "items": [
+        {
+          "val": "k6_10",
+          "label": "K6.10 - Formulir evaluasi dan umpan balik fasilitas"
+        },
+        {
+          "val": "k6_12",
+          "label": "K6.12 - Data hasil survey kepuasan atas pelayanan pemangku kepentingan"
+        },
+        {
+          "val": "k6_13",
+          "label": "K6.13 - Data survey kepuasan kecukupan & akses fasilitas"
         }
       ]
     },
@@ -864,7 +624,7 @@ const DEPT_JENIS = {
       ]
     }
   ],
-  "penelitian_pengabdian": [
+  "lppm": [
     {
       "group": "5. SDM / Dosen / Tenaga Kependidikan",
       "items": [
@@ -940,26 +700,17 @@ const DEPT_JENIS = {
       ]
     }
   ],
-  "kerjasama": [
+  "kemahasiswaan": [
     {
-      "group": "2. Kurikulum",
+      "group": "4. Mahasiswa",
       "items": [
         {
-          "val": "k2_4",
-          "label": "K2.4 - Daftar rumah sakit pendidikan / wahana praktek"
-        }
-      ]
-    },
-    {
-      "group": "6. Sarana Prasarana & Keuangan",
-      "items": [
-        {
-          "val": "k6_3",
-          "label": "K6.3 - Daftar rumah sakit pendidikan dan wahana praktek klinik"
+          "val": "k4_9",
+          "label": "K4.9 - Pedoman pelaksanaan RCA (Root Cause Analysis)"
         },
         {
-          "val": "k6_4",
-          "label": "K6.4 - Daftar fasilitas di rumah sakit pendidikan dan klinik"
+          "val": "k4_11",
+          "label": "K4.11 - Pedoman RCA"
         }
       ]
     },
@@ -967,25 +718,326 @@ const DEPT_JENIS = {
       "group": "Arsip Umum",
       "items": [
         {
-          "val": "umum_sk_k2",
-          "label": "SK (Kurikulum)"
+          "val": "umum_sk_k4",
+          "label": "SK (Mahasiswa)"
         },
         {
-          "val": "umum_sop_k2",
-          "label": "SOP (Kurikulum)"
+          "val": "umum_sop_k4",
+          "label": "SOP (Mahasiswa)"
         },
         {
-          "val": "umum_pedoman_k2",
-          "label": "Pedoman (Kurikulum)"
+          "val": "umum_pedoman_k4",
+          "label": "Pedoman (Mahasiswa)"
         },
         {
-          "val": "umum_notulen_k2",
-          "label": "Notulen Rapat (Kurikulum)"
+          "val": "umum_notulen_k4",
+          "label": "Notulen Rapat (Mahasiswa)"
         },
         {
-          "val": "umum_laporan_k2",
-          "label": "Laporan Kegiatan (Kurikulum)"
+          "val": "umum_laporan_k4",
+          "label": "Laporan Kegiatan (Mahasiswa)"
         },
+        {
+          "val": "umum_surat_masuk",
+          "label": "Surat Masuk"
+        },
+        {
+          "val": "umum_surat_keluar",
+          "label": "Surat Keluar"
+        },
+        {
+          "val": "umum_surat_tugas",
+          "label": "Surat Tugas"
+        },
+        {
+          "val": "umum_undangan",
+          "label": "Undangan"
+        },
+        {
+          "val": "umum_mou",
+          "label": "MoU / Perjanjian Kerjasama"
+        },
+        {
+          "val": "umum_sertifikat",
+          "label": "Sertifikat / Piagam"
+        }
+      ]
+    }
+  ],
+  "pengabdian": [
+    {
+      "group": "5. SDM / Dosen / Tenaga Kependidikan",
+      "items": [
+        {
+          "val": "k5_8",
+          "label": "K5.8 - Roadmap penelitian dan Pengabdian kepada Masyarakat (PkM)"
+        },
+        {
+          "val": "k5_9",
+          "label": "K5.9 - Laporan penelitian dan PkM, dosen serta publikasinya"
+        },
+        {
+          "val": "k5_10",
+          "label": "K5.10 - Bukti penghargaan hasil penelitian (Hibah, HaKI, Paten)"
+        },
+        {
+          "val": "k5_11",
+          "label": "K5.11 - Kebijakan penelitian dan PkM serta integrasinya"
+        },
+        {
+          "val": "k5_13",
+          "label": "K5.13 - HaKI atau surat pengakuan dari lembaga nasional/internasional"
+        }
+      ]
+    },
+    {
+      "group": "Arsip Umum",
+      "items": [
+        {
+          "val": "umum_sk_k5",
+          "label": "SK (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_sop_k5",
+          "label": "SOP (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_pedoman_k5",
+          "label": "Pedoman (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_notulen_k5",
+          "label": "Notulen Rapat (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_laporan_k5",
+          "label": "Laporan Kegiatan (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_surat_masuk",
+          "label": "Surat Masuk"
+        },
+        {
+          "val": "umum_surat_keluar",
+          "label": "Surat Keluar"
+        },
+        {
+          "val": "umum_surat_tugas",
+          "label": "Surat Tugas"
+        },
+        {
+          "val": "umum_undangan",
+          "label": "Undangan"
+        },
+        {
+          "val": "umum_mou",
+          "label": "MoU / Perjanjian Kerjasama"
+        },
+        {
+          "val": "umum_sertifikat",
+          "label": "Sertifikat / Piagam"
+        }
+      ]
+    }
+  ],
+  "umum": [
+    {
+      "group": "1. Visi, Misi, Tujuan, dan Strategi",
+      "items": [
+        {
+          "val": "k1_1",
+          "label": "K1.1 - Laporan kegiatan atau notulen rapat perumusan visi, misi, dan keunggulan Program Studi"
+        },
+        {
+          "val": "k1_2",
+          "label": "K1.2 - Bukti kegiatan keterlibatan pemangku kepentingan internal dan eksternal"
+        },
+        {
+          "val": "k1_3",
+          "label": "K1.3 - Media publikasi/sosialisasi visi, misi, dan keunggulan"
+        },
+        {
+          "val": "k1_4",
+          "label": "K1.4 - Dokumen rencana strategi (renstra) dan rencana operasional (renop)"
+        }
+      ]
+    },
+    {
+      "group": "8. Tata Kelola dan Administrasi",
+      "items": [
+        {
+          "val": "k8_2",
+          "label": "K8.2 - Prosedur operasional standar pengalokasian anggaran"
+        }
+      ]
+    },
+    {
+      "group": "Arsip Umum",
+      "items": [
+        {
+          "val": "umum_sk_k1",
+          "label": "SK (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "umum_sop_k1",
+          "label": "SOP (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "umum_pedoman_k1",
+          "label": "Pedoman (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "umum_notulen_k1",
+          "label": "Notulen Rapat (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "umum_laporan_k1",
+          "label": "Laporan Kegiatan (Visi, Misi, Tujuan, dan Strategi)"
+        },
+        {
+          "val": "umum_sk_k8",
+          "label": "SK (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_sop_k8",
+          "label": "SOP (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_pedoman_k8",
+          "label": "Pedoman (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_notulen_k8",
+          "label": "Notulen Rapat (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_laporan_k8",
+          "label": "Laporan Kegiatan (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_surat_masuk",
+          "label": "Surat Masuk"
+        },
+        {
+          "val": "umum_surat_keluar",
+          "label": "Surat Keluar"
+        },
+        {
+          "val": "umum_surat_tugas",
+          "label": "Surat Tugas"
+        },
+        {
+          "val": "umum_undangan",
+          "label": "Undangan"
+        },
+        {
+          "val": "umum_mou",
+          "label": "MoU / Perjanjian Kerjasama"
+        },
+        {
+          "val": "umum_sertifikat",
+          "label": "Sertifikat / Piagam"
+        }
+      ]
+    }
+  ],
+  "kepegawaian": [
+    {
+      "group": "5. SDM / Dosen / Tenaga Kependidikan",
+      "items": [
+        {
+          "val": "k5_8",
+          "label": "K5.8 - Roadmap penelitian dan Pengabdian kepada Masyarakat (PkM)"
+        },
+        {
+          "val": "k5_9",
+          "label": "K5.9 - Laporan penelitian dan PkM, dosen serta publikasinya"
+        },
+        {
+          "val": "k5_10",
+          "label": "K5.10 - Bukti penghargaan hasil penelitian (Hibah, HaKI, Paten)"
+        },
+        {
+          "val": "k5_11",
+          "label": "K5.11 - Kebijakan penelitian dan PkM serta integrasinya"
+        },
+        {
+          "val": "k5_13",
+          "label": "K5.13 - HaKI atau surat pengakuan dari lembaga nasional/internasional"
+        }
+      ]
+    },
+    {
+      "group": "Arsip Umum",
+      "items": [
+        {
+          "val": "umum_sk_k5",
+          "label": "SK (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_sop_k5",
+          "label": "SOP (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_pedoman_k5",
+          "label": "Pedoman (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_notulen_k5",
+          "label": "Notulen Rapat (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_laporan_k5",
+          "label": "Laporan Kegiatan (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_surat_masuk",
+          "label": "Surat Masuk"
+        },
+        {
+          "val": "umum_surat_keluar",
+          "label": "Surat Keluar"
+        },
+        {
+          "val": "umum_surat_tugas",
+          "label": "Surat Tugas"
+        },
+        {
+          "val": "umum_undangan",
+          "label": "Undangan"
+        },
+        {
+          "val": "umum_mou",
+          "label": "MoU / Perjanjian Kerjasama"
+        },
+        {
+          "val": "umum_sertifikat",
+          "label": "Sertifikat / Piagam"
+        }
+      ]
+    }
+  ],
+  "keuangan": [
+    {
+      "group": "6. Sarana Prasarana & Keuangan",
+      "items": [
+        {
+          "val": "k6_10",
+          "label": "K6.10 - Formulir evaluasi dan umpan balik fasilitas"
+        },
+        {
+          "val": "k6_12",
+          "label": "K6.12 - Data hasil survey kepuasan atas pelayanan pemangku kepentingan"
+        },
+        {
+          "val": "k6_13",
+          "label": "K6.13 - Data survey kepuasan kecukupan & akses fasilitas"
+        }
+      ]
+    },
+    {
+      "group": "Arsip Umum",
+      "items": [
         {
           "val": "umum_sk_k6",
           "label": "SK (Sarana Prasarana & Keuangan)"
@@ -1033,7 +1085,323 @@ const DEPT_JENIS = {
       ]
     }
   ],
-  "penjaminan_mutu": [
+  "rumah_tangga": [
+    {
+      "group": "6. Sarana Prasarana & Keuangan",
+      "items": [
+        {
+          "val": "k6_10",
+          "label": "K6.10 - Formulir evaluasi dan umpan balik fasilitas"
+        },
+        {
+          "val": "k6_12",
+          "label": "K6.12 - Data hasil survey kepuasan atas pelayanan pemangku kepentingan"
+        },
+        {
+          "val": "k6_13",
+          "label": "K6.13 - Data survey kepuasan kecukupan & akses fasilitas"
+        }
+      ]
+    },
+    {
+      "group": "Arsip Umum",
+      "items": [
+        {
+          "val": "umum_sk_k6",
+          "label": "SK (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_sop_k6",
+          "label": "SOP (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_pedoman_k6",
+          "label": "Pedoman (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_notulen_k6",
+          "label": "Notulen Rapat (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_laporan_k6",
+          "label": "Laporan Kegiatan (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_surat_masuk",
+          "label": "Surat Masuk"
+        },
+        {
+          "val": "umum_surat_keluar",
+          "label": "Surat Keluar"
+        },
+        {
+          "val": "umum_surat_tugas",
+          "label": "Surat Tugas"
+        },
+        {
+          "val": "umum_undangan",
+          "label": "Undangan"
+        },
+        {
+          "val": "umum_mou",
+          "label": "MoU / Perjanjian Kerjasama"
+        },
+        {
+          "val": "umum_sertifikat",
+          "label": "Sertifikat / Piagam"
+        }
+      ]
+    }
+  ],
+  "sarana": [
+    {
+      "group": "6. Sarana Prasarana & Keuangan",
+      "items": [
+        {
+          "val": "k6_10",
+          "label": "K6.10 - Formulir evaluasi dan umpan balik fasilitas"
+        },
+        {
+          "val": "k6_12",
+          "label": "K6.12 - Data hasil survey kepuasan atas pelayanan pemangku kepentingan"
+        },
+        {
+          "val": "k6_13",
+          "label": "K6.13 - Data survey kepuasan kecukupan & akses fasilitas"
+        }
+      ]
+    },
+    {
+      "group": "Arsip Umum",
+      "items": [
+        {
+          "val": "umum_sk_k6",
+          "label": "SK (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_sop_k6",
+          "label": "SOP (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_pedoman_k6",
+          "label": "Pedoman (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_notulen_k6",
+          "label": "Notulen Rapat (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_laporan_k6",
+          "label": "Laporan Kegiatan (Sarana Prasarana & Keuangan)"
+        },
+        {
+          "val": "umum_surat_masuk",
+          "label": "Surat Masuk"
+        },
+        {
+          "val": "umum_surat_keluar",
+          "label": "Surat Keluar"
+        },
+        {
+          "val": "umum_surat_tugas",
+          "label": "Surat Tugas"
+        },
+        {
+          "val": "umum_undangan",
+          "label": "Undangan"
+        },
+        {
+          "val": "umum_mou",
+          "label": "MoU / Perjanjian Kerjasama"
+        },
+        {
+          "val": "umum_sertifikat",
+          "label": "Sertifikat / Piagam"
+        }
+      ]
+    }
+  ],
+  "sistem_informasi": [
+    {
+      "group": "8. Tata Kelola dan Administrasi",
+      "items": [
+        {
+          "val": "k8_2",
+          "label": "K8.2 - Prosedur operasional standar pengalokasian anggaran"
+        }
+      ]
+    },
+    {
+      "group": "Arsip Umum",
+      "items": [
+        {
+          "val": "umum_sk_k8",
+          "label": "SK (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_sop_k8",
+          "label": "SOP (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_pedoman_k8",
+          "label": "Pedoman (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_notulen_k8",
+          "label": "Notulen Rapat (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_laporan_k8",
+          "label": "Laporan Kegiatan (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_surat_masuk",
+          "label": "Surat Masuk"
+        },
+        {
+          "val": "umum_surat_keluar",
+          "label": "Surat Keluar"
+        },
+        {
+          "val": "umum_surat_tugas",
+          "label": "Surat Tugas"
+        },
+        {
+          "val": "umum_undangan",
+          "label": "Undangan"
+        },
+        {
+          "val": "umum_mou",
+          "label": "MoU / Perjanjian Kerjasama"
+        },
+        {
+          "val": "umum_sertifikat",
+          "label": "Sertifikat / Piagam"
+        }
+      ]
+    }
+  ],
+  "humas": [
+    {
+      "group": "8. Tata Kelola dan Administrasi",
+      "items": [
+        {
+          "val": "k8_2",
+          "label": "K8.2 - Prosedur operasional standar pengalokasian anggaran"
+        }
+      ]
+    },
+    {
+      "group": "Arsip Umum",
+      "items": [
+        {
+          "val": "umum_sk_k8",
+          "label": "SK (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_sop_k8",
+          "label": "SOP (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_pedoman_k8",
+          "label": "Pedoman (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_notulen_k8",
+          "label": "Notulen Rapat (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_laporan_k8",
+          "label": "Laporan Kegiatan (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_surat_masuk",
+          "label": "Surat Masuk"
+        },
+        {
+          "val": "umum_surat_keluar",
+          "label": "Surat Keluar"
+        },
+        {
+          "val": "umum_surat_tugas",
+          "label": "Surat Tugas"
+        },
+        {
+          "val": "umum_undangan",
+          "label": "Undangan"
+        },
+        {
+          "val": "umum_mou",
+          "label": "MoU / Perjanjian Kerjasama"
+        },
+        {
+          "val": "umum_sertifikat",
+          "label": "Sertifikat / Piagam"
+        }
+      ]
+    }
+  ],
+  "kerjasama": [
+    {
+      "group": "8. Tata Kelola dan Administrasi",
+      "items": [
+        {
+          "val": "k8_2",
+          "label": "K8.2 - Prosedur operasional standar pengalokasian anggaran"
+        }
+      ]
+    },
+    {
+      "group": "Arsip Umum",
+      "items": [
+        {
+          "val": "umum_sk_k8",
+          "label": "SK (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_sop_k8",
+          "label": "SOP (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_pedoman_k8",
+          "label": "Pedoman (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_notulen_k8",
+          "label": "Notulen Rapat (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_laporan_k8",
+          "label": "Laporan Kegiatan (Tata Kelola dan Administrasi)"
+        },
+        {
+          "val": "umum_surat_masuk",
+          "label": "Surat Masuk"
+        },
+        {
+          "val": "umum_surat_keluar",
+          "label": "Surat Keluar"
+        },
+        {
+          "val": "umum_surat_tugas",
+          "label": "Surat Tugas"
+        },
+        {
+          "val": "umum_undangan",
+          "label": "Undangan"
+        },
+        {
+          "val": "umum_mou",
+          "label": "MoU / Perjanjian Kerjasama"
+        },
+        {
+          "val": "umum_sertifikat",
+          "label": "Sertifikat / Piagam"
+        }
+      ]
+    }
+  ],
+  "pendidikan": [
     {
       "group": "2. Kurikulum",
       "items": [
@@ -1070,64 +1438,6 @@ const DEPT_JENIS = {
         {
           "val": "k4_11",
           "label": "K4.11 - Pedoman RCA"
-        }
-      ]
-    },
-    {
-      "group": "6. Sarana Prasarana & Keuangan",
-      "items": [
-        {
-          "val": "k6_10",
-          "label": "K6.10 - Formulir evaluasi dan umpan balik fasilitas"
-        },
-        {
-          "val": "k6_12",
-          "label": "K6.12 - Data hasil survey kepuasan atas pelayanan pemangku kepentingan"
-        },
-        {
-          "val": "k6_13",
-          "label": "K6.13 - Data survey kepuasan kecukupan & akses fasilitas"
-        }
-      ]
-    },
-    {
-      "group": "7. Penjaminan Mutu",
-      "items": [
-        {
-          "val": "k7_1",
-          "label": "K7.1 - Sistem penjaminan mutu: struktur dan tupoksi"
-        },
-        {
-          "val": "k7_2",
-          "label": "K7.2 - Dokumen mutu: kebijakan, standar, manual, formulir"
-        },
-        {
-          "val": "k7_3",
-          "label": "K7.3 - Laporan audit mutu internal (AMI)"
-        },
-        {
-          "val": "k7_4",
-          "label": "K7.4 - Laporan rapat tinjauan manajemen (RTM)"
-        },
-        {
-          "val": "k7_5",
-          "label": "K7.5 - Sumber daya yang dialokasikan untuk penjaminan mutu"
-        },
-        {
-          "val": "k7_6",
-          "label": "K7.6 - Risalah rapat keterlibatan pemangku kepentingan eksternal (SPMI)"
-        },
-        {
-          "val": "k7_7",
-          "label": "K7.7 - Dokumen tindak lanjut atas umpan balik penjaminan mutu"
-        },
-        {
-          "val": "k7_8",
-          "label": "K7.8 - Pedoman pelaksanaan RCA (Root Cause Analysis)"
-        },
-        {
-          "val": "k7_9",
-          "label": "K7.9 - Kebijakan dan prosedur mitigasi risiko"
         }
       ]
     },
@@ -1195,44 +1505,80 @@ const DEPT_JENIS = {
           "label": "Laporan Kegiatan (Mahasiswa)"
         },
         {
-          "val": "umum_sk_k6",
-          "label": "SK (Sarana Prasarana & Keuangan)"
+          "val": "umum_surat_masuk",
+          "label": "Surat Masuk"
         },
         {
-          "val": "umum_sop_k6",
-          "label": "SOP (Sarana Prasarana & Keuangan)"
+          "val": "umum_surat_keluar",
+          "label": "Surat Keluar"
         },
         {
-          "val": "umum_pedoman_k6",
-          "label": "Pedoman (Sarana Prasarana & Keuangan)"
+          "val": "umum_surat_tugas",
+          "label": "Surat Tugas"
         },
         {
-          "val": "umum_notulen_k6",
-          "label": "Notulen Rapat (Sarana Prasarana & Keuangan)"
+          "val": "umum_undangan",
+          "label": "Undangan"
         },
         {
-          "val": "umum_laporan_k6",
-          "label": "Laporan Kegiatan (Sarana Prasarana & Keuangan)"
+          "val": "umum_mou",
+          "label": "MoU / Perjanjian Kerjasama"
         },
         {
-          "val": "umum_sk_k7",
-          "label": "SK (Penjaminan Mutu)"
+          "val": "umum_sertifikat",
+          "label": "Sertifikat / Piagam"
+        }
+      ]
+    }
+  ],
+  "sdm": [
+    {
+      "group": "5. SDM / Dosen / Tenaga Kependidikan",
+      "items": [
+        {
+          "val": "k5_8",
+          "label": "K5.8 - Roadmap penelitian dan Pengabdian kepada Masyarakat (PkM)"
         },
         {
-          "val": "umum_sop_k7",
-          "label": "SOP (Penjaminan Mutu)"
+          "val": "k5_9",
+          "label": "K5.9 - Laporan penelitian dan PkM, dosen serta publikasinya"
         },
         {
-          "val": "umum_pedoman_k7",
-          "label": "Pedoman (Penjaminan Mutu)"
+          "val": "k5_10",
+          "label": "K5.10 - Bukti penghargaan hasil penelitian (Hibah, HaKI, Paten)"
         },
         {
-          "val": "umum_notulen_k7",
-          "label": "Notulen Rapat (Penjaminan Mutu)"
+          "val": "k5_11",
+          "label": "K5.11 - Kebijakan penelitian dan PkM serta integrasinya"
         },
         {
-          "val": "umum_laporan_k7",
-          "label": "Laporan Kegiatan (Penjaminan Mutu)"
+          "val": "k5_13",
+          "label": "K5.13 - HaKI atau surat pengakuan dari lembaga nasional/internasional"
+        }
+      ]
+    },
+    {
+      "group": "Arsip Umum",
+      "items": [
+        {
+          "val": "umum_sk_k5",
+          "label": "SK (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_sop_k5",
+          "label": "SOP (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_pedoman_k5",
+          "label": "Pedoman (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_notulen_k5",
+          "label": "Notulen Rapat (SDM / Dosen / Tenaga Kependidikan)"
+        },
+        {
+          "val": "umum_laporan_k5",
+          "label": "Laporan Kegiatan (SDM / Dosen / Tenaga Kependidikan)"
         },
         {
           "val": "umum_surat_masuk",
