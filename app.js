@@ -1764,6 +1764,8 @@ function onAYearChange() {
   else if (currentPage==='arsip') renderArsipTable();
   else if (currentPage==='dept')  renderDeptPage(currentDept);
   else if (currentPage==='analytics') renderAnalytics();
+  else if (currentPage==='lamptkes') initLamptkes();
+
 }
 
 /* ÔöÇÔöÇÔöÇ DATA ÔöÇÔöÇÔöÇ */
@@ -2019,6 +2021,8 @@ if (dataMigrated) {
     else if(currentPage==='arsip') renderArsipTable();
     else if(currentPage==='dept') renderDeptPage(currentDept);
     else if(currentPage==='analytics') renderAnalytics();
+    else if(currentPage==='lamptkes') initLamptkes();
+
   }
 function save() {
   try {
@@ -2946,6 +2950,8 @@ async function saveArsip(e) {
   else if(currentPage==='arsip')renderArsipTable();
   else if(currentPage==='dept')renderDeptPage(currentDept);
   else if(currentPage==='analytics')renderAnalytics();
+  else if(currentPage==='lamptkes')initLamptkes();
+
   
   if (btn) { btn.disabled = false; btn.innerHTML = btnIcon; }
 
@@ -3060,6 +3066,8 @@ async function deleteArsip(id) {
   else if(currentPage==='arsip')renderArsipTable();
   else if(currentPage==='dept')renderDeptPage(currentDept);
   else if(currentPage==='analytics')renderAnalytics();
+  else if(currentPage==='lamptkes')initLamptkes();
+
 }
 
 /* ÔòÉÔòÉÔòÉÔòÉÔòÉ DETAIL MODAL ÔòÉÔòÉÔòÉÔòÉÔòÉ */
@@ -3736,15 +3744,15 @@ function switchLamptkesTab(tabNum, element) {
 
 function getKriteriaNumber(jenis) {
   if (!jenis) return 0;
-  if (jenis.startsWith('k1_')) return 1;
-  if (jenis.startsWith('k2_')) return 2;
-  if (jenis.startsWith('k3_')) return 3;
-  if (jenis.startsWith('k4_')) return 4;
-  if (jenis.startsWith('k5_')) return 5;
-  if (jenis.startsWith('k6_')) return 6;
-  if (jenis.startsWith('k7_')) return 7;
-  if (jenis.startsWith('k8_')) return 8;
-  if (jenis.startsWith('k9_')) return 9;
+  if (jenis.startsWith('k1_') || jenis.endsWith('_k1')) return 1;
+  if (jenis.startsWith('k2_') || jenis.endsWith('_k2')) return 2;
+  if (jenis.startsWith('k3_') || jenis.endsWith('_k3')) return 3;
+  if (jenis.startsWith('k4_') || jenis.endsWith('_k4')) return 4;
+  if (jenis.startsWith('k5_') || jenis.endsWith('_k5')) return 5;
+  if (jenis.startsWith('k6_') || jenis.endsWith('_k6')) return 6;
+  if (jenis.startsWith('k7_') || jenis.endsWith('_k7')) return 7;
+  if (jenis.startsWith('k8_') || jenis.endsWith('_k8')) return 8;
+  if (jenis.startsWith('k9_') || jenis.endsWith('_k9')) return 9;
   if (jenis.startsWith('lkps_')) return 10;
   return 0;
 }
@@ -3769,6 +3777,7 @@ function generateLamptkesReport() {
   if(!container) return;
 
   let filtered = arsip.filter(a => {
+      if (currentAY && a.ay !== currentAY) return false;
       if (currentLamptkesTab === 11) return (a.jenis && a.jenis.includes('_led')) || (a.jenis && a.jenis.startsWith('led_'));
       if (currentLamptkesTab === 12) return (a.jenis && a.jenis.includes('_spmi')) || (a.jenis && a.jenis.startsWith('spmi_'));
       return getKriteriaNumber(a.jenis) === currentLamptkesTab;
