@@ -16,7 +16,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <script src="app.js?v=178" defer></script>
+  <script src="app.js?v=179" defer></script>
   <link rel="stylesheet" href="style.css?v=155" />
 </head>
 <body>
@@ -121,7 +121,13 @@
           <button onclick="exportJSON()"><i class="fas fa-database"></i> JSON Backup</button>
         </div>
       </div>
-      <button id="btnGlobalAdd" class="tb-btn tb-btn-primary" onclick="isLamptkesMode=false; openForm();">
+      
+      <button class="notif-btn" id="btnExpiryNotif" onclick="openExpiryModal()" title="Peringatan Pembaruan Dokumen">
+        <i class="fas fa-bell"></i>
+        <span class="badge" id="expiryBadge">0</span>
+      </button>
+      <button id="btnGlobalAdd"
+ class="tb-btn tb-btn-primary" onclick="isLamptkesMode=false; openForm();">
         <i class="fas fa-plus"></i> <span>Tambah Arsip</span>
       </button>
     </div>
@@ -906,7 +912,7 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="app.js?v=178"></script>
+<script src="app.js?v=179"></script>
 
 <!-- Notification Sounds -->
 <audio id="soundPing" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>

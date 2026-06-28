@@ -4374,3 +4374,98 @@ function updateYearlyChart() {
 
 
 
+
+
+
+/* ═════ EXPIRY NOTIFICATION ═════ */
+function checkExpiry() {
+  const badge = document.getElementById('expiryBadge');
+  if(!badge) return;
+  
+  let countExpired = 0;
+  let countWarning = 0;
+  let listExpHTML = '';
+  let listWarnHTML = '';
+  
+  const today = new Date();
+  
+  // Filter arsip to only those requiring annual updates
+  arsip.forEach(a => {
+    const lbl = getLabel(a).toLowerCase();
+    const judul = (a.judul || '').toLowerCase();
+    
+    // Check if it's a document that needs annual updates
+    // Keywords: pedoman, rps, sk, sop, kurikulum
+    const isTracked = ['pedoman', 'rps', 'sk ', 'sop ', 'kurikulum'].some(k => lbl.includes(k) || judul.includes(k));
+    
+    if (isTracked && a.tanggal) {
+      const docDate = new Date(a.tanggal);
+      // Expiry is 1 year from document date
+      const expiryDate = new Date(docDate);
+      expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+      
+      const timeDiff = expiryDate.getTime() - today.getTime();
+      const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+      
+      if (daysDiff <= 0) {
+        // Expired
+        countExpired++;
+        listExpHTML += `
+          <div class="expiry-item expired">
+            <div>
+              <div class="expiry-title">${esc(a.judul || lbl)}</div>
+              <div class="expiry-meta"><i class="fas fa-calendar-times"></i> Berakhir: ${fmtDate(expiryDate.toISOString().split('T')[0])} | <i class="fas fa-building"></i> ${DEPT[a.bidang]?.label || a.bidang}</div>
+            </div>
+            <div class="expiry-status expired">KADALUARSA</div>
+          </div>
+        `;
+      } else if (daysDiff <= 180) {
+        // Warning (within 6 months)
+        countWarning++;
+        listWarnHTML += `
+          <div class="expiry-item warning">
+            <div>
+              <div class="expiry-title">${esc(a.judul || lbl)}</div>
+              <div class="expiry-meta"><i class="fas fa-calendar-day"></i> Berakhir: ${fmtDate(expiryDate.toISOString().split('T')[0])} | <i class="fas fa-building"></i> ${DEPT[a.bidang]?.label || a.bidang}</div>
+            </div>
+            <div class="expiry-status warning">Sisa ${Math.ceil(daysDiff/30)} Bulan</div>
+          </div>
+        `;
+      }
+    }
+  });
+  
+  const totalNotif = countExpired + countWarning;
+  if (totalNotif > 0) {
+    badge.textContent = totalNotif;
+    badge.classList.add('show');
+  } else {
+    badge.classList.remove('show');
+  }
+  
+  // Update Modal Content
+  const listExpiredEl = document.getElementById('listExpired');
+  const listWarningEl = document.getElementById('listWarning');
+  const hdrExp = document.getElementById('hdrExpired');
+  const hdrWarn = document.getElementById('hdrWarning');
+  const noState = document.getElementById('noExpiryState');
+  
+  if (listExpiredEl) {
+      listExpiredEl.innerHTML = listExpHTML;
+      listWarningEl.innerHTML = listWarnHTML;
+      
+      hdrExp.style.display = countExpired > 0 ? 'block' : 'none';
+      hdrWarn.style.display = countWarning > 0 ? 'block' : 'none';
+      listExpiredEl.style.display = countExpired > 0 ? 'flex' : 'none';
+      listWarningEl.style.display = countWarning > 0 ? 'flex' : 'none';
+      
+      noState.style.display = totalNotif === 0 ? 'block' : 'none';
+  }
+}
+
+function openExpiryModal() {
+  document.getElementById('overlayExpiry').classList.add('open');
+}
+function closeExpiryModal() {
+  document.getElementById('overlayExpiry').classList.remove('open');
+}
