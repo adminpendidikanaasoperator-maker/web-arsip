@@ -2048,7 +2048,6 @@ function processSnapshot(snapshot, collectionName) {
          else renderTable(arsip.filter(a=>a.bidang===currentUser.bidang));
        }
        updateBadges();
-       updateDashboard();
        generateBanptReport();
        generateLamptkesReport();
        renderDeptSubmenus();
