@@ -62,98 +62,98 @@ const DEPT = {
 
 const LAMPTKES_KRITERIA_JENIS = {
   lamptkes_k1: [
-    {val: 'k1_1', label: '1. Laporan kegiatan atau notulen rapat pada saat perumusan visi, misi, dan unggulan Program Studi yang berasal dari visi, misi, dan unggulan fakultas dan universitas. Visi, misi, dan unggulan tersebut mencakup peran UPPS dalam meningkatkan derajat kesehatan masyarakat.'},
-    {val: 'k1_2', label: '2. Bukti kegiatan keterlibatan pemangku kepentingan internal (mahasiswa, dosen, tendik, pengelola) dan eksternal (lulusan, pengguna lulusan, mitra, pakar, organisasi profesi dan pemerintah) seperti daftar hadir, rekaman foto/video pada saat pertemuan.'},
-    {val: 'k1_3', label: '3. Media yang digunakan untuk publikasi/sosialisasi visi, misi, dan unggulan.'},
-    {val: 'k1_4', label: '4. Dokumen rencana strategi (renstra) dan rencana operasional (renop)'}
+    {val: 'k1_1', label: 'Laporan kegiatan atau notulen rapat pada saat perumusan visi, misi, dan unggulan Program Studi yang berasal dari visi, misi, dan unggulan fakultas dan universitas. Visi, misi, dan unggulan tersebut mencakup peran UPPS dalam meningkatkan derajat kesehatan masyarakat.'},
+    {val: 'k1_2', label: 'Bukti kegiatan keterlibatan pemangku kepentingan internal (mahasiswa, dosen, tendik, pengelola) dan eksternal (lulusan, pengguna lulusan, mitra, pakar, organisasi profesi dan pemerintah) seperti daftar hadir, rekaman foto/video pada saat pertemuan.'},
+    {val: 'k1_3', label: 'Media yang digunakan untuk publikasi/sosialisasi visi, misi, dan unggulan.'},
+    {val: 'k1_4', label: 'Dokumen rencana strategi (renstra) dan rencana operasional (renop)'}
   ],
   lamptkes_k2: [
-    {val: 'k2_1', label: '1. Notulen rapat komite kurikulum untuk merumuskan capaian pembelajaran lulusan setiap mata kuliah (termasuk pengetahuan, keterampilan, dan perilaku) berdasarkan visi, misi, dan unggulan program studi dengan pelibatan pemangku kepentingan internal dan eksternal.'},
-    {val: 'k2_2', label: '2. Buku kurikulum (kurikulum: prinsip, struktur, isi, urutan), peta kompetensi, rencana pembelajaran semester (RPS), hasil pembelajaran, metode pendidikan, penilaian.'},
-    {val: 'k2_3', label: '3. Daftar departemen klinis untuk penempatan mahasiswa, Daftar penempatan mahasiswa untuk orientasi pembelajaran klinik profesional (early clinical exposure) pada tahap akademik dan praktek klinik profesional tahap profesi.'},
-    {val: 'k2_4', label: '4. Daftar rumah sakit pendidikan, Daftar wahana praktek yang digunakan dan memenuhi persyaratan praktek klinik profesional mahasiswa'},
-    {val: 'k2_5', label: '5. Notulen rapat komite kurikulum tentang metode pendidikan, telaah kurikulum, evaluasi dan peninjauan kurikulum.'},
-    {val: 'k2_6', label: '6. Modul dan Panduan praktek klinik profesional mahasiswa'},
-    {val: 'k2_7', label: '7. Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien'},
-    {val: 'k2_8', label: '8. Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut'},
-    {val: 'k2_9', label: '9. Kebijakan dan prosedur mitigasi kasus risiko kecelakaan'}
+    {val: 'k2_1', label: 'Notulen rapat komite kurikulum untuk merumuskan capaian pembelajaran lulusan setiap mata kuliah (termasuk pengetahuan, keterampilan, dan perilaku) berdasarkan visi, misi, dan unggulan program studi dengan pelibatan pemangku kepentingan internal dan eksternal.'},
+    {val: 'k2_2', label: 'Buku kurikulum (kurikulum: prinsip, struktur, isi, urutan), peta kompetensi, rencana pembelajaran semester (RPS), hasil pembelajaran, metode pendidikan, penilaian.'},
+    {val: 'k2_3', label: 'Daftar departemen klinis untuk penempatan mahasiswa, Daftar penempatan mahasiswa untuk orientasi pembelajaran klinik profesional (early clinical exposure) pada tahap akademik dan praktek klinik profesional tahap profesi.'},
+    {val: 'k2_4', label: 'Daftar rumah sakit pendidikan, Daftar wahana praktek yang digunakan dan memenuhi persyaratan praktek klinik profesional mahasiswa'},
+    {val: 'k2_5', label: 'Notulen rapat komite kurikulum tentang metode pendidikan, telaah kurikulum, evaluasi dan peninjauan kurikulum.'},
+    {val: 'k2_6', label: 'Modul dan Panduan praktek klinik profesional mahasiswa'},
+    {val: 'k2_7', label: 'Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien'},
+    {val: 'k2_8', label: 'Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut'},
+    {val: 'k2_9', label: 'Kebijakan dan prosedur mitigasi kasus risiko kecelakaan'}
   ],
   lamptkes_k3: [
-    {val: 'k3_1', label: '1. Prosedur operasional standar penilaian'},
-    {val: 'k3_2', label: '2. Buku catatan mahasiswa (logbook), dokumen revisi strategi pengajaran: penilaian mahasiswa (evaluasi dan pemantauan kemajuan mahasiswa) dan umpan balik dosen (strategi mengajar dosen)'},
-    {val: 'k3_3', label: '3. Mekanisme remedial dan konseling'},
-    {val: 'k3_4', label: '4. Cetak (blueprint) penilaian'},
-    {val: 'k3_5', label: '5. Prosedur mekanisme banding'},
-    {val: 'k3_6', label: '6. Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan'},
-    {val: 'k3_7', label: '7. Kebijakan dan prosedur penilaian sesuai tempat pembelajaran'},
-    {val: 'k3_8', label: '8. Lampiran hasil Uji Kompetensi CBT dan OSCE'}
+    {val: 'k3_1', label: 'Prosedur operasional standar penilaian'},
+    {val: 'k3_2', label: 'Buku catatan mahasiswa (logbook), dokumen revisi strategi pengajaran: penilaian mahasiswa (evaluasi dan pemantauan kemajuan mahasiswa) dan umpan balik dosen (strategi mengajar dosen)'},
+    {val: 'k3_3', label: 'Mekanisme remedial dan konseling'},
+    {val: 'k3_4', label: 'Cetak (blueprint) penilaian'},
+    {val: 'k3_5', label: 'Prosedur mekanisme banding'},
+    {val: 'k3_6', label: 'Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan'},
+    {val: 'k3_7', label: 'Kebijakan dan prosedur penilaian sesuai tempat pembelajaran'},
+    {val: 'k3_8', label: 'Lampiran hasil Uji Kompetensi CBT dan OSCE'}
   ],
   lamptkes_k4: [
-    {val: 'k4_1', label: '1. Peraturan tentang kebijakan seleksi dan penerimaan: penyelarasan dengan misi dan akreditasi/persyaratan, publisitas/sosialisasi, peninjauan, dan revisi.'},
-    {val: 'k4_2', label: '2. Kebijakan, peraturan, prosedur dukungan/layanan mahasiswa, dan keselamatan lingkungan kerja'},
-    {val: 'k4_3', label: '3. Kebijakan, peraturan, dan prosedur konseling mahasiswa.'},
-    {val: 'k4_4', label: '4. Pendukung sumber daya manusia, fasilitas, dan keuangan untuk sistem pendukung/layanan mahasiswa.'},
-    {val: 'k4_5', label: '5. Monitoring dan evaluasi penerapan sistem pendukung/layanan kemahasiswaan.'},
-    {val: 'k4_6', label: '6. Dokumen hasil survey kepuasaan mahasiswa terhadap layanan mahasiswa.'},
-    {val: 'k4_7', label: '7. Dokumen hasil survey kepuasaan mahasiswa terhadap layanan manajemen'},
-    {val: 'k4_8', label: '8. Kebijakan, peraturan mengenai "kampus sehat" termasuk bebas dari kekerasan seksual, perundungan, intoleransi, bebas dari rokok dan narkotika.'},
-    {val: 'k4_9', label: '9. Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut'},
-    {val: 'k4_10', label: '10. Pemantauan dan evaluasi penerapan sistem pendukung mahasiswa dan keselamatan lingkungan kerja.'},
-    {val: 'k4_11', label: '11. Pedoman RCA (Root Cause Analysis).'}
+    {val: 'k4_1', label: 'Peraturan tentang kebijakan seleksi dan penerimaan: penyelarasan dengan misi dan akreditasi/persyaratan, publisitas/sosialisasi, peninjauan, dan revisi.'},
+    {val: 'k4_2', label: 'Kebijakan, peraturan, prosedur dukungan/layanan mahasiswa, dan keselamatan lingkungan kerja'},
+    {val: 'k4_3', label: 'Kebijakan, peraturan, dan prosedur konseling mahasiswa.'},
+    {val: 'k4_4', label: 'Pendukung sumber daya manusia, fasilitas, dan keuangan untuk sistem pendukung/layanan mahasiswa.'},
+    {val: 'k4_5', label: 'Monitoring dan evaluasi penerapan sistem pendukung/layanan kemahasiswaan.'},
+    {val: 'k4_6', label: 'Dokumen hasil survey kepuasaan mahasiswa terhadap layanan mahasiswa.'},
+    {val: 'k4_7', label: 'Dokumen hasil survey kepuasaan mahasiswa terhadap layanan manajemen'},
+    {val: 'k4_8', label: 'Kebijakan, peraturan mengenai "kampus sehat" termasuk bebas dari kekerasan seksual, perundungan, intoleransi, bebas dari rokok dan narkotika.'},
+    {val: 'k4_9', label: 'Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut'},
+    {val: 'k4_10', label: 'Pemantauan dan evaluasi penerapan sistem pendukung mahasiswa dan keselamatan lingkungan kerja.'},
+    {val: 'k4_11', label: 'Pedoman RCA (Root Cause Analysis).'}
   ],
   lamptkes_k5: [
-    {val: 'k5_1', label: '1. Rencana pengembangan sumber daya manusia (SDM) sesuai dengan kebutuhan masing-masing disiplin ilmu dan perkembangan ilmu pengetahuan.'},
-    {val: 'k5_2', label: '2. Kebijakan dan prosedur pengembangan SDM (dosen dan tendik).'},
-    {val: 'k5_3', label: '3. Notulen/risalah rapat dan daftar kehadiran terkait kegiatan pengembangan SDM.'},
-    {val: 'k5_4', label: '4. Pemetaan disiplin kurikulum (kesesuaian bidang ilmu dengan mata kuliah yang diampu dan beban kerja).'},
-    {val: 'k5_5', label: '5. Formulir monitoring dan evaluasi kinerja dosen, sampel formulir yang sudah diisi dari beberapa dosen, hasil penilaian kinerja setiap semester.'},
-    {val: 'k5_6', label: '6. Laporan program pelatihan orientasi.'},
-    {val: 'k5_7', label: '7. Laporan program pelatihan untuk dosen baru dan lama.'},
-    {val: 'k5_8', label: '8. Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen.'},
-    {val: 'k5_9', label: '9. Laporan penelitian dosen dan PkM dosen serta publikasinya.'},
-    {val: 'k5_10', label: '10. Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten).'},
-    {val: 'k5_11', label: '11. Kebijakan penelitian dan PkM serta integrasinya.'},
-    {val: 'k5_12', label: '12. Sertifikat Pendidik/Dosen, Sertifikat Kompetensi, dan Ijazah'},
-    {val: 'k5_13', label: '13. HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional'},
-    {val: 'k5_14', label: '14. Formulir monitoring dan evaluasi kinerja tendik.'},
-    {val: 'k5_15', label: '15. Laporan program pelatihan tendik.'}
+    {val: 'k5_1', label: 'Rencana pengembangan sumber daya manusia (SDM) sesuai dengan kebutuhan masing-masing disiplin ilmu dan perkembangan ilmu pengetahuan.'},
+    {val: 'k5_2', label: 'Kebijakan dan prosedur pengembangan SDM (dosen dan tendik).'},
+    {val: 'k5_3', label: 'Notulen/risalah rapat dan daftar kehadiran terkait kegiatan pengembangan SDM.'},
+    {val: 'k5_4', label: 'Pemetaan disiplin kurikulum (kesesuaian bidang ilmu dengan mata kuliah yang diampu dan beban kerja).'},
+    {val: 'k5_5', label: 'Formulir monitoring dan evaluasi kinerja dosen, sampel formulir yang sudah diisi dari beberapa dosen, hasil penilaian kinerja setiap semester.'},
+    {val: 'k5_6', label: 'Laporan program pelatihan orientasi.'},
+    {val: 'k5_7', label: 'Laporan program pelatihan untuk dosen baru dan lama.'},
+    {val: 'k5_8', label: 'Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen.'},
+    {val: 'k5_9', label: 'Laporan penelitian dosen dan PkM dosen serta publikasinya.'},
+    {val: 'k5_10', label: 'Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten).'},
+    {val: 'k5_11', label: 'Kebijakan penelitian dan PkM serta integrasinya.'},
+    {val: 'k5_12', label: 'Sertifikat Pendidik/Dosen, Sertifikat Kompetensi, dan Ijazah'},
+    {val: 'k5_13', label: 'HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional'},
+    {val: 'k5_14', label: 'Formulir monitoring dan evaluasi kinerja tendik.'},
+    {val: 'k5_15', label: 'Laporan program pelatihan tendik.'}
   ],
   lamptkes_k6: [
-    {val: 'k6_1', label: '1. Daftar infrastruktur fisik/sarana dan prasarana'},
-    {val: 'k6_2', label: '2. Daftar sistem pendukung pembelajaran lainnya. Sistem manajemen pembelajaran dan dukungan internet'},
-    {val: 'k6_3', label: '3. Daftar rumah sakit pendidikan dan wahana praktek klinik.'},
-    {val: 'k6_4', label: '4. Daftar fasilitas di rumah sakit pendidikan dan pengajaran klinik (ruang diskusi, ruang shift malam, perpustakaan, dll.)'},
-    {val: 'k6_5', label: '5. Daftar manekin yang tersedia untuk pelatihan keterampilan klinis mahasiswa.'},
-    {val: 'k6_6', label: '6. Kebijakan mengenai keselamatan dan kesehatan kerja civitas akademika.'},
-    {val: 'k6_7', label: '7. Daftar pasien standar dan laporan pelatihannya.'},
-    {val: 'k6_8', label: '8. Daftar pelatihan dan laporannya dari dosen klinis dan pembimbing'},
-    {val: 'k6_9', label: '9. Daftar database jurnal yang tersedia'},
-    {val: 'k6_10', label: '10. Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia'},
-    {val: 'k6_11', label: '11. Fasilitas untuk mengakses sumber informasi dan sumber belajar.'},
-    {val: 'k6_12', label: '12. Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni).'},
-    {val: 'k6_13', label: '13. Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis.'},
-    {val: 'k6_14', label: '14. Dokumen audit: keuangan dan sarana prasarana.'}
+    {val: 'k6_1', label: 'Daftar infrastruktur fisik/sarana dan prasarana'},
+    {val: 'k6_2', label: 'Daftar sistem pendukung pembelajaran lainnya. Sistem manajemen pembelajaran dan dukungan internet'},
+    {val: 'k6_3', label: 'Daftar rumah sakit pendidikan dan wahana praktek klinik.'},
+    {val: 'k6_4', label: 'Daftar fasilitas di rumah sakit pendidikan dan pengajaran klinik (ruang diskusi, ruang shift malam, perpustakaan, dll.)'},
+    {val: 'k6_5', label: 'Daftar manekin yang tersedia untuk pelatihan keterampilan klinis mahasiswa.'},
+    {val: 'k6_6', label: 'Kebijakan mengenai keselamatan dan kesehatan kerja civitas akademika.'},
+    {val: 'k6_7', label: 'Daftar pasien standar dan laporan pelatihannya.'},
+    {val: 'k6_8', label: 'Daftar pelatihan dan laporannya dari dosen klinis dan pembimbing'},
+    {val: 'k6_9', label: 'Daftar database jurnal yang tersedia'},
+    {val: 'k6_10', label: 'Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia'},
+    {val: 'k6_11', label: 'Fasilitas untuk mengakses sumber informasi dan sumber belajar.'},
+    {val: 'k6_12', label: 'Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni).'},
+    {val: 'k6_13', label: 'Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis.'},
+    {val: 'k6_14', label: 'Dokumen audit: keuangan dan sarana prasarana.'}
   ],
   lamptkes_k7: [
-    {val: 'k7_1', label: '1. Sistem penjaminan mutu: struktur dan tupoksi.'},
-    {val: 'k7_2', label: '2. Dokumen mutu: kebijakan, standar, manual, formulir, dan dokumen pendukung lainnya.'},
-    {val: 'k7_3', label: '3. Laporan audit mutu internal.'},
-    {val: 'k7_4', label: '4. Laporan rapat tinjauan manajemen.'},
-    {val: 'k7_5', label: '5. Sumber daya yang dialokasikan untuk penjaminan mutu.'},
-    {val: 'k7_6', label: '6. Notulen/risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem penjaminan mutu dan strategi keselamatan pasien.'},
-    {val: 'k7_7', label: '7. Dokumen tindak lanjut atas umpan balik penjaminan mutu untuk peningkatan mutu berkelanjutan.'},
-    {val: 'k7_8', label: '8. Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut'},
-    {val: 'k7_9', label: '9. Kebijakan dan prosedur mitigasi kasus risiko.'}
+    {val: 'k7_1', label: 'Sistem penjaminan mutu: struktur dan tupoksi.'},
+    {val: 'k7_2', label: 'Dokumen mutu: kebijakan, standar, manual, formulir, dan dokumen pendukung lainnya.'},
+    {val: 'k7_3', label: 'Laporan audit mutu internal.'},
+    {val: 'k7_4', label: 'Laporan rapat tinjauan manajemen.'},
+    {val: 'k7_5', label: 'Sumber daya yang dialokasikan untuk penjaminan mutu.'},
+    {val: 'k7_6', label: 'Notulen/risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem penjaminan mutu dan strategi keselamatan pasien.'},
+    {val: 'k7_7', label: 'Dokumen tindak lanjut atas umpan balik penjaminan mutu untuk peningkatan mutu berkelanjutan.'},
+    {val: 'k7_8', label: 'Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut'},
+    {val: 'k7_9', label: 'Kebijakan dan prosedur mitigasi kasus risiko.'}
   ],
   lamptkes_k8: [
-    {val: 'k8_1', label: '1. Bagan organisasi pengelolaan dan administrasi beserta tupoksi.'},
-    {val: 'k8_2', label: '2. Prosedur operasional standar pengalokasian anggaran.'},
-    {val: 'k8_3', label: '3. Laporkan tinjauan kinerja institusi/UPPS'},
-    {val: 'k8_4', label: '4. Dokumen identifikasi dan mitigasi risiko.'},
-    {val: 'k8_5', label: '5. Laporan/risalah rapat keterlibatan mahasiswa dan dosen dalam pengambilan keputusan dan fungsi UPPS'},
-    {val: 'k8_6', label: '6. Standar prosedur operasional (SPO) untuk proses pengambilan keputusan.'},
-    {val: 'k8_7', label: '7. Standar prosedur operasional (SPO) pelaporan pembelajaran, penelitian, dan pengabdian kepada masyarakat.'},
-    {val: 'k8_8', label: '8. Dokumen indikator kinerja utama dan kinerja tambahan.'}
+    {val: 'k8_1', label: 'Bagan organisasi pengelolaan dan administrasi beserta tupoksi.'},
+    {val: 'k8_2', label: 'Prosedur operasional standar pengalokasian anggaran.'},
+    {val: 'k8_3', label: 'Laporkan tinjauan kinerja institusi/UPPS'},
+    {val: 'k8_4', label: 'Dokumen identifikasi dan mitigasi risiko.'},
+    {val: 'k8_5', label: 'Laporan/risalah rapat keterlibatan mahasiswa dan dosen dalam pengambilan keputusan dan fungsi UPPS'},
+    {val: 'k8_6', label: 'Standar prosedur operasional (SPO) untuk proses pengambilan keputusan.'},
+    {val: 'k8_7', label: 'Standar prosedur operasional (SPO) pelaporan pembelajaran, penelitian, dan pengabdian kepada masyarakat.'},
+    {val: 'k8_8', label: 'Dokumen indikator kinerja utama dan kinerja tambahan.'}
   ]
 };
 
@@ -190,41 +190,41 @@ const LAMPTKES_SPECIAL_TYPES = [
 const DEPT_JENIS = {
   "akademik": [
     {
-      "group": "2. Kurikulum",
+      "group": "Kurikulum",
       "items": [
         {
           "val": "k2_7",
-          "label": "7. Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien"
+          "label": "Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien"
         },
         {
           "val": "k2_8",
-          "label": "8. Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+          "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
         },
         {
           "val": "k2_9",
-          "label": "9. Kebijakan dan prosedur mitigasi kasus risiko kecelakaan"
+          "label": "Kebijakan dan prosedur mitigasi kasus risiko kecelakaan"
         }
       ]
     },
     {
-      "group": "3. Penilaian",
+      "group": "Penilaian",
       "items": [
         {
           "val": "k3_6",
-          "label": "6. Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan"
+          "label": "Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan"
         }
       ]
     },
     {
-      "group": "4. Mahasiswa",
+      "group": "Mahasiswa",
       "items": [
         {
           "val": "k4_9",
-          "label": "9. Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+          "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
         },
         {
           "val": "k4_11",
-          "label": "11. Pedoman RCA (Root Cause Analysis)."
+          "label": "Pedoman RCA (Root Cause Analysis)."
         }
       ]
     },
@@ -320,37 +320,37 @@ const DEPT_JENIS = {
   ],
   "sistem_pendidikan": [
     {
-      "group": "2. Kurikulum",
+      "group": "Kurikulum",
       "items": [
         {
           "val": "k2_7",
-          "label": "7. Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien"
+          "label": "Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien"
         },
         {
           "val": "k2_8",
-          "label": "8. Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+          "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
         },
         {
           "val": "k2_9",
-          "label": "9. Kebijakan dan prosedur mitigasi kasus risiko kecelakaan"
+          "label": "Kebijakan dan prosedur mitigasi kasus risiko kecelakaan"
         }
       ]
     },
     {
-      "group": "3. Penilaian",
+      "group": "Penilaian",
       "items": [
         {
           "val": "k3_6",
-          "label": "6. Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan"
+          "label": "Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan"
         }
       ]
     },
     {
-      "group": "8. Tata Kelola dan Administrasi",
+      "group": "Tata Kelola dan Administrasi",
       "items": [
         {
           "val": "k8_2",
-          "label": "2. Prosedur operasional standar pengalokasian anggaran."
+          "label": "Prosedur operasional standar pengalokasian anggaran."
         }
       ]
     },
@@ -446,36 +446,36 @@ const DEPT_JENIS = {
   ],
   "laboratorium": [
     {
-      "group": "2. Kurikulum",
+      "group": "Kurikulum",
       "items": [
         {
           "val": "k2_7",
-          "label": "7. Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien"
+          "label": "Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien"
         },
         {
           "val": "k2_8",
-          "label": "8. Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+          "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
         },
         {
           "val": "k2_9",
-          "label": "9. Kebijakan dan prosedur mitigasi kasus risiko kecelakaan"
+          "label": "Kebijakan dan prosedur mitigasi kasus risiko kecelakaan"
         }
       ]
     },
     {
-      "group": "6. Sarana Prasarana & Keuangan",
+      "group": "Sarana Prasarana & Keuangan",
       "items": [
         {
           "val": "k6_10",
-          "label": "10. Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
+          "label": "Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
         },
         {
           "val": "k6_12",
-          "label": "12. Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
+          "label": "Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
         },
         {
           "val": "k6_13",
-          "label": "13. Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
+          "label": "Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
         }
       ]
     },
@@ -551,19 +551,19 @@ const DEPT_JENIS = {
   ],
   "perpustakaan": [
     {
-      "group": "6. Sarana Prasarana & Keuangan",
+      "group": "Sarana Prasarana & Keuangan",
       "items": [
         {
           "val": "k6_10",
-          "label": "10. Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
+          "label": "Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
         },
         {
           "val": "k6_12",
-          "label": "12. Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
+          "label": "Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
         },
         {
           "val": "k6_13",
-          "label": "13. Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
+          "label": "Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
         }
       ]
     },
@@ -619,27 +619,27 @@ const DEPT_JENIS = {
   ],
   "lppm": [
     {
-      "group": "5. SDM / Dosen / Tenaga Kependidikan",
+      "group": "SDM / Dosen / Tenaga Kependidikan",
       "items": [
         {
           "val": "k5_8",
-          "label": "8. Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen."
+          "label": "Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen."
         },
         {
           "val": "k5_9",
-          "label": "9. Laporan penelitian dosen dan PkM dosen serta publikasinya."
+          "label": "Laporan penelitian dosen dan PkM dosen serta publikasinya."
         },
         {
           "val": "k5_10",
-          "label": "10. Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten)."
+          "label": "Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten)."
         },
         {
           "val": "k5_11",
-          "label": "11. Kebijakan penelitian dan PkM serta integrasinya."
+          "label": "Kebijakan penelitian dan PkM serta integrasinya."
         },
         {
           "val": "k5_13",
-          "label": "13. HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional"
+          "label": "HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional"
         }
       ]
     },
@@ -695,15 +695,15 @@ const DEPT_JENIS = {
   ],
   "kemahasiswaan": [
     {
-      "group": "4. Mahasiswa",
+      "group": "Mahasiswa",
       "items": [
         {
           "val": "k4_9",
-          "label": "9. Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+          "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
         },
         {
           "val": "k4_11",
-          "label": "11. Pedoman RCA (Root Cause Analysis)."
+          "label": "Pedoman RCA (Root Cause Analysis)."
         }
       ]
     },
@@ -759,27 +759,27 @@ const DEPT_JENIS = {
   ],
   "pengabdian": [
     {
-      "group": "5. SDM / Dosen / Tenaga Kependidikan",
+      "group": "SDM / Dosen / Tenaga Kependidikan",
       "items": [
         {
           "val": "k5_8",
-          "label": "8. Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen."
+          "label": "Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen."
         },
         {
           "val": "k5_9",
-          "label": "9. Laporan penelitian dosen dan PkM dosen serta publikasinya."
+          "label": "Laporan penelitian dosen dan PkM dosen serta publikasinya."
         },
         {
           "val": "k5_10",
-          "label": "10. Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten)."
+          "label": "Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten)."
         },
         {
           "val": "k5_11",
-          "label": "11. Kebijakan penelitian dan PkM serta integrasinya."
+          "label": "Kebijakan penelitian dan PkM serta integrasinya."
         },
         {
           "val": "k5_13",
-          "label": "13. HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional"
+          "label": "HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional"
         }
       ]
     },
@@ -835,32 +835,32 @@ const DEPT_JENIS = {
   ],
   "umum": [
     {
-      "group": "1. Visi, Misi, Tujuan, dan Strategi",
+      "group": "Visi, Misi, Tujuan, dan Strategi",
       "items": [
         {
           "val": "k1_1",
-          "label": "1. Laporan kegiatan atau notulen rapat pada saat perumusan visi, misi, dan unggulan Program Studi yang berasal dari visi, misi, dan unggulan fakultas dan universitas. Visi, misi, dan unggulan tersebut mencakup peran UPPS dalam meningkatkan derajat kesehatan masyarakat."
+          "label": "Laporan kegiatan atau notulen rapat pada saat perumusan visi, misi, dan unggulan Program Studi yang berasal dari visi, misi, dan unggulan fakultas dan universitas. Visi, misi, dan unggulan tersebut mencakup peran UPPS dalam meningkatkan derajat kesehatan masyarakat."
         },
         {
           "val": "k1_2",
-          "label": "2. Bukti kegiatan keterlibatan pemangku kepentingan internal (mahasiswa, dosen, tendik, pengelola) dan eksternal (lulusan, pengguna lulusan, mitra, pakar, organisasi profesi dan pemerintah) seperti daftar hadir, rekaman foto/video pada saat pertemuan."
+          "label": "Bukti kegiatan keterlibatan pemangku kepentingan internal (mahasiswa, dosen, tendik, pengelola) dan eksternal (lulusan, pengguna lulusan, mitra, pakar, organisasi profesi dan pemerintah) seperti daftar hadir, rekaman foto/video pada saat pertemuan."
         },
         {
           "val": "k1_3",
-          "label": "3. Media yang digunakan untuk publikasi/sosialisasi visi, misi, dan unggulan."
+          "label": "Media yang digunakan untuk publikasi/sosialisasi visi, misi, dan unggulan."
         },
         {
           "val": "k1_4",
-          "label": "4. Dokumen rencana strategi (renstra) dan rencana operasional (renop)"
+          "label": "Dokumen rencana strategi (renstra) dan rencana operasional (renop)"
         }
       ]
     },
     {
-      "group": "8. Tata Kelola dan Administrasi",
+      "group": "Tata Kelola dan Administrasi",
       "items": [
         {
           "val": "k8_2",
-          "label": "2. Prosedur operasional standar pengalokasian anggaran."
+          "label": "Prosedur operasional standar pengalokasian anggaran."
         }
       ]
     },
@@ -936,27 +936,27 @@ const DEPT_JENIS = {
   ],
   "kepegawaian": [
     {
-      "group": "5. SDM / Dosen / Tenaga Kependidikan",
+      "group": "SDM / Dosen / Tenaga Kependidikan",
       "items": [
         {
           "val": "k5_8",
-          "label": "8. Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen."
+          "label": "Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen."
         },
         {
           "val": "k5_9",
-          "label": "9. Laporan penelitian dosen dan PkM dosen serta publikasinya."
+          "label": "Laporan penelitian dosen dan PkM dosen serta publikasinya."
         },
         {
           "val": "k5_10",
-          "label": "10. Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten)."
+          "label": "Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten)."
         },
         {
           "val": "k5_11",
-          "label": "11. Kebijakan penelitian dan PkM serta integrasinya."
+          "label": "Kebijakan penelitian dan PkM serta integrasinya."
         },
         {
           "val": "k5_13",
-          "label": "13. HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional"
+          "label": "HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional"
         }
       ]
     },
@@ -1012,19 +1012,19 @@ const DEPT_JENIS = {
   ],
   "keuangan": [
     {
-      "group": "6. Sarana Prasarana & Keuangan",
+      "group": "Sarana Prasarana & Keuangan",
       "items": [
         {
           "val": "k6_10",
-          "label": "10. Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
+          "label": "Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
         },
         {
           "val": "k6_12",
-          "label": "12. Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
+          "label": "Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
         },
         {
           "val": "k6_13",
-          "label": "13. Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
+          "label": "Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
         }
       ]
     },
@@ -1080,19 +1080,19 @@ const DEPT_JENIS = {
   ],
   "rumah_tangga": [
     {
-      "group": "6. Sarana Prasarana & Keuangan",
+      "group": "Sarana Prasarana & Keuangan",
       "items": [
         {
           "val": "k6_10",
-          "label": "10. Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
+          "label": "Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
         },
         {
           "val": "k6_12",
-          "label": "12. Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
+          "label": "Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
         },
         {
           "val": "k6_13",
-          "label": "13. Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
+          "label": "Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
         }
       ]
     },
@@ -1148,19 +1148,19 @@ const DEPT_JENIS = {
   ],
   "sarana": [
     {
-      "group": "6. Sarana Prasarana & Keuangan",
+      "group": "Sarana Prasarana & Keuangan",
       "items": [
         {
           "val": "k6_10",
-          "label": "10. Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
+          "label": "Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
         },
         {
           "val": "k6_12",
-          "label": "12. Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
+          "label": "Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
         },
         {
           "val": "k6_13",
-          "label": "13. Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
+          "label": "Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
         }
       ]
     },
@@ -1216,11 +1216,11 @@ const DEPT_JENIS = {
   ],
   "sistem_informasi": [
     {
-      "group": "8. Tata Kelola dan Administrasi",
+      "group": "Tata Kelola dan Administrasi",
       "items": [
         {
           "val": "k8_2",
-          "label": "2. Prosedur operasional standar pengalokasian anggaran."
+          "label": "Prosedur operasional standar pengalokasian anggaran."
         }
       ]
     },
@@ -1276,11 +1276,11 @@ const DEPT_JENIS = {
   ],
   "humas": [
     {
-      "group": "8. Tata Kelola dan Administrasi",
+      "group": "Tata Kelola dan Administrasi",
       "items": [
         {
           "val": "k8_2",
-          "label": "2. Prosedur operasional standar pengalokasian anggaran."
+          "label": "Prosedur operasional standar pengalokasian anggaran."
         }
       ]
     },
@@ -1336,11 +1336,11 @@ const DEPT_JENIS = {
   ],
   "kerjasama": [
     {
-      "group": "8. Tata Kelola dan Administrasi",
+      "group": "Tata Kelola dan Administrasi",
       "items": [
         {
           "val": "k8_2",
-          "label": "2. Prosedur operasional standar pengalokasian anggaran."
+          "label": "Prosedur operasional standar pengalokasian anggaran."
         }
       ]
     },
@@ -1396,41 +1396,41 @@ const DEPT_JENIS = {
   ],
   "pendidikan": [
     {
-      "group": "2. Kurikulum",
+      "group": "Kurikulum",
       "items": [
         {
           "val": "k2_7",
-          "label": "7. Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien"
+          "label": "Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien"
         },
         {
           "val": "k2_8",
-          "label": "8. Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+          "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
         },
         {
           "val": "k2_9",
-          "label": "9. Kebijakan dan prosedur mitigasi kasus risiko kecelakaan"
+          "label": "Kebijakan dan prosedur mitigasi kasus risiko kecelakaan"
         }
       ]
     },
     {
-      "group": "3. Penilaian",
+      "group": "Penilaian",
       "items": [
         {
           "val": "k3_6",
-          "label": "6. Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan"
+          "label": "Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan"
         }
       ]
     },
     {
-      "group": "4. Mahasiswa",
+      "group": "Mahasiswa",
       "items": [
         {
           "val": "k4_9",
-          "label": "9. Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+          "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
         },
         {
           "val": "k4_11",
-          "label": "11. Pedoman RCA (Root Cause Analysis)."
+          "label": "Pedoman RCA (Root Cause Analysis)."
         }
       ]
     },
@@ -1526,27 +1526,27 @@ const DEPT_JENIS = {
   ],
   "sdm": [
     {
-      "group": "5. SDM / Dosen / Tenaga Kependidikan",
+      "group": "SDM / Dosen / Tenaga Kependidikan",
       "items": [
         {
           "val": "k5_8",
-          "label": "8. Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen."
+          "label": "Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen."
         },
         {
           "val": "k5_9",
-          "label": "9. Laporan penelitian dosen dan PkM dosen serta publikasinya."
+          "label": "Laporan penelitian dosen dan PkM dosen serta publikasinya."
         },
         {
           "val": "k5_10",
-          "label": "10. Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten)."
+          "label": "Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten)."
         },
         {
           "val": "k5_11",
-          "label": "11. Kebijakan penelitian dan PkM serta integrasinya."
+          "label": "Kebijakan penelitian dan PkM serta integrasinya."
         },
         {
           "val": "k5_13",
-          "label": "13. HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional"
+          "label": "HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional"
         }
       ]
     },
@@ -2817,51 +2817,51 @@ function onBidangChange() {
     if (isLamptkesMode) {
       if (bidang === 'lamptkes_led') {
          types = [{ group: 'Laporan Evaluasi Diri (LED)', items: [
-            {val: 'led_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
-            {val: 'led_k2', label: 'Kriteria 2. Kurikulum'},
-            {val: 'led_k3', label: 'Kriteria 3. Penilaian'},
-            {val: 'led_k4', label: 'Kriteria 4. Mahasiswa'},
-            {val: 'led_k5', label: 'Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
-            {val: 'led_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
-            {val: 'led_k7', label: 'Kriteria 7. Penjaminan Mutu'},
-            {val: 'led_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
+            {val: 'led_k1', label: 'Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'led_k2', label: 'Kurikulum'},
+            {val: 'led_k3', label: 'Penilaian'},
+            {val: 'led_k4', label: 'Mahasiswa'},
+            {val: 'led_k5', label: 'Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
+            {val: 'led_k6', label: 'Sarana, Prasarana Pendidikan, dan Keuangan'},
+            {val: 'led_k7', label: 'Penjaminan Mutu'},
+            {val: 'led_k8', label: 'Tata Kelola dan Administrasi'}
          ]}];
       } else if (bidang === 'lamptkes_spmi') {
          types = [{ group: 'Sistem Penjaminan Mutu Internal (SPMI)', items: [
-            {val: 'spmi_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
-            {val: 'spmi_k2', label: 'Kriteria 2. Kurikulum'},
-            {val: 'spmi_k3', label: 'Kriteria 3. Penilaian'},
-            {val: 'spmi_k4', label: 'Kriteria 4. Mahasiswa'},
-            {val: 'spmi_k5', label: 'Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
-            {val: 'spmi_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
-            {val: 'spmi_k7', label: 'Kriteria 7. Penjaminan Mutu'},
-            {val: 'spmi_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
+            {val: 'spmi_k1', label: 'Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'spmi_k2', label: 'Kurikulum'},
+            {val: 'spmi_k3', label: 'Penilaian'},
+            {val: 'spmi_k4', label: 'Mahasiswa'},
+            {val: 'spmi_k5', label: 'Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
+            {val: 'spmi_k6', label: 'Sarana, Prasarana Pendidikan, dan Keuangan'},
+            {val: 'spmi_k7', label: 'Penjaminan Mutu'},
+            {val: 'spmi_k8', label: 'Tata Kelola dan Administrasi'}
          ]}];
       }
     } else if (isBanptMode) {
       if (bidang === 'banpt_led') {
          types = [{ group: 'Laporan Evaluasi Diri (LED)', items: [
-            {val: 'banpt_led_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
-            {val: 'banpt_led_k2', label: 'Kriteria 2. Tata Pamong, Tata Kelola, dan Kerjasama'},
-            {val: 'banpt_led_k3', label: 'Kriteria 3. Mahasiswa'},
-            {val: 'banpt_led_k4', label: 'Kriteria 4. Sumber Daya Manusia'},
-            {val: 'banpt_led_k5', label: 'Kriteria 5. Keuangan, Sarana, dan Prasarana'},
-            {val: 'banpt_led_k6', label: 'Kriteria 6. Pendidikan'},
-            {val: 'banpt_led_k7', label: 'Kriteria 7. Penelitian'},
-            {val: 'banpt_led_k8', label: 'Kriteria 8. Pengabdian kepada Masyarakat'},
-            {val: 'banpt_led_k9', label: 'Kriteria 9. Luaran dan Capaian Tridharma'}
+            {val: 'banpt_led_k1', label: 'Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'banpt_led_k2', label: 'Tata Pamong, Tata Kelola, dan Kerjasama'},
+            {val: 'banpt_led_k3', label: 'Mahasiswa'},
+            {val: 'banpt_led_k4', label: 'Sumber Daya Manusia'},
+            {val: 'banpt_led_k5', label: 'Keuangan, Sarana, dan Prasarana'},
+            {val: 'banpt_led_k6', label: 'Pendidikan'},
+            {val: 'banpt_led_k7', label: 'Penelitian'},
+            {val: 'banpt_led_k8', label: 'Pengabdian kepada Masyarakat'},
+            {val: 'banpt_led_k9', label: 'Luaran dan Capaian Tridharma'}
          ]}];
       } else if (bidang === 'banpt_spmi') {
          types = [{ group: 'Sistem Penjaminan Mutu Internal (SPMI)', items: [
-            {val: 'banpt_spmi_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
-            {val: 'banpt_spmi_k2', label: 'Kriteria 2. Tata Pamong, Tata Kelola, dan Kerjasama'},
-            {val: 'banpt_spmi_k3', label: 'Kriteria 3. Mahasiswa'},
-            {val: 'banpt_spmi_k4', label: 'Kriteria 4. Sumber Daya Manusia'},
-            {val: 'banpt_spmi_k5', label: 'Kriteria 5. Keuangan, Sarana, dan Prasarana'},
-            {val: 'banpt_spmi_k6', label: 'Kriteria 6. Pendidikan'},
-            {val: 'banpt_spmi_k7', label: 'Kriteria 7. Penelitian'},
-            {val: 'banpt_spmi_k8', label: 'Kriteria 8. Pengabdian kepada Masyarakat'},
-            {val: 'banpt_spmi_k9', label: 'Kriteria 9. Luaran dan Capaian Tridharma'}
+            {val: 'banpt_spmi_k1', label: 'Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'banpt_spmi_k2', label: 'Tata Pamong, Tata Kelola, dan Kerjasama'},
+            {val: 'banpt_spmi_k3', label: 'Mahasiswa'},
+            {val: 'banpt_spmi_k4', label: 'Sumber Daya Manusia'},
+            {val: 'banpt_spmi_k5', label: 'Keuangan, Sarana, dan Prasarana'},
+            {val: 'banpt_spmi_k6', label: 'Pendidikan'},
+            {val: 'banpt_spmi_k7', label: 'Penelitian'},
+            {val: 'banpt_spmi_k8', label: 'Pengabdian kepada Masyarakat'},
+            {val: 'banpt_spmi_k9', label: 'Luaran dan Capaian Tridharma'}
          ]}];
       }
     } else {
@@ -3955,15 +3955,15 @@ function generateBanptReport() {
     
     if (a.bidang === 'banpt_led') {
          const ledGroups = [{ group: 'Laporan Evaluasi Diri (LED)', items: [
-            {val: 'banpt_led_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
-            {val: 'banpt_led_k2', label: 'Kriteria 2. Tata Pamong, Tata Kelola, dan Kerjasama'},
-            {val: 'banpt_led_k3', label: 'Kriteria 3. Mahasiswa'},
-            {val: 'banpt_led_k4', label: 'Kriteria 4. Sumber Daya Manusia'},
-            {val: 'banpt_led_k5', label: 'Kriteria 5. Keuangan, Sarana, dan Prasarana'},
-            {val: 'banpt_led_k6', label: 'Kriteria 6. Pendidikan'},
-            {val: 'banpt_led_k7', label: 'Kriteria 7. Penelitian'},
-            {val: 'banpt_led_k8', label: 'Kriteria 8. Pengabdian kepada Masyarakat'},
-            {val: 'banpt_led_k9', label: 'Kriteria 9. Luaran dan Capaian Tridharma'}
+            {val: 'banpt_led_k1', label: 'Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'banpt_led_k2', label: 'Tata Pamong, Tata Kelola, dan Kerjasama'},
+            {val: 'banpt_led_k3', label: 'Mahasiswa'},
+            {val: 'banpt_led_k4', label: 'Sumber Daya Manusia'},
+            {val: 'banpt_led_k5', label: 'Keuangan, Sarana, dan Prasarana'},
+            {val: 'banpt_led_k6', label: 'Pendidikan'},
+            {val: 'banpt_led_k7', label: 'Penelitian'},
+            {val: 'banpt_led_k8', label: 'Pengabdian kepada Masyarakat'},
+            {val: 'banpt_led_k9', label: 'Luaran dan Capaian Tridharma'}
          ]}];
          for(let g of ledGroups) {
             let it = g.items.find(x => x.val === a.jenis);
@@ -3971,15 +3971,15 @@ function generateBanptReport() {
          }
     } else if (a.bidang === 'banpt_spmi') {
          const spmiGroups = [{ group: 'Sistem Penjaminan Mutu Internal (SPMI)', items: [
-            {val: 'banpt_spmi_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
-            {val: 'banpt_spmi_k2', label: 'Kriteria 2. Tata Pamong, Tata Kelola, dan Kerjasama'},
-            {val: 'banpt_spmi_k3', label: 'Kriteria 3. Mahasiswa'},
-            {val: 'banpt_spmi_k4', label: 'Kriteria 4. Sumber Daya Manusia'},
-            {val: 'banpt_spmi_k5', label: 'Kriteria 5. Keuangan, Sarana, dan Prasarana'},
-            {val: 'banpt_spmi_k6', label: 'Kriteria 6. Pendidikan'},
-            {val: 'banpt_spmi_k7', label: 'Kriteria 7. Penelitian'},
-            {val: 'banpt_spmi_k8', label: 'Kriteria 8. Pengabdian kepada Masyarakat'},
-            {val: 'banpt_spmi_k9', label: 'Kriteria 9. Luaran dan Capaian Tridharma'}
+            {val: 'banpt_spmi_k1', label: 'Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'banpt_spmi_k2', label: 'Tata Pamong, Tata Kelola, dan Kerjasama'},
+            {val: 'banpt_spmi_k3', label: 'Mahasiswa'},
+            {val: 'banpt_spmi_k4', label: 'Sumber Daya Manusia'},
+            {val: 'banpt_spmi_k5', label: 'Keuangan, Sarana, dan Prasarana'},
+            {val: 'banpt_spmi_k6', label: 'Pendidikan'},
+            {val: 'banpt_spmi_k7', label: 'Penelitian'},
+            {val: 'banpt_spmi_k8', label: 'Pengabdian kepada Masyarakat'},
+            {val: 'banpt_spmi_k9', label: 'Luaran dan Capaian Tridharma'}
          ]}];
          for(let g of spmiGroups) {
             let it = g.items.find(x => x.val === a.jenis);
@@ -4104,14 +4104,14 @@ function generateLamptkesReport() {
     
     if (item.bidang === 'lamptkes_led') {
        const ledGroups = [{ group: 'Laporan Evaluasi Diri (LED)', items: [
-            {val: 'led_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
-            {val: 'led_k2', label: 'Kriteria 2. Kurikulum'},
-            {val: 'led_k3', label: 'Kriteria 3. Penilaian'},
-            {val: 'led_k4', label: 'Kriteria 4. Mahasiswa'},
-            {val: 'led_k5', label: 'Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
-            {val: 'led_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
-            {val: 'led_k7', label: 'Kriteria 7. Penjaminan Mutu'},
-            {val: 'led_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
+            {val: 'led_k1', label: 'Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'led_k2', label: 'Kurikulum'},
+            {val: 'led_k3', label: 'Penilaian'},
+            {val: 'led_k4', label: 'Mahasiswa'},
+            {val: 'led_k5', label: 'Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
+            {val: 'led_k6', label: 'Sarana, Prasarana Pendidikan, dan Keuangan'},
+            {val: 'led_k7', label: 'Penjaminan Mutu'},
+            {val: 'led_k8', label: 'Tata Kelola dan Administrasi'}
        ]}];
        for(let g of ledGroups) {
           let it = g.items.find(x => x.val === item.jenis);
@@ -4119,14 +4119,14 @@ function generateLamptkesReport() {
        }
     } else if (item.bidang === 'lamptkes_spmi') {
        const spmiGroups = [{ group: 'Sistem Penjaminan Mutu Internal (SPMI)', items: [
-            {val: 'spmi_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
-            {val: 'spmi_k2', label: 'Kriteria 2. Kurikulum'},
-            {val: 'spmi_k3', label: 'Kriteria 3. Penilaian'},
-            {val: 'spmi_k4', label: 'Kriteria 4. Mahasiswa'},
-            {val: 'spmi_k5', label: 'Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
-            {val: 'spmi_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
-            {val: 'spmi_k7', label: 'Kriteria 7. Penjaminan Mutu'},
-            {val: 'spmi_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
+            {val: 'spmi_k1', label: 'Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'spmi_k2', label: 'Kurikulum'},
+            {val: 'spmi_k3', label: 'Penilaian'},
+            {val: 'spmi_k4', label: 'Mahasiswa'},
+            {val: 'spmi_k5', label: 'Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
+            {val: 'spmi_k6', label: 'Sarana, Prasarana Pendidikan, dan Keuangan'},
+            {val: 'spmi_k7', label: 'Penjaminan Mutu'},
+            {val: 'spmi_k8', label: 'Tata Kelola dan Administrasi'}
        ]}];
        for(let g of spmiGroups) {
           let it = g.items.find(x => x.val === item.jenis);
