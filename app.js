@@ -2046,8 +2046,8 @@ function processSnapshot(snapshot, collectionName) {
      
      if (isAppLoaded) {
        updateBadges();
-       generateBanptReport();
-       generateLamptkesReport();
+       initBanpt();
+       initLamptkes();
        // Re-render visible page
        const activePage = document.querySelector('.page.active');
        if(activePage) {
@@ -2222,8 +2222,19 @@ function sampleData() {
 
 /* ÔöÇÔöÇÔöÇ HELPERS ÔöÇÔöÇÔöÇ */
 function getJenisLabel(bidang, jenis) {
-  const list = [...(DEPT_JENIS[bidang]||[]), ...COMMON_JENIS];
-  return list.find(t=>t.val===jenis)?.label || jenis.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  const groups = DEPT_JENIS[bidang] || [];
+  let found = null;
+  for (let group of groups) {
+    if (group.items) {
+      let item = group.items.find(t => t.val === jenis);
+      if (item) { found = item.label; break; }
+    }
+  }
+  if (!found) {
+    let commonItem = COMMON_JENIS.find(t => t.val === jenis);
+    if (commonItem) found = commonItem.label;
+  }
+  return found || jenis.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 }
 function getFormatCfg(fmt) { return FORMAT_MAP[fmt] || FORMAT_MAP.pdf; }
 
@@ -2318,10 +2329,51 @@ function goToDept(dept) { currentDept=dept; document.querySelectorAll('.sb-link'
 function renderSidebarDate() { const el=document.getElementById('sidebarDate'); if(el) el.textContent=new Date().toLocaleDateString('id-ID',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}); }
 function updateBadges() {
   const f=arsip.filter(a=>!currentAY||a.ay===currentAY);
-  document.getElementById('badge-total').textContent=f.length;
-  Object.keys(DEPT).forEach(k=>{ const el=document.getElementById('badge-'+k); if(el) el.textContent=f.filter(a=>a.bidang===k).length; });
+  
+  // Total
+  const bt = document.getElementById('badge-total');
+  if (bt) bt.textContent = f.length;
+  
+  // Department Main Badges & Sub-Menu All Badges
+  Object.keys(DEPT).forEach(k => { 
+    const deptArsip = f.filter(a => a.bidang === k);
+    const el = document.getElementById('badge-'+k); 
+    if(el) el.textContent = deptArsip.length; 
+    
+    const subAllEl = document.getElementById('badge-dept-'+k+'-all');
+    if(subAllEl) subAllEl.textContent = deptArsip.length;
+  });
+
+  // Data Induk Badges
   const bMhs=document.getElementById('badge-mhs'); if(bMhs) bMhs.textContent=mahasiswa.length;
   const bSdm=document.getElementById('badge-sdm-induk'); if(bSdm) bSdm.textContent=sdm.length;
+
+  // Sub-Menu Jenis Badges
+  // First, zero out all jenis badges
+  document.querySelectorAll('[id^="badge-jenis-"]').forEach(el => el.textContent = '0');
+  
+  // Then calculate counts grouped by jenis (for current active AY)
+  let counts = {};
+  f.forEach(a => {
+    if (a.jenis) {
+       // Only count for the correct department
+       let key = a.bidang + '_' + a.jenis; 
+       counts[key] = (counts[key] || 0) + 1;
+       
+       // Fallback for global jenis IDs just in case they are unique
+       counts[a.jenis] = (counts[a.jenis] || 0) + 1;
+    }
+  });
+
+  // Update specific badges based on ID
+  document.querySelectorAll('.sb-sub-menu').forEach(menu => {
+     let deptId = menu.id.replace('dept-', '').replace('-sub-menu', '');
+     menu.querySelectorAll('[id^="badge-jenis-"]').forEach(badge => {
+         let jenisId = badge.id.replace('badge-jenis-', '');
+         let val = counts[deptId + '_' + jenisId] || 0;
+         badge.textContent = val;
+     });
+  });
 }
 
 /* ÔòÉÔòÉÔòÉÔòÉÔòÉ DASHBOARD ÔòÉÔòÉÔòÉÔòÉÔòÉ */
@@ -2409,8 +2461,26 @@ function onFilterDeptChange() {
 }
 function populateFilterJenis(dept, elId) {
   const el=document.getElementById(elId); if(!el)return;
-  const types=dept?(DEPT_JENIS[dept]||COMMON_JENIS):COMMON_JENIS;
-  el.innerHTML=`<option value="">Semua Jenis</option>`+types.map(t=>`<option value="${t.val}">${t.label}</option>`).join('');
+  let html = `<option value="">Semua Jenis</option>`;
+  
+  if (dept && DEPT_JENIS[dept]) {
+    DEPT_JENIS[dept].forEach(group => {
+      html += `<optgroup label="${group.group}">`;
+      group.items.forEach(t => {
+        html += `<option value="${t.val}">${t.label}</option>`;
+      });
+      html += `</optgroup>`;
+    });
+  } else {
+    COMMON_JENIS.forEach(t => {
+      html += `<option value="${t.val}">${t.label}</option>`;
+    });
+  }
+  
+  // Preserve current value if it still exists in the new options
+  let currentVal = el.value;
+  el.innerHTML = html;
+  if (currentVal) el.value = currentVal;
 }
 
 function renderArsipTable() {
@@ -2496,7 +2566,7 @@ function renderDeptPage(dept) {
 
 
   document.getElementById('deptTableTitle').textContent=`Daftar Arsip ${d.label}`;
-  document.getElementById('deptSearch').value='';
+  // DO NOT clear search input to preserve user state during real-time updates
   populateFilterJenis(dept,'deptFilterJenis');
   renderDeptTable();
 }
@@ -2565,12 +2635,37 @@ function initSidebarSubMenus() {
     ul.id = `dept-${k}-sub-menu`;
     ul.style.display = 'none';
 
-    const types = [...(DEPT_JENIS[k] || []), ...COMMON_JENIS];
-    
-    let html = `<li class="active" onclick="filterByJenisFromSidebar('', '${k}', this)"><i class="fas fa-layer-group"></i> Semua Jenis</li>`;
-    types.forEach(t => {
-      html += `<li title="${t.label.replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${t.val}', '${k}', this)"><i class="${t.icon || 'fas fa-file-lines'}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${t.label}</span></li>`;
+    let html = `<li class="active" onclick="filterByJenisFromSidebar('', '${k}', this)" id="li-dept-${k}-all">
+      <i class="fas fa-layer-group"></i> <span style="flex:1;">Semua Jenis</span>
+      <span class="badge bg-p1" id="badge-dept-${k}-all" style="float:right; margin-top:2px;">0</span>
+    </li>`;
+
+    const groups = DEPT_JENIS[k] || [];
+    groups.forEach((group, gIdx) => {
+      // Create a subtle header for the group
+      html += `<li class="sb-sub-header" style="pointer-events:none; padding: 10px 15px 5px 25px; color: rgba(255,255,255,0.4); font-size: 0.65rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">${group.group}</li>`;
+      
+      group.items.forEach(t => {
+        html += `<li title="${t.label.replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${t.val}', '${k}', this)" id="li-jenis-${t.val}">
+          <i class="fas fa-file-lines" style="margin-left: 5px;"></i>
+          <span style="flex:1; min-width:0; line-height:1.4; font-size: 0.75rem;">${t.label}</span>
+          <span class="badge bg-p2" id="badge-jenis-${t.val}" style="float:right; margin-top:2px;">0</span>
+        </li>`;
+      });
     });
+
+    // Add COMMON_JENIS if not already present in groups
+    let hasUmum = groups.some(g => g.group === 'Arsip Umum' || g.group === 'Umum');
+    if (!hasUmum && COMMON_JENIS.length > 0) {
+      html += `<li class="sb-sub-header" style="pointer-events:none; padding: 10px 15px 5px 25px; color: rgba(255,255,255,0.4); font-size: 0.65rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">Arsip Umum</li>`;
+      COMMON_JENIS.forEach(t => {
+        html += `<li title="${t.label.replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${t.val}', '${k}', this)" id="li-jenis-${t.val}">
+          <i class="fas fa-file-lines" style="margin-left: 5px;"></i>
+          <span style="flex:1; min-width:0; line-height:1.4; font-size: 0.75rem;">${t.label}</span>
+          <span class="badge bg-p2" id="badge-jenis-${t.val}" style="float:right; margin-top:2px;">0</span>
+        </li>`;
+      });
+    }
 
     ul.innerHTML = html;
     navLink.after(ul);
@@ -3687,6 +3782,23 @@ const BANPT_TITLES = {
 
 function initBanpt() {
   generateBanptReport();
+  
+  // Realtime badges for BAN-PT K1-K9
+  const listItems = document.querySelectorAll('#banpt-sub-menu li');
+  for (let i = 1; i <= 9; i++) {
+     const kCount = getBanptData(i).length;
+     if (listItems.length >= i) {
+         let li = listItems[i-1];
+         if (li && li.innerHTML.includes(`K${i}.`)) {
+             let existingBadge = li.querySelector('.badge');
+             if (!existingBadge) {
+                 li.innerHTML += ` <span class="badge bg-p2" style="float:right; margin-top:2px;">${kCount}</span>`;
+             } else {
+                 existingBadge.textContent = kCount;
+             }
+         }
+     }
+  }
 }
 
 function switchBanptTab(tabNum, element) {
@@ -3769,6 +3881,26 @@ let currentLamptkesTab = 1;
 // ==================== LAM-PTKes ====================
 function initLamptkes() {
   generateLamptkesReport();
+  
+  // Also update badges in the sub-menu if they exist, or the li directly
+  const f = arsip.filter(a => !currentAY || a.ay === currentAY);
+  for (let i = 1; i <= 8; i++) {
+     const kCount = f.filter(a => getKriteriaNumber(a.jenis) === i).length;
+     // The HTML doesn't have badges, so we inject them or just know they don't exist
+     // To make it realtime, let's append a span to the li if it doesn't exist
+     const listItems = document.querySelectorAll('#lamptkes-sub-menu li');
+     if (listItems.length >= i) {
+         let li = listItems[i-1]; // Index 0 is K1, etc.
+         if (li && li.innerHTML.includes(`K${i}.`)) {
+             let existingBadge = li.querySelector('.badge');
+             if (!existingBadge) {
+                 li.innerHTML += ` <span class="badge bg-p2 k-badge" style="float:right; margin-top:2px;">${kCount}</span>`;
+             } else {
+                 existingBadge.textContent = kCount;
+             }
+         }
+     }
+  }
 }
 
 function switchLamptkesTab(tabNum, element) {
