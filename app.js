@@ -1093,8 +1093,24 @@ function openForm(prefillDept) {
   document.getElementById('fFormat').value='pdf';
   document.getElementById('fFileName').value='';
   document.getElementById('fGdriveLink').value='';
-  if(prefillDept){ document.getElementById('fBidang').value=prefillDept; onBidangChange(); }
-  else { document.getElementById('fJenis').innerHTML='<option value="">-- Pilih Bidang dulu --</option>'; }
+  
+  // Hide Bidang if Lamptkes Mode
+  const bidangField = document.getElementById('fBidang');
+  if (isLamptkesMode) {
+    bidangField.parentElement.style.display = 'none';
+    bidangField.required = false;
+    bidangField.value = 'lamptkes';
+    onBidangChange(); // This will auto-populate fJenisOptions
+  } else {
+    bidangField.parentElement.style.display = 'block';
+    bidangField.required = true;
+    if(prefillDept){ document.getElementById('fBidang').value=prefillDept; onBidangChange(); }
+    else { 
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih Bidang dulu --';
+      document.getElementById('fJenisOptions').innerHTML = '';
+    }
+  }
+
   const sel=document.getElementById('fAYear');
   if(sel){
     sel.innerHTML=[...allAYears()].reverse().map(y=>`<option value="${y}">${y}</option>`).join('');
