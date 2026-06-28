@@ -2344,7 +2344,7 @@ function renderArsipTable() {
   if(!tbody)return;
   if(!data.length){tbody.innerHTML='';empty?.classList.remove('hidden');if(info)info.textContent='Tidak ada arsip ditemukan.';return;}
   empty?.classList.add('hidden');
-  if(info)info.textContent=`${data.length} dari ${arsip.filter(a=>!currentAY||a.ay===currentAY).length} arsip ┬À TA ${currentAY}`;
+  if(info)info.textContent=`${data.length} dari ${arsip.filter(a=>!currentAY||a.ay===currentAY).length} arsip`;
 
   tbody.innerHTML=data.map((a,i)=>{
     const d=DEPT[a.bidang]||{label:a.bidang,color:'#888',icon:'fas fa-file'};
@@ -2355,7 +2355,6 @@ function renderArsipTable() {
       <td><span class="d-badge" style="background:${d.color}18;color:${d.color}; white-space: normal !important; text-align: left; line-height: 1.2; min-width: 120px; display: inline-block;"><i class="${d.icon}"></i>${d.label}</span></td>
       <td style="font-size:.78rem;color:var(--t2);"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/"/g, '&quot;')}" style="white-space:normal; line-height:1.3; word-break:normal; overflow-wrap:break-word; font-size:0.72rem;">${getJenisLabel(a.bidang,a.jenis)}</div></td>
       <td style="font-size:.78rem;">${fmtDate(a.tanggal)}</td>
-      <td><span class="td-ta" style="white-space:normal;">${a.ay||'ÔÇö'}</span></td>
       <td>${statusBadge(a.status)}</td>
       <td>${fmtBadge(a)}</td>
       <td><div class="act-group">
@@ -2549,7 +2548,7 @@ function renderDeptTable() {
 
   if(!data.length){tbody.innerHTML='';empty?.classList.remove('hidden');if(info)info.textContent='';return;}
   empty?.classList.add('hidden');
-  if(info)info.textContent=`${data.length} arsip \u2022 TA ${currentAY}`;
+  if(info)info.textContent=`${data.length} arsip`;
 
   tbody.innerHTML=data.map((a,i)=>{
     let tdHtml = `<tr>
@@ -3114,8 +3113,7 @@ function viewDetail(id) {
       <div class="detail-field"><label>Jenis Dokumen</label><span>${getJenisLabel(a.bidang,a.jenis)}</span></div>
       <div class="detail-field"><label>Pengirim / Pembuat</label><span>${esc(a.pengirim||'ÔÇö')}</span></div>
       <div class="detail-field"><label>Status</label>${statusBadge(a.status)}</div>
-      <div class="detail-field"><label>Tahun Akademik</label><span class="td-ta">${a.ay||'ÔÇö'}</span></div>
-      <div class="detail-field" style="grid-column:1/-1">
+            <div class="detail-field" style="grid-column:1/-1">
         <label>Dokumen Google Drive</label>
         ${a.gdriveLink && a.gdriveLink !== 'UPLOADING'
           ?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
