@@ -2436,7 +2436,7 @@ function renderDeptPage(dept) {
     {lb:'Aktif',val:all.filter(a=>a.status==='aktif').length,ic:'circle-dot',c:'#22c55e'},
     {lb:'Diproses',val:all.filter(a=>a.status==='diproses').length,ic:'hourglass-half',c:'#f59e0b'},
     {lb:'Selesai',val:all.filter(a=>a.status==='selesai').length,ic:'check-circle',c:'#3b82f6'},
-  ].map(c=>`<div class="stat-card" style="--c:${c.c}"><div class="sc-icon"><i class="fas fa-${c.ic}"></i></div><div class="sc-info"><div class="sc-val">${c.val}</div><div class="sc-label">${c.lb}</div></div></div>`).join('');
+  ].map(c=>`<div class="stat-card" style="--c:${c.c}"><div class="sc-icon"><i class="fas fa-${c.ic}"></i></div><div class="sc-label">${c.lb}</div><div class="sc-val">${c.val}</div></div>`).join('');
 
   document.getElementById('deptChartSub').textContent=`TA ${currentAY}`;
   initDeptCharts(dept,all,d.color);

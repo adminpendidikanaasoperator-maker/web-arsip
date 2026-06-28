@@ -226,13 +226,14 @@ input,select,textarea{font-family:inherit}
 .portal-sub{font-size:.75rem;color:var(--t3);font-weight:600}
 
 /* ─── STAT ROW ─── */
-.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.stat-cards,.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
 .stat-card{background:var(--card);border:1px solid var(--b1);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:all var(--tr);position:relative;overflow:hidden;box-shadow:var(--sh2)}
 .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--c,var(--green))}
 .stat-card:hover{border-color:var(--b2);transform:translateY(-4px);box-shadow:var(--sh)}
 .sc-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;background:var(--bg3);color:var(--c,var(--green));border:1px solid var(--b1)}
+.sc-info{display:flex;flex-direction:column;gap:10px;}
 .sc-label{font-size:.75rem;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
-.sc-val{font-size:2.2rem;font-weight:800;line-height:1;color:var(--t1)}
+.sc-val,.sc-value{font-size:2.2rem;font-weight:800;line-height:1;color:var(--t1)}
 
 /* ─── GRIDS ─── */
 .grid-2-1,.grid-3-2,.grid-1-1{display:grid;gap:22px;margin-bottom:22px}
