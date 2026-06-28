@@ -2680,6 +2680,20 @@ function openForm(prefillDept) {
       document.getElementById('fJenisLabelText').textContent = '-- Pilih Kategori dulu --';
       document.getElementById('fJenisOptions').innerHTML = '';
       bidangField.value = '';
+    } else if (isBanptMode) {
+      document.getElementById('formTitle').innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload Dokumen BAN-PT';
+      bidangField.parentElement.style.display = 'block';
+      bidangField.required = true;
+      if(bidangLabel) bidangLabel.innerHTML = 'Pilih Kategori <span class="req">*</span>';
+      
+      bidangField.innerHTML = `
+        <option value="">-- Pilih Kategori --</option>
+        <option value="banpt_led">Laporan Evaluasi Diri (LED)</option>
+        <option value="banpt_spmi">Sistem Penjaminan Mutu Internal (SPMI)</option>
+      `;
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih Kategori dulu --';
+      document.getElementById('fJenisOptions').innerHTML = '';
+      bidangField.value = '';
     } else {
       bidangField.parentElement.style.display = 'block';
       bidangField.required = true;
@@ -2737,17 +2751,9 @@ function onBidangChange() {
     const opts=document.getElementById('fJenisOptions');
     
     let types = [];
-    if (isLamptkesMode) {            if (bidang === 'banpt_led') {
-               level2 = 'Akreditasi BAN-PT';
-               level3 = 'Laporan Evaluasi Diri (LED)';
-               level4 = kMatch ? kMatch[1] : "Umum";
-            } else if (bidang === 'banpt_spmi') {
-               level2 = 'Akreditasi BAN-PT';
-               level3 = 'Sistem Penjaminan Mutu Internal (SPMI)';
-               level4 = kMatch ? kMatch[1] : "Umum";
-            } else 
+    if (isLamptkesMode) {
       if (bidang === 'lamptkes_led') {
-         types = [
+         types = [{ group: 'Laporan Evaluasi Diri (LED)', items: [
             {val: 'led_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
             {val: 'led_k2', label: 'Kriteria 2. Kurikulum'},
             {val: 'led_k3', label: 'Kriteria 3. Penilaian'},
@@ -2756,9 +2762,9 @@ function onBidangChange() {
             {val: 'led_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
             {val: 'led_k7', label: 'Kriteria 7. Penjaminan Mutu'},
             {val: 'led_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
-         ];
+         ]}];
       } else if (bidang === 'lamptkes_spmi') {
-         types = [
+         types = [{ group: 'Sistem Penjaminan Mutu Internal (SPMI)', items: [
             {val: 'spmi_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
             {val: 'spmi_k2', label: 'Kriteria 2. Kurikulum'},
             {val: 'spmi_k3', label: 'Kriteria 3. Penilaian'},
@@ -2767,7 +2773,33 @@ function onBidangChange() {
             {val: 'spmi_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
             {val: 'spmi_k7', label: 'Kriteria 7. Penjaminan Mutu'},
             {val: 'spmi_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
-         ];
+         ]}];
+      }
+    } else if (isBanptMode) {
+      if (bidang === 'banpt_led') {
+         types = [{ group: 'Laporan Evaluasi Diri (LED)', items: [
+            {val: 'banpt_led_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'banpt_led_k2', label: 'Kriteria 2. Tata Pamong, Tata Kelola, dan Kerjasama'},
+            {val: 'banpt_led_k3', label: 'Kriteria 3. Mahasiswa'},
+            {val: 'banpt_led_k4', label: 'Kriteria 4. Sumber Daya Manusia'},
+            {val: 'banpt_led_k5', label: 'Kriteria 5. Keuangan, Sarana, dan Prasarana'},
+            {val: 'banpt_led_k6', label: 'Kriteria 6. Pendidikan'},
+            {val: 'banpt_led_k7', label: 'Kriteria 7. Penelitian'},
+            {val: 'banpt_led_k8', label: 'Kriteria 8. Pengabdian kepada Masyarakat'},
+            {val: 'banpt_led_k9', label: 'Kriteria 9. Luaran dan Capaian Tridharma'}
+         ]}];
+      } else if (bidang === 'banpt_spmi') {
+         types = [{ group: 'Sistem Penjaminan Mutu Internal (SPMI)', items: [
+            {val: 'banpt_spmi_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'banpt_spmi_k2', label: 'Kriteria 2. Tata Pamong, Tata Kelola, dan Kerjasama'},
+            {val: 'banpt_spmi_k3', label: 'Kriteria 3. Mahasiswa'},
+            {val: 'banpt_spmi_k4', label: 'Kriteria 4. Sumber Daya Manusia'},
+            {val: 'banpt_spmi_k5', label: 'Kriteria 5. Keuangan, Sarana, dan Prasarana'},
+            {val: 'banpt_spmi_k6', label: 'Kriteria 6. Pendidikan'},
+            {val: 'banpt_spmi_k7', label: 'Kriteria 7. Penelitian'},
+            {val: 'banpt_spmi_k8', label: 'Kriteria 8. Pengabdian kepada Masyarakat'},
+            {val: 'banpt_spmi_k9', label: 'Kriteria 9. Luaran dan Capaian Tridharma'}
+         ]}];
       }
     } else {
       types = DEPT_JENIS[bidang] || [];
@@ -3020,7 +3052,11 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
             let level2 = DEPT[bidang]?.label || bidang;
             let level3 = tahun ? "TA " + tahun : "TA Umum";
             let level4 = "Umum";
-            const kMatch = getJenisLabel(bidang, jenis).match(/\[?(Kriteria \d+)\]?/i);
+            let kMatch = getJenisLabel(bidang, jenis).match(/\[?(Kriteria \d+)\]?/i);
+            if (!kMatch && (jenis.startsWith('led_k') || jenis.startsWith('spmi_k') || jenis.startsWith('banpt_led_k') || jenis.startsWith('banpt_spmi_k'))) {
+                const kNum = jenis.split('_k')[1];
+                if(kNum) kMatch = [null, 'Kriteria ' + kNum];
+            }
             
             // 1. Path Utama
             if (bidang === 'banpt_led') {
