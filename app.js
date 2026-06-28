@@ -1151,41 +1151,54 @@ document.addEventListener('click', function(e) {
 });
 
 function onBidangChange() {
-  const bidang=document.getElementById('fBidang').value;
-  const opts=document.getElementById('fJenisOptions');
-  
-  if (isLamptkesMode) {
+    const bidang=document.getElementById('fBidang').value;
+    const opts=document.getElementById('fJenisOptions');
     
-    document.getElementById('fJenisLabelText').textContent = '-- Pilih LED / SPMI --';
-    document.getElementById('fJenis').value = '';
-    let html = '';
-    LAMPTKES_SPECIAL_TYPES.forEach(t => {
-      const safeLabel = t.label.replace(/'/g, "\\'");
-      html += `<div class="custom-option" onclick="selectJenisOption('${t.val}', '${safeLabel}')">${t.label}</div>`;
-    });
-    opts.innerHTML = html;
-    onJenisChange();
-    return;
-  }
-
-  const types=DEPT_JENIS[bidang]||[];
+    if (isLamptkesMode) {
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih LED / SPMI --';
+      document.getElementById('fJenis').value = '';
+      let html = '';
+      LAMPTKES_SPECIAL_TYPES.forEach(t => {
+        const safeLabel = t.label.replace(/'/g, "\\'");
+        html += `<div class="custom-option" onclick="selectJenisOption('${t.val}', '${safeLabel}')">${t.label}</div>`;
+      });
+      
+      html += `<div style="padding:8px 12px; font-size:0.75rem; color:#6b7280; font-weight:700; text-transform:uppercase; margin-top:8px; border-top:1px solid #e5e7eb;">Arsip Umum</div>`;
+      COMMON_JENIS.forEach(t => {
+        const safeLabel = t.label.replace(/'/g, "\\'");
+        html += `<div class="custom-option" onclick="selectJenisOption('${t.val}', '${safeLabel}')"><i class="${t.icon}" style="margin-right:6px; color:${t.color}"></i> ${t.label}</div>`;
+      });
+      
+      opts.innerHTML = html;
+      onJenisChange();
+      return;
+    }
   
-  if(types.length) {
-    document.getElementById('fJenisLabelText').textContent = '-- Pilih Jenis --';
-    document.getElementById('fJenis').value = '';
-    let html = '';
-    types.forEach(t => {
-      const safeLabel = t.label.replace(/'/g, "\'");
-      html += `<div class="custom-option" onclick="selectJenisOption('${t.val}', '${safeLabel}')">${t.label}</div>`;
-    });
-    opts.innerHTML = html;
-  } else {
-    document.getElementById('fJenisLabelText').textContent = '-- Pilih Bidang dulu --';
-    document.getElementById('fJenis').value = '';
-    opts.innerHTML = '';
+    const types=DEPT_JENIS[bidang]||[];
+    
+    if(types.length || COMMON_JENIS.length) {
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih Jenis --';
+      document.getElementById('fJenis').value = '';
+      let html = '';
+      types.forEach(t => {
+        const safeLabel = t.label.replace(/'/g, "\\'");
+        html += `<div class="custom-option" onclick="selectJenisOption('${t.val}', '${safeLabel}')">${t.label}</div>`;
+      });
+      
+      html += `<div style="padding:8px 12px; font-size:0.75rem; color:#6b7280; font-weight:700; text-transform:uppercase; margin-top:8px; border-top:1px solid #e5e7eb;">Arsip Umum</div>`;
+      COMMON_JENIS.forEach(t => {
+        const safeLabel = t.label.replace(/'/g, "\\'");
+        html += `<div class="custom-option" onclick="selectJenisOption('${t.val}', '${safeLabel}')"><i class="${t.icon}" style="margin-right:6px; color:${t.color}"></i> ${t.label}</div>`;
+      });
+      
+      opts.innerHTML = html;
+    } else {
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih Bidang dulu --';
+      document.getElementById('fJenis').value = '';
+      opts.innerHTML = '';
+    }
+    onJenisChange();
   }
-  onJenisChange();
-}
 
 const DYNAMIC_FIELDS = {
   mutu_notulen_visi: [{ id: 'meta_pihak_terlibat', label: 'Pihak yang Terlibat', type: 'text' }],
