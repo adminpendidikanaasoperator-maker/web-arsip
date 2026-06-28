@@ -2047,8 +2047,10 @@ function processSnapshot(snapshot, collectionName) {
          if(currentUser.role==='admin') renderTable(arsip);
          else renderTable(arsip.filter(a=>a.bidang===currentUser.bidang));
        }
-       updateStats();
-       
+       updateBadges();
+       updateDashboard();
+       generateBanptReport();
+       generateLamptkesReport();
        renderDeptSubmenus();
        // Re-render visible page
        const activePage = document.querySelector('.page.active');
