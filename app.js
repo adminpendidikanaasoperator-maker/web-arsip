@@ -476,6 +476,43 @@ if (dataMigrated) {
     if (!mahasiswa.length) { mahasiswa = sampleDataMahasiswa(); }
     if (!sdm.length) { sdm = sampleDataSDM(); }
   } finally {
+    // Migration: K9 to respective criteria
+    let k9Migrated = false;
+    if (typeof db !== 'undefined') {
+      const batch = db.batch();
+      arsip.forEach(a => {
+         let changed = false;
+         if (a.jenis === 'k9_data_ipk') { a.jenis = 'k6_data_ipk'; changed = true; }
+         if (a.jenis === 'k9_capaian_pembelajaran') { a.jenis = 'k6_capaian_pembelajaran'; changed = true; }
+         if (a.jenis === 'k9_rekap_luaran_penelitian_dosen') { a.jenis = 'k7_rekap_luaran_penelitian_dosen'; changed = true; }
+         if (a.jenis === 'k9_rekap_luaran_penelitian_mhs') { a.jenis = 'k7_rekap_luaran_penelitian_mhs'; changed = true; }
+         if (a.jenis === 'k9_laporan_tracer_study') { a.jenis = 'k3_laporan_tracer_study'; changed = true; }
+         if (a.jenis === 'k9_survei_kepuasan_pengguna_lulusan') { a.jenis = 'k3_survei_kepuasan_pengguna_lulusan'; changed = true; }
+         if (a.jenis === 'k9_data_waktu_tunggu_lulusan') { a.jenis = 'k3_data_waktu_tunggu_lulusan'; changed = true; }
+         if (a.jenis === 'k9_data_pekerjaan_pertama') { a.jenis = 'k3_data_pekerjaan_pertama'; changed = true; }
+         if (a.jenis === 'k9_luaran_pkm_artikel') { a.jenis = 'k8_luaran_pkm_artikel'; changed = true; }
+         if (a.jenis === 'k9_luaran_pkm_buku') { a.jenis = 'k8_luaran_pkm_buku'; changed = true; }
+         if (a.jenis === 'k9_luaran_pkm_teknologi') { a.jenis = 'k8_luaran_pkm_teknologi'; changed = true; }
+         if (a.jenis === 'k9_led') { a.jenis = 'led_semua'; changed = true; }
+         if (a.jenis === 'k9_spmi') { a.jenis = 'spmi_semua'; changed = true; }
+         if (a.jenis && a.jenis.match(/^k[0-9]_spmi$/)) {
+             a.jenis = 'spmi_semua'; changed = true;
+         }
+         
+         if (changed) {
+            k9Migrated = true;
+            try {
+              let docRef = db.collection('arsip').doc(a.id);
+              batch.update(docRef, { jenis: a.jenis });
+            } catch(e){}
+         }
+      });
+      if (k9Migrated) {
+         try {
+           batch.commit().then(() => console.log("Migrated K9 documents to Firestore"));
+         } catch(e){}
+      }
+    }
     arsip.forEach(a => { a.ay = getAY(a.tanggal); });
     populateAYearSelect();
     updateBadges();
@@ -2040,7 +2077,11 @@ function generateLamptkesReport() {
   const container = document.getElementById('lamptkesReportContainer');
   if(!container) return;
 
-  let filtered = arsip.filter(a => getKriteriaNumber(a.jenis) === currentLamptkesTab);
+  let filtered = arsip.filter(a => {
+      if (currentLamptkesTab === 11) return (a.jenis && a.jenis.includes('_led')) || (a.jenis && a.jenis.startsWith('led_'));
+      if (currentLamptkesTab === 12) return (a.jenis && a.jenis.includes('_spmi')) || (a.jenis && a.jenis.startsWith('spmi_'));
+      return getKriteriaNumber(a.jenis) === currentLamptkesTab;
+    });
   
   let html = "<div class='akr-tab-content active'>";
   html += "<div class='akr-tab-header'>";
