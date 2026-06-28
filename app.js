@@ -1633,7 +1633,7 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
                level3 = 'Sistem Penjaminan Mutu Internal (SPMI)';
                level4 = kMatch ? kMatch[1] : "Umum";
             } else {
-               level4 = kMatch ? kMatch[1] : "Umum";
+               level4 = getJenisLabel(bidang, jenis) || "Umum";
             }
             return ["SIMARSIP AAS", level2, level3, level4];
           })()
