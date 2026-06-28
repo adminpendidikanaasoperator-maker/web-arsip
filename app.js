@@ -712,7 +712,6 @@ if (dataMigrated) {
     else if(currentPage==='dept') renderDeptPage(currentDept);
     else if(currentPage==='analytics') renderAnalytics();
   }
-}
 function save() {
   try {
     localStorage.setItem('SIMARSIP_AAS', JSON.stringify(arsip));
@@ -2914,7 +2913,6 @@ function updateYearlyChart() {
   const data=arsip.filter(a=>!currentAY||a.ay===currentAY);
   initDashCharts(data);
 }
-
 
 
 
