@@ -2054,7 +2054,7 @@ function processSnapshot(snapshot, collectionName) {
           const id = activePage.id;
           if(id === 'page-dashboard') renderDashboard();
           else if(id === 'page-analytics') renderAnalytics();
-          else if(id === 'page-dept') renderDeptPage(document.getElementById('deptBannerName').dataset.dept);
+          else if(id === 'page-dept' && currentDept) renderDeptPage(currentDept);
           else if(id === 'page-lamptkes') generateLamptkesReport();
           else if(id === 'page-mahasiswa') renderMahasiswaPage();
           else if(id === 'page-sdm') renderSdmPage();
