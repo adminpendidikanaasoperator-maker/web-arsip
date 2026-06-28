@@ -1727,10 +1727,9 @@ function getMonthLabel(ym) {
 }
 function allAYears() {
   const s = new Set(arsip.map(a=>a.ay||getAY(a.tanggal)));
-  s.add(currentAY);
+  if (currentAY) s.add(currentAY);
   for(let y=2014; y<=2050; y++) {
-    s.add(`${y} - ${y+1} GANJIL`);
-    s.add(`${y} - ${y+1} GENAP`);
+    s.add(y.toString());
   }
   return [...s].sort().reverse();
 }
@@ -1741,10 +1740,10 @@ function populateAYearSelect() {
   
   const yrs = allAYears();
   
-  const globalHtml = '<option value="">Semua Tahun Akademik</option>' + yrs.map(y=>`<option value="${y}"${y===currentAY?' selected':''}>${y}</option>`).join('');
+  const globalHtml = '<option value="">Semua Tahun</option>' + yrs.map(y=>`<option value="${y}"${y===currentAY?' selected':''}>${y}</option>`).join('');
   if (sel) sel.innerHTML = globalHtml;
   
-  const filterHtml = '<option value="">Semua Tahun Akademik</option>' + yrs.map(y=>`<option value="${y}">${y}</option>`).join('');
+  const filterHtml = '<option value="">Semua Tahun</option>' + yrs.map(y=>`<option value="${y}">${y}</option>`).join('');
   if (mhsAy && !mhsAy.value) mhsAy.innerHTML = filterHtml;
   if (sdmAy && !sdmAy.value) sdmAy.innerHTML = filterHtml;
 }
