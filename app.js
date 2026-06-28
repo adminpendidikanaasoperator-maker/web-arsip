@@ -1711,22 +1711,16 @@ function getAY(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr + 'T00:00:00');
   const m = d.getMonth() + 1, y = d.getFullYear();
-  let ay = '', sem = '';
-  if (m >= 8) { ay = `${y} - ${y+1}`; sem = 'GANJIL'; }
-  else if (m === 1) { ay = `${y-1} - ${y}`; sem = 'GANJIL'; }
-  else { ay = `${y-1} - ${y}`; sem = 'GENAP'; }
-  return `${ay} ${sem}`;
+  if (m >= 8) return `${y}/${y+1}`;
+  else return `${y-1}/${y}`;
 }
 function getAYMonths(ay) {
-  const parts = ay.split(' ');
-  const y1 = Number(parts[0]), y2 = Number(parts[2]), sem = parts[3];
+  if (!ay || !ay.includes('/')) return [];
+  const parts = ay.split('/');
+  const y1 = Number(parts[0]), y2 = Number(parts[1]);
   const ms = [];
-  if (sem === 'GANJIL') {
-    for (let m=8;m<=12;m++) ms.push(`${y1}-${String(m).padStart(2,'0')}`);
-    ms.push(`${y2}-01`);
-  } else {
-    for (let m=2; m<=7; m++) ms.push(`${y2}-${String(m).padStart(2,'0')}`);
-  }
+  for (let m=8;m<=12;m++) ms.push(`${y1}-${String(m).padStart(2,'0')}`);
+  for (let m=1;m<=7;m++) ms.push(`${y2}-${String(m).padStart(2,'0')}`);
   return ms;
 }
 function getMonthLabel(ym) {
