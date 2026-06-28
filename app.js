@@ -2191,20 +2191,41 @@ function updateBadges() {
   // BAN-PT & LAM-PTKes Badges
   let banptCount = 0;
   let lamptkesCount = 0;
+  let banptKCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0};
+  let lamptkesKCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0};
+
   f.forEach(a => {
-    if (getBanptCriteriaForUpload(a.bidang, a.jenis) > 0) banptCount++;
+    let bk = getBanptCriteriaForUpload(a.bidang, a.jenis);
+    if (bk > 0) {
+       banptCount++;
+       if(banptKCounts[bk] !== undefined) banptKCounts[bk]++;
+    }
     
-    // Check LAM-PTKes logic matching generateLamptkesReport
     if (a.jenis) {
-       if (getKriteriaNumber(a.jenis) > 0 || a.jenis.includes('_led') || a.jenis.startsWith('led_') || a.jenis.includes('_spmi') || a.jenis.startsWith('spmi_')) {
+       let lk = getKriteriaNumber(a.jenis);
+       if (lk > 0 || a.jenis.includes('_led') || a.jenis.startsWith('led_') || a.jenis.includes('_spmi') || a.jenis.startsWith('spmi_')) {
           lamptkesCount++;
+       }
+       if (lk >= 1 && lk <= 8) {
+          lamptkesKCounts[lk]++;
        }
     }
   });
+
   const bBanpt = document.getElementById('badge-banpt');
   if(bBanpt) bBanpt.textContent = banptCount;
   const bLamptkes = document.getElementById('badge-lamptkes');
   if(bLamptkes) bLamptkes.textContent = lamptkesCount;
+
+  // Update specific K badges
+  for (let i = 1; i <= 9; i++) {
+     let el = document.getElementById('badge-banpt-k' + i);
+     if (el) el.textContent = banptKCounts[i] || 0;
+  }
+  for (let i = 1; i <= 8; i++) {
+     let el = document.getElementById('badge-lamptkes-k' + i);
+     if (el) el.textContent = lamptkesKCounts[i] || 0;
+  }
 
 
   // Sub-Menu Jenis Badges
@@ -3811,26 +3832,6 @@ let currentLamptkesTab = 1;
 // ==================== LAM-PTKes ====================
 function initLamptkes() {
   generateLamptkesReport();
-  
-  // Also update badges in the sub-menu if they exist, or the li directly
-  const f = arsip.filter(a => !currentAY || a.ay === currentAY);
-  for (let i = 1; i <= 8; i++) {
-     const kCount = f.filter(a => getKriteriaNumber(a.jenis) === i).length;
-     // The HTML doesn't have badges, so we inject them or just know they don't exist
-     // To make it realtime, let's append a span to the li if it doesn't exist
-     const listItems = document.querySelectorAll('#lamptkes-sub-menu li');
-     if (listItems.length >= i) {
-         let li = listItems[i-1]; // Index 0 is K1, etc.
-         if (li && li.innerHTML.includes(`K${i}.`)) {
-             let existingBadge = li.querySelector('.badge');
-             if (!existingBadge) {
-                 li.innerHTML += ` <span class="badge bg-p2 k-badge" style="float:right; margin-top:2px;">${kCount}</span>`;
-             } else {
-                 existingBadge.textContent = kCount;
-             }
-         }
-     }
-  }
 }
 
 function switchLamptkesTab(tabNum, element) {

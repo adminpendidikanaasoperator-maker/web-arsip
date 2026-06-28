@@ -16,7 +16,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <script src="app.js?v=195" defer></script>
+  <script src="app.js?v=196" defer></script>
   <link rel="stylesheet" href="style.css?v=155" />
 </head>
 <body>
@@ -63,31 +63,31 @@
     <a class="sb-link" href="#" data-page="banpt" id="nav-banpt"><i class="fas fa-building-columns" style="color:#3b82f6"></i><span>Borang BAN-PT</span><em id="badge-banpt">0</em></a>
     <ul class="sb-sub-menu" id="banpt-sub-menu" style="display:none;">
       <li onclick="isBanptMode=true; isLamptkesMode=false; openForm();" style="color:#3b82f6; font-weight:600;"><i class="fas fa-cloud-upload-alt"></i> Upload LED / SPMI</li>
-      <li class="active" onclick="switchBanptTab(1, this)"><i class="fas fa-bullseye"></i> K1. Visi Misi & Strategi</li>
-      <li onclick="switchBanptTab(2, this)"><i class="fas fa-sitemap"></i> K2. Tata Pamong & Kerjasama</li>
-      <li onclick="switchBanptTab(3, this)"><i class="fas fa-user-graduate"></i> K3. Mahasiswa</li>
-      <li onclick="switchBanptTab(4, this)"><i class="fas fa-users-cog"></i> K4. Sumber Daya Manusia</li>
-      <li onclick="switchBanptTab(5, this)"><i class="fas fa-coins"></i> K5. Keuangan & Sarpras</li>
-      <li onclick="switchBanptTab(6, this)"><i class="fas fa-book-open"></i> K6. Pendidikan</li>
-      <li onclick="switchBanptTab(7, this)"><i class="fas fa-flask"></i> K7. Penelitian</li>
-      <li onclick="switchBanptTab(8, this)"><i class="fas fa-hands-helping"></i> K8. Pengabdian (PkM)</li>
-      <li onclick="switchBanptTab(9, this)"><i class="fas fa-award"></i> K9. Luaran & Capaian</li>
+      <li class="active" onclick="switchBanptTab(1, this)"><i class="fas fa-bullseye"></i> <span style="flex:1;">K1. Visi Misi & Strategi</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k1">0</span></li>
+      <li onclick="switchBanptTab(2, this)"><i class="fas fa-sitemap"></i> <span style="flex:1;">K2. Tata Pamong & Kerjasama</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k2">0</span></li>
+      <li onclick="switchBanptTab(3, this)"><i class="fas fa-user-graduate"></i> <span style="flex:1;">K3. Mahasiswa</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k3">0</span></li>
+      <li onclick="switchBanptTab(4, this)"><i class="fas fa-users-cog"></i> <span style="flex:1;">K4. Sumber Daya Manusia</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k4">0</span></li>
+      <li onclick="switchBanptTab(5, this)"><i class="fas fa-coins"></i> <span style="flex:1;">K5. Keuangan & Sarpras</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k5">0</span></li>
+      <li onclick="switchBanptTab(6, this)"><i class="fas fa-book-open"></i> <span style="flex:1;">K6. Pendidikan</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k6">0</span></li>
+      <li onclick="switchBanptTab(7, this)"><i class="fas fa-flask"></i> <span style="flex:1;">K7. Penelitian</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k7">0</span></li>
+      <li onclick="switchBanptTab(8, this)"><i class="fas fa-hands-helping"></i> <span style="flex:1;">K8. Pengabdian (PkM)</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k8">0</span></li>
+      <li onclick="switchBanptTab(9, this)"><i class="fas fa-award"></i> <span style="flex:1;">K9. Luaran & Capaian</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k9">0</span></li>
     </ul>
 
     <a class="sb-link" href="#" data-page="lamptkes" id="nav-lamptkes"><i class="fas fa-notes-medical" style="color:#10b981"></i><span>Borang LAM-PTKes</span><em id="badge-lamptkes">0</em></a>
     <ul class="sb-sub-menu" id="lamptkes-sub-menu" style="display:none;">
-      <li class="active" onclick="switchLamptkesTab(1, this)"><i class="fas fa-bullseye"></i> K1. Visi, Misi & Strategi</li>
-      <li onclick="switchLamptkesTab(2, this)"><i class="fas fa-book"></i> K2. Kurikulum</li>
-      <li onclick="switchLamptkesTab(3, this)"><i class="fas fa-check-circle"></i> K3. Penilaian</li>
-      <li onclick="switchLamptkesTab(4, this)"><i class="fas fa-user-graduate"></i> K4. Mahasiswa</li>
-      <li onclick="switchLamptkesTab(5, this)"><i class="fas fa-chalkboard-teacher"></i> K5. SDM (Dosen & Tendik)</li>
-      <li onclick="switchLamptkesTab(6, this)"><i class="fas fa-building"></i> K6. Sarpras & Keuangan</li>
-      <li onclick="switchLamptkesTab(7, this)"><i class="fas fa-shield-alt"></i> K7. Penjaminan Mutu</li>
-      <li onclick="switchLamptkesTab(8, this)"><i class="fas fa-sitemap"></i> K8. Tata Kelola Administrasi</li>
+      <li class="active" onclick="switchLamptkesTab(1, this)"><i class="fas fa-bullseye"></i> <span style="flex:1;">K1. Visi, Misi & Strategi</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k1">0</span></li>
+      <li onclick="switchLamptkesTab(2, this)"><i class="fas fa-book"></i> <span style="flex:1;">K2. Kurikulum</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k2">0</span></li>
+      <li onclick="switchLamptkesTab(3, this)"><i class="fas fa-check-circle"></i> <span style="flex:1;">K3. Penilaian</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k3">0</span></li>
+      <li onclick="switchLamptkesTab(4, this)"><i class="fas fa-user-graduate"></i> <span style="flex:1;">K4. Mahasiswa</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k4">0</span></li>
+      <li onclick="switchLamptkesTab(5, this)"><i class="fas fa-chalkboard-teacher"></i> <span style="flex:1;">K5. SDM (Dosen & Tendik)</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k5">0</span></li>
+      <li onclick="switchLamptkesTab(6, this)"><i class="fas fa-building"></i> <span style="flex:1;">K6. Sarpras & Keuangan</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k6">0</span></li>
+      <li onclick="switchLamptkesTab(7, this)"><i class="fas fa-shield-alt"></i> <span style="flex:1;">K7. Penjaminan Mutu</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k7">0</span></li>
+      <li onclick="switchLamptkesTab(8, this)"><i class="fas fa-sitemap"></i> <span style="flex:1;">K8. Tata Kelola Administrasi</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k8">0</span></li>
 
-      <li onclick="switchLamptkesTab(10, this)"><i class="fas fa-table"></i> Bab II (Tabel LKPS)</li>
-      <li onclick="switchLamptkesTab(11, this)"><i class="fas fa-book-open"></i> LED (Semua Kriteria)</li>
-      <li onclick="switchLamptkesTab(12, this)"><i class="fas fa-tasks"></i> SPMI (Per Bidang)</li>
+      <li onclick="switchLamptkesTab(10, this)"><i class="fas fa-table"></i> <span style="flex:1;">Bab II (Tabel LKPS)</span></li>
+      <li onclick="switchLamptkesTab(11, this)"><i class="fas fa-book-open"></i> <span style="flex:1;">LED (Semua Kriteria)</span></li>
+      <li onclick="switchLamptkesTab(12, this)"><i class="fas fa-tasks"></i> <span style="flex:1;">SPMI (Per Bidang)</span></li>
       <hr style="border-color: rgba(255,255,255,0.05); margin: 4px 15px;">
       <li onclick="isLamptkesMode=true; isBanptMode=false; openForm();" style="color:#10b981; font-weight:600;"><i class="fas fa-cloud-upload-alt"></i> Upload LED / SPMI</li>
     </ul>
