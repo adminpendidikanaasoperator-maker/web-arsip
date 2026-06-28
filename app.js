@@ -2654,6 +2654,21 @@ function chartOpts(extra={}) {
 }
 
 /* ÔòÉÔòÉÔòÉÔòÉÔòÉ FORM MODAL ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+
+function openEmptyStateForm() {
+  if (currentPage === 'banpt') {
+     isBanptMode = true;
+     isLamptkesMode = false;
+  } else if (currentPage === 'lamptkes') {
+     isLamptkesMode = true;
+     isBanptMode = false;
+  } else {
+     isBanptMode = false;
+     isLamptkesMode = false;
+  }
+  openForm();
+}
+
 function openForm(prefillDept) {
     document.getElementById('arsipForm').reset();
     document.getElementById('editId').value='';
