@@ -1882,40 +1882,16 @@ let arsip    = [];
 let currentDeptSub = 'all';
 
 function renderDeptSubmenus() {
-  document.querySelectorAll('.sb-link[data-page="dept"]').forEach(link => {
-    const deptId = link.getAttribute('data-dept');
-    
-    let existingUl = link.nextElementSibling;
-    if (existingUl && existingUl.classList.contains('sb-sub-menu')) {
-      existingUl.remove();
+  // Hanya update badge/count di sub-menu yang sudah ada
+  Object.keys(DEPT).forEach(k => {
+    const ul = document.getElementById(`dept-${k}-sub-menu`);
+    if (!ul) return;
+    const count = arsip.filter(a => a.bidang === k).length;
+    const firstLi = ul.querySelector('li:first-child');
+    if (firstLi) {
+      const badge = firstLi.querySelector('.badge-count');
+      if (badge) badge.textContent = count;
     }
-    
-    const ul = document.createElement('ul');
-    ul.className = 'sb-sub-menu';
-    ul.id = `submenu-${deptId}`;
-    ul.style.display = (currentPage === 'dept' && currentDept === deptId) ? 'block' : 'none';
-    
-    if (DEPT_JENIS[deptId]) {
-      let countAll = arsip.filter(a => a.bidang === deptId).length;
-      ul.innerHTML += `<li class="${currentDeptSub === 'all' && currentDept === deptId ? 'active' : ''}" onclick="switchDeptSub('all', this, '${deptId}')">
-        <i class="fas fa-folder-open"></i> Semua Arsip <span class="badge bg-p1" style="float:right; margin-top:2px;">${countAll}</span>
-      </li>`;
-      
-      DEPT_JENIS[deptId].forEach((group, index) => {
-        let count = arsip.filter(a => {
-           if(a.bidang !== deptId) return false;
-           return group.items.some(item => item.val === a.jenis);
-        }).length;
-        
-        let safeId = 'group_' + index;
-        let isActive = (currentDeptSub === safeId && currentDept === deptId) ? 'active' : '';
-        ul.innerHTML += `<li class="${isActive}" onclick="switchDeptSub('${safeId}', this, '${deptId}')">
-          <i class="fas fa-caret-right"></i> ${group.group} <span class="badge bg-p2" style="float:right; margin-top:2px;">${count}</span>
-        </li>`;
-      });
-    }
-    
-    link.parentNode.insertBefore(ul, link.nextSibling);
   });
 }
 
@@ -2254,20 +2230,33 @@ function setupNav() {
       e.preventDefault();
       const page = link.dataset.page, dept = link.dataset.dept||'';
       
+      // Klik bidang yang sama: toggle sub-menu
       if (page === 'dept' && currentDept === dept && currentPage === 'dept') {
         const menu = document.getElementById(`dept-${dept}-sub-menu`);
         if (menu) menu.style.display = (menu.style.display === 'none') ? 'flex' : 'none';
         return;
       }
       
+      // Klik BAN-PT / LAM-PTKes yang sama: toggle sub-menu
       if ((page === 'banpt' || page === 'lamptkes') && currentPage === page) {
         const menu = document.getElementById(`${page}-sub-menu`);
         if (menu) menu.style.display = (menu.style.display === 'none') ? 'flex' : 'none';
         return;
       }
 
-      setActiveNav(link); currentDept = dept;
+      setActiveNav(link);
+      currentDept = dept;
       showPage(page);
+      
+      // Otomatis buka sub-menu untuk dept
+      if (page === 'dept' && dept) {
+        // Tutup semua sub-menu dept lain
+        Object.keys(DEPT).forEach(k => {
+          const m = document.getElementById(`dept-${k}-sub-menu`);
+          if (m) m.style.display = (k === dept) ? 'flex' : 'none';
+        });
+      }
+      
       if (window.innerWidth<=768) closeSidebar();
     });
   });
