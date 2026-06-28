@@ -2289,8 +2289,6 @@ function generateBanptReport() {
 
 let currentLamptkesTab = 1;
 // ==================== LAM-PTKes ====================
-let currentLamptkesTab = 1;
-
 function initLamptkes() {
   generateLamptkesReport();
 }
