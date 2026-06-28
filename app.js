@@ -1090,6 +1090,25 @@ document.addEventListener('click', function(e) {
 function onBidangChange() {
   const bidang=document.getElementById('fBidang').value;
   const opts=document.getElementById('fJenisOptions');
+  
+  if (isLamptkesMode) {
+    if (!bidang) {
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih Bidang dulu --';
+      opts.innerHTML = '';
+      return;
+    }
+    document.getElementById('fJenisLabelText').textContent = '-- Pilih LED / SPMI --';
+    document.getElementById('fJenis').value = '';
+    let html = '';
+    LAMPTKES_SPECIAL_TYPES.forEach(t => {
+      const safeLabel = t.label.replace(/'/g, "\\'");
+      html += `<div class="custom-option" onclick="selectJenisOption('${t.val}', '${safeLabel}')">${t.label}</div>`;
+    });
+    opts.innerHTML = html;
+    onJenisChange();
+    return;
+  }
+
   const types=DEPT_JENIS[bidang]||[];
   
   if(types.length) {
