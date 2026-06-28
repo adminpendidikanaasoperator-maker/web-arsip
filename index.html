@@ -384,49 +384,8 @@
 
     <div class="akr-dashboard">
       <section class="akr-content">
-        <!-- BAN-PT: OVERVIEW MAKRO (MABA & LULUSAN) -->
-        <div id="banpt_tab_overview" class="akr-tab-content active">
-          <div class="akr-tab-header">
-            <h3>Overview Penerimaan & Kelulusan (Makro)</h3>
-            <p>Data agregat pendaftaran mahasiswa ditarik otomatis dari sistem akademik.</p>
-          </div>
-          <div style="background:var(--bg3); padding:16px; border-radius:12px; margin-bottom:24px; border:1px solid var(--b2); max-width:600px;">
-            <canvas id="chartBanptMaba" height="250"></canvas>
-          </div>
-          <div class="akr-table-native-wrap">
-            <table class="tb-table" id="tableBanptMaba">
-              <thead><tr><th>Tahun Akademik</th><th>Total Pendaftar</th><th>Lulus Seleksi</th><th>Maba Baru</th><th>Maba Transfer</th><th>Total Aktif</th></tr></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- BAN-PT: KEUANGAN & ANGGARAN -->
-        <div id="banpt_tab_keuangan" class="akr-tab-content hidden">
-          <div class="akr-tab-header">
-            <h3>Keuangan, Sarana, dan Prasarana (Kriteria 5)</h3>
-            <p>Laporan Keuangan & RAB yang ditarik dari Bidang Keuangan.</p>
-          </div>
-          <div class="akr-table-native-wrap">
-            <table class="tb-table" id="tableBanptKeuangan">
-              <thead><tr><th>Judul Dokumen</th><th>Tahun Anggaran</th><th>Status Anggaran</th><th>Dokumen (GDrive)</th></tr></thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- BAN-PT: KEBIJAKAN & SOP -->
-        <div id="banpt_tab_kebijakan" class="akr-tab-content hidden">
-          <div class="akr-tab-header">
-            <h3>Tata Kelola & Kebijakan (Kriteria 2)</h3>
-            <p>SK Rektor, Renstra, dan SOP Institusi dari tingkat Universitas.</p>
-          </div>
-          <div class="akr-table-native-wrap">
-            <table class="tb-table" id="tableBanptKebijakan">
-              <thead><tr><th>Nama / Nomor SK</th><th>Perihal</th><th>Tanggal Terbit</th><th>Dokumen (GDrive)</th></tr></thead>
-              <tbody></tbody>
-            </table>
-          </div>
+                <div id="banptReportContainer">
+          <!-- Tabel Dinamis BAN-PT Kriteria 1-9 akan di-render di sini -->
         </div>
       </section>
     </div>
