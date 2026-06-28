@@ -199,116 +199,116 @@ const DEPT_JENIS = {
   // WADIR I
   // ---------------------------------------------------------
   akademik: [
-    { val:'k2_dokumen_kurikulum', label:'[Kriteria 2] Dokumen Kurikulum' },
-    { val:'k2_peta_kompetensi', label:'[Kriteria 2] Peta Kompetensi' },
-    { val:'k2_silabus', label:'[Kriteria 2] Silabus' },
-    { val:'k2_rps', label:'[Kriteria 2] Rencana Pembelajaran Semester (RPS)' },
-    { val:'k2_rapat_kurikulum', label:'[Kriteria 2] Notulen Rapat Peninjauan Kurikulum' },
-    { val:'k2_evaluasi_kurikulum', label:'[Kriteria 2] Laporan Evaluasi Kurikulum' },
-    { val:'k2_modul_klinik', label:'[Kriteria 2] Modul Praktik Klinik Profesi' },
-    { val:'k2_panduan_klinik', label:'[Kriteria 2] Panduan Praktik Klinik Profesi' },
-    { val:'k3_kebijakan_penilaian', label:'[Kriteria 3] Kebijakan Penilaian Mahasiswa' },
-    { val:'k3_pedoman_penilaian', label:'[Kriteria 3] Pedoman Penilaian Mahasiswa' },
-    { val:'k3_spo_penilaian', label:'[Kriteria 3] Prosedur Operasional Standar (SPO) Penilaian' },
-    { val:'k3_blueprint', label:'[Kriteria 3] Cetak Biru (Blueprint) Ujian / Penilaian' },
-    { val:'k3_bank_soal', label:'[Kriteria 3] Bank Soal Ujian' },
-    { val:'k3_analisis_soal', label:'[Kriteria 3] Hasil Analisis Soal Ujian' },
-    { val:'k3_logbook', label:'[Kriteria 3] Buku Catatan Praktik Mahasiswa (Logbook)' },
-    { val:'k3_laporan_remedial', label:'[Kriteria 3] Laporan Remedial' },
-    { val:'k3_mekanisme_remedial', label:'[Kriteria 3] Mekanisme Remedial / Pengayaan' },
-    { val:'k3_hasil_ukom', label:'[Kriteria 3] Lampiran Hasil Uji Kompetensi CBT & OSCE' },
-    { val:'k6_jadwal_kuliah', label:'[Kriteria 6] Jadwal Perkuliahan' },
-    { val:'k6_jadwal_praktik', label:'[Kriteria 6] Jadwal Praktik' },
-    { val:'k7_evaluasi_pembelajaran', label:'[Kriteria 7] Laporan Evaluasi Mutu Pembelajaran' },
-    { val:'k6_data_ipk', label:'[Kriteria 6] Data IPK Lulusan' },
-    { val:'k6_capaian_pembelajaran', label:'[Kriteria 6] Data Capaian Pembelajaran Lulusan' },
+    { val:'k2_dokumen_kurikulum', label:'Dokumen Kurikulum' },
+    { val:'k2_peta_kompetensi', label:'Peta Kompetensi' },
+    { val:'k2_silabus', label:'Silabus' },
+    { val:'k2_rps', label:'Rencana Pembelajaran Semester (RPS)' },
+    { val:'k2_rapat_kurikulum', label:'Notulen Rapat Peninjauan Kurikulum' },
+    { val:'k2_evaluasi_kurikulum', label:'Laporan Evaluasi Kurikulum' },
+    { val:'k2_modul_klinik', label:'Modul Praktik Klinik Profesi' },
+    { val:'k2_panduan_klinik', label:'Panduan Praktik Klinik Profesi' },
+    { val:'k3_kebijakan_penilaian', label:'Kebijakan Penilaian Mahasiswa' },
+    { val:'k3_pedoman_penilaian', label:'Pedoman Penilaian Mahasiswa' },
+    { val:'k3_spo_penilaian', label:'Prosedur Operasional Standar (SPO) Penilaian' },
+    { val:'k3_blueprint', label:'Cetak Biru (Blueprint) Ujian / Penilaian' },
+    { val:'k3_bank_soal', label:'Bank Soal Ujian' },
+    { val:'k3_analisis_soal', label:'Hasil Analisis Soal Ujian' },
+    { val:'k3_logbook', label:'Buku Catatan Praktik Mahasiswa (Logbook)' },
+    { val:'k3_laporan_remedial', label:'Laporan Remedial' },
+    { val:'k3_mekanisme_remedial', label:'Mekanisme Remedial / Pengayaan' },
+    { val:'k3_hasil_ukom', label:'Lampiran Hasil Uji Kompetensi CBT & OSCE' },
+    { val:'k6_jadwal_kuliah', label:'Jadwal Perkuliahan' },
+    { val:'k6_jadwal_praktik', label:'Jadwal Praktik' },
+    { val:'k7_evaluasi_pembelajaran', label:'Laporan Evaluasi Mutu Pembelajaran' },
+    { val:'k6_data_ipk', label:'Data IPK Lulusan' },
+    { val:'k6_capaian_pembelajaran', label:'Data Capaian Pembelajaran Lulusan' },
     { val:'lainnya', label:'Lainnya' }
   ],
   sistem_pendidikan: [
-    { val:'k6_sistem_pembelajaran', label:'[Kriteria 6] Sistem Pendukung Pembelajaran (LMS/E-Learning)' },
-    { val:'k6_sistem_internet', label:'[Kriteria 6] Sistem Pendukung Akses Internet' },
-    { val:'k6_kebijakan_siakad', label:'[Kriteria 6] Kebijakan Penggunaan SIAKAD' },
-    { val:'k6_sop_siakad', label:'[Kriteria 6] SOP Penggunaan SIAKAD' },
-    { val:'k6_panduan_elearning_dosen', label:'[Kriteria 6] Panduan E-Learning untuk Dosen' },
-    { val:'k6_panduan_elearning_mhs', label:'[Kriteria 6] Panduan E-Learning untuk Mahasiswa' },
-    { val:'k6_formulir_evaluasi_sumber', label:'[Kriteria 6] Formulir Evaluasi Sumber Informasi' },
-    { val:'k7_evaluasi_sistem', label:'[Kriteria 7] Laporan Evaluasi Keandalan Sistem Pendidikan' },
+    { val:'k6_sistem_pembelajaran', label:'Sistem Pendukung Pembelajaran (LMS/E-Learning)' },
+    { val:'k6_sistem_internet', label:'Sistem Pendukung Akses Internet' },
+    { val:'k6_kebijakan_siakad', label:'Kebijakan Penggunaan SIAKAD' },
+    { val:'k6_sop_siakad', label:'SOP Penggunaan SIAKAD' },
+    { val:'k6_panduan_elearning_dosen', label:'Panduan E-Learning untuk Dosen' },
+    { val:'k6_panduan_elearning_mhs', label:'Panduan E-Learning untuk Mahasiswa' },
+    { val:'k6_formulir_evaluasi_sumber', label:'Formulir Evaluasi Sumber Informasi' },
+    { val:'k7_evaluasi_sistem', label:'Laporan Evaluasi Keandalan Sistem Pendidikan' },
     { val:'lainnya', label:'Lainnya' }
   ],
   laboratorium: [
-    { val:'k6_inventaris_alat_lab', label:'[Kriteria 6] Daftar Inventaris Alat Laboratorium' },
-    { val:'k6_inventaris_bahan_lab', label:'[Kriteria 6] Daftar Inventaris Bahan Laboratorium' },
-    { val:'k6_sop_peralatan_lab', label:'[Kriteria 6] SOP Penggunaan Peralatan Laboratorium' },
-    { val:'k6_daftar_manekin', label:'[Kriteria 6] Daftar Manekin Pelatihan Keterampilan Klinis' },
-    { val:'k6_dokumen_k3_lab', label:'[Kriteria 6] Dokumen Keselamatan & Kesehatan Kerja (K3) Lab' },
-    { val:'k6_jadwal_penggunaan_lab', label:'[Kriteria 6] Jadwal Penggunaan Laboratorium' },
-    { val:'k6_jadwal_praktikum', label:'[Kriteria 6] Jadwal Praktikum Laboratorium' },
-    { val:'k7_evaluasi_pelayanan_lab', label:'[Kriteria 7] Laporan Evaluasi Pelayanan Laboratorium' },
-    { val:'k7_evaluasi_kondisi_lab', label:'[Kriteria 7] Laporan Evaluasi Kondisi Laboratorium' },
+    { val:'k6_inventaris_alat_lab', label:'Daftar Inventaris Alat Laboratorium' },
+    { val:'k6_inventaris_bahan_lab', label:'Daftar Inventaris Bahan Laboratorium' },
+    { val:'k6_sop_peralatan_lab', label:'SOP Penggunaan Peralatan Laboratorium' },
+    { val:'k6_daftar_manekin', label:'Daftar Manekin Pelatihan Keterampilan Klinis' },
+    { val:'k6_dokumen_k3_lab', label:'Dokumen Keselamatan & Kesehatan Kerja (K3) Lab' },
+    { val:'k6_jadwal_penggunaan_lab', label:'Jadwal Penggunaan Laboratorium' },
+    { val:'k6_jadwal_praktikum', label:'Jadwal Praktikum Laboratorium' },
+    { val:'k7_evaluasi_pelayanan_lab', label:'Laporan Evaluasi Pelayanan Laboratorium' },
+    { val:'k7_evaluasi_kondisi_lab', label:'Laporan Evaluasi Kondisi Laboratorium' },
     { val:'lainnya', label:'Lainnya' }
   ],
   perpustakaan: [
-    { val:'k6_katalog_buku_teks', label:'[Kriteria 6] Daftar Katalog Buku Teks' },
-    { val:'k6_katalog_referensi', label:'[Kriteria 6] Daftar Katalog Buku Referensi' },
-    { val:'k6_langganan_jurnal_nasional', label:'[Kriteria 6] Bukti Langganan Database Jurnal Nasional' },
-    { val:'k6_langganan_jurnal_internasional', label:'[Kriteria 6] Bukti Langganan Database Jurnal Internasional' },
-    { val:'k6_rekap_kunjungan_perpus', label:'[Kriteria 6] Rekapitulasi Kunjungan Perpustakaan' },
-    { val:'k6_rekap_peminjaman_buku', label:'[Kriteria 6] Rekapitulasi Peminjaman Pustaka' },
-    { val:'k6_sop_layanan_perpus', label:'[Kriteria 6] SOP Layanan Perpustakaan' },
-    { val:'k7_survei_kepuasan_perpus', label:'[Kriteria 7] Laporan Survei Kepuasan Layanan Perpustakaan' },
+    { val:'k6_katalog_buku_teks', label:'Daftar Katalog Buku Teks' },
+    { val:'k6_katalog_referensi', label:'Daftar Katalog Buku Referensi' },
+    { val:'k6_langganan_jurnal_nasional', label:'Bukti Langganan Database Jurnal Nasional' },
+    { val:'k6_langganan_jurnal_internasional', label:'Bukti Langganan Database Jurnal Internasional' },
+    { val:'k6_rekap_kunjungan_perpus', label:'Rekapitulasi Kunjungan Perpustakaan' },
+    { val:'k6_rekap_peminjaman_buku', label:'Rekapitulasi Peminjaman Pustaka' },
+    { val:'k6_sop_layanan_perpus', label:'SOP Layanan Perpustakaan' },
+    { val:'k7_survei_kepuasan_perpus', label:'Laporan Survei Kepuasan Layanan Perpustakaan' },
     { val:'lainnya', label:'Lainnya' }
   ],
   lppm: [
-    { val:'k5_roadmap_penelitian_prodi', label:'[Kriteria 5] Roadmap Penelitian Program Studi' },
-    { val:'k5_roadmap_penelitian_institusi', label:'[Kriteria 5] Roadmap Penelitian Institusi' },
-    { val:'k5_buku_pedoman_penelitian', label:'[Kriteria 5] Buku Pedoman Pelaksanaan Penelitian' },
-    { val:'k5_laporan_akhir_penelitian', label:'[Kriteria 5] Laporan Akhir Penelitian Dosen' },
-    { val:'k5_bukti_publikasi_nasional', label:'[Kriteria 5] Bukti Publikasi Ilmiah (Jurnal Nasional)' },
-    { val:'k5_bukti_publikasi_internasional', label:'[Kriteria 5] Bukti Publikasi Ilmiah (Jurnal Internasional)' },
-    { val:'k5_bukti_penghargaan', label:'[Kriteria 5] Bukti Penghargaan' },
-    { val:'k5_bukti_hki', label:'[Kriteria 5] Bukti Hak Kekayaan Intelektual (HKI)' },
-    { val:'k5_bukti_paten', label:'[Kriteria 5] Bukti Paten' },
-    { val:'k5_kebijakan_dana_penelitian', label:'[Kriteria 5] Kebijakan Dana Internal Penelitian' },
-    { val:'k7_audit_kinerja_lppm', label:'[Kriteria 7] Laporan Audit Kinerja LPPM' },
-    { val:'k7_rekap_luaran_penelitian_dosen', label:'[Kriteria 7] Rekapitulasi Luaran Penelitian Dosen' },
-    { val:'k7_rekap_luaran_penelitian_mhs', label:'[Kriteria 7] Rekapitulasi Luaran Penelitian Mahasiswa' },
+    { val:'k5_roadmap_penelitian_prodi', label:'Roadmap Penelitian Program Studi' },
+    { val:'k5_roadmap_penelitian_institusi', label:'Roadmap Penelitian Institusi' },
+    { val:'k5_buku_pedoman_penelitian', label:'Buku Pedoman Pelaksanaan Penelitian' },
+    { val:'k5_laporan_akhir_penelitian', label:'Laporan Akhir Penelitian Dosen' },
+    { val:'k5_bukti_publikasi_nasional', label:'Bukti Publikasi Ilmiah (Jurnal Nasional)' },
+    { val:'k5_bukti_publikasi_internasional', label:'Bukti Publikasi Ilmiah (Jurnal Internasional)' },
+    { val:'k5_bukti_penghargaan', label:'Bukti Penghargaan' },
+    { val:'k5_bukti_hki', label:'Bukti Hak Kekayaan Intelektual (HKI)' },
+    { val:'k5_bukti_paten', label:'Bukti Paten' },
+    { val:'k5_kebijakan_dana_penelitian', label:'Kebijakan Dana Internal Penelitian' },
+    { val:'k7_audit_kinerja_lppm', label:'Laporan Audit Kinerja LPPM' },
+    { val:'k7_rekap_luaran_penelitian_dosen', label:'Rekapitulasi Luaran Penelitian Dosen' },
+    { val:'k7_rekap_luaran_penelitian_mhs', label:'Rekapitulasi Luaran Penelitian Mahasiswa' },
     { val:'lainnya', label:'Lainnya' }
   ],
   kemahasiswaan: [
-    { val:'k4_kebijakan_seleksi_maba', label:'[Kriteria 4] Kebijakan Seleksi Penerimaan Mahasiswa Baru' },
-    { val:'k4_pedoman_seleksi_maba', label:'[Kriteria 4] Pedoman Seleksi Penerimaan Mahasiswa Baru' },
-    { val:'k4_laporan_kinerja_pmb', label:'[Kriteria 4] Laporan Kinerja Panitia PMB' },
-    { val:'k4_pedoman_layanan_mhs', label:'[Kriteria 4] Pedoman Layanan Mahasiswa' },
-    { val:'k4_pembinaan_minat_bakat', label:'[Kriteria 4] Pedoman Pembinaan Minat & Bakat Mahasiswa' },
-    { val:'k4_kebijakan_kampus_sehat', label:'[Kriteria 4] Kebijakan Kampus Sehat' },
-    { val:'k4_kebijakan_bebas_kekerasan', label:'[Kriteria 4] Kebijakan Bebas Kekerasan / Anti Perundungan Mhs' },
-    { val:'k4_kebijakan_anti_narkoba', label:'[Kriteria 4] Kebijakan Anti Narkoba' },
-    { val:'k4_catatan_bimbingan_akademik', label:'[Kriteria 4] Catatan Pelaksanaan Bimbingan Akademik (PA)' },
-    { val:'k4_catatan_konseling', label:'[Kriteria 4] Catatan Pelaksanaan Bimbingan Konseling' },
-    { val:'k4_sk_ormawa', label:'[Kriteria 4] SK Kepengurusan Organisasi Kemahasiswaan (BEM/DLM/UKM)' },
-    { val:'k4_laporan_kegiatan_ormawa', label:'[Kriteria 4] Laporan Kegiatan Organisasi Kemahasiswaan' },
-    { val:'k4_bukti_prestasi_akademik', label:'[Kriteria 4] Bukti Prestasi Akademik Mahasiswa' },
-    { val:'k4_bukti_prestasi_non_akademik', label:'[Kriteria 4] Bukti Prestasi Non-Akademik Mahasiswa' },
-    { val:'k4_daftar_penerima_beasiswa', label:'[Kriteria 4] Daftar Penerima Beasiswa' },
-    { val:'k4_laporan_penyaluran_beasiswa', label:'[Kriteria 4] Laporan Penyaluran Beasiswa' },
-    { val:'k4_pedoman_rca', label:'[Kriteria 4] Pedoman RCA (Root Cause Analysis) Mahasiswa' },
-    { val:'k7_laporan_survei_kepuasan_mhs', label:'[Kriteria 7] Laporan Survei Kepuasan Mahasiswa' },
-    { val:'k3_laporan_tracer_study', label:'[Kriteria 3] Laporan Tracer Study' },
-    { val:'k3_survei_kepuasan_pengguna_lulusan', label:'[Kriteria 3] Laporan Kepuasan Pengguna Lulusan' },
-    { val:'k3_data_waktu_tunggu_lulusan', label:'[Kriteria 3] Data Waktu Tunggu Lulusan' },
-    { val:'k3_data_pekerjaan_pertama', label:'[Kriteria 3] Data Kesesuaian Bidang Kerja Lulusan' },
+    { val:'k4_kebijakan_seleksi_maba', label:'Kebijakan Seleksi Penerimaan Mahasiswa Baru' },
+    { val:'k4_pedoman_seleksi_maba', label:'Pedoman Seleksi Penerimaan Mahasiswa Baru' },
+    { val:'k4_laporan_kinerja_pmb', label:'Laporan Kinerja Panitia PMB' },
+    { val:'k4_pedoman_layanan_mhs', label:'Pedoman Layanan Mahasiswa' },
+    { val:'k4_pembinaan_minat_bakat', label:'Pedoman Pembinaan Minat & Bakat Mahasiswa' },
+    { val:'k4_kebijakan_kampus_sehat', label:'Kebijakan Kampus Sehat' },
+    { val:'k4_kebijakan_bebas_kekerasan', label:'Kebijakan Bebas Kekerasan / Anti Perundungan Mhs' },
+    { val:'k4_kebijakan_anti_narkoba', label:'Kebijakan Anti Narkoba' },
+    { val:'k4_catatan_bimbingan_akademik', label:'Catatan Pelaksanaan Bimbingan Akademik (PA)' },
+    { val:'k4_catatan_konseling', label:'Catatan Pelaksanaan Bimbingan Konseling' },
+    { val:'k4_sk_ormawa', label:'SK Kepengurusan Organisasi Kemahasiswaan (BEM/DLM/UKM)' },
+    { val:'k4_laporan_kegiatan_ormawa', label:'Laporan Kegiatan Organisasi Kemahasiswaan' },
+    { val:'k4_bukti_prestasi_akademik', label:'Bukti Prestasi Akademik Mahasiswa' },
+    { val:'k4_bukti_prestasi_non_akademik', label:'Bukti Prestasi Non-Akademik Mahasiswa' },
+    { val:'k4_daftar_penerima_beasiswa', label:'Daftar Penerima Beasiswa' },
+    { val:'k4_laporan_penyaluran_beasiswa', label:'Laporan Penyaluran Beasiswa' },
+    { val:'k4_pedoman_rca', label:'Pedoman RCA (Root Cause Analysis) Mahasiswa' },
+    { val:'k7_laporan_survei_kepuasan_mhs', label:'Laporan Survei Kepuasan Mahasiswa' },
+    { val:'k3_laporan_tracer_study', label:'Laporan Tracer Study' },
+    { val:'k3_survei_kepuasan_pengguna_lulusan', label:'Laporan Kepuasan Pengguna Lulusan' },
+    { val:'k3_data_waktu_tunggu_lulusan', label:'Data Waktu Tunggu Lulusan' },
+    { val:'k3_data_pekerjaan_pertama', label:'Data Kesesuaian Bidang Kerja Lulusan' },
     { val:'lainnya', label:'Lainnya' }
   ],
   pengabdian: [
-    { val:'k5_roadmap_pkm', label:'[Kriteria 5] Roadmap Pengabdian kepada Masyarakat (PkM)' },
-    { val:'k5_buku_pedoman_pkm', label:'[Kriteria 5] Buku Pedoman Pelaksanaan PkM' },
-    { val:'k5_laporan_akhir_pkm', label:'[Kriteria 5] Laporan Akhir Pengabdian kepada Masyarakat' },
-    { val:'k5_bukti_keterlibatan_mhs_pkm', label:'[Kriteria 5] Bukti Keterlibatan Mahasiswa dalam PkM' },
-    { val:'k7_laporan_mutu_pkm', label:'[Kriteria 7] Laporan Mutu Pelaksanaan PkM' },
-    { val:'k7_evaluasi_pelaksanaan_pkm', label:'[Kriteria 7] Evaluasi Pelaksanaan PkM' },
-    { val:'k8_luaran_pkm_artikel', label:'[Kriteria 8] Luaran PkM (Artikel Ilmiah/Media Massa)' },
-    { val:'k8_luaran_pkm_buku', label:'[Kriteria 8] Luaran PkM (Buku/Modul)' },
-    { val:'k8_luaran_pkm_teknologi', label:'[Kriteria 8] Luaran PkM (Teknologi Tepat Guna / HKI)' },
+    { val:'k5_roadmap_pkm', label:'Roadmap Pengabdian kepada Masyarakat (PkM)' },
+    { val:'k5_buku_pedoman_pkm', label:'Buku Pedoman Pelaksanaan PkM' },
+    { val:'k5_laporan_akhir_pkm', label:'Laporan Akhir Pengabdian kepada Masyarakat' },
+    { val:'k5_bukti_keterlibatan_mhs_pkm', label:'Bukti Keterlibatan Mahasiswa dalam PkM' },
+    { val:'k7_laporan_mutu_pkm', label:'Laporan Mutu Pelaksanaan PkM' },
+    { val:'k7_evaluasi_pelaksanaan_pkm', label:'Evaluasi Pelaksanaan PkM' },
+    { val:'k8_luaran_pkm_artikel', label:'Luaran PkM (Artikel Ilmiah/Media Massa)' },
+    { val:'k8_luaran_pkm_buku', label:'Luaran PkM (Buku/Modul)' },
+    { val:'k8_luaran_pkm_teknologi', label:'Luaran PkM (Teknologi Tepat Guna / HKI)' },
     { val:'lainnya', label:'Lainnya' }
   ],
 
@@ -317,115 +317,115 @@ const DEPT_JENIS = {
   // ---------------------------------------------------------
   umum: [
     { val:'led_semua', label:'[Semua Kriteria] Laporan Evaluasi Diri (LED)' },
-    { val:'k1_dokumen_visi', label:'[Kriteria 1] Dokumen Rumusan Visi' },
-    { val:'k1_dokumen_misi', label:'[Kriteria 1] Dokumen Rumusan Misi' },
-    { val:'k1_dokumen_tujuan', label:'[Kriteria 1] Dokumen Tujuan Institusi' },
-    { val:'k1_dokumen_strategi', label:'[Kriteria 1] Dokumen Strategi Pencapaian' },
-    { val:'k1_renstra', label:'[Kriteria 1] Rencana Strategis (RENSTRA)' },
-    { val:'k1_renop', label:'[Kriteria 1] Rencana Operasional (RENOP)' },
-    { val:'k1_bukti_sosialisasi_vmts', label:'[Kriteria 1] Bukti Sosialisasi VMTS' },
-    { val:'k1_laporan_pemahaman_vmts', label:'[Kriteria 1] Laporan Tingkat Pemahaman VMTS' },
-    { val:'k8_statuta', label:'[Kriteria 8] Dokumen Statuta Institusi' },
-    { val:'k8_sotk', label:'[Kriteria 8] Susunan Organisasi Tata Kerja (SOTK)' },
-    { val:'k8_deskripsi_tupoksi', label:'[Kriteria 8] Deskripsi Tugas Pokok dan Fungsi (Tupoksi)' },
-    { val:'k8_notulen_rapat_pimpinan', label:'[Kriteria 8] Notulen Rapat Pimpinan' },
-    { val:'k8_notulen_senat_akademik', label:'[Kriteria 8] Notulen Rapat Senat Akademik' },
-    { val:'k8_laporan_tinjauan_kinerja', label:'[Kriteria 8] Laporan Tinjauan Kinerja Institusi' },
-    { val:'k8_dokumen_identifikasi_risiko', label:'[Kriteria 8] Dokumen Identifikasi Risiko' },
-    { val:'k8_dokumen_mitigasi_risiko', label:'[Kriteria 8] Dokumen Mitigasi Manajemen Risiko' },
+    { val:'k1_dokumen_visi', label:'Dokumen Rumusan Visi' },
+    { val:'k1_dokumen_misi', label:'Dokumen Rumusan Misi' },
+    { val:'k1_dokumen_tujuan', label:'Dokumen Tujuan Institusi' },
+    { val:'k1_dokumen_strategi', label:'Dokumen Strategi Pencapaian' },
+    { val:'k1_renstra', label:'Rencana Strategis (RENSTRA)' },
+    { val:'k1_renop', label:'Rencana Operasional (RENOP)' },
+    { val:'k1_bukti_sosialisasi_vmts', label:'Bukti Sosialisasi VMTS' },
+    { val:'k1_laporan_pemahaman_vmts', label:'Laporan Tingkat Pemahaman VMTS' },
+    { val:'k8_statuta', label:'Dokumen Statuta Institusi' },
+    { val:'k8_sotk', label:'Susunan Organisasi Tata Kerja (SOTK)' },
+    { val:'k8_deskripsi_tupoksi', label:'Deskripsi Tugas Pokok dan Fungsi (Tupoksi)' },
+    { val:'k8_notulen_rapat_pimpinan', label:'Notulen Rapat Pimpinan' },
+    { val:'k8_notulen_senat_akademik', label:'Notulen Rapat Senat Akademik' },
+    { val:'k8_laporan_tinjauan_kinerja', label:'Laporan Tinjauan Kinerja Institusi' },
+    { val:'k8_dokumen_identifikasi_risiko', label:'Dokumen Identifikasi Risiko' },
+    { val:'k8_dokumen_mitigasi_risiko', label:'Dokumen Mitigasi Manajemen Risiko' },
     // DOKUMEN SPMI PENUH
-    { val:'k7_kebijakan_spmi', label:'[Kriteria 7] Dokumen Kebijakan SPMI' },
-    { val:'k7_manual_spmi', label:'[Kriteria 7] Dokumen Manual SPMI' },
-    { val:'k7_standar_mutu_spmi', label:'[Kriteria 7] Dokumen Standar Mutu SPMI' },
-    { val:'k7_buku_formulir_spmi', label:'[Kriteria 7] Buku Formulir Mutu SPMI' },
-    { val:'k7_laporan_ami_institusi', label:'[Kriteria 7] Laporan Audit Mutu Internal (AMI) Tingkat Institusi' },
-    { val:'k7_laporan_ami_prodi', label:'[Kriteria 7] Laporan Audit Mutu Internal (AMI) Tingkat Prodi' },
-    { val:'k7_laporan_rtm', label:'[Kriteria 7] Laporan Rapat Tinjauan Manajemen (RTM)' },
+    { val:'k7_kebijakan_spmi', label:'Dokumen Kebijakan SPMI' },
+    { val:'k7_manual_spmi', label:'Dokumen Manual SPMI' },
+    { val:'k7_standar_mutu_spmi', label:'Dokumen Standar Mutu SPMI' },
+    { val:'k7_buku_formulir_spmi', label:'Buku Formulir Mutu SPMI' },
+    { val:'k7_laporan_ami_institusi', label:'Laporan Audit Mutu Internal (AMI) Tingkat Institusi' },
+    { val:'k7_laporan_ami_prodi', label:'Laporan Audit Mutu Internal (AMI) Tingkat Prodi' },
+    { val:'k7_laporan_rtm', label:'Laporan Rapat Tinjauan Manajemen (RTM)' },
     { val:'lainnya', label:'Lainnya' }
   ],
   kepegawaian: [
-    { val:'k5_rip_sdm', label:'[Kriteria 5] Rencana Induk Pengembangan (RIP) SDM' },
-    { val:'k5_pedoman_rekrutmen_sdm', label:'[Kriteria 5] Pedoman Rekrutmen SDM' },
-    { val:'k5_pedoman_penempatan_sdm', label:'[Kriteria 5] Pedoman Penempatan SDM' },
-    { val:'k5_pedoman_pemberhentian_sdm', label:'[Kriteria 5] Pedoman Pemberhentian SDM' },
-    { val:'k5_pemetaan_formasi_dosen', label:'[Kriteria 5] Pemetaan Formasi Dosen' },
-    { val:'k5_rasio_dosen_mhs', label:'[Kriteria 5] Data Rasio Dosen-Mahasiswa' },
-    { val:'k5_laporan_bkd', label:'[Kriteria 5] Laporan Beban Kerja Dosen (BKD)' },
-    { val:'k5_hasil_dp3_dosen', label:'[Kriteria 5] Hasil Penilaian Kinerja Dosen (DP3 / SKP)' },
-    { val:'k5_hasil_dp3_tendik', label:'[Kriteria 5] Hasil Penilaian Kinerja Tendik (DP3 / SKP)' },
-    { val:'k5_arsip_ijazah_dosen', label:'[Kriteria 5] Arsip Ijazah Dosen' },
-    { val:'k5_sertifikat_pendidik', label:'[Kriteria 5] Sertifikat Pendidik (Serdos)' },
-    { val:'k5_str_dosen', label:'[Kriteria 5] STR / SIP Dosen Klinis' },
-    { val:'k5_sertifikat_pelatihan_sdm', label:'[Kriteria 5] Sertifikat Pelatihan / Pengembangan Diri SDM' },
-    { val:'k5_laporan_pengembangan_sdm', label:'[Kriteria 5] Laporan Kegiatan Pengembangan SDM' },
-    { val:'k5_sk_mengajar', label:'[Kriteria 5] SK Mengajar Dosen' },
-    { val:'k5_surat_tugas_dosen', label:'[Kriteria 5] Surat Tugas Dosen' },
-    { val:'k5_dokumen_pencegahan_perundungan', label:'[Kriteria 5] Dokumen Pencegahan Perundungan & Kekerasan' },
-    { val:'k7_laporan_survei_kepuasan_dosen', label:'[Kriteria 7] Laporan Survei Kepuasan Dosen' },
-    { val:'k7_laporan_survei_kepuasan_tendik', label:'[Kriteria 7] Laporan Survei Kepuasan Tendik' },
+    { val:'k5_rip_sdm', label:'Rencana Induk Pengembangan (RIP) SDM' },
+    { val:'k5_pedoman_rekrutmen_sdm', label:'Pedoman Rekrutmen SDM' },
+    { val:'k5_pedoman_penempatan_sdm', label:'Pedoman Penempatan SDM' },
+    { val:'k5_pedoman_pemberhentian_sdm', label:'Pedoman Pemberhentian SDM' },
+    { val:'k5_pemetaan_formasi_dosen', label:'Pemetaan Formasi Dosen' },
+    { val:'k5_rasio_dosen_mhs', label:'Data Rasio Dosen-Mahasiswa' },
+    { val:'k5_laporan_bkd', label:'Laporan Beban Kerja Dosen (BKD)' },
+    { val:'k5_hasil_dp3_dosen', label:'Hasil Penilaian Kinerja Dosen (DP3 / SKP)' },
+    { val:'k5_hasil_dp3_tendik', label:'Hasil Penilaian Kinerja Tendik (DP3 / SKP)' },
+    { val:'k5_arsip_ijazah_dosen', label:'Arsip Ijazah Dosen' },
+    { val:'k5_sertifikat_pendidik', label:'Sertifikat Pendidik (Serdos)' },
+    { val:'k5_str_dosen', label:'STR / SIP Dosen Klinis' },
+    { val:'k5_sertifikat_pelatihan_sdm', label:'Sertifikat Pelatihan / Pengembangan Diri SDM' },
+    { val:'k5_laporan_pengembangan_sdm', label:'Laporan Kegiatan Pengembangan SDM' },
+    { val:'k5_sk_mengajar', label:'SK Mengajar Dosen' },
+    { val:'k5_surat_tugas_dosen', label:'Surat Tugas Dosen' },
+    { val:'k5_dokumen_pencegahan_perundungan', label:'Dokumen Pencegahan Perundungan & Kekerasan' },
+    { val:'k7_laporan_survei_kepuasan_dosen', label:'Laporan Survei Kepuasan Dosen' },
+    { val:'k7_laporan_survei_kepuasan_tendik', label:'Laporan Survei Kepuasan Tendik' },
     { val:'lainnya', label:'Lainnya' }
   ],
   keuangan: [
-    { val:'k6_kebijakan_penggalian_dana', label:'[Kriteria 6] Kebijakan Penggalian Dana' },
-    { val:'k6_kebijakan_pengelolaan_dana', label:'[Kriteria 6] Kebijakan Pengelolaan Dana' },
-    { val:'k6_rkat', label:'[Kriteria 6] Rencana Kerja dan Anggaran Tahunan (RKAT)' },
-    { val:'k6_laporan_realisasi_keuangan', label:'[Kriteria 6] Laporan Realisasi Keuangan Tahunan' },
-    { val:'k6_laporan_audit_keuangan_eksternal', label:'[Kriteria 6] Laporan Hasil Audit Keuangan Eksternal' },
-    { val:'k8_sop_pengajuan_anggaran', label:'[Kriteria 8] SOP Pengajuan Anggaran' },
-    { val:'k8_sop_pencairan_anggaran', label:'[Kriteria 8] SOP Pencairan Anggaran' },
-    { val:'k8_sop_pelaporan_anggaran', label:'[Kriteria 8] SOP Pelaporan Anggaran' },
-    { val:'k7_laporan_evaluasi_pendanaan', label:'[Kriteria 7] Laporan Evaluasi Kelayakan Pendanaan' },
+    { val:'k6_kebijakan_penggalian_dana', label:'Kebijakan Penggalian Dana' },
+    { val:'k6_kebijakan_pengelolaan_dana', label:'Kebijakan Pengelolaan Dana' },
+    { val:'k6_rkat', label:'Rencana Kerja dan Anggaran Tahunan (RKAT)' },
+    { val:'k6_laporan_realisasi_keuangan', label:'Laporan Realisasi Keuangan Tahunan' },
+    { val:'k6_laporan_audit_keuangan_eksternal', label:'Laporan Hasil Audit Keuangan Eksternal' },
+    { val:'k8_sop_pengajuan_anggaran', label:'SOP Pengajuan Anggaran' },
+    { val:'k8_sop_pencairan_anggaran', label:'SOP Pencairan Anggaran' },
+    { val:'k8_sop_pelaporan_anggaran', label:'SOP Pelaporan Anggaran' },
+    { val:'k7_laporan_evaluasi_pendanaan', label:'Laporan Evaluasi Kelayakan Pendanaan' },
     { val:'lainnya', label:'Lainnya' }
   ],
   rumah_tangga: [
-    { val:'k6_daftar_inventaris_bmi', label:'[Kriteria 6] Daftar Inventaris Barang Milik Institusi (BMI)' },
-    { val:'k6_sop_pemeliharaan_kebersihan', label:'[Kriteria 6] SOP Pemeliharaan Kebersihan Lingkungan' },
-    { val:'k6_sop_pemeliharaan_keamanan', label:'[Kriteria 6] SOP Pemeliharaan Keamanan Kampus' },
-    { val:'k6_logbook_perbaikan_barang', label:'[Kriteria 6] Logbook Perbaikan Barang / Sarana' },
-    { val:'k6_laporan_kerusakan_barang', label:'[Kriteria 6] Laporan Kerusakan Barang / Fasilitas' },
-    { val:'k7_laporan_penilaian_k3', label:'[Kriteria 7] Laporan Penilaian K3 Lingkungan Kampus' },
-    { val:'k7_laporan_mutu_lingkungan', label:'[Kriteria 7] Laporan Penilaian Mutu Lingkungan' },
+    { val:'k6_daftar_inventaris_bmi', label:'Daftar Inventaris Barang Milik Institusi (BMI)' },
+    { val:'k6_sop_pemeliharaan_kebersihan', label:'SOP Pemeliharaan Kebersihan Lingkungan' },
+    { val:'k6_sop_pemeliharaan_keamanan', label:'SOP Pemeliharaan Keamanan Kampus' },
+    { val:'k6_logbook_perbaikan_barang', label:'Logbook Perbaikan Barang / Sarana' },
+    { val:'k6_laporan_kerusakan_barang', label:'Laporan Kerusakan Barang / Fasilitas' },
+    { val:'k7_laporan_penilaian_k3', label:'Laporan Penilaian K3 Lingkungan Kampus' },
+    { val:'k7_laporan_mutu_lingkungan', label:'Laporan Penilaian Mutu Lingkungan' },
     { val:'lainnya', label:'Lainnya' }
   ],
   sarana: [
-    { val:'k6_masterplan_sarpras', label:'[Kriteria 6] Masterplan Pengembangan Sarana Prasarana' },
-    { val:'k6_sertifikat_tanah', label:'[Kriteria 6] Bukti Kepemilikan Lahan (Sertifikat Tanah)' },
-    { val:'k6_dokumen_imb', label:'[Kriteria 6] Dokumen Izin Mendirikan Bangunan (IMB)' },
-    { val:'k6_daftar_ruang_kuliah', label:'[Kriteria 6] Daftar Ketersediaan Ruang Kuliah' },
-    { val:'k6_daftar_ruang_dosen', label:'[Kriteria 6] Daftar Ketersediaan Ruang Dosen' },
-    { val:'k6_daftar_rs_pendidikan', label:'[Kriteria 6] Daftar Profil RS Pendidikan / Wahana Praktik' },
-    { val:'k6_daftar_fasilitas_klinik', label:'[Kriteria 6] Daftar Fasilitas Alat di RS Pendidikan / Lahan Praktik' },
-    { val:'k7_laporan_evaluasi_sarpras', label:'[Kriteria 7] Laporan Evaluasi Kecukupan Sarana Prasarana' },
+    { val:'k6_masterplan_sarpras', label:'Masterplan Pengembangan Sarana Prasarana' },
+    { val:'k6_sertifikat_tanah', label:'Bukti Kepemilikan Lahan (Sertifikat Tanah)' },
+    { val:'k6_dokumen_imb', label:'Dokumen Izin Mendirikan Bangunan (IMB)' },
+    { val:'k6_daftar_ruang_kuliah', label:'Daftar Ketersediaan Ruang Kuliah' },
+    { val:'k6_daftar_ruang_dosen', label:'Daftar Ketersediaan Ruang Dosen' },
+    { val:'k6_daftar_rs_pendidikan', label:'Daftar Profil RS Pendidikan / Wahana Praktik' },
+    { val:'k6_daftar_fasilitas_klinik', label:'Daftar Fasilitas Alat di RS Pendidikan / Lahan Praktik' },
+    { val:'k7_laporan_evaluasi_sarpras', label:'Laporan Evaluasi Kecukupan Sarana Prasarana' },
     { val:'lainnya', label:'Lainnya' }
   ],
   sistem_informasi: [
-    { val:'k8_blueprint_ti', label:'[Kriteria 8] Rencana Strategis Pengembangan TI (Blueprint TI)' },
-    { val:'k8_profil_bandwidth', label:'[Kriteria 8] Profil Ketersediaan Bandwidth' },
-    { val:'k8_infrastruktur_jaringan', label:'[Kriteria 8] Profil Infrastruktur Jaringan TI' },
-    { val:'k8_sop_keamanan_siber', label:'[Kriteria 8] SOP Keamanan Siber / Data' },
-    { val:'k8_sop_backup_data', label:'[Kriteria 8] SOP Backup & Pemulihan Data (Disaster Recovery)' },
-    { val:'k8_dokumen_lisensi_software', label:'[Kriteria 8] Dokumen Lisensi Perangkat Lunak Asli' },
-    { val:'k7_laporan_audit_kinerja_it', label:'[Kriteria 7] Laporan Audit Kinerja Layanan IT' },
+    { val:'k8_blueprint_ti', label:'Rencana Strategis Pengembangan TI (Blueprint TI)' },
+    { val:'k8_profil_bandwidth', label:'Profil Ketersediaan Bandwidth' },
+    { val:'k8_infrastruktur_jaringan', label:'Profil Infrastruktur Jaringan TI' },
+    { val:'k8_sop_keamanan_siber', label:'SOP Keamanan Siber / Data' },
+    { val:'k8_sop_backup_data', label:'SOP Backup & Pemulihan Data (Disaster Recovery)' },
+    { val:'k8_dokumen_lisensi_software', label:'Dokumen Lisensi Perangkat Lunak Asli' },
+    { val:'k7_laporan_audit_kinerja_it', label:'Laporan Audit Kinerja Layanan IT' },
     { val:'lainnya', label:'Lainnya' }
   ],
   humas: [
-    { val:'k8_dokumen_profil_institusi', label:'[Kriteria 8] Dokumen Buku Profil Institusi' },
-    { val:'k8_materi_promosi', label:'[Kriteria 8] Brosur / Materi Promosi Kampus' },
-    { val:'k8_press_release', label:'[Kriteria 8] Press Release & Kliping Berita Media Massa' },
-    { val:'k8_risalah_rapat_stakeholder', label:'[Kriteria 8] Risalah Rapat dengan Pemangku Kepentingan (Stakeholder)' },
-    { val:'k4_laporan_kepuasan_stakeholder', label:'[Kriteria 4] Laporan Survei Kepuasan Stakeholder terhadap Manajemen' },
-    { val:'k7_evaluasi_efektivitas_promosi', label:'[Kriteria 7] Laporan Evaluasi Efektivitas Promosi & Publikasi' },
+    { val:'k8_dokumen_profil_institusi', label:'Dokumen Buku Profil Institusi' },
+    { val:'k8_materi_promosi', label:'Brosur / Materi Promosi Kampus' },
+    { val:'k8_press_release', label:'Press Release & Kliping Berita Media Massa' },
+    { val:'k8_risalah_rapat_stakeholder', label:'Risalah Rapat dengan Pemangku Kepentingan (Stakeholder)' },
+    { val:'k4_laporan_kepuasan_stakeholder', label:'Laporan Survei Kepuasan Stakeholder terhadap Manajemen' },
+    { val:'k7_evaluasi_efektivitas_promosi', label:'Laporan Evaluasi Efektivitas Promosi & Publikasi' },
     { val:'lainnya', label:'Lainnya' }
   ],
   kerjasama: [
-    { val:'k8_dokumen_mou_dalam_negeri', label:'[Kriteria 8] Dokumen MoU Kerjasama Dalam Negeri' },
-    { val:'k8_dokumen_mou_luar_negeri', label:'[Kriteria 8] Dokumen MoU Kerjasama Luar Negeri' },
-    { val:'k8_dokumen_moa_pendidikan', label:'[Kriteria 8] Perjanjian Kerja Sama Pelaksanaan (MoA/PKS) Bidang Pendidikan' },
-    { val:'k8_dokumen_moa_penelitian', label:'[Kriteria 8] Perjanjian Kerja Sama Pelaksanaan (MoA/PKS) Bidang Penelitian' },
-    { val:'k8_dokumen_moa_pkm', label:'[Kriteria 8] Perjanjian Kerja Sama Pelaksanaan (MoA/PKS) Bidang PkM' },
-    { val:'k8_dokumen_ia', label:'[Kriteria 8] Dokumen Implementasi Kerjasama (Implementation Arrangement / IA)' },
-    { val:'k8_laporan_realisasi_kerjasama', label:'[Kriteria 8] Laporan Realisasi Kinerja Kerjasama Institusi' },
-    { val:'k7_hasil_survei_kepuasan_mitra', label:'[Kriteria 7] Laporan Hasil Survei Kepuasan Mitra Kerjasama' },
+    { val:'k8_dokumen_mou_dalam_negeri', label:'Dokumen MoU Kerjasama Dalam Negeri' },
+    { val:'k8_dokumen_mou_luar_negeri', label:'Dokumen MoU Kerjasama Luar Negeri' },
+    { val:'k8_dokumen_moa_pendidikan', label:'Perjanjian Kerja Sama Pelaksanaan (MoA/PKS) Bidang Pendidikan' },
+    { val:'k8_dokumen_moa_penelitian', label:'Perjanjian Kerja Sama Pelaksanaan (MoA/PKS) Bidang Penelitian' },
+    { val:'k8_dokumen_moa_pkm', label:'Perjanjian Kerja Sama Pelaksanaan (MoA/PKS) Bidang PkM' },
+    { val:'k8_dokumen_ia', label:'Dokumen Implementasi Kerjasama (Implementation Arrangement / IA)' },
+    { val:'k8_laporan_realisasi_kerjasama', label:'Laporan Realisasi Kinerja Kerjasama Institusi' },
+    { val:'k7_hasil_survei_kepuasan_mitra', label:'Laporan Hasil Survei Kepuasan Mitra Kerjasama' },
     { val:'lainnya', label:'Lainnya' }
   ],
   // Fallbacks
@@ -2201,83 +2201,93 @@ function previewImage(event, previewId, hiddenId) {
 /* ═════ AKREDITASI (BAN-PT & LAM-PTKes) ═════ */
 
 // ==================== BAN-PT ====================
-function initBanpt() {
-  generateBanptOverview();
-  generateBanptKeuangan();
-  generateBanptKebijakan();
-  generateBanptLppm();
-}
-function switchBanptTab(tabId, el) {
-  if (el) {
-    document.querySelectorAll('#banpt-sub-menu li').forEach(li => li.classList.remove('active'));
-    el.classList.add('active');
-  }
-  document.getElementById('page-banpt').querySelectorAll('.akr-tab-content').forEach(div => div.classList.add('hidden'));
-  document.getElementById('banpt_tab_' + tabId).classList.remove('hidden');
-}
-function generateBanptOverview() {
-  const tbody = document.querySelector('#tableBanptMaba tbody');
-  if(!tbody) return;
-  const stats = {};
-  mahasiswa.forEach(m => {
-    if(!stats[m.angkatan]) stats[m.angkatan] = { aktif:0, lulus:0, do:0, total:0 };
-    stats[m.angkatan].total++;
-    if(m.status === 'Aktif') stats[m.angkatan].aktif++;
-    else if(m.status === 'Lulus') stats[m.angkatan].lulus++;
-    else stats[m.angkatan].do++;
-  });
-  const years = Object.keys(stats).sort((a,b)=>b.localeCompare(a));
-  let html = '';
-  years.forEach(y => {
-    html += `<tr>
-      <td class="font-bold">${y}/${parseInt(y)+1}</td>
-      <td>${stats[y].total * 3}</td><td>${stats[y].total * 2}</td>
-      <td>${stats[y].total}</td><td>0</td>
-      <td><span class="badge bg-blue-100 text-blue-700">${stats[y].aktif}</span></td>
-    </tr>`;
-  });
-  if(years.length===0) html = '<tr><td colspan="6" class="text-center text-t3">Belum ada data pendaftar.</td></tr>';
-  tbody.innerHTML = html;
-  
-  if (window.chartBanptMabaInstance) window.chartBanptMabaInstance.destroy();
-  const ctx = document.getElementById('chartBanptMaba');
-  if (ctx && years.length>0) {
-    window.chartBanptMabaInstance = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: years.slice(0,5).reverse(),
-        datasets: [{ label:'Maba Aktif', data:years.slice(0,5).reverse().map(y=>stats[y].aktif), backgroundColor:'#3b82f6', borderRadius:4 }]
-      },
-      options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top'}} }
-    });
-  }
-}
-function generateBanptKeuangan() {
-    const tbody = document.querySelector('#tableBanptKeuangan tbody');
-    if(!tbody) return;
-    const list = arsip.filter(a => a.bidang === 'keuangan' || a.jenis.includes('keuangan') || a.jenis.includes('anggaran'));
-    tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Keuangan.</td></tr>' : list.map(a => {
-      const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Dokumen</a>` : '-';
-      return `<tr><td class="font-bold">${esc(a.judul)}</td><td>${esc(a.tahun || getAY(a.tanggal))}</td><td><span class="badge bg-blue-50 text-blue-600">${a.status}</span></td><td>${fileLink}</td></tr>`;
-    }).join('');
-  }function generateBanptKebijakan() {
-    const tbody = document.querySelector('#tableBanptKebijakan tbody');
-    if(!tbody) return;
-    const list = arsip.filter(a => a.jenis.includes('sk_') || a.jenis.includes('spo_') || a.jenis.includes('sop') || a.jenis.includes('kebijakan') || a.jenis.includes('pedoman') || a.jenis === 'sk');
-    tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Kebijakan & SOP.</td></tr>' : list.map(a => {
-      const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Lihat Dokumen</a>` : '-';
-      return `<tr><td class="font-bold">${esc(a.nomor || '-')}</td><td>${esc(a.judul)}</td><td>${formatDate(a.tanggal)}</td><td>${fileLink}</td></tr>`;
-    }).join('');
-  }function generateBanptLppm() {
-    const tbody = document.querySelector('#tableBanptLppm tbody');
-    if(!tbody) return;
-    const list = arsip.filter(a => a.bidang === 'lppm' || a.bidang === 'pengabdian' || a.jenis.includes('penelitian') || a.jenis.includes('pkm') || a.jenis.includes('jurnal'));
-    tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Penelitian & PkM.</td></tr>' : list.map(a => {
-      const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Lihat File</a>` : '-';
-      return `<tr><td class="font-bold">${esc(a.judul)}</td><td>${esc(DEPT[a.bidang]?.label || a.bidang)}</td><td>${esc(a.tahun || getAY(a.tanggal))}</td><td>${fileLink}</td></tr>`;
-    }).join('');
-  }function exportBanptExcel() { alert('Export BAN-PT sedang dalam pengembangan API.'); }
+let currentBanptTab = 1;
+const BANPT_TITLES = {
+  1: "Visi, Misi, Tujuan, dan Strategi",
+  2: "Tata Pamong, Tata Kelola, dan Kerjasama",
+  3: "Mahasiswa",
+  4: "Sumber Daya Manusia",
+  5: "Keuangan, Sarana, dan Prasarana",
+  6: "Pendidikan",
+  7: "Penelitian",
+  8: "Pengabdian kepada Masyarakat",
+  9: "Luaran dan Capaian Tridharma"
+};
 
+function initBanpt() {
+  generateBanptReport();
+}
+
+function switchBanptTab(tabNum, element) {
+  document.querySelectorAll('#banpt-sub-menu li').forEach(li => li.classList.remove('active'));
+  if (element) element.classList.add('active');
+  currentBanptTab = parseInt(tabNum);
+  generateBanptReport();
+}
+
+function getBanptData(k) {
+  return arsip.filter(a => {
+    const j = (a.jenis || '').toLowerCase();
+    const b = a.bidang;
+    
+    // Auto-map based on keywords and specific document types
+    if(k === 1) return j.includes('renstra') || j.includes('renop') || j.includes('vmts') || j.includes('tracer') || j.includes('visi');
+    if(k === 2) return b === 'umum' || b === 'penjaminan_mutu' || j.includes('spmi') || j.includes('sotk') || j.includes('mou') || j.includes('moa') || j.includes('audit');
+    if(k === 3) return b === 'kemahasiswaan' || j.includes('mahasiswa') || j.includes('alumni');
+    if(k === 4) return b === 'kepegawaian' || j.includes('dosen') || j.includes('tendik') || j.includes('ijazah') || j.includes('sk_');
+    if(k === 5) return b === 'keuangan' || b === 'laboratorium' || j.includes('anggaran') || j.includes('sarana') || j.includes('inventaris');
+    if(k === 6) return b === 'akademik' || b === 'sistem_pendidikan' || b === 'perpustakaan' || j.includes('kurikulum') || j.includes('rps') || j.includes('pembelajaran');
+    if(k === 7) return b === 'lppm' || j.includes('penelitian') || (j.includes('luaran') && !j.includes('pkm'));
+    if(k === 8) return b === 'pengabdian' || j.includes('pkm') || j.includes('pengabdian');
+    if(k === 9) return j.includes('lulusan') || j.includes('ipk') || j.includes('publikasi') || j.includes('jurnal') || j.includes('ukom');
+    
+    return false;
+  });
+}
+
+function generateBanptReport() {
+  const container = document.getElementById('banptReportContainer');
+  if(!container) return;
+
+  const list = getBanptData(currentBanptTab);
+
+  let html = "<div class='akr-tab-header'>";
+  html += "<h3>Kriteria " + currentBanptTab + ". " + BANPT_TITLES[currentBanptTab] + "</h3>";
+  html += "<p>Tabel rangkuman dokumen fisik yang diekstrak secara otomatis berdasarkan Bidang dan Jenis Dokumen.</p>";
+  html += "</div>";
+
+  if (list.length === 0) {
+    html += "<div class='akr-table-native-wrap' style='border:1px dashed var(--b2); border-radius:12px;'>";
+    html += "<div class='p-4 text-gray-500 text-center italic'>Belum ada dokumen yang terunggah/terdeteksi untuk Kriteria " + currentBanptTab + " ini.</div>";
+    html += "</div>";
+    container.innerHTML = html;
+    return;
+  }
+
+  html += "<div class='akr-table-native-wrap'>";
+  html += "<table class='tb-table'><thead><tr>";
+  html += "<th>Judul Dokumen</th><th>Jenis (Terdeteksi)</th><th>Tahun/Tanggal</th><th>Status</th><th>Aksi (GDrive)</th>";
+  html += "</tr></thead><tbody>";
+
+  list.forEach(a => {
+    let stat = "<span class='badge bg-green'>Aktif</span>";
+    if (a.isKadaluarsa) stat = "<span class='badge bg-red' style='animation:pulseRed 2s infinite;'>Kadaluarsa</span>";
+    else if (a.isPerluUpdate) stat = "<span class='badge bg-yellow'>Perlu Diperbarui</span>";
+
+    html += "<tr>";
+    html += `<td><strong>${a.judul}</strong><br><small class='text-gray-500'>ID: ${a.id.substring(0,8)}</small></td>`;
+    html += `<td><span class='badge' style='background:var(--p1);'>${getJenisLabel(a.bidang, a.jenis)}</span></td>`;
+    html += `<td>${a.tahun || a.tanggal || '-'}</td>`;
+    html += `<td>${stat}</td>`;
+    html += `<td><a href='${a.gdriveUrl}' target='_blank' class='tb-btn tb-btn-primary' style='padding:4px 8px; font-size:12px;'><i class='fas fa-folder-open'></i> Buka</a></td>`;
+    html += "</tr>";
+  });
+
+  html += "</tbody></table></div>";
+  container.innerHTML = html;
+}
+
+let currentLamptkesTab = 1;
 // ==================== LAM-PTKes ====================
 let currentLamptkesTab = 1;
 
