@@ -1931,6 +1931,7 @@ let activity = [];
 let mahasiswa = [];
 let sdm = [];
 let currentPage = 'dashboard';
+let isAppLoaded = false;
 let currentDept = '';
 let currentAY   = '';
 let pendingPdfId = '';
@@ -1939,8 +1940,7 @@ let cLine, cYearlyLine, cDoughnut, cStatus, cDeptBar, cDeptDonut, cAnBar, cAnYea
 /* ════════════════════════════════════════════════════════════
    INIT
    ════════════════════════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
-  loadData();
+document.addEventListener('DOMContentLoaded', async () => {
   currentAY = getAY(new Date().toISOString().slice(0,10));
   populateAYearSelect();
   renderSidebarDate();
@@ -1951,6 +1951,12 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('exportMenu').classList.remove('open');
   });
   initSidebarSubMenus();
+  await loadData();
+  isAppLoaded = true;
+  updateBadges();
+  renderDeptSubmenus();
+  generateBanptReport();
+  generateLamptkesReport();
   showPage('dashboard');
 });
 
@@ -2039,25 +2045,19 @@ function processSnapshot(snapshot, collectionName) {
      const ping = document.getElementById('soundPing');
      if(ping) { ping.currentTime = 0; ping.play().catch(e=>console.log(e)); }
      
-     if (typeof isAppLoaded !== 'undefined' && isAppLoaded) {
-       populateAYFilters();
-       if(typeof populateMhsAyFilters === 'function') populateMhsAyFilters();
-       
-       if(currentUser) {
-         if(currentUser.role==='admin') renderTable(arsip);
-         else renderTable(arsip.filter(a=>a.bidang===currentUser.bidang));
-       }
+     if (isAppLoaded) {
+       populateAYearSelect();
        updateBadges();
        generateBanptReport();
        generateLamptkesReport();
        renderDeptSubmenus();
-       // Re-render visible page
+       
        const activePage = document.querySelector('.page.active');
        if(activePage) {
           const id = activePage.id;
           if(id === 'page-dashboard') renderDashboard();
           else if(id === 'page-analytics') renderAnalytics();
-          else if(id === 'page-dept') renderDeptPage(document.getElementById('deptBannerName').dataset.dept);
+          else if(id === 'page-dept') renderDeptPage(currentDept);
           else if(id === 'page-lamptkes') generateLamptkesReport();
           else if(id === 'page-mahasiswa') renderMahasiswaPage();
           else if(id === 'page-sdm') renderSdmPage();
