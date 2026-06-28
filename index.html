@@ -384,9 +384,560 @@
 
     <div class="akr-dashboard">
       <section class="akr-content">
-                <div id="banptReportContainer">
-          <!-- Tabel Dinamis BAN-PT Kriteria 1-9 akan di-render di sini -->
+        <!-- BAN-PT: OVERVIEW MAKRO (MABA & LULUSAN) -->
+        <div id="banpt_tab_overview" class="akr-tab-content active">
+          <div class="akr-tab-header">
+            <h3>Overview Penerimaan & Kelulusan (Makro)</h3>
+            <p>Data agregat pendaftaran mahasiswa ditarik otomatis dari sistem akademik.</p>
+          </div>
+          <div style="background:var(--bg3); padding:16px; border-radius:12px; margin-bottom:24px; border:1px solid var(--b2); max-width:600px;">
+            <canvas id="chartBanptMaba" height="250"></canvas>
+          </div>
+          <div class="akr-table-native-wrap">
+            <table class="tb-table" id="tableBanptMaba">
+              <thead><tr><th>Tahun Akademik</th><th>Total Pendaftar</th><th>Lulus Seleksi</th><th>Maba Baru</th><th>Maba Transfer</th><th>Total Aktif</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
+
+        <!-- BAN-PT: KEUANGAN & ANGGARAN -->
+        <div id="banpt_tab_keuangan" class="akr-tab-content hidden">
+          <div class="akr-tab-header">
+            <h3>Keuangan, Sarana, dan Prasarana (Kriteria 5)</h3>
+            <p>Laporan Keuangan & RAB yang ditarik dari Bidang Keuangan.</p>
+          </div>
+          <div class="akr-table-native-wrap">
+            <table class="tb-table" id="tableBanptKeuangan">
+              <thead><tr><th>Judul Dokumen</th><th>Tahun Anggaran</th><th>Status Anggaran</th><th>Dokumen (GDrive)</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- BAN-PT: KEBIJAKAN & SOP -->
+        <div id="banpt_tab_kebijakan" class="akr-tab-content hidden">
+          <div class="akr-tab-header">
+            <h3>Tata Kelola & Kebijakan (Kriteria 2)</h3>
+            <p>SK Rektor, Renstra, dan SOP Institusi dari tingkat Universitas.</p>
+          </div>
+          <div class="akr-table-native-wrap">
+            <table class="tb-table" id="tableBanptKebijakan">
+              <thead><tr><th>Nama / Nomor SK</th><th>Perihal</th><th>Tanggal Terbit</th><th>Dokumen (GDrive)</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ─── BORANG LAM-PTKes ─── -->
+  <main class="page hidden" id="page-lamptkes">
+    <div class="dept-banner lamptkes-banner">
+      <div class="dept-banner-icon"><i class="fas fa-notes-medical"></i></div>
+      <div>
+        <h2>Dashboard Borang LAM-PTKes</h2>
+        <p>Laporan Kompetensi Klinis, UKOM, dan Wahana Praktik D-III Akupunktur</p>
+      </div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button onclick="exportLamptkes('excel')" class="tb-btn" style="background:#107c41; color:#fff; border:none;"><i class="fas fa-file-excel"></i> Export Excel</button>
+        <button onclick="exportLamptkes('pdf')" class="tb-btn" style="background:#b91c1c; color:#fff; border:none;"><i class="fas fa-file-pdf"></i> Export PDF</button>
+        <button onclick="exportLamptkes('word')" class="tb-btn" style="background:#2563eb; color:#fff; border:none;"><i class="fas fa-file-word"></i> Export Word</button>
+      </div>
+    </div>
+
+    <div class="akr-dashboard">
+      <section class="akr-content" id="lamptkesReportContainer">
+        <!-- Rendered by JS -->
+      </section>
+    </div>
+  </main>
+
+  <!-- ─── AKTIVITAS ─── -->
+  <main class="page hidden" id="page-aktivitas">
+    <div class="page-section-header row">
+      <div>
+        <h2><i class="fas fa-clock-rotate-left"></i> Riwayat Aktivitas</h2>
+        <p>Semua perubahan data arsip dicatat secara otomatis</p>
+      </div>
+      <button class="btn-ghost-sm danger" onclick="clearActivity()"><i class="fas fa-trash"></i> Hapus Semua</button>
+    </div>
+    <div class="activity-feed" id="activityList"></div>
+  </main>
+
+</div><!-- end main -->
+
+<!-- ═══ MODAL: FORM ARSIP ═══ -->
+<div class="overlay" id="overlayForm" onclick="closeFormOut(event)">
+  <div class="modal-box" id="formBox">
+    <div class="modal-head">
+      <div class="modal-head-title" id="formTitle"><i class="fas fa-file-circle-plus"></i> Tambah Arsip</div>
+      <button class="close-btn" onclick="closeForm()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll">
+      <form id="arsipForm" onsubmit="saveArsip(event)" novalidate>
+        <input type="hidden" id="editId" />
+
+        <div class="form-row-2">
+          <div class="form-field">
+            <label>Nomor Surat / Arsip <span class="req">*</span></label>
+            <input type="text" id="fNomor" placeholder="001/AKP/KU/I/2025" required />
+          </div>
+          <div class="form-field">
+            <label>Tanggal <span class="req">*</span></label>
+            <input type="date" id="fTanggal" required  />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Judul / Perihal <span class="req">*</span></label>
+          <input type="text" id="fJudul" placeholder="Judul atau perihal dokumen..." required />
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-field">
+            <label id="fBidangLabel">Bidang <span class="req">*</span></label>
+            <select id="fBidang" required onchange="onBidangChange()">
+              <option value="">-- Pilih Bidang --</option>
+              <optgroup label="Wadir I: Pendidikan & Kemahasiswaan">
+                <option value="akademik">Akademik & Pendidikan</option>
+                <option value="sistem_pendidikan">Sistem Informasi Pendidikan</option>
+                <option value="laboratorium">Laboratorium</option>
+                <option value="perpustakaan">Perpustakaan</option>
+                <option value="lppm">Penelitian & Pelatihan (LPPM)</option>
+                <option value="kemahasiswaan">Kemahasiswaan & Alumni</option>
+                <option value="pengabdian">Pengabdian Masyarakat</option>
+              </optgroup>
+              <optgroup label="Wadir II: Umum & Kerjasama">
+                <option value="umum">Umum & Kelembagaan</option>
+                <option value="kepegawaian">Administrasi Kepegawaian</option>
+                <option value="keuangan">Keuangan & Institusi</option>
+                <option value="rumah_tangga">Rumah Tangga</option>
+                <option value="sarana">Sarana Prasarana</option>
+                <option value="sistem_informasi">Sistem Informasi</option>
+                <option value="humas">HUMAS</option>
+                <option value="kerjasama">Kerjasama</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="form-field" style="position:relative;">
+            <label>Jenis Dokumen <span class="req">*</span></label>
+            <div class="custom-select-wrapper" id="fJenisWrapper">
+              <div class="custom-select-trigger" id="fJenisTrigger" onclick="toggleJenisOptions()">
+                <span id="fJenisLabelText">-- Pilih Bidang dulu --</span>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="custom-select-options" id="fJenisOptions"></div>
+            </div>
+            <input type="hidden" id="fJenis" required onchange="onJenisChange()">
+          </div>
+        </div>
+
+        <!-- ── DYNAMIC METADATA FIELDS ── -->
+        <div id="dynamicFieldsContainer"></div>
+
+        <div class="form-row-2">
+          <div class="form-field">
+            <label>Pengirim / Pembuat</label>
+            <input type="text" id="fPengirim" placeholder="Nama pengirim atau pembuat..." />
+          </div>
+          <div class="form-field">
+            <label>Status</label>
+            <select id="fStatus">
+              <option value="aktif">Aktif</option>
+              <option value="diproses">Sedang Diproses</option>
+              <option value="selesai">Selesai</option>
+              <option value="arsip">Diarsipkan</option>
+            </select>
+          </div>
+        </div>
+
+                <div class="form-field" style="margin-bottom:12px">
+          <label>Tahun Akademik <span class="req">*</span></label>
+          <select id="fAYear" required style="padding:10px; border:1px solid var(--border); border-radius:6px; background:#fff; font-size:0.9rem; color:var(--text-main); cursor:pointer">
+          </select>
+        </div>
+
+        <!-- ── DOKUMEN GOOGLE DRIVE ── -->
+        <div class="gdrive-section">
+          <div class="gdrive-section-title">
+            <i class="fab fa-google-drive" style="color:#4285f4"></i>
+            Lampiran Dokumen (Google Drive)
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label>Format Dokumen</label>
+              <select id="fFormat">
+                <option value="pdf">📄 PDF</option>
+                <option value="excel">📊 Excel (.xlsx/.xls)</option>
+                <option value="word">📝 Word (.docx/.doc)</option>
+                <option value="image">🖼️ Gambar / Foto</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Nama File</label>
+              <input type="text" id="fFileName" placeholder="Contoh: SK_Direktur_2025.pdf" />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>Upload Dokumen ke GDrive (Auto-Sync)</label>
+            <input type="file" id="fUploadFile" onchange="autoDetectFormat(this)" style="padding: 10px; background: #fff;" />
+            <div id="fUploadStatus" style="font-size: 0.8rem; color: var(--primary); font-weight: 600; display: none; word-break: break-word;">Mengunggah ke GDrive...</div>
+          </div>
+
+          <div class="form-field" style="margin-top:12px;">
+            <label>Atau Paste Link GDrive Manual</label>
+            <div class="gdrive-field" id="gdriveFld">
+              <i class="fab fa-google-drive gdrive-field-icon"></i>
+              <input type="url" id="fGdriveLink"
+                placeholder="https://drive.google.com/file/d/.../view?usp=sharing" />
+              <button type="button" class="gdrive-test-btn" onclick="testGDriveLink()" title="Verifikasi & buka link">
+                <i class="fas fa-arrow-up-right-from-square"></i>
+              </button>
+            </div>
+            <div class="gdrive-guide">
+              <i class="fas fa-circle-info"></i>
+              <span>File yang di-upload akan otomatis tersimpan dalam folder <b>SIMARSIP/[Bidang]/[Tahun]</b></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Keterangan</label>
+          <textarea id="fKeterangan" rows="3" placeholder="Catatan atau keterangan tambahan..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" onclick="closeForm()">Batal</button>
+          <button type="submit" class="tb-btn tb-btn-primary" id="btnSimpan">
+            <i class="fas fa-floppy-disk"></i> Simpan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: DETAIL ═══ -->
+<div class="overlay" id="overlayDetail" onclick="closeDetailOut(event)">
+  <div class="modal-box detail-box" id="detailBox">
+    <div class="modal-head">
+      <div class="modal-head-title"><i class="fas fa-file-lines"></i> Detail Arsip</div>
+      <button class="close-btn" onclick="closeDetail()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll" id="detailContent"></div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: PRATINJAU DOKUMEN ═══ -->
+<div class="overlay pdf-overlay" id="overlayPDF">
+  <div class="pdf-box">
+    <div class="pdf-head">
+      <div class="pdf-head-title" id="pdfHeadTitle" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%;"><i class="fas fa-file-pdf"></i> Pratinjau Dokumen</div>
+      <div class="pdf-head-actions">
+        <button class="btn-ghost-sm" onclick="openInGDrive()">
+          <i class="fab fa-google-drive"></i> Buka di Google Drive
+        </button>
+        <button class="close-btn" onclick="closePDF()"><i class="fas fa-xmark"></i></button>
+      </div>
+    </div>
+    <div class="pdf-body">
+      <iframe id="pdfFrame" src="" frameborder="0" title="Pratinjau Dokumen" allowfullscreen></iframe>
+      <div class="pdf-nofile hidden" id="pdfNoFile">
+        <i class="fab fa-google-drive" style="color:#4285f4;font-size:3rem;display:block;margin-bottom:16px;opacity:.5"></i>
+        <h3>Belum ada dokumen dilampirkan</h3>
+        <p>Edit arsip ini untuk menambahkan link Google Drive.</p>
+        <button class="tb-btn tb-btn-primary" style="margin-top:16px" onclick="closePDF()"><i class="fas fa-pen"></i> Edit Arsip</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: FORM MAHASISWA ═══ -->
+<div class="overlay" id="overlayMhsForm" onclick="if(event.target===this)closeMhsForm()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-title" id="mhsFormTitle"><i class="fas fa-user-graduate"></i> Tambah Mahasiswa</div>
+      <button class="close-btn" onclick="closeMhsForm()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll">
+      <form id="mhsForm" onsubmit="saveMahasiswa(event)" novalidate>
+        <input type="hidden" id="editMhsId" />
+        <div class="form-split">
+          <div class="fs-left">
+            <div class="foto-upload-box" onclick="document.getElementById('fmFoto').click()">
+              <img id="mhsPreview" src="" />
+              <i class="fas fa-camera" id="mhsPreviewIcon"></i>
+            </div>
+            <div class="foto-upload-hint">Klik kotak di atas<br>untuk unggah foto</div>
+            <input type="file" id="fmFoto" accept="image/*" style="display:none" onchange="previewImage(event, 'mhsPreview', 'fmFotoBase64')" />
+            <input type="hidden" id="fmFotoBase64" />
+          </div>
+          <div class="fs-right">
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>NIM <span class="req">*</span></label>
+                <input type="text" id="fmNIM" required />
+              </div>
+              <div class="form-field">
+                <label>Nama Lengkap <span class="req">*</span></label>
+                <input type="text" id="fmNama" required />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Tanggal Angkatan / Masuk <span class="req">*</span></label>
+                <input type="date" id="fmAngkatan" required />
+              </div>
+              <div class="form-field">
+                <label>Semester <span class="req">*</span></label>
+                <select id="fmSemester" required>
+                  <option value="">-- Pilih --</option>
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
+                  <option value="3">Semester 3</option>
+                  <option value="4">Semester 4</option>
+                  <option value="5">Semester 5</option>
+                  <option value="6">Semester 6</option>
+                  <option value="Lulus">Lulus / Alumni</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-field">
+              <label>Status Akademik <span class="req">*</span></label>
+              <select id="fmStatus" required>
+                <option value="aktif">Aktif</option>
+                <option value="cuti">Cuti</option>
+                <option value="lulus">Lulus</option>
+                <option value="keluar">Mengundurkan Diri / Keluar</option>
+              </select>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Tempat Lahir</label>
+                <input type="text" id="fmTempatLahir" />
+              </div>
+              <div class="form-field">
+                <label>Tanggal Lahir</label>
+                <input type="date" id="fmTanggalLahir" />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Jenis Kelamin</label>
+                <select id="fmJK">
+                  <option value="">-- Pilih --</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Agama</label>
+                <select id="fmAgama">
+                  <option value="">-- Pilih --</option>
+                  <option value="Islam">Islam</option>
+                  <option value="Kristen">Kristen</option>
+                  <option value="Katolik">Katolik</option>
+                  <option value="Hindu">Hindu</option>
+                  <option value="Buddha">Buddha</option>
+                  <option value="Konghucu">Konghucu</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>No. Handphone (WA)</label>
+                <input type="text" id="fmNoHp" />
+              </div>
+              <div class="form-field">
+                <label>Email</label>
+                <input type="email" id="fmEmail" />
+              </div>
+            </div>
+            <div class="form-field">
+              <label>Nama Orang Tua / Wali</label>
+              <input type="text" id="fmNamaOrtu" />
+            </div>
+            <div class="form-field">
+              <label>Alamat Lengkap</label>
+              <textarea id="fmAlamat" rows="2"></textarea>
+            </div>
+            <div class="form-field">
+              <label>No. BPJS / Jaminan Kesehatan</label>
+              <input type="text" id="fmNoBpjs" />
+            </div>
+            <div class="form-field">
+              <label>Catatan / Riwayat Akademik</label>
+              <textarea id="fmCatatan" rows="2" placeholder="Contoh: Semester 2 Tahun 2025 - 2026 Ganjil Lulus..."></textarea>
+            </div>
+            <div class="gdrive-section" style="margin-top:10px;">
+              <div class="gdrive-section-title"><i class="fas fa-folder-open" style="color:#4285f4"></i> Dokumen Penunjang Pribadi</div>
+              <div class="gdrive-guide" style="margin-top:0; margin-bottom:12px;">
+                <i class="fas fa-info-circle"></i>
+                <span><b>Struktur Folder GDrive:</b><br/>SIMARSIP / Mahasiswa / [Angkatan] / [NIM - Nama Lengkap]<br/>Pastikan Anda memasukkan link dari folder GDrive yang telah disusun rapi sesuai format di atas.</span>
+              </div>
+              <div class="form-field">
+                <label>Kumpulan Link Dokumen (Pisahkan dengan baris baru)</label>
+                <textarea id="fmDokumen" rows="3" placeholder="https://drive.google.com/...&#10;https://docs.google.com/..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" onclick="closeMhsForm()">Batal</button>
+          <button type="submit" class="tb-btn tb-btn-primary"><i class="fas fa-floppy-disk"></i> Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: FORM SDM ═══ -->
+<div class="overlay" id="overlaySdmForm" onclick="if(event.target===this)closeSdmForm()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-title" id="sdmFormTitle"><i class="fas fa-user-tie"></i> Tambah SDM</div>
+      <button class="close-btn" onclick="closeSdmForm()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll">
+      <form id="sdmForm" onsubmit="saveSdm(event)" novalidate>
+        <input type="hidden" id="editSdmId" />
+        <div class="form-split">
+          <div class="fs-left">
+            <div class="foto-upload-box" onclick="document.getElementById('fsFoto').click()">
+              <img id="sdmPreview" src="" />
+              <i class="fas fa-camera" id="sdmPreviewIcon"></i>
+            </div>
+            <div class="foto-upload-hint">Klik kotak di atas<br>untuk unggah foto</div>
+            <input type="file" id="fsFoto" accept="image/*" style="display:none" onchange="previewImage(event, 'sdmPreview', 'fsFotoBase64')" />
+            <input type="hidden" id="fsFotoBase64" />
+          </div>
+          <div class="fs-right">
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>NIDN / NIK <span class="req">*</span></label>
+                <input type="text" id="fsNik" required />
+              </div>
+              <div class="form-field">
+                <label>Nama Lengkap (beserta gelar) <span class="req">*</span></label>
+                <input type="text" id="fsNama" required />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Jabatan / Bidang <span class="req">*</span></label>
+                <input type="text" id="fsJabatan" list="jabatanList" placeholder="Pilih atau ketik posisi..." required />
+                <datalist id="jabatanList">
+                  <option value="Direktur"></option>
+                  <option value="Wakil Direktur I"></option>
+                  <option value="Wakil Direktur II"></option>
+                  <option value="Wakil Direktur III"></option>
+                  <option value="Dosen"></option>
+                  <option value="Bidang Keuangan"></option>
+                  <option value="Bidang Pendidikan"></option>
+                  <option value="Bidang Promosi"></option>
+                  <option value="Staff Umum / Administrasi"></option>
+                </datalist>
+              </div>
+              <div class="form-field">
+                <label>Status Kepegawaian <span class="req">*</span></label>
+                <select id="fsStatus" required>
+                  <option value="aktif">Aktif</option>
+                  <option value="tugas_belajar">Tugas Belajar</option>
+                  <option value="pensiun">Pensiun</option>
+                  <option value="keluar">Berhenti / Keluar</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Tempat Lahir</label>
+                <input type="text" id="fsTempatLahir" />
+              </div>
+              <div class="form-field">
+                <label>Tanggal Lahir</label>
+                <input type="date" id="fsTanggalLahir" />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Jenis Kelamin</label>
+                <select id="fsJK">
+                  <option value="">-- Pilih --</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Agama</label>
+                <select id="fsAgama">
+                  <option value="">-- Pilih --</option>
+                  <option value="Islam">Islam</option>
+                  <option value="Kristen">Kristen</option>
+                  <option value="Katolik">Katolik</option>
+                  <option value="Hindu">Hindu</option>
+                  <option value="Buddha">Buddha</option>
+                  <option value="Konghucu">Konghucu</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>No. Handphone (WA)</label>
+                <input type="text" id="fsNoHp" />
+              </div>
+              <div class="form-field">
+                <label>Email</label>
+                <input type="email" id="fsEmail" />
+              </div>
+            </div>
+            <div class="form-field">
+              <label>Alamat Lengkap</label>
+              <textarea id="fsAlamat" rows="2"></textarea>
+            </div>
+            <div class="form-field">
+              <label>No. BPJS / Jaminan Kesehatan</label>
+              <input type="text" id="fsNoBpjs" />
+            </div>
+            <div class="form-field">
+              <label>Catatan / Riwayat</label>
+              <textarea id="fsCatatan" rows="2" placeholder="Contoh: Semester 2 Tahun 2025 - 2026 Ganjil..."></textarea>
+            </div>
+            <div class="gdrive-section" style="margin-top:10px;">
+              <div class="gdrive-section-title"><i class="fas fa-folder-open" style="color:#4285f4"></i> Dokumen Penunjang Pribadi</div>
+              <div class="gdrive-guide" style="margin-top:0; margin-bottom:12px;">
+                <i class="fas fa-info-circle"></i>
+                <span><b>Struktur Folder GDrive:</b><br/>SIMARSIP / SDM / [Jabatan atau Bidang] / [NIK - Nama Lengkap]<br/>Pastikan Anda memasukkan link dari folder GDrive yang telah disusun rapi sesuai format di atas.</span>
+              </div>
+              <div class="form-field">
+                <label>Kumpulan Link Dokumen (Ijazah, Sertifikat, dll. Pisahkan dengan baris baru)</label>
+                <textarea id="fsDokumen" rows="3" placeholder="https://drive.google.com/...&#10;https://docs.google.com/..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" onclick="closeSdmForm()">Batal</button>
+          <button type="submit" class="tb-btn tb-btn-primary"><i class="fas fa-floppy-disk"></i> Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: DETAIL PERSON (MHS / SDM) ═══ -->
+<div class="overlay" id="overlayPerson" onclick="if(event.target===this)closePersonDetail()">
+  <div class="modal-box detail-box">
+    <div class="modal-head">
+      <div class="modal-head-title"><i class="fas fa-address-card"></i> Detail Profil</div>
+      <button class="close-btn" onclick="closePersonDetail()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll" id="personContent"></div>
+  </div>
+</div>
 
 <!-- TOAST -->
 <div class="toast-stack" id="toastStack"></div>
