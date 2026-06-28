@@ -1710,17 +1710,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 function getAY(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr + 'T00:00:00');
-  const m = d.getMonth() + 1, y = d.getFullYear();
-  if (m >= 8) return `${y}/${y+1}`;
-  else return `${y-1}/${y}`;
+  return d.getFullYear().toString();
 }
 function getAYMonths(ay) {
-  if (!ay || !ay.includes('/')) return [];
-  const parts = ay.split('/');
-  const y1 = Number(parts[0]), y2 = Number(parts[1]);
+  if (!ay) return [];
   const ms = [];
-  for (let m=8;m<=12;m++) ms.push(`${y1}-${String(m).padStart(2,'0')}`);
-  for (let m=1;m<=7;m++) ms.push(`${y2}-${String(m).padStart(2,'0')}`);
+  for (let m=1; m<=12; m++) {
+    ms.push(`${ay}-${String(m).padStart(2,'0')}`);
+  }
   return ms;
 }
 function getMonthLabel(ym) {
