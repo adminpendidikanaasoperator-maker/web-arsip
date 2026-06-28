@@ -29,7 +29,7 @@ const SK_SDM = 'aas_sdm_v3';
 /* ÔöÇÔöÇÔöÇ GOOGLE APPS SCRIPT URL ÔöÇÔöÇÔöÇ */
 // Paste URL "Web app" dari Google Apps Script di sini setelah melakukan Deployment.
 // Contoh: 'https://script.google.com/macros/s/AKfycby.../exec'
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyVPovygRvN1B-JMWtXpCxMvvI-f2qJHJqjm9ENsGO2-mAV711VWhBd7sLGEAUGtqGY/exec'; 
+const GAS_URL = 'https://script.google.com/macros/s/AKfycby0heFyeXzAmm_uNBvItuoCqFBe-79h6vL0sJ6iIYYJ-b-eWesITSu4MvHoSv4gqgMoNw/exec'; 
 
 /* ÔöÇÔöÇÔöÇ DEPARTEMEN ÔöÇÔöÇÔöÇ */
 const DEPT = {
@@ -3016,11 +3016,15 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
           bidang: DEPT[bidang]?.label || bidang,
           jenis: jenis,
           tahun: tahun,
-          folderPath: (function() {
+          folderPaths: (function() {
+            let paths = [];
             let level2 = DEPT[bidang]?.label || bidang;
             let level3 = tahun ? "TA " + tahun : "TA Umum";
             let level4 = "Umum";
-            const kMatch = getJenisLabel(bidang, jenis).match(/\[?(Kriteria \d+)\]?/i);            if (bidang === 'banpt_led') {
+            const kMatch = getJenisLabel(bidang, jenis).match(/\[?(Kriteria \d+)\]?/i);
+            
+            // 1. Path Utama
+            if (bidang === 'banpt_led') {
                level2 = 'Akreditasi BAN-PT';
                level3 = 'Laporan Evaluasi Diri (LED)';
                level4 = kMatch ? kMatch[1] : "Umum";
@@ -3028,9 +3032,7 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
                level2 = 'Akreditasi BAN-PT';
                level3 = 'Sistem Penjaminan Mutu Internal (SPMI)';
                level4 = kMatch ? kMatch[1] : "Umum";
-            } else 
-            
-            if (bidang === 'lamptkes_led') {
+            } else if (bidang === 'lamptkes_led') {
                level2 = 'Akreditasi LAM-PTKes';
                level3 = 'Laporan Evaluasi Diri (LED)';
                level4 = kMatch ? kMatch[1] : "Umum";
@@ -3041,7 +3043,25 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
             } else {
                level4 = getJenisLabel(bidang, jenis) || "Umum";
             }
-            return ["SIMARSIP AAS", level2, level3, level4];
+            
+            paths.push(["SIMARSIP AAS", level2, level3, level4]);
+            
+            // Jika ini upload dari Bidang biasa (bukan khusus BAN-PT/LAM-PTKes UI mode)
+            if (typeof isBanptMode !== 'undefined' && typeof isLamptkesMode !== 'undefined' && !isBanptMode && !isLamptkesMode) {
+                // 2. Path Pintasan BAN-PT
+                const banptK = typeof getBanptCriteriaForUpload === 'function' ? getBanptCriteriaForUpload(bidang, jenis) : 0;
+                if (banptK > 0) {
+                    paths.push(["SIMARSIP AAS", "Akreditasi BAN-PT", "Laporan Evaluasi Diri (LED)", "Kriteria " + banptK]);
+                }
+                
+                // 3. Path Pintasan LAM-PTKes
+                const lamptkesK = typeof getKriteriaNumber === 'function' ? getKriteriaNumber(jenis) : 0;
+                if (lamptkesK > 0) {
+                    paths.push(["SIMARSIP AAS", "Akreditasi LAM-PTKes", "Laporan Evaluasi Diri (LED)", "Kriteria " + lamptkesK]);
+                }
+            }
+            
+            return paths;
           })()
         };
 
