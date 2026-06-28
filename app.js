@@ -2188,6 +2188,25 @@ function updateBadges() {
   const bMhs=document.getElementById('badge-mhs'); if(bMhs) bMhs.textContent=mahasiswa.length;
   const bSdm=document.getElementById('badge-sdm-induk'); if(bSdm) bSdm.textContent=sdm.length;
 
+  // BAN-PT & LAM-PTKes Badges
+  let banptCount = 0;
+  let lamptkesCount = 0;
+  f.forEach(a => {
+    if (getBanptCriteriaForUpload(a.bidang, a.jenis) > 0) banptCount++;
+    
+    // Check LAM-PTKes logic matching generateLamptkesReport
+    if (a.jenis) {
+       if (getKriteriaNumber(a.jenis) > 0 || a.jenis.includes('_led') || a.jenis.startsWith('led_') || a.jenis.includes('_spmi') || a.jenis.startsWith('spmi_')) {
+          lamptkesCount++;
+       }
+    }
+  });
+  const bBanpt = document.getElementById('badge-banpt');
+  if(bBanpt) bBanpt.textContent = banptCount;
+  const bLamptkes = document.getElementById('badge-lamptkes');
+  if(bLamptkes) bLamptkes.textContent = lamptkesCount;
+
+
   // Sub-Menu Jenis Badges
   // First, zero out all jenis badges
   document.querySelectorAll('[id^="badge-jenis-"]').forEach(el => el.textContent = '0');

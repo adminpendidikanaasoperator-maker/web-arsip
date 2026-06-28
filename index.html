@@ -16,7 +16,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <script src="app.js?v=194" defer></script>
+  <script src="app.js?v=195" defer></script>
   <link rel="stylesheet" href="style.css?v=155" />
 </head>
 <body>
@@ -60,7 +60,7 @@
     <a class="sb-link dept" href="#" data-page="dept" data-dept="kerjasama" id="nav-kerjasama"><i class="fas fa-handshake" style="color:#06b6d4"></i><span>Kerjasama</span><em id="badge-kerjasama">0</em></a>
 
     <div class="sb-section">Laporan & Sistem</div>
-    <a class="sb-link" href="#" data-page="banpt" id="nav-banpt"><i class="fas fa-building-columns" style="color:#3b82f6"></i><span>Borang BAN-PT</span></a>
+    <a class="sb-link" href="#" data-page="banpt" id="nav-banpt"><i class="fas fa-building-columns" style="color:#3b82f6"></i><span>Borang BAN-PT</span><em id="badge-banpt">0</em></a>
     <ul class="sb-sub-menu" id="banpt-sub-menu" style="display:none;">
       <li onclick="isBanptMode=true; isLamptkesMode=false; openForm();" style="color:#3b82f6; font-weight:600;"><i class="fas fa-cloud-upload-alt"></i> Upload LED / SPMI</li>
       <li class="active" onclick="switchBanptTab(1, this)"><i class="fas fa-bullseye"></i> K1. Visi Misi & Strategi</li>
@@ -74,7 +74,7 @@
       <li onclick="switchBanptTab(9, this)"><i class="fas fa-award"></i> K9. Luaran & Capaian</li>
     </ul>
 
-    <a class="sb-link" href="#" data-page="lamptkes" id="nav-lamptkes"><i class="fas fa-notes-medical" style="color:#10b981"></i><span>Borang LAM-PTKes</span></a>
+    <a class="sb-link" href="#" data-page="lamptkes" id="nav-lamptkes"><i class="fas fa-notes-medical" style="color:#10b981"></i><span>Borang LAM-PTKes</span><em id="badge-lamptkes">0</em></a>
     <ul class="sb-sub-menu" id="lamptkes-sub-menu" style="display:none;">
       <li class="active" onclick="switchLamptkesTab(1, this)"><i class="fas fa-bullseye"></i> K1. Visi, Misi & Strategi</li>
       <li onclick="switchLamptkesTab(2, this)"><i class="fas fa-book"></i> K2. Kurikulum</li>
