@@ -16,8 +16,8 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <script src="app.js?v=142" defer></script>
-  <link rel="stylesheet" href="style.css?v=142" />
+  <script src="app.js?v=145" defer></script>
+  <link rel="stylesheet" href="style.css?v=145" />
 </head>
 <body>
 
@@ -492,7 +492,7 @@
 
         <div class="form-row-2">
           <div class="form-field">
-            <label>Bidang <span class="req">*</span></label>
+            <label id="fBidangLabel">Bidang <span class="req">*</span></label>
             <select id="fBidang" required onchange="onBidangChange()">
               <option value="">-- Pilih Bidang --</option>
               <optgroup label="Wadir I: Pendidikan & Kemahasiswaan">
@@ -942,6 +942,6 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-<script src="app.js?v=142"></script>
+<script src="app.js?v=145"></script>
 </body>
 </html>

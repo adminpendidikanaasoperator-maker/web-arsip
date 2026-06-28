@@ -59,6 +59,118 @@ const DEPT = {
 
 /* ─── JENIS DOKUMEN PER BIDANG (tidak ada "Lainnya") ─── */
 
+
+const LAMPTKES_KRITERIA_JENIS = {
+  lamptkes_k1: [
+    {val: 'k1_1', label: '1. Laporan kegiatan atau notulen rapat perumusan visi, misi, dan unggulan'},
+    {val: 'k1_2', label: '2. Bukti kegiatan keterlibatan pemangku kepentingan internal dan eksternal'},
+    {val: 'k1_3', label: '3. Media yang digunakan untuk publikasi/sosialisasi visi, misi, dan unggulan'},
+    {val: 'k1_4', label: '4. Dokumen rencana strategi (renstra) dan rencana operasional (renop)'}
+  ],
+  lamptkes_k2: [
+    {val: 'k2_1', label: '1. Notulen rapat komite kurikulum untuk merumuskan capaian pembelajaran'},
+    {val: 'k2_2', label: '2. Buku kurikulum (prinsip, struktur, isi, urutan, kompetensi, RPS, dll)'},
+    {val: 'k2_3', label: '3. Daftar departemen klinik untuk penempatan mahasiswa'},
+    {val: 'k2_4', label: '4. Daftar rumah sakit pendidikan dan wahana praktik'},
+    {val: 'k2_5', label: '5. Notulen rapat komite kurikulum tentang metode pendidikan, evaluasi'},
+    {val: 'k2_6', label: '6. Modul dan Panduan praktik klinik profesional mahasiswa'},
+    {val: 'k2_7', label: '7. Risalah rapat keterlibatan pemangku kepentingan eksternal'},
+    {val: 'k2_8', label: '8. Pedoman pelaksanaan RCA (Root Cause Analysis)'},
+    {val: 'k2_9', label: '9. Kebijakan dan prosedur mitigasi/manajemen risiko'}
+  ],
+  lamptkes_k3: [
+    {val: 'k3_1', label: '1. Prosedur operasional standar penilaian'},
+    {val: 'k3_2', label: '2. Buku catatan mahasiswa (logbook), revisi strategi pengajaran'},
+    {val: 'k3_3', label: '3. Mekanisme remedial dan konseling'},
+    {val: 'k3_4', label: '4. Cetak biru (blueprint) penilaian'},
+    {val: 'k3_5', label: '5. Prosedur mekanisme banding'},
+    {val: 'k3_6', label: '6. Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan'},
+    {val: 'k3_7', label: '7. Kebijakan dan prosedur penilaian sesuai tempat pembelajaran'},
+    {val: 'k3_8', label: '8. Laporan hasil Uji Kompetensi CBT dan OSCE'}
+  ],
+  lamptkes_k4: [
+    {val: 'k4_1', label: '1. Peraturan tentang kebijakan seleksi dan penerimaan'},
+    {val: 'k4_2', label: '2. Kebijakan, peraturan, prosedur dukungan layanan mahasiswa'},
+    {val: 'k4_3', label: '3. Kebijakan, peraturan, dan prosedur konseling mahasiswa'},
+    {val: 'k4_4', label: '4. Pendukung SDM, fasilitas, keuangan untuk layanan mahasiswa'},
+    {val: 'k4_5', label: '5. Monitoring dan evaluasi penerapan sistem pendukung mahasiswa'},
+    {val: 'k4_6', label: '6. Dokumen hasil survey kepuasan mahasiswa terhadap layanan mahasiswa'},
+    {val: 'k4_7', label: '7. Dokumen hasil survey kepuasan mahasiswa terhadap layanan manajemen'},
+    {val: 'k4_8', label: '8. Kebijakan, peraturan mengenai kampus sehat'},
+    {val: 'k4_9', label: '9. Pedoman pelaksanaan RCA (Root Cause Analysis)'},
+    {val: 'k4_10', label: '10. Pemantauan dan evaluasi penerapan sistem pendukung mahasiswa'},
+    {val: 'k4_11', label: '11. Pedoman RCA (Root Cause Analysis) (11)'}
+  ],
+  lamptkes_k5: [
+    {val: 'k5_1', label: '1. Rencana pengembangan SDM sesuai disiplin ilmu'},
+    {val: 'k5_2', label: '2. Kebijakan dan prosedur pengembangan SDM (dosen dan tendik)'},
+    {val: 'k5_3', label: '3. Notulen/risalah rapat dan daftar kehadiran kegiatan pengembangan SDM'},
+    {val: 'k5_4', label: '4. Pemetaan disiplin kurikulum (kesesuaian bidang ilmu)'},
+    {val: 'k5_5', label: '5. Formulir monitoring dan evaluasi kinerja dosen'},
+    {val: 'k5_6', label: '6. Laporan program pelatihan orientasi'},
+    {val: 'k5_7', label: '7. Laporan program pelatihan untuk dosen baru dan lama'},
+    {val: 'k5_8', label: '8. Roadmap penelitian dan PkM dosen'},
+    {val: 'k5_9', label: '9. Laporan penelitian dan PkM dosen serta publikasinya'},
+    {val: 'k5_10', label: '10. Bukti penghargaan atau pengakuan hasil penelitian (HaKI/Paten)'},
+    {val: 'k5_11', label: '11. Kebijakan penelitian dan PkM serta integrasinya'},
+    {val: 'k5_12', label: '12. Sertifikat Pendidik/Dosen, Kompetensi, dan Ijazah'},
+    {val: 'k5_13', label: '13. HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional'},
+    {val: 'k5_14', label: '14. Formulir monitoring dan evaluasi kinerja tendik'},
+    {val: 'k5_15', label: '15. Laporan program pelatihan tendik'}
+  ],
+  lamptkes_k6: [
+    {val: 'k6_1', label: '1. Daftar infrastruktur fisik/sarana dan prasarana'},
+    {val: 'k6_2', label: '2. Daftar sistem pendukung pembelajaran lainnya (internet dll)'},
+    {val: 'k6_3', label: '3. Daftar rumah sakit pendidikan dan wahana praktik klinik'},
+    {val: 'k6_4', label: '4. Daftar fasilitas di rumah sakit pendidikan dan pengajaran klinik'},
+    {val: 'k6_5', label: '5. Daftar manekin yang tersedia untuk pelatihan keterampilan klinik'},
+    {val: 'k6_6', label: '6. Kebijakan mengenai keselamatan dan kesehatan kerja civitas akademika'},
+    {val: 'k6_7', label: '7. Daftar pasien standar dan laporan pelatihannya'},
+    {val: 'k6_8', label: '8. Daftar pelatihan dan laporannya dari dosen klinis'},
+    {val: 'k6_9', label: '9. Daftar database jurnal yang tersedia'},
+    {val: 'k6_10', label: '10. Formulir evaluasi dan umpan balik dari mahasiswa dan staf'},
+    {val: 'k6_11', label: '11. Fasilitas untuk mengakses sumber informasi dan sumber belajar'},
+    {val: 'k6_12', label: '12. Data hasil survei kepuasan pelayanan dari pemangku kepentingan'},
+    {val: 'k6_13', label: '13. Data hasil survei kepuasan kualitas dan akses fasilitas fisik'},
+    {val: 'k6_14', label: '14. Dokumen audit keuangan dan sarana prasarana'}
+  ],
+  lamptkes_k7: [
+    {val: 'k7_1', label: '1. Sistem penjaminan mutu: struktur dan tupoksi'},
+    {val: 'k7_2', label: '2. Dokumen mutu: kebijakan, standar, manual, formulir, dokumen lain'},
+    {val: 'k7_3', label: '3. Laporan audit mutu internal'},
+    {val: 'k7_4', label: '4. Laporan rapat tinjauan manajemen'},
+    {val: 'k7_5', label: '5. Sumber daya yang dialokasikan untuk penjaminan mutu'},
+    {val: 'k7_6', label: '6. Notulen/risalah rapat keterlibatan pemangku kepentingan eksternal'},
+    {val: 'k7_7', label: '7. Dokumen tindak lanjut atas umpan balik penjaminan mutu'},
+    {val: 'k7_8', label: '8. Pedoman pelaksanaan RCA (Root Cause Analysis)'},
+    {val: 'k7_9', label: '9. Kebijakan dan prosedur mitigasi risiko'}
+  ],
+  lamptkes_k8: [
+    {val: 'k8_1', label: '1. Bagan organisasi pengelolaan dan administrasi beserta tupoksi'},
+    {val: 'k8_2', label: '2. Prosedur operasional standar pengalokasian anggaran'},
+    {val: 'k8_3', label: '3. Laporan tinjauan kinerja institusi/UPPS'},
+    {val: 'k8_4', label: '4. Dokumen identifikasi dan mitigasi risiko'},
+    {val: 'k8_5', label: '5. Laporan rapat keterlibatan mahasiswa dan dosen dalam fungsi UPPS'},
+    {val: 'k8_6', label: '6. Standar prosedur operasional (SPO) proses pengambilan keputusan'},
+    {val: 'k8_7', label: '7. SPO pelaporan pembelajaran, penelitian, dan pengabdian masyarakat'},
+    {val: 'k8_8', label: '8. Dokumen indikator kinerja utama dan kinerja tambahan'}
+  ],
+  lamptkes_spmi: [
+    {val: 'spmi_akademik', label: 'SPMI Bidang Akademik'},
+    {val: 'spmi_kemahasiswaan', label: 'SPMI Bidang Kemahasiswaan'},
+    {val: 'spmi_umum', label: 'SPMI Bidang Umum & Rumah Tangga'},
+    {val: 'spmi_keuangan', label: 'SPMI Bidang Keuangan'},
+    {val: 'spmi_sdm', label: 'SPMI Bidang SDM'},
+    {val: 'spmi_kerjasama', label: 'SPMI Bidang Kerjasama'}
+  ]
+};
+
+let ORIGINAL_BIDANG_HTML = '';
+document.addEventListener('DOMContentLoaded', () => {
+    const b = document.getElementById('fBidang');
+    if(b) ORIGINAL_BIDANG_HTML = b.innerHTML;
+});
+
 const LAMPTKES_SPECIAL_TYPES = [
     { val: 'k1_led', label: '[LED] Laporan Evaluasi Diri Kriteria 1' },
     { val: 'k2_led', label: '[LED] Laporan Evaluasi Diri Kriteria 2' },
@@ -1154,30 +1266,15 @@ function onBidangChange() {
     const bidang=document.getElementById('fBidang').value;
     const opts=document.getElementById('fJenisOptions');
     
+    let types = [];
     if (isLamptkesMode) {
-      document.getElementById('fJenisLabelText').textContent = '-- Pilih LED / SPMI --';
-      document.getElementById('fJenis').value = '';
-      let html = '';
-      LAMPTKES_SPECIAL_TYPES.forEach(t => {
-        const safeLabel = t.label.replace(/'/g, "\\'");
-        html += `<div class="custom-option" onclick="selectJenisOption('${t.val}', '${safeLabel}')">${t.label}</div>`;
-      });
-      
-      html += `<div style="padding:8px 12px; font-size:0.75rem; color:#6b7280; font-weight:700; text-transform:uppercase; margin-top:8px; border-top:1px solid #e5e7eb;">Arsip Umum</div>`;
-      COMMON_JENIS.forEach(t => {
-        const safeLabel = t.label.replace(/'/g, "\\'");
-        html += `<div class="custom-option" onclick="selectJenisOption('${t.val}', '${safeLabel}')"><i class="${t.icon}" style="margin-right:6px; color:${t.color}"></i> ${t.label}</div>`;
-      });
-      
-      opts.innerHTML = html;
-      onJenisChange();
-      return;
+      types = LAMPTKES_KRITERIA_JENIS[bidang] || [];
+    } else {
+      types = DEPT_JENIS[bidang] || [];
     }
-  
-    const types=DEPT_JENIS[bidang]||[];
     
     if(types.length || COMMON_JENIS.length) {
-      document.getElementById('fJenisLabelText').textContent = '-- Pilih Jenis --';
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih Jenis Dokumen --';
       document.getElementById('fJenis').value = '';
       let html = '';
       types.forEach(t => {
@@ -1193,7 +1290,7 @@ function onBidangChange() {
       
       opts.innerHTML = html;
     } else {
-      document.getElementById('fJenisLabelText').textContent = '-- Pilih Bidang dulu --';
+      document.getElementById('fJenisLabelText').textContent = isLamptkesMode ? '-- Pilih Kriteria dulu --' : '-- Pilih Bidang dulu --';
       document.getElementById('fJenis').value = '';
       opts.innerHTML = '';
     }
