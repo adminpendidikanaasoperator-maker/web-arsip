@@ -2032,10 +2032,73 @@ function checkKadaluarsa(tanggal) {
 
 let isInitialLoad = { arsip: true, activity: true, mahasiswa: true, sdm: true };
 
+let hasMigratedK9 = false;
 function processSnapshot(snapshot, collectionName) {
   const data = snapshot.docs.map(d => d.data());
   
-  if (collectionName === 'arsip') { arsip = data; }
+  if (collectionName === 'arsip') { 
+      arsip = data; 
+      
+      // MIGRATION SCRIPT FOR KRITERIA 9
+      if (!hasMigratedK9 && typeof db !== 'undefined') {
+          hasMigratedK9 = true;
+          let batch = db.batch();
+          let changedCount = 0;
+          
+          arsip.forEach(a => {
+             let changed = false;
+             let oldBidang = a.bidang;
+             
+             // First map jenis
+             if (a.jenis === 'k9_data_ipk') { a.jenis = 'k6_data_ipk'; a.bidang = 'akademik'; changed = true; }
+             if (a.jenis === 'k9_capaian_pembelajaran') { a.jenis = 'k6_capaian_pembelajaran'; a.bidang = 'akademik'; changed = true; }
+             if (a.jenis === 'k9_rekap_luaran_penelitian_dosen') { a.jenis = 'k7_rekap_luaran_penelitian_dosen'; a.bidang = 'penelitian_pengabdian'; changed = true; }
+             if (a.jenis === 'k9_rekap_luaran_penelitian_mhs') { a.jenis = 'k7_rekap_luaran_penelitian_mhs'; a.bidang = 'penelitian_pengabdian'; changed = true; }
+             if (a.jenis === 'k9_laporan_tracer_study') { a.jenis = 'k3_laporan_tracer_study'; a.bidang = 'kemahasiswaan'; changed = true; }
+             if (a.jenis === 'k9_survei_kepuasan_pengguna_lulusan') { a.jenis = 'k3_survei_kepuasan_pengguna_lulusan'; a.bidang = 'kemahasiswaan'; changed = true; }
+             if (a.jenis === 'k9_data_waktu_tunggu_lulusan') { a.jenis = 'k3_data_waktu_tunggu_lulusan'; a.bidang = 'kemahasiswaan'; changed = true; }
+             if (a.jenis === 'k9_data_pekerjaan_pertama') { a.jenis = 'k3_data_pekerjaan_pertama'; a.bidang = 'kemahasiswaan'; changed = true; }
+             if (a.jenis === 'k9_luaran_pkm_artikel') { a.jenis = 'k8_luaran_pkm_artikel'; a.bidang = 'penelitian_pengabdian'; changed = true; }
+             if (a.jenis === 'k9_luaran_pkm_buku') { a.jenis = 'k8_luaran_pkm_buku'; a.bidang = 'penelitian_pengabdian'; changed = true; }
+             if (a.jenis === 'k9_luaran_pkm_teknologi') { a.jenis = 'k8_luaran_pkm_teknologi'; a.bidang = 'penelitian_pengabdian'; changed = true; }
+             if (a.jenis === 'k9_led') { a.jenis = 'led_finish'; a.bidang = 'penjaminan_mutu'; changed = true; }
+             if (a.jenis === 'k9_spmi') { a.jenis = 'spmi_finish'; a.bidang = 'penjaminan_mutu'; changed = true; }
+             
+             // If there's leftover k9_ something, fallback to k8_ and put it in penelitian_pengabdian
+             if (a.jenis && a.jenis.startsWith('k9_') && !changed) {
+                 a.jenis = a.jenis.replace('k9_', 'k8_');
+                 a.bidang = 'penelitian_pengabdian';
+                 changed = true;
+             }
+             
+             // Also if a document was uploaded with bidang = kriteria_9 but its jenis didn't have k9_ prefix
+             // We need to re-map based on the label. This is rare, but if it happens:
+             if (a.bidang === 'kriteria_9' && !changed) {
+                 // Try to guess from jenis
+                 if (a.jenis.includes('ipk') || a.jenis.includes('lulusan')) a.bidang = 'kemahasiswaan';
+                 else if (a.jenis.includes('pkm') || a.jenis.includes('penelitian') || a.jenis.includes('jurnal')) a.bidang = 'penelitian_pengabdian';
+                 else a.bidang = 'akademik'; // fallback
+                 changed = true;
+             }
+             
+             if (changed) {
+                 try {
+                     let docRef = db.collection('arsip').doc(a.id);
+                     batch.update(docRef, { jenis: a.jenis, bidang: a.bidang });
+                     changedCount++;
+                 } catch(e) { console.error(e); }
+             }
+          });
+          
+          if (changedCount > 0) {
+              console.log(`Migrating ${changedCount} Kriteria 9 documents...`);
+              batch.commit().then(() => {
+                  console.log("Kriteria 9 Migration complete.");
+                  save();
+              }).catch(e => console.error("Migration failed:", e));
+          }
+      }
+  }
   else if (collectionName === 'activity') { activity = data; }
   else if (collectionName === 'mahasiswa') { mahasiswa = data; }
   else if (collectionName === 'sdm') { sdm = data; }
