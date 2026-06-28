@@ -1155,11 +1155,7 @@ function onBidangChange() {
   const opts=document.getElementById('fJenisOptions');
   
   if (isLamptkesMode) {
-    if (!bidang) {
-      document.getElementById('fJenisLabelText').textContent = '-- Pilih Bidang dulu --';
-      opts.innerHTML = '';
-      return;
-    }
+    
     document.getElementById('fJenisLabelText').textContent = '-- Pilih LED / SPMI --';
     document.getElementById('fJenis').value = '';
     let html = '';
