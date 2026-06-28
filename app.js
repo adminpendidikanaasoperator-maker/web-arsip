@@ -1197,40 +1197,59 @@ function chartOpts(extra={}) {
 
 /* ═════ FORM MODAL ═════ */
 function openForm(prefillDept) {
-  document.getElementById('arsipForm').reset();
-  document.getElementById('editId').value='';
-  document.getElementById('formTitle').innerHTML='<i class="fas fa-file-circle-plus"></i> Tambah Arsip Baru';
-  document.getElementById('btnSimpan').innerHTML='<i class="fas fa-floppy-disk"></i> Simpan';
-  document.getElementById('fTanggal').value=new Date().toISOString().slice(0,10);
-  document.getElementById('fFormat').value='pdf';
-  document.getElementById('fFileName').value='';
-  document.getElementById('fGdriveLink').value='';
-  
-  // Hide Bidang if Lamptkes Mode
-  const bidangField = document.getElementById('fBidang');
-  if (isLamptkesMode) {
-    bidangField.parentElement.style.display = 'none';
-    bidangField.required = false;
-    bidangField.value = 'lamptkes';
-    onBidangChange(); // This will auto-populate fJenisOptions
-  } else {
-    bidangField.parentElement.style.display = 'block';
-    bidangField.required = true;
-    if(prefillDept){ document.getElementById('fBidang').value=prefillDept; onBidangChange(); }
-    else { 
-      document.getElementById('fJenisLabelText').textContent = '-- Pilih Bidang dulu --';
+    document.getElementById('arsipForm').reset();
+    document.getElementById('editId').value='';
+    document.getElementById('formTitle').innerHTML='<i class="fas fa-file-circle-plus"></i> Tambah Arsip Baru';
+    document.getElementById('btnSimpan').innerHTML='<i class="fas fa-floppy-disk"></i> Simpan';
+    document.getElementById('fTanggal').value=new Date().toISOString().slice(0,10);
+    document.getElementById('fFormat').value='pdf';
+    document.getElementById('fFileName').value='';
+    document.getElementById('fGdriveLink').value='';
+    
+    const bidangField = document.getElementById('fBidang');
+    const bidangLabel = document.getElementById('fBidangLabel');
+    if (isLamptkesMode) {
+      document.getElementById('formTitle').innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload Dokumen LAM-PTKes';
+      bidangField.parentElement.style.display = 'block';
+      bidangField.required = true;
+      if(bidangLabel) bidangLabel.innerHTML = 'Kriteria / SPMI <span class="req">*</span>';
+      
+      bidangField.innerHTML = `
+        <option value="">-- Pilih Kriteria / SPMI --</option>
+        <option value="lamptkes_k1">Kriteria 1. Visi, Misi, Tujuan, dan Strategi</option>
+        <option value="lamptkes_k2">Kriteria 2. Kurikulum</option>
+        <option value="lamptkes_k3">Kriteria 3. Penilaian</option>
+        <option value="lamptkes_k4">Kriteria 4. Mahasiswa</option>
+        <option value="lamptkes_k5">Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, PkM</option>
+        <option value="lamptkes_k6">Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan</option>
+        <option value="lamptkes_k7">Kriteria 7. Penjaminan Mutu</option>
+        <option value="lamptkes_k8">Kriteria 8. Tata Kelola dan Administrasi</option>
+        <option value="lamptkes_spmi">SPMI Internal</option>
+      `;
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih Kriteria / SPMI dulu --';
       document.getElementById('fJenisOptions').innerHTML = '';
+      bidangField.value = '';
+    } else {
+      bidangField.parentElement.style.display = 'block';
+      bidangField.required = true;
+      if(bidangLabel) bidangLabel.innerHTML = 'Bidang <span class="req">*</span>';
+      if (ORIGINAL_BIDANG_HTML) bidangField.innerHTML = ORIGINAL_BIDANG_HTML;
+      
+      if(prefillDept){ bidangField.value=prefillDept; onBidangChange(); }
+      else { 
+        document.getElementById('fJenisLabelText').textContent = '-- Pilih Bidang dulu --';
+        document.getElementById('fJenisOptions').innerHTML = '';
+        bidangField.value = '';
+      }
     }
+  
+    const sel=document.getElementById('fAYear');
+    if(sel){
+      sel.innerHTML=[...allAYears()].reverse().map(y=>`<option value="${y}">${y}</option>`).join('');
+      sel.value=currentAY||getAY(document.getElementById('fTanggal').value);
+    }
+    document.getElementById('overlayForm').classList.add('open');
   }
-
-  const sel=document.getElementById('fAYear');
-  if(sel){
-    sel.innerHTML=[...allAYears()].reverse().map(y=>`<option value="${y}">${y}</option>`).join('');
-    sel.value=currentAY||getAY(document.getElementById('fTanggal').value);
-  }
-  //  // Dihapus agar tidak menimpa currentAY
-  document.getElementById('overlayForm').classList.add('open');
-}
 function closeForm(){ 
   document.getElementById('overlayForm').classList.remove('open'); 
   const form = document.getElementById('arsipForm');
