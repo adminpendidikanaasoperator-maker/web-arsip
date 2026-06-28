@@ -4379,15 +4379,20 @@ async function generateIntegratedReport(type, isDashboard = false) {
   
   const mapDataToRows = (arr) => {
     return arr.map((a, i) => {
-      const colDokumen = a.nomor + '\n' + a.judul + '\n(Tgl: ' + a.tanggal + ')';
-      const colKategori = (DEPT[a.bidang]?.label?.toUpperCase() || a.bidang.toUpperCase()) + '\n' + getJenisLabel(a.bidang, a.jenis);
-      const colStatus = (a.status === 'valid' ? 'Valid' : (a.status === 'pending' ? 'Pending' : 'Kadaluarsa')) + '\n(TA: ' + (a.ay || '-') + ')';
+      const colDokumen = a.nomor + '
+' + a.judul + '
+(Tgl: ' + a.tanggal + ')';
+      const colKategori = (DEPT[a.bidang]?.label?.toUpperCase() || a.bidang.toUpperCase()) + '
+' + getJenisLabel(a.bidang, a.jenis);
+      const colStatus = (a.status === 'valid' ? 'Valid' : (a.status === 'pending' ? 'Pending' : 'Kadaluarsa')) + '
+(TA: ' + (a.ay || '-') + ')';
       const colPengirim = a.pengirim || '-';
       let ket = '';
-      if (a.keterangan) ket += a.keterangan + '\n';
+      if (a.keterangan) ket += a.keterangan + '
+';
       if (a.metadata) ket += formatMetadataClean(a.metadata);
       if (!ket.trim()) ket = '-';
-      return [i + 1, colDokumen, colKategori, colStatus, colPengirim, ket.trim()];
+      return [i + 1, colDokumen, colKategori, colStatus, colPengirim, ket.trim(), a.gdriveLink || '-'];
     });
   };
 
@@ -4527,7 +4532,7 @@ async function generateIntegratedReport(type, isDashboard = false) {
       ws2.addRow(headers); ws2.getRow(1).font = { bold: true };
       
       ws2.columns = [
-        { width: 5 }, { width: 40 }, { width: 25 }, { width: 20 }, { width: 25 }, { width: 50 }
+        { width: 5 }, { width: 40 }, { width: 25 }, { width: 15 }, { width: 20 }, { width: 40 }, { width: 40 }
       ];
 
       const rows = mapDataToRows(groupedData[bidang]);
