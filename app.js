@@ -2165,21 +2165,7 @@ function onBidangChange() {
     onJenisChange();
   }
 
-const DYNAMIC_FIELDS = {
-  mutu_notulen_visi: [{ id: 'meta_pihak_terlibat', label: 'Pihak yang Terlibat', type: 'text' }],
-  mutu_dokumen_spmi: [{ id: 'meta_jenis_dokumen', label: 'Jenis Dokumen (Manual/Standar/Formulir)', type: 'text' }],
-  pend_blueprint_ujian: [{ id: 'meta_persentase_lulus', label: 'Target Persentase Kelulusan', type: 'text' }],
-  pend_hasil_ukom: [{ id: 'meta_jumlah_peserta', label: 'Jumlah Peserta Ukom', type: 'number' }, { id: 'meta_lulus', label: 'Jumlah Lulus', type: 'number' }],
-  mhs_kebijakan_seleksi: [{ id: 'meta_pendaftar', label: 'Jumlah Pendaftar', type: 'number' }, { id: 'meta_diterima', label: 'Jumlah Diterima', type: 'number' }],
-  mhs_survei_kepuasan_mhs: [{ id: 'meta_nilai_indeks', label: 'Skor Indeks Kepuasan (Skala 4)', type: 'number' }],
-  mhs_kampus_sehat: [{ id: 'meta_jenis_kegiatan', label: 'Jenis Sosialisasi/Kegiatan', type: 'text' }],
-  sdm_monev_kinerja_dosen: [{ id: 'meta_nama_dosen', label: 'Nama Dosen', type: 'text' }, { id: 'meta_skor', label: 'Skor Evaluasi', type: 'number' }],
-  sarana_manekin_skill_lab: [{ id: 'meta_nama_alat', label: 'Nama Alat/Manekin', type: 'text' }, { id: 'meta_kondisi', label: 'Kondisi (Baik/Rusak)', type: 'text' }],
-  sarana_pasien_standar: [{ id: 'meta_skenario', label: 'Skenario/Kasus', type: 'text' }],
-  sarana_pedoman_rca: [{ id: 'meta_akar_masalah', label: 'Akar Masalah (Root Cause)', type: 'text' }, { id: 'meta_tindak_lanjut', label: 'Tindak Lanjut', type: 'text' }],
-  lppm_bukti_penghargaan: [{ id: 'meta_nama_pencipta', label: 'Nama Pencipta/Penerima', type: 'text' }, { id: 'meta_nomor_haki', label: 'Nomor Registrasi/Sertifikat', type: 'text' }],
-  humas_mitigasi_risiko: [{ id: 'meta_akar_masalah', label: 'Akar Masalah (Root Cause)', type: 'text' }, { id: 'meta_tindak_lanjut', label: 'Tindak Lanjut', type: 'text' }]
-};
+
 
 
 const DYNAMIC_FIELDS = {
