@@ -1176,6 +1176,7 @@ function processSnapshot(snapshot, collectionName) {
           else if(id === 'page-mahasiswa') renderMahasiswaPage();
           else if(id === 'page-sdm') renderSdmPage();
           else if(id === 'page-arsip') renderArsipTable();
+          else if(id === 'page-banpt') generateBanptReport();
        }
      }
   }
@@ -3148,6 +3149,7 @@ function switchBanptTab(tabNum, element) {
 
 function getBanptCriteriaForUpload(bidang, jenis) {
     if (!jenis) return 0;
+    if (bidang === 'lamptkes_led' || bidang === 'lamptkes_spmi') return 0;
     
     // Exact BAN-PT types from forms
     if (jenis.startsWith('banpt_led_k')) return parseInt(jenis.replace('banpt_led_k', ''));
@@ -3346,6 +3348,7 @@ function generateLamptkesReport() {
 
   let filtered = arsip.filter(a => {
       if (currentAY && a.ay !== currentAY) return false;
+      if (a.bidang === 'banpt_led' || a.bidang === 'banpt_spmi') return false;
       if (currentLamptkesTab === 11) return (a.jenis && a.jenis.includes('_led')) || (a.jenis && a.jenis.startsWith('led_'));
       if (currentLamptkesTab === 12) return (a.jenis && a.jenis.includes('_spmi')) || (a.jenis && a.jenis.startsWith('spmi_'));
       return getKriteriaNumber(a.jenis) === currentLamptkesTab;
@@ -3365,7 +3368,7 @@ function generateLamptkesReport() {
   }
   
   html += "<div class='akr-table-native-wrap'><table class='tb-table'>";
-  html += "<thead><tr><th>No</th><th>Judul Dokumen</th><th>Bidang & Kategori</th><th>Tgl Arsip</th><th>Tautan GDrive</th></tr></thead>";
+  html += "<thead><tr><th>No</th><th>Judul Dokumen</th><th>Bidang & Kategori</th><th>Tgl Arsip</th><th>Aksi (GDrive)</th></tr></thead>";
   html += "<tbody>";
   
   filtered.forEach((item, index) => {
@@ -3771,7 +3774,14 @@ function generateLamptkesReport() {
     html += "<td><span class='badge bg-blue-100 text-blue-800' style='font-size:0.75rem'>"+bidangLabel+"</span><br><div title=\""+jenisLabel.replace(/\"/g, '&quot;')+"\" style='white-space:normal; line-height:1.3; word-break:normal; overflow-wrap:break-word; font-size:0.72rem; color:var(--text-sub)'>"+jenisLabel+"</div></td>";
     html += "<td>"+item.tanggal+"</td>";
     html += "<td>";
-    html += fmtBadge(item);
+    if (item.gdriveLink) {
+        html += "<a href='" + item.gdriveLink + "' target='_blank' class='btn-action btn-view'><i class='fas fa-external-link-alt'></i> View</a>";
+        html += "<button onclick='resetUpload(\"" + item.id + "\")' class='btn-action btn-upload' style='margin-left:5px;'><i class='fas fa-sync-alt'></i> Reset</button>";
+    } else {
+        html += "<span class='text-red text-sm italic'><i class='fas fa-exclamation-circle'></i> Belum Diunggah</span>";
+        html += "<button onclick='openUploadModal(\"" + item.id + "\")' class='btn-action btn-upload' style='margin-left:5px;'><i class='fas fa-upload'></i> Unggah</button>";
+    }
+    html += "<button onclick='deleteArsip(\"" + item.id + "\")' class='btn-action btn-delete' style='margin-left:5px;'><i class='fas fa-trash'></i> Hapus</button>";
     html += "</td>";
     html += "</tr>";
   });
