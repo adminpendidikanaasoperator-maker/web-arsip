@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SIMARSIP - Akademi Akupunktur Surabaya</title>
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
   <meta name="description" content="Sistem Manajemen Arsip Digital Akademi Akupunktur Surabaya" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -204,26 +205,14 @@
       </div>
       <select id="filterDept" onchange="onFilterDeptChange()">
         <option value="">Semua Bidang</option>
-        
-        <optgroup label="Wadir I">
-          <option value="akademik">Akademik & Pendidikan</option>
-          <option value="sistem_pendidikan">Sistem Informasi Pendidikan</option>
-          <option value="laboratorium">Laboratorium</option>
-          <option value="perpustakaan">Perpustakaan</option>
-          <option value="lppm">LPPM</option>
-          <option value="kemahasiswaan">Kemahasiswaan & Alumni</option>
-          <option value="pengabdian">Pengabdian Masyarakat</option>
-        </optgroup>
-        <optgroup label="Wadir II">
-          <option value="umum">Umum & Kelembagaan</option>
-          <option value="kepegawaian">Kepegawaian</option>
-          <option value="keuangan">Keuangan</option>
-          <option value="rumah_tangga">Rumah Tangga</option>
-          <option value="sarana">Sarana Prasarana</option>
-          <option value="sistem_informasi">Sistem Informasi</option>
-          <option value="humas">Humas</option>
-          <option value="kerjasama">Kerjasama</option>
-        </optgroup>
+        <option value="kriteria1">Kriteria 1. Visi, Misi</option>
+        <option value="kriteria2">Kriteria 2. Kurikulum</option>
+        <option value="kriteria3">Kriteria 3. Penilaian</option>
+        <option value="kriteria4">Kriteria 4. Mahasiswa</option>
+        <option value="kriteria5">Kriteria 5. SDM & Penelitian</option>
+        <option value="kriteria6">Kriteria 6. Sarana & Keuangan</option>
+        <option value="kriteria7">Kriteria 7. Mutu</option>
+        <option value="kriteria8">Kriteria 8. Tata Kelola</option>
       </select>
       <select id="filterJenis" onchange="renderArsipTable()">
         <option value="">Semua Jenis</option>
@@ -490,25 +479,14 @@
             <label id="fBidangLabel">Bidang <span class="req">*</span></label>
             <select id="fBidang" required onchange="onBidangChange()">
               <option value="">-- Pilih Bidang --</option>
-              <optgroup label="Wadir I: Pendidikan & Kemahasiswaan">
-                <option value="akademik">Akademik & Pendidikan</option>
-                <option value="sistem_pendidikan">Sistem Informasi Pendidikan</option>
-                <option value="laboratorium">Laboratorium</option>
-                <option value="perpustakaan">Perpustakaan</option>
-                <option value="lppm">Penelitian & Pelatihan (LPPM)</option>
-                <option value="kemahasiswaan">Kemahasiswaan & Alumni</option>
-                <option value="pengabdian">Pengabdian Masyarakat</option>
-              </optgroup>
-              <optgroup label="Wadir II: Umum & Kerjasama">
-                <option value="umum">Umum & Kelembagaan</option>
-                <option value="kepegawaian">Administrasi Kepegawaian</option>
-                <option value="keuangan">Keuangan & Institusi</option>
-                <option value="rumah_tangga">Rumah Tangga</option>
-                <option value="sarana">Sarana Prasarana</option>
-                <option value="sistem_informasi">Sistem Informasi</option>
-                <option value="humas">HUMAS</option>
-                <option value="kerjasama">Kerjasama</option>
-              </optgroup>
+              <option value="kriteria1">Kriteria 1. Visi, Misi</option>
+              <option value="kriteria2">Kriteria 2. Kurikulum</option>
+              <option value="kriteria3">Kriteria 3. Penilaian</option>
+              <option value="kriteria4">Kriteria 4. Mahasiswa</option>
+              <option value="kriteria5">Kriteria 5. SDM & Penelitian</option>
+              <option value="kriteria6">Kriteria 6. Sarana & Keuangan</option>
+              <option value="kriteria7">Kriteria 7. Mutu</option>
+              <option value="kriteria8">Kriteria 8. Tata Kelola</option>
             </select>
           </div>
           <div class="form-field" style="position:relative;">
