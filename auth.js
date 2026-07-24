@@ -199,7 +199,7 @@ async function loadUsers() {
       if (u.status === 'pending') {
         actionBtns += `<button class="btn-arsip btn-approve" onclick="approveUser('${id}')" style="background:#10b981; color:#fff; border-radius:4px; padding:4px 8px; font-size:12px; margin-right:5px;"><i class="fas fa-check"></i> Setujui</button>`;
       }
-      actionBtns += `<button class="btn-arsip btn-edit" onclick="editUserRole('${id}', '${u.role}')" style="background:#3b82f6; color:#fff; border-radius:4px; padding:4px 8px; font-size:12px;"><i class="fas fa-edit"></i> Jabatan</button>`;
+      actionBtns += `<button class="btn-arsip btn-edit" onclick="window.editUser(\'${id}\')" style="background:#f59e0b; color:#fff; border-radius:4px; padding:4px 8px; font-size:12px; margin-right:5px;"><i class="fas fa-edit"></i> Edit</button>`;
       
       tbody.innerHTML += `
         <tr>
@@ -250,3 +250,125 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+
+// --- MANAJEMEN PENGGUNA MODAL LOGIC ---
+let userDocsMap = {}; // Cache users for editing
+
+const originalLoadUsers = window.loadUsers || loadUsers;
+window.loadUsers = async function() {
+  await originalLoadUsers();
+  // Also cache them
+  try {
+    const snapshot = await db.collection('users').get();
+    snapshot.forEach(doc => {
+      userDocsMap[doc.id] = doc.data();
+    });
+  } catch(e) {}
+};
+
+window.openUserModal = function() {
+  document.getElementById('userModal').style.display = 'flex';
+  document.getElementById('userModalTitle').innerText = 'Tambah Pengguna Baru';
+  document.getElementById('editUid').value = '';
+  document.getElementById('editName').value = '';
+  document.getElementById('editEmail').value = '';
+  document.getElementById('editEmail').disabled = false;
+  document.getElementById('editPassword').value = '';
+  document.getElementById('groupPassword').style.display = 'block';
+  document.getElementById('editRole').value = 'staff';
+  document.querySelectorAll('input[name="editBidang"]').forEach(cb => cb.checked = false);
+};
+
+window.closeUserModal = function() {
+  document.getElementById('userModal').style.display = 'none';
+};
+
+window.editUser = function(uid) {
+  const u = userDocsMap[uid];
+  if(!u) return alert('Data tidak ditemukan!');
+  
+  document.getElementById('userModal').style.display = 'flex';
+  document.getElementById('userModalTitle').innerText = 'Edit Pengguna';
+  document.getElementById('editUid').value = uid;
+  document.getElementById('editName').value = u.name || '';
+  document.getElementById('editEmail').value = u.email || '';
+  document.getElementById('editEmail').disabled = true; // Email can't be changed easily
+  document.getElementById('editPassword').value = '';
+  document.getElementById('editRole').value = u.role || 'staff';
+  
+  document.querySelectorAll('input[name="editBidang"]').forEach(cb => {
+    cb.checked = (u.bidang || []).includes(cb.value);
+  });
+};
+
+window.saveUser = async function() {
+  const uid = document.getElementById('editUid').value;
+  const name = document.getElementById('editName').value;
+  const email = document.getElementById('editEmail').value;
+  const password = document.getElementById('editPassword').value;
+  const role = document.getElementById('editRole').value;
+  
+  const bidang = [];
+  document.querySelectorAll('input[name="editBidang"]:checked').forEach(cb => bidang.push(cb.value));
+  
+  if(!name || !email) return alert('Nama dan Email wajib diisi!');
+  
+  const btn = document.getElementById('btnSaveUser');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+  btn.disabled = true;
+  
+  try {
+    if(uid) {
+      // EDIT EXISTING USER
+      const updateData = { name, role, bidang, status: 'active' };
+      await db.collection('users').doc(uid).update(updateData);
+      
+      // If password is provided, we need an admin cloud function, BUT since we are pure frontend,
+      // changing other user's password directly isn't allowed without cloud functions.
+      // So we will just warn if they typed a password.
+      if(password) {
+        alert('Data berhasil disimpan! Namun, password tidak dapat diubah oleh Admin langsung karena Firebase membatasi pergantian password dari sisi client. Minta pengguna menggunakan fitur Lupa Password.');
+      } else {
+        alert('Data berhasil diperbarui!');
+      }
+    } else {
+      // ADD NEW USER
+      if(password.length < 6) {
+        alert('Password minimal 6 karakter!');
+        btn.innerHTML = '<i class="fas fa-save"></i> Simpan';
+        btn.disabled = false;
+        return;
+      }
+      
+      // Creating user requires Firebase Auth.
+      // Doing this via main Auth logs out the current admin!
+      // We must use a secondary app instance.
+      if(!window.secondaryApp) {
+         window.secondaryApp = firebase.initializeApp(firebaseConfig, "Secondary");
+      }
+      const res = await window.secondaryApp.auth().createUserWithEmailAndPassword(email, password);
+      
+      await db.collection('users').doc(res.user.uid).set({
+        email: email,
+        name: name,
+        role: role,
+        bidang: bidang,
+        status: 'active',
+        createdAt: new Date().toISOString()
+      });
+      
+      await window.secondaryApp.auth().signOut();
+      alert('Pengguna baru berhasil ditambahkan!');
+    }
+    
+    closeUserModal();
+    window.loadUsers(); // refresh table
+  } catch(err) {
+    console.error(err);
+    alert('Terjadi kesalahan: ' + err.message);
+  }
+  
+  btn.innerHTML = '<i class="fas fa-save"></i> Simpan';
+  btn.disabled = false;
+};

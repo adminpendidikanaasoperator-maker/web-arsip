@@ -321,6 +321,7 @@
       <button class="btn-ghost-sm" onclick="generateIntegratedReport('pdf')" style="margin-left:8px; background:var(--bg-card); border:1px solid var(--border); color:#b91c1c; font-weight:600;"><i class="fas fa-file-pdf"></i> Laporan (PDF)</button>
       <button class="btn-ghost-sm" onclick="generateIntegratedReport('word')" style="margin-left:8px; background:var(--bg-card); border:1px solid var(--border); color:#2563eb; font-weight:600;"><i class="fas fa-file-word"></i> Laporan (Word)</button>
     </div>
+    <button onclick="window.openUserModal()" class="btn-arsip" style="background:#2563eb; color:#fff; margin-bottom:15px;"><i class="fas fa-user-plus"></i> Tambah Pengguna Baru</button>
     <div class="table-card">
       <table class="data-table">
         <thead><tr>
@@ -1137,6 +1138,66 @@
     </div>
   </div>
 
+
+  <!-- MODAL PENGGUNA -->
+  <div id="userModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+    <div class="modal-content" style="background:#fff; width:90%; max-width:500px; padding:25px; border-radius:8px; position:relative; max-height:90vh; overflow-y:auto;">
+      <h3 id="userModalTitle" style="margin-top:0; color:var(--t1);">Tambah / Edit Pengguna</h3>
+      <input type="hidden" id="editUid">
+      <div class="form-group">
+        <label><i class="fas fa-id-card"></i> Nama Lengkap</label>
+        <input type="text" id="editName" class="form-input" placeholder="Nama Lengkap">
+      </div>
+      <div class="form-group" id="groupEmail">
+        <label><i class="fas fa-envelope"></i> Email Login</label>
+        <input type="email" id="editEmail" class="form-input" placeholder="Email">
+      </div>
+      <div class="form-group" id="groupPassword">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <input type="password" id="editPassword" class="form-input" placeholder="Password (Min. 6 karakter)">
+        <small style="color:var(--p2);">Kosongkan jika tidak ingin mengubah password saat edit.</small>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-user-tag"></i> Jabatan (Role)</label>
+        <select id="editRole" class="form-input">
+          <option value="staff">Staf</option>
+          <option value="wadir1">Wakil Direktur I</option>
+          <option value="wadir2">Wakil Direktur II</option>
+          <option value="wadir3">Wakil Direktur III</option>
+          <option value="direktur">Direktur</option>
+          <option value="admin">Admin Utama</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-briefcase"></i> Bidang (Khusus Staf & Wadir)</label>
+        <div id="editBidangList" class="form-input checkbox-list" style="max-height:150px; overflow-y:auto;">
+          <!-- Wadir I -->
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="akademik"> Akademik & Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="sistem_pendidikan"> Sistem Informasi Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="laboratorium"> Laboratorium</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="perpustakaan"> Perpustakaan</label>
+          <!-- Wadir II -->
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="umum"> Umum & Kelembagaan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="kepegawaian"> Administrasi Kepegawaian</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="keuangan"> Keuangan & Institusi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="rumah_tangga"> Rumah Tangga</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="sarana"> Sarana Prasarana</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="sistem_informasi"> Sistem Informasi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="humas"> HUMAS</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="kerjasama"> Kerjasama</label>
+          <!-- Wadir III -->
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="kemahasiswaan"> Kemahasiswaan & Alumni</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="lppm"> Penelitian & Pelatihan (LPPM)</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="pengabdian"> Pengabdian Masyarakat</label>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button onclick="window.closeUserModal()" class="btn-arsip" style="background:#dc2626; color:#fff;"><i class="fas fa-times"></i> Batal</button>
+        <button onclick="window.saveUser()" class="btn-arsip" id="btnSaveUser" style="background:#2563eb; color:#fff;"><i class="fas fa-save"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
 </body>
+
 
 </html>
