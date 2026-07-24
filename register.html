@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIMARSIP - Akademi Akupunktur Surabaya</title>
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <meta name="description" content="Sistem Manajemen Arsip Digital Akademi Akupunktur Surabaya" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+  <script src="app.js?v=999" defer></script>
+  <link rel="stylesheet" href="style.css?v=999" />
+</head>
+<body>
+<div id="authContainer" class="auth-container">
+
+  <!-- HEADER AUTH -->
+  <div class="auth-header" style="flex-direction:column; align-items:center;">
+    <img src="https://i.ibb.co.com/84jGk0F/Logo-AAS.png" alt="Logo AAS">
+    <div style="text-align:center;">
+      <h2 style="font-size: 1.2rem; margin-bottom: 5px; font-family: 'Times New Roman', serif; color: #000;">AKADEMI AKUPUNKTUR SURABAYA</h2>
+      <p style="font-size: 0.85rem; margin-bottom: 3px; font-family: 'Times New Roman', serif; color: #000;">Jl Parang Kusumo 14 Surabaya - 60176 Telp. 031.3526916</p>
+      <p style="font-size: 0.85rem; margin-bottom: 3px; font-family: 'Times New Roman', serif; color: #000;">Email : akademi.akupunktur@gmail.com | www.akademiakupunktursurabaya.ac.id</p>
+      <p style="font-size: 0.85rem; margin-bottom: 3px; font-family: 'Times New Roman', serif; color: #000;">Akreditasi BAN-PT No : 2523/SK/BAN-PT/Ak.S/2.0/PT/IX/2025</p>
+      <p style="font-size: 0.85rem; margin-bottom: 15px; font-family: 'Times New Roman', serif; color: #000;">Akreditasi LAM-PTKes No : 0179/LAM-PTKes/Akr/Dip/V/2021</p>
+    </div>
+  </div>
+<div id="registerForm" style="display:block;">
+      
+      <div class="form-group">
+        <label><i class="fas fa-id-card"></i> Nama Lengkap</label>
+        <input type="text" id="regName" placeholder="Nama lengkap dengan gelar" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-envelope"></i> Email Login</label>
+        <input type="email" id="regUsername" placeholder="Email Anda" class="form-input">
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <input type="password" id="regPassword" placeholder="Buat password" class="form-input">
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-briefcase"></i> Bidang Tugas (Pilih minimal satu)</label>
+        <div class="form-input checkbox-list" style="max-height: 200px; overflow-y: auto; padding-bottom: 10px;">
+          <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:5px; margin-bottom:5px;">Wadir I: Bidang Akademik</div>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="akademik"> Akademik & Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="sistem_pendidikan"> Sistem Informasi Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="laboratorium"> Laboratorium</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="perpustakaan"> Perpustakaan</label>
+
+          <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:12px; margin-bottom:5px;">Wadir II: Bidang Umum dan Kerjasama</div>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="umum"> Umum & Kelembagaan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="kepegawaian"> Administrasi Kepegawaian (Ketenagaan)</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="keuangan"> Keuangan & Institusi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="rumah_tangga"> Rumah Tangga</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="sarana"> Sarana Prasarana</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="sistem_informasi"> Sistem Informasi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="humas"> HUMAS</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="kerjasama"> Kerjasama</label>
+
+          <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:12px; margin-bottom:5px;">Wadir III: Bidang Kemahasiswaan, Penelitian & Pengabdian Masyarakat</div>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="kemahasiswaan"> Kemahasiswaan & Alumni</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="lppm"> Penelitian & Pelatihan (LPPM)</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="pengabdian"> Pengabdian Masyarakat</label>
+        </div>
+      </div>
+      <button onclick="doRegister()" class="btn-auth"><i class="fas fa-user-plus"></i> Daftar Akun</button>
+      <div class="auth-links">
+        Sudah punya akun? <a href="index.html" style="color:var(--p2); font-weight:600; text-decoration:none;">Login disini</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+<script src="https://unpkg.com/docx@7.1.1/build/index.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="generator.js?v=999" defer></script>
+<script src="auth.js?v=999" defer></script>
+<script src="app.js?v=999" defer></script>
+
+<!-- Notification Sounds -->
+
+
+</div>
+<div class="overlay" id="editUserOverlay" style="display:none; z-index:9999;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 style="margin:0"><i class="fas fa-user-edit"></i> Edit Pengguna</h3>
+        <button onclick="document.getElementById('editUserOverlay').style.display='none'" class="btn-close"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+        <input type="hidden" id="editUserId">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="editUsername" class="form-input" disabled>
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <select id="editUserRole" class="form-input">
+            <option value="staf">Staf</option>
+            <option value="wadir1">Wakil Direktur I</option>
+            <option value="wadir2">Wakil Direktur II</option>
+            <option value="wadir3">Wakil Direktur III</option>
+            <option value="direktur">Direktur</option>
+            <option value="admin">Admin Utama</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Bidang Tugas</label>
+          <div class="form-input checkbox-list" style="max-height: 200px; overflow-y: auto; padding-bottom: 10px;" id="editUserBidangList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid var(--b1); display: flex; justify-content: flex-end; gap: 10px;">
+        <button onclick="document.getElementById('editUserOverlay').style.display='none'" class="btn-action" style="background:#64748b; color:white;">Batal</button>
+        <button onclick="saveUserEdit()" class="btn-action btn-upload"><i class="fas fa-save"></i> Simpan Perubahan</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MODAL PENGGUNA -->
+  <div id="userModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+    <div class="modal-content" style="background:#fff; width:90%; max-width:500px; padding:25px; border-radius:8px; position:relative; max-height:90vh; overflow-y:auto;">
+      <h3 id="userModalTitle" style="margin-top:0; color:var(--t1);">Tambah / Edit Pengguna</h3>
+      <input type="hidden" id="editUid">
+      <div class="form-group">
+        <label><i class="fas fa-id-card"></i> Nama Lengkap</label>
+        <input type="text" id="editName" class="form-input" placeholder="Nama Lengkap">
+      </div>
+      <div class="form-group" id="groupEmail">
+        <label><i class="fas fa-envelope"></i> Email Login</label>
+        <input type="email" id="editEmail" class="form-input" placeholder="Email">
+      </div>
+      <div class="form-group" id="groupPassword">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <input type="password" id="editPassword" class="form-input" placeholder="Password (Min. 6 karakter)">
+        <small style="color:var(--p2);">Kosongkan jika tidak ingin mengubah password saat edit.</small>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-user-tag"></i> Jabatan (Role)</label>
+        <select id="editRole" class="form-input">
+          <option value="staff">Staf</option>
+          <option value="wadir1">Wakil Direktur I</option>
+          <option value="wadir2">Wakil Direktur II</option>
+          <option value="wadir3">Wakil Direktur III</option>
+          <option value="direktur">Direktur</option>
+          <option value="admin">Admin Utama</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-briefcase"></i> Bidang (Khusus Staf & Wadir)</label>
+        <div id="editBidangList" class="form-input checkbox-list" style="max-height:150px; overflow-y:auto;">
+          <!-- Wadir I -->
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="akademik"> Akademik & Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="sistem_pendidikan"> Sistem Informasi Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="laboratorium"> Laboratorium</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="perpustakaan"> Perpustakaan</label>
+          <!-- Wadir II -->
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="umum"> Umum & Kelembagaan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="kepegawaian"> Administrasi Kepegawaian</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="keuangan"> Keuangan & Institusi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="rumah_tangga"> Rumah Tangga</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="sarana"> Sarana Prasarana</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="sistem_informasi"> Sistem Informasi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="humas"> HUMAS</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="kerjasama"> Kerjasama</label>
+          <!-- Wadir III -->
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="kemahasiswaan"> Kemahasiswaan & Alumni</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="lppm"> Penelitian & Pelatihan (LPPM)</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="pengabdian"> Pengabdian Masyarakat</label>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button onclick="window.closeUserModal()" class="btn-arsip" style="background:#dc2626; color:#fff;"><i class="fas fa-times"></i> Batal</button>
+        <button onclick="window.saveUser()" class="btn-arsip" id="btnSaveUser" style="background:#2563eb; color:#fff;"><i class="fas fa-save"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
+</body>
+
+
+</html>
