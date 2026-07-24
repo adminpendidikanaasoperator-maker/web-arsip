@@ -161,12 +161,12 @@ function doLogout() {
   auth.signOut();
 }
 
-function showLogin() {
+window.showLogin = function() {
   document.getElementById('registerForm').style.display = 'none';
   document.getElementById('loginForm').style.display = 'block';
 }
 
-function showRegister() {
+window.showRegister = function() {
   document.getElementById('loginForm').style.display = 'none';
   document.getElementById('registerForm').style.display = 'block';
 }
