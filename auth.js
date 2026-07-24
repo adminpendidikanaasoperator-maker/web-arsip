@@ -128,7 +128,7 @@ function showAppBasedOnRole() {
   if(adminSection) adminSection.style.display = 'none';
   if(navUsers) navUsers.style.display = 'none';
 
-  if (currentRole === 'admin') {
+  if (currentRole === 'admin' || currentRole === 'direktur') {
     document.querySelectorAll('.sb-link.dept').forEach(el => el.style.display = 'flex');
     if(adminSection) adminSection.style.display = 'block';
     if(navUsers) navUsers.style.display = 'flex';
@@ -173,7 +173,7 @@ window.showRegister = function() {
 
 // MANAJEMEN PENGGUNA
 async function loadUsers() {
-  if (currentRole !== 'admin') return;
+  if (currentRole !== 'admin' && currentRole !== 'direktur') return;
   const tbody = document.getElementById('usersTableBody');
   if(!tbody) return;
   tbody.innerHTML = '<tr><td colspan="6" class="text-center"><i class="fas fa-spinner fa-spin"></i> Memuat...</td></tr>';
@@ -186,6 +186,7 @@ async function loadUsers() {
       const id = doc.id;
       
       const roleBadge = u.role === 'admin' ? '<span class="badge-k3">Admin Utama</span>' :
+                        u.role === 'direktur' ? '<span class="badge-k3">Direktur</span>' :
                         u.role === 'wadir1' ? '<span class="badge-k4">Wadir I</span>' :
                         u.role === 'wadir2' ? '<span class="badge-k5">Wadir II</span>' :
                         u.role === 'wadir3' ? '<span class="badge-k6">Wadir III</span>' :
@@ -225,9 +226,9 @@ window.approveUser = async function(uid) {
 };
 
 window.editUserRole = async function(uid, currentRole) {
-  const newRole = prompt('Masukkan Role baru (admin / wadir1 / wadir2 / wadir3 / staff):', currentRole);
+  const newRole = prompt('Masukkan Role baru (admin / direktur / wadir1 / wadir2 / wadir3 / staff):', currentRole);
   if(!newRole) return;
-  if(!['admin','wadir1','wadir2','wadir3','staff'].includes(newRole)) return alert('Role tidak valid!');
+  if(!['admin','direktur','wadir1','wadir2','wadir3','staff'].includes(newRole)) return alert('Role tidak valid!');
   
   await db.collection('users').doc(uid).update({ role: newRole });
   alert('Jabatan berhasil diubah!');
