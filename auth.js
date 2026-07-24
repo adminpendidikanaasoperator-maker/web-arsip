@@ -27,6 +27,15 @@ auth.onAuthStateChanged(async (user) => {
       const doc = await db.collection('users').doc(user.uid).get();
       if (doc.exists) {
         const data = doc.data();
+        
+        // Superadmin Auto-promote
+        if (user.email === 'adminpendidikanaas.operator@gmail.com' && data.role !== 'admin') {
+           await db.collection('users').doc(user.uid).update({ role: 'admin', status: 'active', name: 'R. Bagus Sasutya, A.Md.Akup' });
+           data.role = 'admin';
+           data.status = 'active';
+           data.name = 'R. Bagus Sasutya, A.Md.Akup';
+        }
+        
         if (data.status === 'pending') {
           alert('Akun Anda masih berstatus PENDING. Silakan hubungi Admin/Direktur untuk persetujuan.');
           auth.signOut();
