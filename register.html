@@ -22,6 +22,99 @@
 </head>
 <body>
 
+<style>
+  .reg-landscape {
+    max-width: 850px !important;
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    padding: 30px !important;
+  }
+  .reg-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  @media (max-width: 768px) {
+    .reg-landscape {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<div id="authWrapper" class="auth-container" style="display:flex;">
+  <div class="auth-box reg-landscape" id="registerForm">
+    
+    <!-- LEFT COLUMN -->
+    <div class="reg-col">
+      <div class="auth-header" style="flex-direction:column; align-items:center; margin-bottom: 25px;">
+        <img src="logo.jpg" alt="Logo AAS" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px;">
+        <h2 style="font-family: 'Times New Roman', serif; color: #000; font-size: 1.25rem; text-align: center; margin: 0; font-weight: bold;">AKADEMI AKUPUNKTUR SURABAYA</h2>
+      </div>
+      
+      <div class="form-group">
+        <label><i class="fas fa-id-card"></i> Nama Lengkap</label>
+        <input type="text" id="regName" placeholder="Nama lengkap dengan gelar" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-envelope"></i> Email Login</label>
+        <input type="email" id="regUsername" placeholder="Email Anda" class="form-input">
+      </div>
+      
+      <div class="form-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <input type="password" id="regPassword" placeholder="Buat password" class="form-input">
+      </div>
+    </div>
+    
+    <!-- RIGHT COLUMN -->
+    <div class="reg-col">
+      <div class="form-group" style="flex: 1; display: flex; flex-direction: column; margin-bottom:0;">
+        <label><i class="fas fa-briefcase"></i> Bidang Tugas (Pilih minimal satu)</label>
+<div class="form-input checkbox-list" style="flex: 1; max-height: 320px; overflow-y: auto; padding-bottom: 10px;">
+          <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:5px; margin-bottom:5px;">Wadir I: Bidang Akademik</div>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="akademik"> Akademik & Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="sistem_pendidikan"> Sistem Informasi Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="laboratorium"> Laboratorium</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="perpustakaan"> Perpustakaan</label>
+
+          <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:12px; margin-bottom:5px;">Wadir II: Bidang Umum dan Kerjasama</div>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="umum"> Umum & Kelembagaan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="kepegawaian"> Administrasi Kepegawaian (Ketenagaan)</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="keuangan"> Keuangan & Institusi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="rumah_tangga"> Rumah Tangga</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="sarana"> Sarana Prasarana</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="sistem_informasi"> Sistem Informasi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="humas"> HUMAS</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="kerjasama"> Kerjasama</label>
+
+          <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:12px; margin-bottom:5px;">Wadir III: Bidang Kemahasiswaan, Penelitian & Pengabdian Masyarakat</div>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="kemahasiswaan"> Kemahasiswaan & Alumni</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="lppm"> Penelitian & Pelatihan (LPPM)</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="pengabdian"> Pengabdian Masyarakat</label>
+        </div>
+      </div>
+      <button onclick="doRegister()" class="btn-auth" style="margin-top: 20px;"><i class="fas fa-user-plus"></i> Daftar Akun</button>
+      <div class="auth-links" style="margin-top: 15px; text-align:center;">
+        Sudah punya akun? <a href="index.html" style="color:var(--p2); font-weight:600; text-decoration:none;">Login disini</a>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+  <script src="app.js?v=999" defer></script>
+  <link rel="stylesheet" href="style.css?v=999" />
+</head>
+<body>
+
 <div id="authWrapper" class="auth-container">
   <div class="auth-box">
     <div class="auth-header">
