@@ -21,19 +21,15 @@
   <link rel="stylesheet" href="style.css?v=999" />
 </head>
 <body>
-<div id="authContainer" class="auth-container">
 
-  <!-- HEADER AUTH -->
-  <div class="auth-header" style="flex-direction:column; align-items:center;">
-    <img src="https://i.ibb.co.com/84jGk0F/Logo-AAS.png" alt="Logo AAS">
-    <div style="text-align:center;">
-      <h2 style="font-size: 1.2rem; margin-bottom: 5px; font-family: 'Times New Roman', serif; color: #000;">AKADEMI AKUPUNKTUR SURABAYA</h2>
-      <p style="font-size: 0.85rem; margin-bottom: 3px; font-family: 'Times New Roman', serif; color: #000;">Jl Parang Kusumo 14 Surabaya - 60176 Telp. 031.3526916</p>
-      <p style="font-size: 0.85rem; margin-bottom: 3px; font-family: 'Times New Roman', serif; color: #000;">Email : akademi.akupunktur@gmail.com | www.akademiakupunktursurabaya.ac.id</p>
-      <p style="font-size: 0.85rem; margin-bottom: 3px; font-family: 'Times New Roman', serif; color: #000;">Akreditasi BAN-PT No : 2523/SK/BAN-PT/Ak.S/2.0/PT/IX/2025</p>
-      <p style="font-size: 0.85rem; margin-bottom: 15px; font-family: 'Times New Roman', serif; color: #000;">Akreditasi LAM-PTKes No : 0179/LAM-PTKes/Akr/Dip/V/2021</p>
+<div id="authWrapper" class="auth-container">
+  <div class="auth-box">
+    <div class="auth-header">
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
+        <img src="logo.jpg" alt="Logo AAS" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 0;">
+        <h2 style="font-family: 'Times New Roman', serif; color: #000; font-size: 1.25rem; text-align: center; margin: 0; font-weight: bold;">AKADEMI AKUPUNKTUR SURABAYA</h2>
+      </div>
     </div>
-  </div>
 <div id="registerForm" style="display:block;">
       
       <div class="form-group">
@@ -80,7 +76,9 @@
       </div>
     </div>
   </div>
+  </div>
 </div>
+
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
