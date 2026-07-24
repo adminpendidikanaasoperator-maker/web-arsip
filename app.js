@@ -1,17 +1,4 @@
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCdOtyCix06Cty82u7ls1YT-WhKcUMpjIo",
-  authDomain: "arsip-aas.firebaseapp.com",
-  projectId: "arsip-aas",
-  storageBucket: "arsip-aas.firebasestorage.app",
-  messagingSenderId: "958092839381",
-  appId: "1:958092839381:web:ba6936a7a4fccc11bfd55c"
-};
-
-// Initialize Firebase
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
 const db = firebase.firestore();
 
 /* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
@@ -1988,6 +1975,76 @@ function openEmptyStateForm() {
   openForm();
 }
 
+
+const allDeptsHtml = `
+  <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:5px; margin-bottom:5px;">Wadir I: Bidang Akademik</div>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="akademik"> Akademik & Pendidikan</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="sistem_pendidikan"> Sistem Informasi Pendidikan</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="laboratorium"> Laboratorium</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="perpustakaan"> Perpustakaan</label>
+
+  <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:12px; margin-bottom:5px;">Wadir II: Bidang Umum dan Kerjasama</div>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="umum"> Umum & Kelembagaan</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="kepegawaian"> Administrasi Kepegawaian (Ketenagaan)</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="keuangan"> Keuangan & Institusi</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="rumah_tangga"> Rumah Tangga</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="sarana"> Sarana Prasarana</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="sistem_informasi"> Sistem Informasi</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="humas"> HUMAS</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="kerjasama"> Kerjasama</label>
+
+  <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:12px; margin-bottom:5px;">Wadir III: Bidang Kemahasiswaan, Penelitian & Pengabdian Masyarakat</div>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="kemahasiswaan"> Kemahasiswaan & Alumni</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="lppm"> Penelitian & Pelatihan (LPPM)</label>
+  <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="editBidang" value="pengabdian"> Pengabdian Masyarakat</label>
+`;
+
+async function openEditUser(id) {
+  try {
+    const doc = await db.collection("accounts").doc(id).get();
+    if(!doc.exists) return;
+    const data = doc.data();
+    
+    document.getElementById('editUserId').value = id;
+    document.getElementById('editUsername').value = data.username;
+    document.getElementById('editUserRole').value = data.role || 'staf';
+    
+    document.getElementById('editUserBidangList').innerHTML = allDeptsHtml;
+    
+    const bArr = Array.isArray(data.bidang) ? data.bidang : [data.bidang];
+    const checkboxes = document.querySelectorAll('input[name="editBidang"]');
+    checkboxes.forEach(cb => {
+      if(bArr.includes(cb.value)) cb.checked = true;
+    });
+    
+    document.getElementById('editUserOverlay').style.display = 'flex';
+  } catch(e) {
+    console.error(e);
+    alert("Gagal memuat data pengguna.");
+  }
+}
+
+async function saveUserEdit() {
+  const id = document.getElementById('editUserId').value;
+  const role = document.getElementById('editUserRole').value;
+  
+  const bNodes = document.querySelectorAll('input[name="editBidang"]:checked');
+  const b = Array.from(bNodes).map(node => node.value);
+  
+  try {
+    await db.collection("accounts").doc(id).update({
+      role: role,
+      bidang: b
+    });
+    document.getElementById('editUserOverlay').style.display = 'none';
+    alert("Data pengguna berhasil diperbarui!");
+    loadUsersTable();
+  } catch(e) {
+    console.error(e);
+    alert("Gagal menyimpan pembaruan.");
+  }
+}
+
 function openForm(prefillDept) {
     document.getElementById('arsipForm').reset();
     document.getElementById('editId').value='';
@@ -2034,11 +2091,47 @@ function openForm(prefillDept) {
       if(bidangLabel) bidangLabel.innerHTML = 'Bidang <span class="req">*</span>';
       if (ORIGINAL_BIDANG_HTML) bidangField.innerHTML = ORIGINAL_BIDANG_HTML;
       
-      if(prefillDept){ bidangField.value=prefillDept; onBidangChange(); }
-      else { 
-        document.getElementById('fJenisLabelText').textContent = '-- Pilih Bidang dulu --';
-        document.getElementById('fJenisOptions').innerHTML = '';
-        bidangField.value = '';
+      // Filter and auto-lock for staff and wadir
+      if (currentUser && (currentUser.role === 'staf' || currentUser.role.startsWith('wadir'))) {
+          const wadir1_depts = ['akademik', 'sistem_pendidikan', 'laboratorium', 'perpustakaan'];
+          const wadir2_depts = ['umum', 'kepegawaian', 'keuangan', 'rumah_tangga', 'sarana', 'sistem_informasi', 'humas', 'kerjasama'];
+          const wadir3_depts = ['kemahasiswaan', 'lppm', 'pengabdian'];
+          
+          let allowedDepts = [];
+          if(currentUser.role === 'staf') {
+              allowedDepts = Array.isArray(currentUser.bidang) ? currentUser.bidang : [currentUser.bidang];
+          } else if(currentUser.role === 'wadir1') allowedDepts = wadir1_depts;
+          else if(currentUser.role === 'wadir2') allowedDepts = wadir2_depts;
+          else if(currentUser.role === 'wadir3') allowedDepts = wadir3_depts;
+          
+          const options = bidangField.querySelectorAll('option');
+          options.forEach(opt => {
+              if (opt.value && !allowedDepts.includes(opt.value)) {
+                  opt.style.display = 'none';
+                  opt.disabled = true;
+              }
+          });
+          
+          if (allowedDepts.length === 1) {
+              bidangField.value = allowedDepts[0];
+              bidangField.disabled = true; // Lock if only one
+          } else {
+              bidangField.disabled = false;
+              if (prefillDept && allowedDepts.includes(prefillDept)) {
+                  bidangField.value = prefillDept;
+              } else {
+                  bidangField.value = '';
+              }
+          }
+          onBidangChange();
+      } else {
+          bidangField.disabled = false;
+          if(prefillDept){ bidangField.value=prefillDept; onBidangChange(); }
+          else { 
+            document.getElementById('fJenisLabelText').textContent = '-- Pilih Bidang dulu --';
+            document.getElementById('fJenisOptions').innerHTML = '';
+            bidangField.value = '';
+          }
       }
     }
   
@@ -3151,19 +3244,11 @@ function getBanptCriteriaForUpload(bidang, jenis) {
     if (!jenis) return 0;
     if (bidang === 'lamptkes_led' || bidang === 'lamptkes_spmi') return 0;
     
-    // Exact BAN-PT types from forms
-    if (jenis.startsWith('banpt_led_k')) return parseInt(jenis.replace('banpt_led_k', ''));
-    if (jenis.startsWith('banpt_spmi_k')) return parseInt(jenis.replace('banpt_spmi_k', ''));
-    if (jenis.endsWith('_k1') || jenis.startsWith('k1_')) return 1;
-    if (jenis.endsWith('_k2') || jenis.startsWith('k2_')) return 2;
-    if (jenis.endsWith('_k3') || jenis.startsWith('k3_')) return 3;
-    if (jenis.endsWith('_k4') || jenis.startsWith('k4_')) return 4;
-    if (jenis.endsWith('_k5') || jenis.startsWith('k5_')) return 5;
-    if (jenis.endsWith('_k6') || jenis.startsWith('k6_')) return 6;
-    if (jenis.endsWith('_k7') || jenis.startsWith('k7_')) return 7;
-    if (jenis.endsWith('_k8') || jenis.startsWith('k8_')) return 8;
-    if (jenis.endsWith('_k9') || jenis.startsWith('k9_')) return 9;
-
+    // Explicit BAN-PT LED/SPMI
+    if (jenis.startsWith('banpt_led_k')) return parseInt(jenis.replace('banpt_led_k', '')) || 0;
+    if (jenis.startsWith('banpt_spmi_k')) return parseInt(jenis.replace('banpt_spmi_k', '')) || 0;
+    
+    // Automatic Mapping for BAN-PT K1-K9
     const j = jenis.toLowerCase();
     const b = (bidang || '');
     if(j.includes('lulusan') || j.includes('ipk') || j.includes('publikasi') || j.includes('jurnal') || j.includes('ukom') || j.includes('tracer')) return 9;
@@ -3176,13 +3261,30 @@ function getBanptCriteriaForUpload(bidang, jenis) {
     if(b === 'pengabdian' || j.includes('pkm') || j.includes('pengabdian')) return 8;
     if(b === 'akademik' || b === 'sistem_pendidikan' || b === 'perpustakaan' || j.includes('kurikulum') || j.includes('rps') || j.includes('pembelajaran')) return 6;
     if(b === 'umum' || b === 'penjaminan_mutu') return 2;
+    
     return 0;
 }
 
-function getLamptkesCriteriaForUpload(jenis) {
+function getLamptkesCriteriaForUpload(bidang, jenis) {
     if(!jenis) return 0;
-    const match = jenis.match(/^k(\d)_/);
-    if(match) return parseInt(match[1]);
+    if (bidang === 'banpt_led' || bidang === 'banpt_spmi') return 0;
+
+    // Explicit LAM-PTKes LED/SPMI
+    if (jenis.startsWith('lamptkes_led_k')) return parseInt(jenis.replace('lamptkes_led_k', '')) || 0;
+    if (jenis.startsWith('lamptkes_spmi_k')) return parseInt(jenis.replace('lamptkes_spmi_k', '')) || 0;
+    
+    // Automatic Mapping for LAM-PTKes K1-K8
+    const j = jenis.toLowerCase();
+    const b = (bidang || '');
+    if(j.includes('renstra') || j.includes('renop') || j.includes('vmts') || j.includes('visi')) return 1;
+    if(j.includes('kurikulum') || j.includes('rps') || j.includes('modul')) return 2;
+    if(j.includes('penilaian') || j.includes('ujian') || j.includes('cbt') || j.includes('osce')) return 3;
+    if(b === 'kemahasiswaan' || j.includes('mahasiswa') || j.includes('alumni')) return 4;
+    if(b === 'kepegawaian' || j.includes('dosen') || j.includes('tendik')) return 5;
+    if(b === 'keuangan' || b === 'laboratorium' || j.includes('sarana') || j.includes('anggaran')) return 6;
+    if(j.includes('spmi') || j.includes('mutu') || j.includes('audit')) return 7;
+    if(b === 'umum' || j.includes('tata kelola') || j.includes('sotk')) return 8;
+
     return 0;
 }
 
@@ -3217,7 +3319,7 @@ function generateBanptReport() {
 
   html += "<div class='akr-table-native-wrap'>";
   html += "<table class='tb-table'><thead><tr>";
-  html += "<th>Judul Dokumen</th><th>Jenis (Terdeteksi)</th><th>Tahun/Tanggal</th><th>Status</th><th>Aksi (GDrive)</th>";
+  html += "<th>Nomor Surat</th><th>Judul Dokumen</th><th>Jenis (Terdeteksi)</th><th>Tahun/Tanggal</th><th>Status</th><th>Aksi</th>";
   html += "</tr></thead><tbody>";
 
   list.forEach(a => {
@@ -4358,4 +4460,369 @@ async function exportBanpt(type) {
     } else {
         toast('Format tidak didukung', 'error');
     }
+}
+
+
+
+/* =========================================
+   AUTHENTICATION LOGIC
+========================================= */
+let currentUser = JSON.parse(localStorage.getItem('SIMARSIP_USER')) || null;
+
+
+
+
+
+
+
+function doLogout() {
+    localStorage.removeItem('SIMARSIP_USER');
+    window.location.reload();
+}
+
+function initAuthUI() {
+    if(!currentUser) {
+        document.getElementById('authWrapper').style.display = 'flex';
+        document.getElementById('appWrapper').style.display = 'none';
+    } else {
+        document.getElementById('authWrapper').style.display = 'none';
+        document.getElementById('appWrapper').style.display = 'block';
+        applyRoleRestrictions();
+    }
+}
+
+function applyRoleRestrictions() {
+  if(!currentUser) return;
+  const isSuper = (currentUser.role === 'admin' || currentUser.role === 'direktur');
+  const role = currentUser.role;
+  
+  // Wadir group definitions
+  const wadir1_depts = ['akademik', 'sistem_pendidikan', 'laboratorium', 'perpustakaan'];
+  const wadir2_depts = ['umum', 'kepegawaian', 'keuangan', 'rumah_tangga', 'sarana', 'sistem_informasi', 'humas', 'kerjasama'];
+  const wadir3_depts = ['kemahasiswaan', 'lppm', 'pengabdian'];
+
+  const adminSection = document.getElementById('sb-admin-section');
+  if(adminSection) {
+    if(isSuper) adminSection.style.display = 'block';
+    else adminSection.style.display = 'none';
+  }
+  
+  const genLink = document.getElementById('nav-generator');
+  if(genLink) {
+    if(currentUser.role === 'admin' || currentUser.role === 'direktur' || currentUser.role === 'staf' || role.startsWith('wadir')) {
+      genLink.style.display = 'flex';
+    } else {
+      genLink.style.display = 'none';
+    }
+  }
+
+  const deptLinks = document.querySelectorAll('.sb-link.dept');
+  let allowedDepts = [];
+
+  if (isSuper) {
+    deptLinks.forEach(link => link.style.display = 'flex');
+    return;
+  } else if (role === 'wadir1') {
+    allowedDepts = wadir1_depts;
+  } else if (role === 'wadir2') {
+    allowedDepts = wadir2_depts;
+  } else if (role === 'wadir3') {
+    allowedDepts = wadir3_depts;
+  } else if (role === 'staf') {
+    allowedDepts = Array.isArray(currentUser.bidang) ? currentUser.bidang : [currentUser.bidang];
+  }
+
+  let firstAllowedDept = null;
+  deptLinks.forEach(link => {
+    const dept = link.getAttribute('data-dept');
+    if(allowedDepts.includes(dept)) {
+      link.style.display = 'flex';
+      if(!firstAllowedDept) firstAllowedDept = dept;
+    } else {
+      link.style.display = 'none';
+    }
+  });
+
+  // If we are currently on the dashboard, auto-redirect to first allowed dept
+  // Since non-super admins don't get the global dashboard anymore.
+  if (currentPage === 'dashboard' && firstAllowedDept) {
+    showPage('dept');
+    renderDeptPage(firstAllowedDept);
+  }
+}
+
+// Override original window.onload to include initAuthUI
+const originalOnload = window.onload;
+window.onload = function() {
+    initAuthUI();
+    if(originalOnload) originalOnload();
+};
+
+
+
+/* =========================================
+   USER MANAGEMENT LOGIC
+========================================= */
+async function loadUsersTable() {
+  const tbody = document.querySelector('#usersTable tbody');
+  if(!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Memuat data...</td></tr>';
+  
+  try {
+    const sn = await db.collection("accounts").get();
+    let html = '';
+    sn.forEach(doc => {
+      const data = doc.data();
+      let statusBadge = '';
+      if(data.status === 'active') statusBadge = '<span class="badge bg-green">Active</span>';
+      else if(data.status === 'pending') statusBadge = '<span class="badge bg-p1">Pending</span>';
+      else statusBadge = `<span class="badge bg-red">${data.status}</span>`;
+      
+      let actions = '';
+      if(data.status === 'pending') {
+         actions += `<button onclick="updateUserStatus('${doc.id}', 'active')" class="btn-action bg-green" style="color:white; margin-right:5px;"><i class="fas fa-check"></i> Setujui</button>`;
+         actions += `<button onclick="updateUserStatus('${doc.id}', 'rejected')" class="btn-action btn-delete" style="margin-right:5px;"><i class="fas fa-times"></i> Tolak</button>`;
+      } else if (data.status === 'active') {
+         actions += `<button onclick="updateUserStatus('${doc.id}', 'inactive')" class="btn-action" style="background:#f59e0b; color:white; margin-right:5px;"><i class="fas fa-ban"></i> Nonaktifkan</button>`;
+      } else {
+         actions += `<button onclick="updateUserStatus('${doc.id}', 'active')" class="btn-action bg-green" style="color:white; margin-right:5px;"><i class="fas fa-check"></i> Aktifkan</button>`;
+      }
+      actions += `<button onclick="openEditUser('${doc.id}')" class="btn-action btn-upload"><i class="fas fa-edit"></i> Edit</button>`;
+      
+      const bidangStr = Array.isArray(data.bidang) ? data.bidang.join(', ') : (data.bidang || '-');
+      html += `<tr>
+        <td>${data.username}</td>
+        <td style="text-transform: capitalize;">${data.role}</td>
+        <td>${bidangStr}</td>
+        <td>${statusBadge}</td>
+        <td>${actions}</td>
+      </tr>`;
+    });
+    tbody.innerHTML = html;
+  } catch(e) {
+    console.error(e);
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:red;">Gagal memuat pengguna</td></tr>';
+  }
+}
+
+async function updateUserStatus(id, newStatus) {
+    if(!confirm(`Apakah Anda yakin mengubah status pengguna ini menjadi ${newStatus.toUpperCase()}?`)) return;
+    try {
+        await db.collection('accounts').doc(id).update({ status: newStatus });
+        toast('Status berhasil diubah!', 'success');
+        loadUsersTable();
+    } catch(e) {
+        console.error(e);
+        toast('Gagal mengubah status: ' + e.message, 'error');
+    }
+}
+
+// Intercept page navigation to load specific data
+document.querySelectorAll('.sb-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+        const page = this.getAttribute('data-page');
+        if(page === 'users') {
+            loadUsersTable();
+        } else if(page === 'generator') {
+            // reset generator
+            document.getElementById('genDocType').value = '';
+            document.getElementById('genFormContainer').innerHTML = '';
+            document.getElementById('btnGenWord').style.display = 'none';
+            document.getElementById('btnGenPdf').style.display = 'none';
+        }
+    });
+});
+
+/* =========================================
+   DOCUMENT GENERATOR LOGIC
+========================================= */
+function renderGeneratorForm() {
+    const type = document.getElementById('genDocType').value;
+    const container = document.getElementById('genFormContainer');
+    const btnW = document.getElementById('btnGenWord');
+    const btnP = document.getElementById('btnGenPdf');
+    
+    container.innerHTML = '';
+    btnW.style.display = 'none';
+    btnP.style.display = 'none';
+    
+    if(!type) return;
+    
+    btnW.style.display = 'block';
+    
+    if(type === 'surat_tugas') {
+        container.innerHTML = `
+            <div class="form-group"><label>Nomor Surat</label><input type="text" id="gen_no" class="tb-input" placeholder="Contoh: 123/AAS/ST/VII/2026"></div>
+            <div class="form-group"><label>Tanggal Surat</label><input type="date" id="gen_tgl" class="tb-input"></div>
+            <div class="form-group"><label>Nama Dosen yang Ditugaskan</label><input type="text" id="gen_nama" class="tb-input" placeholder="Contoh: Dr. Budi Santoso, S.ST., M.Kes."></div>
+            <div class="form-group"><label>NIDN</label><input type="text" id="gen_nidn" class="tb-input" placeholder="Contoh: 0707070707"></div>
+            <div class="form-group" style="grid-column: 1/-1;"><label>Tujuan/Deskripsi Tugas</label><textarea id="gen_tugas" class="tb-input" rows="3" placeholder="Contoh: Menjadi narasumber pada acara Seminar Akupunktur Nasional..."></textarea></div>
+            <div class="form-group"><label>Lokasi Tugas</label><input type="text" id="gen_lokasi" class="tb-input"></div>
+            <div class="form-group"><label>Lama Tugas (Hari)</label><input type="text" id="gen_lama" class="tb-input"></div>
+        `;
+    } else if(type === 'rps_obe') {
+        container.innerHTML = `
+            <div class="form-group"><label>Mata Kuliah</label><input type="text" id="gen_mk" class="tb-input"></div>
+            <div class="form-group"><label>Kode MK</label><input type="text" id="gen_kode" class="tb-input"></div>
+            <div class="form-group"><label>SKS</label><input type="text" id="gen_sks" class="tb-input"></div>
+            <div class="form-group"><label>Semester</label><input type="text" id="gen_smt" class="tb-input"></div>
+            <div class="form-group" style="grid-column: 1/-1;"><label>Capaian Pembelajaran (CPL)</label><textarea id="gen_cpl" class="tb-input" rows="3"></textarea></div>
+            <div class="form-group"><label>Dosen Pengampu</label><input type="text" id="gen_dosen" class="tb-input"></div>
+            <div class="form-group"><label>Tahun Akademik</label><input type="text" id="gen_ta" class="tb-input" placeholder="Contoh: 2026/2027"></div>
+        `;
+    }
+}
+
+async function generateDocument(format) {
+    if(format !== 'word') {
+        alert('Fitur PDF sedang dikembangkan. Silakan gunakan ekstrak Word (.docx) terlebih dahulu!');
+        return;
+    }
+    
+    const type = document.getElementById('genDocType').value;
+    
+    // We need the logo image
+    const logoBase64 = await getBase64FromUrl('logo.jpg');
+    // Using docx library (which is already imported via unpkg)
+    const { Document, Packer, Paragraph, TextRun, ImageRun, AlignmentType, Header, Table, TableRow, TableCell, BorderStyle, WidthType, TabStopType, TabStopPosition } = docx;
+
+    let docChildren = [];
+    
+    // ===================================
+    // HEADER / KOP SURAT (TNR 12, Black)
+    // ===================================
+    const kopTable = new Table({
+        width: { size: 100, type: WidthType.PERCENTAGE },
+        borders: {
+            top: { style: BorderStyle.NONE }, bottom: { style: BorderStyle.NONE },
+            left: { style: BorderStyle.NONE }, right: { style: BorderStyle.NONE },
+            insideHorizontal: { style: BorderStyle.NONE }, insideVertical: { style: BorderStyle.NONE },
+        },
+        rows: [
+            new TableRow({
+                children: [
+                    new TableCell({
+                        width: { size: 15, type: WidthType.PERCENTAGE },
+                        children: [
+                            new Paragraph({
+                                alignment: AlignmentType.CENTER,
+                                children: [
+                                    new ImageRun({
+                                        data: logoBase64.split(",")[1],
+                                        transformation: { width: 80, height: 80 }
+                                    })
+                                ]
+                            })
+                        ]
+                    }),
+                    new TableCell({
+                        width: { size: 85, type: WidthType.PERCENTAGE },
+                        children: [
+                            new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "YAYASAN PENDIDIKAN AKUPUNKTUR SURABAYA", font: "Times New Roman", size: 28, bold: true, color: "000000" })] }),
+                            new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "AKADEMI AKUPUNKTUR SURABAYA", font: "Times New Roman", size: 36, bold: true, color: "000000" })] }),
+                            new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Jl. Parangkusumo No.14, Kemayoran, Kec. Krembangan, Kota Surabaya, Jawa Timur 60176", font: "Times New Roman", size: 22, color: "000000" })] }),
+                            new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: "Telp: (031) 3550275 | Email: info@akupunktursurabaya.ac.id", font: "Times New Roman", size: 22, color: "000000" })] })
+                        ]
+                    })
+                ]
+            })
+        ]
+    });
+    
+    docChildren.push(kopTable);
+    
+    // Black Line separator
+    docChildren.push(new Paragraph({
+        border: { bottom: { color: "000000", space: 1, value: "single", size: 24 } },
+        spacing: { after: 200 }
+    }));
+    
+    
+    // ===================================
+    // CONTENT GENERATION
+    // ===================================
+    if(type === 'surat_tugas') {
+        const no = document.getElementById('gen_no').value || '[Nomor Surat]';
+        const tgl = document.getElementById('gen_tgl').value || '[Tanggal]';
+        const nama = document.getElementById('gen_nama').value || '[Nama Dosen]';
+        const nidn = document.getElementById('gen_nidn').value || '[NIDN]';
+        const tugas = document.getElementById('gen_tugas').value || '[Deskripsi Tugas]';
+        const lokasi = document.getElementById('gen_lokasi').value || '[Lokasi]';
+        const lama = document.getElementById('gen_lama').value || '[Lama Tugas]';
+        
+        docChildren.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 200 }, children: [new TextRun({ text: "SURAT TUGAS", font: "Times New Roman", size: 28, bold: true, underline: true, color: "000000" })] }));
+        docChildren.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 400 }, children: [new TextRun({ text: "Nomor: " + no, font: "Times New Roman", size: 24, color: "000000" })] }));
+        
+        docChildren.push(new Paragraph({ alignment: AlignmentType.JUSTIFIED, spacing: { after: 200 }, children: [new TextRun({ text: "Direktur Akademi Akupunktur Surabaya dengan ini memberikan tugas kepada:", font: "Times New Roman", size: 24, color: "000000" })] }));
+        
+        // Identitas
+        docChildren.push(new Paragraph({ alignment: AlignmentType.LEFT, tabStops: [{ type: TabStopType.LEFT, position: 2000 }], spacing: { after: 100 }, children: [new TextRun({ text: "Nama	: " + nama, font: "Times New Roman", size: 24, bold: true, color: "000000" })] }));
+        docChildren.push(new Paragraph({ alignment: AlignmentType.LEFT, tabStops: [{ type: TabStopType.LEFT, position: 2000 }], spacing: { after: 200 }, children: [new TextRun({ text: "NIDN	: " + nidn, font: "Times New Roman", size: 24, color: "000000" })] }));
+        
+        // Isi
+        docChildren.push(new Paragraph({ alignment: AlignmentType.JUSTIFIED, spacing: { after: 200 }, children: [new TextRun({ text: "Untuk melaksanakan tugas sebagai berikut:", font: "Times New Roman", size: 24, color: "000000" })] }));
+        docChildren.push(new Paragraph({ alignment: AlignmentType.JUSTIFIED, spacing: { after: 100 }, children: [new TextRun({ text: tugas, font: "Times New Roman", size: 24, color: "000000" })] }));
+        docChildren.push(new Paragraph({ alignment: AlignmentType.LEFT, tabStops: [{ type: TabStopType.LEFT, position: 2000 }], spacing: { after: 100 }, children: [new TextRun({ text: "Lokasi	: " + lokasi, font: "Times New Roman", size: 24, color: "000000" })] }));
+        docChildren.push(new Paragraph({ alignment: AlignmentType.LEFT, tabStops: [{ type: TabStopType.LEFT, position: 2000 }], spacing: { after: 400 }, children: [new TextRun({ text: "Lama Tugas	: " + lama + " Hari", font: "Times New Roman", size: 24, color: "000000" })] }));
+        
+        // Penutup
+        docChildren.push(new Paragraph({ alignment: AlignmentType.JUSTIFIED, spacing: { after: 400 }, children: [new TextRun({ text: "Demikian Surat Tugas ini dibuat untuk dapat dilaksanakan dengan penuh tanggung jawab.", font: "Times New Roman", size: 24, color: "000000" })] }));
+        
+        // TTD
+        docChildren.push(new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "Surabaya, " + (new Date(tgl).toLocaleDateString('id-ID') || ''), font: "Times New Roman", size: 24, color: "000000" })] }));
+        docChildren.push(new Paragraph({ alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "Direktur,               ", font: "Times New Roman", size: 24, color: "000000" })] }));
+        docChildren.push(new Paragraph({ spacing: { before: 1200 }, alignment: AlignmentType.RIGHT, children: [new TextRun({ text: "____________________", font: "Times New Roman", size: 24, bold: true, color: "000000" })] }));
+        
+    } else if (type === 'rps_obe') {
+        const mk = document.getElementById('gen_mk').value || '[Mata Kuliah]';
+        const kode = document.getElementById('gen_kode').value || '[Kode MK]';
+        const sks = document.getElementById('gen_sks').value || '[SKS]';
+        const cpl = document.getElementById('gen_cpl').value || '[CPL]';
+        const dosen = document.getElementById('gen_dosen').value || '[Dosen Pengampu]';
+        const smt = document.getElementById('gen_smt').value || '[Semester]';
+        
+        docChildren.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 200, after: 400 }, children: [new TextRun({ text: "RENCANA PEMBELAJARAN SEMESTER (RPS) BERBASIS OBE", font: "Times New Roman", size: 28, bold: true, color: "000000" })] }));
+        
+        // Table for Info
+        const infoTable = new Table({
+            width: { size: 100, type: WidthType.PERCENTAGE },
+            rows: [
+                new TableRow({ children: [
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Mata Kuliah", font: "Times New Roman", size: 24, bold:true, color: "000000"})]})] }),
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: mk, font: "Times New Roman", size: 24, color: "000000"})]})] })
+                ]}),
+                new TableRow({ children: [
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Kode Mata Kuliah", font: "Times New Roman", size: 24, bold:true, color: "000000"})]})] }),
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: kode, font: "Times New Roman", size: 24, color: "000000"})]})] })
+                ]}),
+                new TableRow({ children: [
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "SKS / Semester", font: "Times New Roman", size: 24, bold:true, color: "000000"})]})] }),
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: sks + " SKS / Semester " + smt, font: "Times New Roman", size: 24, color: "000000"})]})] })
+                ]}),
+                new TableRow({ children: [
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Dosen Pengampu", font: "Times New Roman", size: 24, bold:true, color: "000000"})]})] }),
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: dosen, font: "Times New Roman", size: 24, color: "000000"})]})] })
+                ]}),
+                new TableRow({ children: [
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: "Capaian Pembelajaran (CPL)", font: "Times New Roman", size: 24, bold:true, color: "000000"})]})] }),
+                    new TableCell({ children: [new Paragraph({ children: [new TextRun({ text: cpl, font: "Times New Roman", size: 24, color: "000000"})]})] })
+                ]})
+            ]
+        });
+        docChildren.push(infoTable);
+        docChildren.push(new Paragraph({ spacing: { before: 200, after: 200 }, children: [new TextRun({ text: "*Catatan: Untuk melengkapi matrik aktivitas mingguan, silakan mengisi pada file Word yang diunduh ini.", font: "Times New Roman", size: 22, italics: true, color: "000000" })] }));
+    }
+    
+    
+    const doc = new Document({
+        sections: [{
+            properties: {},
+            children: docChildren
+        }]
+    });
+
+    Packer.toBlob(doc).then(blob => {
+        saveAs(blob, `${type}_${Date.now()}.docx`);
+        toast('Dokumen Word berhasil dibuat!', 'success');
+    });
 }
