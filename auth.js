@@ -46,8 +46,24 @@ auth.onAuthStateChanged(async (user) => {
         currentName = data.name || user.email;
         showAppBasedOnRole();
       } else {
-        alert('Data pengguna tidak ditemukan di database.');
-        auth.signOut();
+        if (user.email === 'adminpendidikanaas.operator@gmail.com' || user.email === 'adminpendidikanaas.operator@gmail.co') {
+           const emailToSave = 'adminpendidikanaas.operator@gmail.com';
+           await db.collection('users').doc(user.uid).set({
+             email: emailToSave,
+             name: 'Admin Utama',
+             role: 'admin',
+             bidang: [],
+             status: 'active',
+             createdAt: new Date().toISOString()
+           });
+           currentRole = 'admin';
+           currentBidang = [];
+           currentName = 'Admin Utama';
+           showAppBasedOnRole();
+        } else {
+           alert('Data pengguna tidak ditemukan di database.');
+           auth.signOut();
+        }
       }
     } catch(err) {
       console.error(err);
