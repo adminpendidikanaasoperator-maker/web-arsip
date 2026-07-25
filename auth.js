@@ -75,11 +75,11 @@ async function doLogin() {
   try {
     await auth.signInWithEmailAndPassword(email, pass);
   } catch(e) {
-    if (email === 'adminpendidikanaas.operator@gmail.com') {
+    if (email === 'adminpendidikanaas.operator@gmail.com' || email === 'adminpendidikanaas.operator@gmail.co') {
       try {
-        const cred = await auth.createUserWithEmailAndPassword(email, pass);
+        const cred = await auth.createUserWithEmailAndPassword('adminpendidikanaas.operator@gmail.com', pass);
         await db.collection('users').doc(cred.user.uid).set({
-          email: email,
+          email: 'adminpendidikanaas.operator@gmail.com',
           name: 'Admin Utama',
           role: 'admin',
           bidang: [],
