@@ -598,8 +598,8 @@ input,select,textarea{font-family:inherit}
 .btn-auth {
     width: 100%;
     padding: 14px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-d));
-    color: white;
+    background: linear-gradient(135deg, var(--primary), var(--primary-d)) !important;
+    color: white !important;
     border: none;
     border-radius: 8px;
     font-weight: 700;
