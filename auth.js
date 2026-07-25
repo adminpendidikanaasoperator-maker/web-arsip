@@ -81,39 +81,47 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 async function doLogin() {
-  const email = document.getElementById('loginUsername').value.trim(); 
+  let email = document.getElementById('loginUsername').value.trim(); 
   const pass = document.getElementById('loginPassword').value;
   if(!email || !pass) return alert('Masukkan Email dan Password!');
   
+  // Normalize admin email typo (.co -> .com)
+  const ADMIN_EMAIL = 'adminpendidikanaas.operator@gmail.com';
+  if (email === 'adminpendidikanaas.operator@gmail.co') {
+    email = ADMIN_EMAIL;
+  }
+  
   const btn = document.querySelector('#loginForm .btn-auth');
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+  btn.disabled = true;
   
   try {
     await auth.signInWithEmailAndPassword(email, pass);
+    // Success - onAuthStateChanged will handle the rest
   } catch(e) {
-    if (email === 'adminpendidikanaas.operator@gmail.com' || email === 'adminpendidikanaas.operator@gmail.co') {
+    if (e.code === 'auth/user-not-found' && email === ADMIN_EMAIL) {
+      // First time: create admin account
       try {
-        const cred = await auth.createUserWithEmailAndPassword('adminpendidikanaas.operator@gmail.com', pass);
-        await db.collection('users').doc(cred.user.uid).set({
-          email: 'adminpendidikanaas.operator@gmail.com',
-          name: 'Admin Utama',
-          role: 'admin',
-          bidang: [],
-          status: 'active',
-          createdAt: new Date().toISOString()
-        });
-        return; // onAuthStateChanged will handle the rest
+        await auth.createUserWithEmailAndPassword(ADMIN_EMAIL, pass);
+        // onAuthStateChanged will fire and create Firestore doc
       } catch(createErr) {
-        if (createErr.code === 'auth/email-already-in-use') {
-          alert('Gagal login: Password salah atau akun terkunci.');
-        } else {
-          alert('Gagal auto-create admin: ' + createErr.message);
-        }
+        alert('Gagal membuat akun admin: ' + createErr.message);
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
+        btn.disabled = false;
       }
+    } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+      alert('Password salah. Silakan coba lagi.');
+      btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
+      btn.disabled = false;
+    } else if (e.code === 'auth/invalid-email') {
+      alert('Format email tidak valid.');
+      btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
+      btn.disabled = false;
     } else {
       alert('Gagal login: ' + e.message);
+      btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
+      btn.disabled = false;
     }
-    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
   }
 }
 
