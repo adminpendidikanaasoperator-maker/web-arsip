@@ -1394,24 +1394,30 @@ function setupNav() {
   });
 }
 function setActiveNav(el) { document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active')); el.classList.add('active'); }
-function showPage(page) {
+async function showPage(page) {
   currentPage = page;
-  document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
-  document.getElementById('page-'+page)?.classList.remove('hidden');
-  const titles={dashboard:'Portal Utama',arsip:'Semua Arsip',dept:DEPT[currentDept]?.label||'Bidang',analytics:'Analitik',aktivitas:'Riwayat Aktivitas',mahasiswa:'Data Mahasiswa',sdm:'Data SDM & Dosen',banpt:'Borang Akreditasi BAN-PT',lamptkes:'Borang Akreditasi LAM-PTKes'};
+  
+  if (typeof loadPage === 'function') {
+    await loadPage('page-' + page);
+  } else {
+    document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+    document.getElementById('page-'+page)?.classList.remove('hidden');
+  }
+
+  const titles={dashboard:'Portal Utama',arsip:'Semua Arsip',dept:DEPT[currentDept]?.label||'Bidang',analytics:'Analitik',aktivitas:'Riwayat Aktivitas',mahasiswa:'Data Mahasiswa',sdm:'Data SDM & Dosen',banpt:'Borang Akreditasi BAN-PT',lamptkes:'Borang Akreditasi LAM-PTKes',users:'Manajemen Pengguna',generator:'Generator Dokumen'};
   document.getElementById('topbarTitle').textContent = titles[page]||page;
   
   const btnAdd = document.getElementById('btnGlobalAdd');
   if(btnAdd) {
-    btnAdd.style.display = (page === 'banpt' || page === 'lamptkes' || page === 'analytics' || page === 'aktivitas') ? 'none' : 'inline-flex';
+    btnAdd.style.display = (page === 'banpt' || page === 'lamptkes' || page === 'analytics' || page === 'aktivitas' || page === 'users' || page === 'generator') ? 'none' : 'inline-flex';
   }
 
   const banptMenu = document.getElementById('banpt-sub-menu');
   if(banptMenu) banptMenu.style.display = (page === 'banpt') ? 'flex' : 'none';
 
   const lamptkesMenu = document.getElementById('lamptkes-sub-menu');
-    if(lamptkesMenu) lamptkesMenu.style.display = (page === 'lamptkes') ? 'flex' : 'none';
-    if(page === 'lamptkes') generateLamptkesReport();
+  if(lamptkesMenu) lamptkesMenu.style.display = (page === 'lamptkes') ? 'flex' : 'none';
+  if(page === 'lamptkes' && typeof generateLamptkesReport === 'function') generateLamptkesReport();
 
   Object.keys(DEPT).forEach(k => {
     const menu = document.getElementById(`dept-${k}-sub-menu`);
@@ -1427,6 +1433,7 @@ function showPage(page) {
   if (page==='sdm')        renderSdmPage();
   if (page==='banpt')      { initBanpt(); }
   if (page==='lamptkes')   { initLamptkes(); }
+  if (page==='users' && typeof loadUsers === 'function') loadUsers();
   updateBadges();
 }
 function setupHamburger() { document.getElementById('hamburger').addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sbOverlay').classList.toggle('hidden'); }); }

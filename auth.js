@@ -192,6 +192,7 @@ function enterPortal(bidangId) {
 
 function showAppBasedOnRole() {
   document.getElementById('authWrapper').style.display = 'none';
+  if (typeof loadAllModals === 'function') loadAllModals();
   
   if (currentRole === 'staff' && currentBidang.length > 1) {
     // Show Portal Selection

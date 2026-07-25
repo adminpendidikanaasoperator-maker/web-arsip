@@ -1,0 +1,56 @@
+<main class="page hidden" id="page-generator">
+    <div class="page-section-header">
+      <h2><i class="fas fa-file-signature"></i> Generator Dokumen Resmi</h2>
+      <p>Buat Surat Tugas Dosen, RPS OBE, dll dengan Kop Surat Resmi AAS. Teks akan berformat Times New Roman ukuran 12 hitam sesuai pedoman.</p>
+    </div>
+    
+    <div class="form-card">
+      <div class="form-group">
+        <label>Jenis Dokumen</label>
+        <select id="genType" class="form-input" onchange="changeGenForm()">
+          <option value="surat_tugas">Surat Tugas Dosen</option>
+          <option value="rps_obe">RPS Berbasis OBE</option>
+        </select>
+      </div>
+      
+      <!-- Form Surat Tugas -->
+      <div id="form-surat_tugas" class="gen-form-group">
+        <div class="form-group">
+          <label>Nomor Surat</label>
+          <input type="text" id="genNoSurat" class="form-input" placeholder="Contoh: 001/ST/AAS/X/2026">
+        </div>
+        <div class="form-group">
+          <label>Nama Dosen Ditugaskan</label>
+          <input type="text" id="genNamaDosen" class="form-input" placeholder="Nama Lengkap beserta gelar">
+        </div>
+        <div class="form-group">
+          <label>Tugas / Kegiatan</label>
+          <textarea id="genTugas" class="form-input" rows="3" placeholder="Deskripsi tugas"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Tanggal Pelaksanaan</label>
+          <input type="date" id="genTanggal" class="form-input">
+        </div>
+      </div>
+      
+      <!-- Form RPS -->
+      <div id="form-rps_obe" class="gen-form-group" style="display:none;">
+        <div class="form-group">
+          <label>Nama Mata Kuliah</label>
+          <input type="text" id="genMakul" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Capaian Pembelajaran (CPL)</label>
+          <textarea id="genCPL" class="form-input" rows="3"></textarea>
+        </div>
+      </div>
+      
+      <div style="margin-top:20px; display:flex; gap:10px;">
+        <button class="btn-arsip" onclick="generateWord()" style="background:#2563eb;color:#fff"><i class="fas fa-file-word"></i> Export Word</button>
+        <button class="btn-arsip" onclick="generatePDF()" style="background:#dc2626;color:#fff"><i class="fas fa-file-pdf"></i> Export PDF</button>
+      </div>
+    </div>
+    
+    <!-- Template HTML Hidden for PDF Rendering -->
+    <div id="pdf-template" style="display:none; width:800px; padding:20px; background:white; font-family:'Times New Roman', Times, serif; color:black; font-size:12pt; text-align:justify;"></div>
+  </main>

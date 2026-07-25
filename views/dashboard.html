@@ -1,0 +1,59 @@
+<main class="page" id="page-dashboard">
+    <div class="portal-header">
+      <h1>Portal SIMARSIP Akademik</h1>
+      <p>Sistem Informasi Manajemen Arsip Terpadu Kelola dan pantau seluruh dokumen akademik, keuangan, dan data induk dalam satu platform tersentralisasi.</p>
+    </div>
+    
+
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#84cc1618; color:#84cc16;"><i class="fas fa-file-alt"></i></div>
+        <div class="sc-label">Total Arsip TA Ini</div><div class="sc-value" id="badge-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#22c55e18; color:#22c55e;"><i class="fas fa-check-circle"></i></div>
+        <div class="sc-label">Arsip Aktif</div><div class="sc-value" id="badge-aktif">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#3b82f618; color:#3b82f6;"><i class="fas fa-building-columns"></i></div>
+        <div class="sc-label">Total BAN-PT</div><div class="sc-value" id="badge-dash-banpt">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#10b98118; color:#10b981;"><i class="fas fa-notes-medical"></i></div>
+        <div class="sc-label">Total LAM-PTKes</div><div class="sc-value" id="badge-dash-lamptkes">0</div>
+      </div>
+    </div>
+    
+    <div class="grid-1-1">
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-line"></i> Tren Arsip Bulanan</h3><span class="panel-sub" id="dashLineSub"></span></div>
+        <div class="chart-wrap"><canvas id="chartLine"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <h3><i class="fas fa-chart-area"></i> Tren Arsip Tahunan</h3>
+          <span class="panel-sub" style="display:inline-flex; align-items:center; gap:6px;">
+            Tahun:
+            <input type="number" id="trendStartY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2021" min="2014" max="2050" oninput="updateYearlyChart()">
+            <span style="color:var(--text-sub)">-</span>
+            <input type="number" id="trendEndY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2025" min="2014" max="2050" oninput="updateYearlyChart()">
+          </span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartYearlyLine"></canvas></div>
+      </div>
+    </div>
+    <div class="grid-2-1">
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-bar"></i> Distribusi Bidang</h3></div>
+        <div class="chart-wrap chart-center" style="width:100%;"><canvas id="chartDoughnut" height="250"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-signal"></i> Status Overview</h3></div>
+        <div class="chart-wrap chart-center"><canvas id="chartStatus"></canvas></div>
+      </div>
+    </div>
+    <div class="panel panel-fill" style="margin-bottom:24px;">
+      <div class="panel-hd"><h3><i class="fas fa-clock"></i> Arsip Terbaru</h3></div>
+      <div class="recent-list" id="recentList"></div>
+    </div>
+  </main>

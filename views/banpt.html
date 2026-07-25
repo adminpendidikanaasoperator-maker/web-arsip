@@ -1,0 +1,23 @@
+<main class="page hidden" id="page-banpt">
+    <div class="dept-banner banpt-banner">
+      <div class="dept-banner-icon"><i class="fas fa-building-columns"></i></div>
+      <div>
+        <h2>Dashboard Borang BAN-PT</h2>
+        <p>Laporan Institusi, Tata Kelola Makro, dan Keuangan</p>
+      </div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button onclick="exportBanpt('excel')" class="tb-btn" style="background:#107c41; color:#fff; border:none;"><i class="fas fa-file-excel"></i> Export Excel</button>
+        <button onclick="exportBanpt('pdf')" class="tb-btn" style="background:#b91c1c; color:#fff; border:none;"><i class="fas fa-file-pdf"></i> Export PDF</button>
+        <button onclick="exportBanpt('word')" class="tb-btn" style="background:#2563eb; color:#fff; border:none;"><i class="fas fa-file-word"></i> Export Word</button>
+      </div>
+    </div>
+
+    <div class="akr-dashboard">
+      <div id="banptStatRow" class="stat-row" style="margin-bottom: 20px; flex-wrap: wrap;"></div>
+      <section class="akr-content">
+                <div id="banptReportContainer">
+          <!-- Tabel Dinamis BAN-PT Kriteria 1-9 akan di-render di sini -->
+        </div>
+      </section>
+    </div>
+  </main>

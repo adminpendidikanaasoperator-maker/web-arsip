@@ -1,0 +1,21 @@
+<main class="page hidden" id="page-lamptkes">
+    <div class="dept-banner lamptkes-banner">
+      <div class="dept-banner-icon"><i class="fas fa-notes-medical"></i></div>
+      <div>
+        <h2>Dashboard Borang LAM-PTKes</h2>
+        <p>Laporan Kompetensi Klinis, UKOM, dan Wahana Praktik D-III Akupunktur</p>
+      </div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button onclick="exportLamptkes('excel')" class="tb-btn" style="background:#107c41; color:#fff; border:none;"><i class="fas fa-file-excel"></i> Export Excel</button>
+        <button onclick="exportLamptkes('pdf')" class="tb-btn" style="background:#b91c1c; color:#fff; border:none;"><i class="fas fa-file-pdf"></i> Export PDF</button>
+        <button onclick="exportLamptkes('word')" class="tb-btn" style="background:#2563eb; color:#fff; border:none;"><i class="fas fa-file-word"></i> Export Word</button>
+      </div>
+    </div>
+
+    <div class="akr-dashboard">
+      <div id="lamptkesStatRow" class="stat-row" style="margin-bottom: 20px; flex-wrap: wrap;"></div>
+      <section class="akr-content" id="lamptkesReportContainer">
+        <!-- Rendered by JS -->
+      </section>
+    </div>
+  </main>

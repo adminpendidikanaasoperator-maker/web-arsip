@@ -1,0 +1,57 @@
+<main class="page hidden" id="page-arsip">
+    <div class="filter-strip">
+      <div class="search-field">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Cari nomor, judul, pengirim, jenis dokumen..." oninput="renderArsipTable()" />
+      </div>
+      <select id="filterDept" onchange="onFilterDeptChange()">
+        <option value="">Semua Bidang</option>
+        <option value="kriteria1">Kriteria 1. Visi, Misi</option>
+        <option value="kriteria2">Kriteria 2. Kurikulum</option>
+        <option value="kriteria3">Kriteria 3. Penilaian</option>
+        <option value="kriteria4">Kriteria 4. Mahasiswa</option>
+        <option value="kriteria5">Kriteria 5. SDM & Penelitian</option>
+        <option value="kriteria6">Kriteria 6. Sarana & Keuangan</option>
+        <option value="kriteria7">Kriteria 7. Mutu</option>
+        <option value="kriteria8">Kriteria 8. Tata Kelola</option>
+      </select>
+      <select id="filterJenis" onchange="renderArsipTable()">
+        <option value="">Semua Jenis</option>
+      </select>
+      <select id="filterFormat" onchange="renderArsipTable()">
+        <option value="">Semua Format</option>
+        <option value="pdf">PDF</option>
+        <option value="excel">Excel</option>
+        <option value="word">Word</option>
+        <option value="image">Gambar</option>
+      </select>
+      <input type="date" id="filterTgl" onchange="renderArsipTable()" title="Filter Tanggal" />
+      <button class="btn-ghost-sm" onclick="clearFilters()"><i class="fas fa-xmark"></i> Reset</button>
+      <button class="btn-ghost-sm" onclick="generateIntegratedReport('excel')" style="margin-left:auto; background:var(--bg-card); border:1px solid var(--border); color:#107c41; font-weight:600;"><i class="fas fa-file-excel"></i> Laporan (Excel)</button>
+      <button class="btn-ghost-sm" onclick="generateIntegratedReport('pdf')" style="margin-left:8px; background:var(--bg-card); border:1px solid var(--border); color:#b91c1c; font-weight:600;"><i class="fas fa-file-pdf"></i> Laporan (PDF)</button>
+      <button class="btn-ghost-sm" onclick="generateIntegratedReport('word')" style="margin-left:8px; background:var(--bg-card); border:1px solid var(--border); color:#2563eb; font-weight:600;"><i class="fas fa-file-word"></i> Laporan (Word)</button>
+    </div>
+    <button onclick="window.openUserModal()" class="btn-arsip" style="background:#2563eb; color:#fff; margin-bottom:15px;"><i class="fas fa-user-plus"></i> Tambah Pengguna Baru</button>
+    <div class="table-card">
+      <table class="data-table">
+        <thead><tr>
+          <th style="width:40px">#</th>
+          <th style="width:13%">Nomor Arsip</th>
+          <th style="width:15%">Judul / Perihal</th>
+          <th style="width:14%">Bidang</th>
+          <th style="width:15%">Jenis Dokumen</th>
+          <th style="width:8%">Tanggal</th>
+                    <th style="width:8%">Status</th>
+          <th style="width:8%">Dokumen</th>
+          <th style="width:10%">Aksi</th>
+        </tr></thead>
+        <tbody id="arsipBody"></tbody>
+      </table>
+      <div class="empty-state hidden" id="tableEmpty">
+        <i class="fas fa-folder-open"></i>
+        <p>Tidak ada arsip ditemukan</p>
+        <button class="tb-btn tb-btn-primary" onclick="openEmptyStateForm();"><i class="fas fa-plus"></i> Tambah Arsip</button>
+      </div>
+      <div class="table-foot" id="tableInfo"></div>
+    </div>
+  </main>
