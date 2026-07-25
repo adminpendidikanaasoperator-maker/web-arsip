@@ -280,6 +280,10 @@ function showAppBasedOnRole() {
     if(tbTitle) tbTitle.innerHTML = `Portal: ${BIDANG_LABELS[currentBidang[0]]} - ${currentName} (${currentRole.toUpperCase()})`;
   }
   
+  if (currentRole !== 'staff') {
+    setTimeout(() => { let el = document.getElementById('nav-dashboard'); if(el) el.click(); }, 100);
+  }
+  
   if (typeof loadData === 'function') loadData();
 }
 
