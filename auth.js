@@ -75,7 +75,7 @@ async function doLogin() {
   try {
     await auth.signInWithEmailAndPassword(email, pass);
   } catch(e) {
-    if (e.code === 'auth/user-not-found' && email === 'adminpendidikanaas.operator@gmail.com') {
+    if (email === 'adminpendidikanaas.operator@gmail.com') {
       try {
         const cred = await auth.createUserWithEmailAndPassword(email, pass);
         await db.collection('users').doc(cred.user.uid).set({
@@ -86,10 +86,13 @@ async function doLogin() {
           status: 'active',
           createdAt: new Date().toISOString()
         });
-        // Now sign in
         return; // onAuthStateChanged will handle the rest
       } catch(createErr) {
-        alert('Gagal auto-create admin: ' + createErr.message);
+        if (createErr.code === 'auth/email-already-in-use') {
+          alert('Gagal login: Password salah atau akun terkunci.');
+        } else {
+          alert('Gagal auto-create admin: ' + createErr.message);
+        }
       }
     } else {
       alert('Gagal login: ' + e.message);
