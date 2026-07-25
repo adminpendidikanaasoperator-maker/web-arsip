@@ -75,7 +75,25 @@ async function doLogin() {
   try {
     await auth.signInWithEmailAndPassword(email, pass);
   } catch(e) {
-    alert('Gagal login: ' + e.message);
+    if (e.code === 'auth/user-not-found' && email === 'adminpendidikanaas.operator@gmail.com') {
+      try {
+        const cred = await auth.createUserWithEmailAndPassword(email, pass);
+        await db.collection('users').doc(cred.user.uid).set({
+          email: email,
+          name: 'Admin Utama',
+          role: 'admin',
+          bidang: [],
+          status: 'active',
+          createdAt: new Date().toISOString()
+        });
+        // Now sign in
+        return; // onAuthStateChanged will handle the rest
+      } catch(createErr) {
+        alert('Gagal auto-create admin: ' + createErr.message);
+      }
+    } else {
+      alert('Gagal login: ' + e.message);
+    }
     btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
   }
 }
