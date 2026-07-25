@@ -17,7 +17,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <script src="app.js?v=1000" defer></script>
+  <script src="app.js?v=1006" defer></script>
   <link rel="stylesheet" href="style.css?v=1000" />
 </head>
 <body>
@@ -811,6 +811,385 @@
 </div>
 
 <!-- TOAST -->
+<div id="mainContent" class="main-content">
+<main class="page hidden" id="page-aktivitas">
+    <div class="page-section-header row">
+      <div>
+        <h2><i class="fas fa-clock-rotate-left"></i> Riwayat Aktivitas</h2>
+        <p>Semua perubahan data arsip dicatat secara otomatis</p>
+      </div>
+      <button class="btn-ghost-sm danger" onclick="clearActivity()"><i class="fas fa-trash"></i> Hapus Semua</button>
+    </div>
+    <div class="activity-feed" id="activityList"></div>
+  </main>
+<main class="page hidden" id="page-analytics">
+    <div class="page-section-header">
+      <h2><i class="fas fa-chart-line"></i> Analitik & Perbandingan</h2>
+      <p>Visualisasi tingkat kerja antar bidang dan antar tahun akademik</p>
+    </div>
+    <div class="grid-1-1">
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-bar"></i> Arsip Per Bidang</h3><span class="panel-sub" id="anSub1"></span></div>
+        <div class="chart-wrap"><canvas id="chartAnBar"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-calendar-alt"></i> Tren Per Tahun Akademik</h3></div>
+        <div class="chart-wrap"><canvas id="chartAnYear"></canvas></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:18px">
+      <div class="panel-hd"><h3><i class="fas fa-table-cells"></i> Matriks Kinerja Bidang</h3></div>
+      <div class="dept-matrix" id="deptMatrix"></div>
+    </div>
+  </main>
+<main class="page hidden" id="page-arsip">
+    <div class="filter-strip">
+      <div class="search-field">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Cari nomor, judul, pengirim, jenis dokumen..." oninput="renderArsipTable()" />
+      </div>
+      <select id="filterDept" onchange="onFilterDeptChange()">
+        <option value="">Semua Bidang</option>
+        <option value="kriteria1">Kriteria 1. Visi, Misi</option>
+        <option value="kriteria2">Kriteria 2. Kurikulum</option>
+        <option value="kriteria3">Kriteria 3. Penilaian</option>
+        <option value="kriteria4">Kriteria 4. Mahasiswa</option>
+        <option value="kriteria5">Kriteria 5. SDM & Penelitian</option>
+        <option value="kriteria6">Kriteria 6. Sarana & Keuangan</option>
+        <option value="kriteria7">Kriteria 7. Mutu</option>
+        <option value="kriteria8">Kriteria 8. Tata Kelola</option>
+      </select>
+      <select id="filterJenis" onchange="renderArsipTable()">
+        <option value="">Semua Jenis</option>
+      </select>
+      <select id="filterFormat" onchange="renderArsipTable()">
+        <option value="">Semua Format</option>
+        <option value="pdf">PDF</option>
+        <option value="excel">Excel</option>
+        <option value="word">Word</option>
+        <option value="image">Gambar</option>
+      </select>
+      <input type="date" id="filterTgl" onchange="renderArsipTable()" title="Filter Tanggal" />
+      <button class="btn-ghost-sm" onclick="clearFilters()"><i class="fas fa-xmark"></i> Reset</button>
+      <button class="btn-ghost-sm" onclick="generateIntegratedReport('excel')" style="margin-left:auto; background:var(--bg-card); border:1px solid var(--border); color:#107c41; font-weight:600;"><i class="fas fa-file-excel"></i> Laporan (Excel)</button>
+      <button class="btn-ghost-sm" onclick="generateIntegratedReport('pdf')" style="margin-left:8px; background:var(--bg-card); border:1px solid var(--border); color:#b91c1c; font-weight:600;"><i class="fas fa-file-pdf"></i> Laporan (PDF)</button>
+      <button class="btn-ghost-sm" onclick="generateIntegratedReport('word')" style="margin-left:8px; background:var(--bg-card); border:1px solid var(--border); color:#2563eb; font-weight:600;"><i class="fas fa-file-word"></i> Laporan (Word)</button>
+    </div>
+    <button onclick="window.openUserModal()" class="btn-arsip" style="background:#2563eb; color:#fff; margin-bottom:15px;"><i class="fas fa-user-plus"></i> Tambah Pengguna Baru</button>
+    <div class="table-card">
+      <table class="data-table">
+        <thead><tr>
+          <th style="width:40px">#</th>
+          <th style="width:13%">Nomor Arsip</th>
+          <th style="width:15%">Judul / Perihal</th>
+          <th style="width:14%">Bidang</th>
+          <th style="width:15%">Jenis Dokumen</th>
+          <th style="width:8%">Tanggal</th>
+                    <th style="width:8%">Status</th>
+          <th style="width:8%">Dokumen</th>
+          <th style="width:10%">Aksi</th>
+        </tr></thead>
+        <tbody id="arsipBody"></tbody>
+      </table>
+      <div class="empty-state hidden" id="tableEmpty">
+        <i class="fas fa-folder-open"></i>
+        <p>Tidak ada arsip ditemukan</p>
+        <button class="tb-btn tb-btn-primary" onclick="openEmptyStateForm();"><i class="fas fa-plus"></i> Tambah Arsip</button>
+      </div>
+      <div class="table-foot" id="tableInfo"></div>
+    </div>
+  </main>
+<main class="page hidden" id="page-banpt">
+    <div class="dept-banner banpt-banner">
+      <div class="dept-banner-icon"><i class="fas fa-building-columns"></i></div>
+      <div>
+        <h2>Dashboard Borang BAN-PT</h2>
+        <p>Laporan Institusi, Tata Kelola Makro, dan Keuangan</p>
+      </div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button onclick="exportBanpt('excel')" class="tb-btn" style="background:#107c41; color:#fff; border:none;"><i class="fas fa-file-excel"></i> Export Excel</button>
+        <button onclick="exportBanpt('pdf')" class="tb-btn" style="background:#b91c1c; color:#fff; border:none;"><i class="fas fa-file-pdf"></i> Export PDF</button>
+        <button onclick="exportBanpt('word')" class="tb-btn" style="background:#2563eb; color:#fff; border:none;"><i class="fas fa-file-word"></i> Export Word</button>
+      </div>
+    </div>
+
+    <div class="akr-dashboard">
+      <div id="banptStatRow" class="stat-row" style="margin-bottom: 20px; flex-wrap: wrap;"></div>
+      <section class="akr-content">
+                <div id="banptReportContainer">
+          <!-- Tabel Dinamis BAN-PT Kriteria 1-9 akan di-render di sini -->
+        </div>
+      </section>
+    </div>
+  </main>
+<main class="page" id="page-dashboard">
+    <div class="portal-header">
+      <h1>Portal SIMARSIP Akademik</h1>
+      <p>Sistem Informasi Manajemen Arsip Terpadu Kelola dan pantau seluruh dokumen akademik, keuangan, dan data induk dalam satu platform tersentralisasi.</p>
+    </div>
+    
+
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#84cc1618; color:#84cc16;"><i class="fas fa-file-alt"></i></div>
+        <div class="sc-label">Total Arsip TA Ini</div><div class="sc-value" id="badge-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#22c55e18; color:#22c55e;"><i class="fas fa-check-circle"></i></div>
+        <div class="sc-label">Arsip Aktif</div><div class="sc-value" id="badge-aktif">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#3b82f618; color:#3b82f6;"><i class="fas fa-building-columns"></i></div>
+        <div class="sc-label">Total BAN-PT</div><div class="sc-value" id="badge-dash-banpt">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#10b98118; color:#10b981;"><i class="fas fa-notes-medical"></i></div>
+        <div class="sc-label">Total LAM-PTKes</div><div class="sc-value" id="badge-dash-lamptkes">0</div>
+      </div>
+    </div>
+    
+    <div class="grid-1-1">
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-line"></i> Tren Arsip Bulanan</h3><span class="panel-sub" id="dashLineSub"></span></div>
+        <div class="chart-wrap"><canvas id="chartLine"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <h3><i class="fas fa-chart-area"></i> Tren Arsip Tahunan</h3>
+          <span class="panel-sub" style="display:inline-flex; align-items:center; gap:6px;">
+            Tahun:
+            <input type="number" id="trendStartY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2021" min="2014" max="2050" oninput="updateYearlyChart()">
+            <span style="color:var(--text-sub)">-</span>
+            <input type="number" id="trendEndY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2025" min="2014" max="2050" oninput="updateYearlyChart()">
+          </span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartYearlyLine"></canvas></div>
+      </div>
+    </div>
+    <div class="grid-2-1">
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-bar"></i> Distribusi Bidang</h3></div>
+        <div class="chart-wrap chart-center" style="width:100%;"><canvas id="chartDoughnut" height="250"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-signal"></i> Status Overview</h3></div>
+        <div class="chart-wrap chart-center"><canvas id="chartStatus"></canvas></div>
+      </div>
+    </div>
+    <div class="panel panel-fill" style="margin-bottom:24px;">
+      <div class="panel-hd"><h3><i class="fas fa-clock"></i> Arsip Terbaru</h3></div>
+      <div class="recent-list" id="recentList"></div>
+    </div>
+  </main>
+<main class="page hidden" id="page-dept">
+    <div class="dept-banner" id="deptBanner">
+      <div class="dept-banner-icon" id="deptBannerIcon"></div>
+      <div>
+        <h2 id="deptBannerName">Bidang</h2>
+        <p id="deptBannerSub">Manajemen arsip</p>
+      </div>
+    </div>
+    <div id="deptArsipCharts">
+      <div class="stat-row" id="deptStatRow"></div>
+      <div class="grid-2-1">
+        <div class="panel">
+          <div class="panel-hd"><h3><i class="fas fa-chart-bar"></i> Tingkat Kerja Bulanan</h3><span class="panel-sub" id="deptChartSub"></span></div>
+          <div class="chart-wrap"><canvas id="chartDeptBar"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-hd"><h3><i class="fas fa-circle-half-stroke"></i> Status Arsip</h3></div>
+          <div class="chart-wrap chart-center"><canvas id="chartDeptDonut"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mhsChartContainer" style="display:none;" class="grid-1-1">
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-bar"></i> Tren Mahasiswa (5 Tahun Terakhir)</h3></div>
+        <div class="chart-wrap"><canvas id="mhsTrendChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-pie"></i> Komposisi Status Mahasiswa</h3></div>
+        <div class="chart-wrap chart-center"><canvas id="mhsStatusChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Arsip Table -->
+    <div id="deptTableContainer" class="table-card">
+      <div class="table-top-row">
+        <h3 id="deptTableTitle">Daftar Arsip</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select id="deptFilterJenis" onchange="renderDeptTable()" style="background:var(--bg3);border:1px solid var(--b1);border-radius:var(--r3);color:var(--t1);font-size:.8rem;padding:7px 10px;outline:none">
+            <option value="">Semua Jenis</option>
+          </select>
+          <div class="search-field" style="max-width:250px">
+            <i class="fas fa-search"></i>
+            <input type="text" id="deptSearch" placeholder="Cari arsip bidang ini..." oninput="renderDeptTable()" />
+          </div>
+        </div>
+      </div>
+      <table class="data-table">
+        <thead id="deptHead"></thead>
+        <tbody id="deptBody"></tbody>
+      </table>
+      <div class="empty-state hidden" id="deptEmpty">
+        <i class="fas fa-inbox"></i>
+        <p>Belum ada arsip untuk bidang ini pada tahun akademik ini</p>
+      </div>
+      <div class="table-foot" id="deptInfo"></div>
+    </div>
+
+    <!-- Mahasiswa Table -->
+    <div id="deptMhsContainer" style="display:none;">
+      <div class="filter-strip" style="margin-bottom:16px">
+        <div class="search-field">
+          <i class="fas fa-search"></i>
+          <input type="text" id="mhsSearch" placeholder="Cari nama, NIM, angkatan..." oninput="renderMahasiswaPage()" />
+        </div>
+        <select id="mhsFilterAy" onchange="renderMahasiswaPage()">
+          <option value="">Semua Tahun Akademik</option>
+        </select>
+        <select id="mhsFilterStatus" onchange="renderMahasiswaPage()">
+          <option value="">Semua Status</option>
+          <option value="aktif">Aktif</option>
+          <option value="cuti">Cuti</option>
+          <option value="lulus">Lulus</option>
+          <option value="keluar">Mengundurkan Diri / Keluar</option>
+        </select>
+        <button class="tb-btn tb-btn-primary" style="margin-left:auto" onclick="openMhsForm()"><i class="fas fa-plus"></i> Tambah Mahasiswa</button>
+      </div>
+      <div class="grid-profile" id="mhsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"></div>
+      <div class="empty-state hidden" id="mhsEmpty"><i class="fas fa-users-slash"></i><p>Tidak ada data mahasiswa ditemukan</p></div>
+    </div>
+
+    <!-- SDM Grid -->
+    <div id="deptSdmContainer" style="display:none;">
+      <div class="filter-strip" style="margin-bottom:16px">
+        <div class="search-field">
+          <i class="fas fa-search"></i>
+          <input type="text" id="sdmSearch" placeholder="Cari nama, NIDN/NIK, jabatan..." oninput="renderSdmPage()" />
+        </div>
+        <select id="sdmFilterAy" onchange="renderSdmPage()">
+          <option value="">Semua Tahun Akademik</option>
+        </select>
+        <select id="sdmFilterStatus" onchange="renderSdmPage()">
+          <option value="">Semua Status</option>
+          <option value="aktif">Aktif</option>
+          <option value="tugas_belajar">Tugas Belajar</option>
+          <option value="pensiun">Pensiun</option>
+          <option value="keluar">Berhenti / Keluar</option>
+        </select>
+        <button class="tb-btn tb-btn-primary" style="margin-left:auto" onclick="openSdmForm()"><i class="fas fa-plus"></i> Tambah SDM</button>
+      </div>
+      <div class="grid-profile" id="sdmGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"></div>
+      <div class="empty-state hidden" id="sdmEmpty"><i class="fas fa-users-slash"></i><p>Tidak ada data SDM ditemukan</p></div>
+    </div>
+  </main>
+<main class="page hidden" id="page-generator">
+    <div class="page-section-header">
+      <h2><i class="fas fa-file-signature"></i> Generator Dokumen Resmi</h2>
+      <p>Buat Surat Tugas Dosen, RPS OBE, dll dengan Kop Surat Resmi AAS. Teks akan berformat Times New Roman ukuran 12 hitam sesuai pedoman.</p>
+    </div>
+    
+    <div class="form-card">
+      <div class="form-group">
+        <label>Jenis Dokumen</label>
+        <select id="genType" class="form-input" onchange="changeGenForm()">
+          <option value="surat_tugas">Surat Tugas Dosen</option>
+          <option value="rps_obe">RPS Berbasis OBE</option>
+        </select>
+      </div>
+      
+      <!-- Form Surat Tugas -->
+      <div id="form-surat_tugas" class="gen-form-group">
+        <div class="form-group">
+          <label>Nomor Surat</label>
+          <input type="text" id="genNoSurat" class="form-input" placeholder="Contoh: 001/ST/AAS/X/2026">
+        </div>
+        <div class="form-group">
+          <label>Nama Dosen Ditugaskan</label>
+          <input type="text" id="genNamaDosen" class="form-input" placeholder="Nama Lengkap beserta gelar">
+        </div>
+        <div class="form-group">
+          <label>Tugas / Kegiatan</label>
+          <textarea id="genTugas" class="form-input" rows="3" placeholder="Deskripsi tugas"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Tanggal Pelaksanaan</label>
+          <input type="date" id="genTanggal" class="form-input">
+        </div>
+      </div>
+      
+      <!-- Form RPS -->
+      <div id="form-rps_obe" class="gen-form-group" style="display:none;">
+        <div class="form-group">
+          <label>Nama Mata Kuliah</label>
+          <input type="text" id="genMakul" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Capaian Pembelajaran (CPL)</label>
+          <textarea id="genCPL" class="form-input" rows="3"></textarea>
+        </div>
+      </div>
+      
+      <div style="margin-top:20px; display:flex; gap:10px;">
+        <button class="btn-arsip" onclick="generateWord()" style="background:#2563eb;color:#fff"><i class="fas fa-file-word"></i> Export Word</button>
+        <button class="btn-arsip" onclick="generatePDF()" style="background:#dc2626;color:#fff"><i class="fas fa-file-pdf"></i> Export PDF</button>
+      </div>
+    </div>
+    
+    <!-- Template HTML Hidden for PDF Rendering -->
+    <div id="pdf-template" style="display:none; width:800px; padding:20px; background:white; font-family:'Times New Roman', Times, serif; color:black; font-size:12pt; text-align:justify;"></div>
+  </main>
+<main class="page hidden" id="page-lamptkes">
+    <div class="dept-banner lamptkes-banner">
+      <div class="dept-banner-icon"><i class="fas fa-notes-medical"></i></div>
+      <div>
+        <h2>Dashboard Borang LAM-PTKes</h2>
+        <p>Laporan Kompetensi Klinis, UKOM, dan Wahana Praktik D-III Akupunktur</p>
+      </div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button onclick="exportLamptkes('excel')" class="tb-btn" style="background:#107c41; color:#fff; border:none;"><i class="fas fa-file-excel"></i> Export Excel</button>
+        <button onclick="exportLamptkes('pdf')" class="tb-btn" style="background:#b91c1c; color:#fff; border:none;"><i class="fas fa-file-pdf"></i> Export PDF</button>
+        <button onclick="exportLamptkes('word')" class="tb-btn" style="background:#2563eb; color:#fff; border:none;"><i class="fas fa-file-word"></i> Export Word</button>
+      </div>
+    </div>
+
+    <div class="akr-dashboard">
+      <div id="lamptkesStatRow" class="stat-row" style="margin-bottom: 20px; flex-wrap: wrap;"></div>
+      <section class="akr-content" id="lamptkesReportContainer">
+        <!-- Rendered by JS -->
+      </section>
+    </div>
+  </main>
+<main class="page hidden" id="page-users">
+    <div class="page-section-header">
+      <h2><i class="fas fa-users-gear"></i> Manajemen Pengguna & Hak Akses</h2>
+      <p>Kelola persetujuan staf baru dan penetapan jabatan (Wadir / Staf Bidang).</p>
+    </div>
+    
+    <div class="filter-bar" style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+      <button class="tb-btn tb-btn-primary" onclick="openUserModal()"><i class="fas fa-plus"></i> Tambah Pengguna</button>
+    </div>
+    
+    <div class="table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Nama Lengkap</th>
+            <th>Email</th>
+            <th>Role / Jabatan</th>
+            <th>Bidang (Staf)</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+</div>
 <div class="toast-stack" id="toastStack"></div>
 <div class="sb-overlay hidden" id="sbOverlay" onclick="closeSidebar()"></div>
 
@@ -822,11 +1201,11 @@
 
 <script src="https://unpkg.com/docx@7.1.1/build/index.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="loader.js?v=1005" defer></script>
-<script src="generator.js?v=1005" defer></script>
-<script src="auth.js?v=1005" defer></script>
-<script src="admin.js?v=1005" defer></script>
-<script src="app.js?v=1005" defer></script>
+<script src="loader.js?v=1006" defer></script>
+<script src="generator.js?v=1006" defer></script>
+<script src="auth.js?v=1006" defer></script>
+<script src="admin.js?v=1006" defer></script>
+<script src="app.js?v=1006" defer></script>
 
 <!-- Notification Sounds -->
 
