@@ -101,6 +101,21 @@
     </div>
   </div>
 </div>
+
+<!-- ÔòÉÔòÉÔòÉ PORTAL SELECTION (MULTI-BIDANG) ÔòÉÔòÉÔòÉ -->
+<div id="portalSelectionWrapper" class="auth-container" style="display:none; background: var(--bg-main);">
+  <div class="auth-box" style="max-width: 800px; text-align:center;">
+    <h2 style="color:var(--p1); margin-bottom:10px;"><i class="fas fa-layer-group"></i> Pilih Portal Bidang Tugas</h2>
+    <p style="color:var(--t2); margin-bottom: 30px;">Anda memegang lebih dari 1 bidang tugas. Silakan pilih portal yang ingin Anda masuki saat ini.</p>
+    <div id="portalCardsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+      <!-- Portal cards will be injected here -->
+    </div>
+    <div style="margin-top: 30px;">
+      <button onclick="auth.signOut()" class="btn-ghost-sm danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+</div>
+
 <div id="appWrapper" style="display:none;">
 
 
@@ -462,6 +477,11 @@
       <h2><i class="fas fa-users-gear"></i> Manajemen Pengguna & Hak Akses</h2>
       <p>Kelola persetujuan staf baru dan penetapan jabatan (Wadir / Staf Bidang).</p>
     </div>
+    
+    <div class="filter-bar" style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+      <button class="tb-btn tb-btn-primary" onclick="openUserModal()"><i class="fas fa-plus"></i> Tambah Pengguna</button>
+    </div>
+    
     <div class="table-card">
       <table class="data-table">
         <thead>
@@ -800,6 +820,72 @@
       </div>
     </div>
   </div>
+<!-- ÔòÉÔòÉÔòÉ MODAL: USER MANAGEMENT (auth.js version) ÔòÉÔòÉÔòÉ -->
+<div class="overlay" id="userModal" onclick="if(event.target===this)closeUserModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-title"><i class="fas fa-user-pen"></i> <span id="userModalTitle">Edit Pengguna</span></div>
+      <button class="close-btn" onclick="closeUserModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll">
+      <form id="userForm" onsubmit="event.preventDefault(); saveUser();" novalidate>
+        <input type="hidden" id="editUid" />
+        
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" id="editName" class="form-input" required />
+        </div>
+        
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="editEmail" class="form-input" required />
+        </div>
+        
+        <div class="form-group" id="groupPassword">
+          <label>Password (Untuk pengguna baru)</label>
+          <input type="password" id="editPassword" class="form-input" />
+        </div>
+        
+        <div class="form-field">
+          <label>Role Utama</label>
+          <select id="editRole" class="form-input" required>
+            <option value="admin">Admin Utama</option>
+            <option value="direktur">Direktur</option>
+            <option value="wadir1">Wadir I (Akademik)</option>
+            <option value="wadir2">Wadir II (Umum & Kerjasama)</option>
+            <option value="wadir3">Wadir III (Kemahasiswaan dll)</option>
+            <option value="staff">Staf Bidang</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Bidang Tugas (Multi-Select)</label>
+          <div class="checkbox-list" style="max-height:150px; overflow-y:auto; border:1px solid var(--b2); padding:10px; border-radius:8px;">
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="akademik"> Akademik & Pendidikan</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="sistem_pendidikan"> Sistem Informasi Pendidikan</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="laboratorium"> Laboratorium</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="perpustakaan"> Perpustakaan</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="umum"> Umum & Kelembagaan</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="kepegawaian"> Administrasi Kepegawaian (Ketenagaan)</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="keuangan"> Keuangan & Institusi</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="rumah_tangga"> Rumah Tangga</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="sarana"> Sarana Prasarana</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="sistem_informasi"> Sistem Informasi</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="humas"> HUMAS</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="kerjasama"> Kerjasama</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="kemahasiswaan"> Kemahasiswaan & Alumni</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="lppm"> Penelitian & Pelatihan (LPPM)</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="pengabdian"> Pengabdian Masyarakat</label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" onclick="closeUserModal()">Batal</button>
+          <button type="submit" class="tb-btn tb-btn-primary" id="btnSaveUser"><i class="fas fa-save"></i> Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
 <!-- ÔòÉÔòÉÔòÉ MODAL: FORM MAHASISWA ÔòÉÔòÉÔòÉ -->
@@ -1099,6 +1185,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="generator.js?v=999" defer></script>
 <script src="auth.js?v=999" defer></script>
+<script src="admin.js?v=999" defer></script>
 <script src="app.js?v=999" defer></script>
 
 <!-- Notification Sounds -->

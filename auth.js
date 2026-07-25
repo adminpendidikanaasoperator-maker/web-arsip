@@ -133,8 +133,89 @@ async function doRegister() {
   }
 }
 
+const BIDANG_LABELS = {
+  akademik: "Akademik & Pendidikan",
+  sistem_pendidikan: "Sistem Informasi Pendidikan",
+  laboratorium: "Laboratorium",
+  perpustakaan: "Perpustakaan",
+  umum: "Umum & Kelembagaan",
+  kepegawaian: "Ketenagaan",
+  keuangan: "Keuangan & Institusi",
+  rumah_tangga: "Rumah Tangga",
+  sarana: "Sarana Prasarana",
+  sistem_informasi: "Sistem Informasi",
+  humas: "HUMAS",
+  kerjasama: "Kerjasama",
+  kemahasiswaan: "Kemahasiswaan",
+  lppm: "Penelitian (LPPM)",
+  pengabdian: "Pengabdian Masyarakat"
+};
+
+const BIDANG_ICONS = {
+  akademik: "fa-graduation-cap",
+  sistem_pendidikan: "fa-laptop-code",
+  laboratorium: "fa-flask",
+  perpustakaan: "fa-book-open",
+  umum: "fa-building",
+  kepegawaian: "fa-id-card",
+  keuangan: "fa-coins",
+  rumah_tangga: "fa-broom",
+  sarana: "fa-desktop",
+  sistem_informasi: "fa-network-wired",
+  humas: "fa-bullhorn",
+  kerjasama: "fa-handshake",
+  kemahasiswaan: "fa-users",
+  lppm: "fa-microscope",
+  pengabdian: "fa-hands-helping"
+};
+
+window.activeBidangPortal = null;
+
+function enterPortal(bidangId) {
+  window.activeBidangPortal = bidangId;
+  document.getElementById('portalSelectionWrapper').style.display = 'none';
+  document.getElementById('appWrapper').style.display = 'block';
+  
+  const tbTitle = document.getElementById('topbarTitle');
+  if(tbTitle) tbTitle.innerHTML = `Portal: ${BIDANG_LABELS[bidangId]} - ${currentName} (${currentRole.toUpperCase()})`;
+  
+  document.querySelectorAll('.sb-link.dept').forEach(el => el.style.display = 'none');
+  const el = document.getElementById('nav-'+bidangId);
+  if(el) {
+    el.style.display = 'flex';
+    // Auto click it to load the page
+    setTimeout(() => el.click(), 100);
+  }
+  
+  if (typeof loadData === 'function') loadData();
+}
+
 function showAppBasedOnRole() {
   document.getElementById('authWrapper').style.display = 'none';
+  
+  if (currentRole === 'staff' && currentBidang.length > 1) {
+    // Show Portal Selection
+    document.getElementById('portalSelectionWrapper').style.display = 'flex';
+    document.getElementById('appWrapper').style.display = 'none';
+    
+    const container = document.getElementById('portalCardsContainer');
+    container.innerHTML = '';
+    currentBidang.forEach(b => {
+      const label = BIDANG_LABELS[b] || b;
+      const icon = BIDANG_ICONS[b] || 'fa-folder';
+      container.innerHTML += `
+        <div class="stat-card" style="cursor:pointer; display:flex; flex-direction:column; align-items:center; padding: 20px;" onclick="enterPortal('${b}')">
+          <div class="stat-icon" style="margin-bottom:15px; width:60px; height:60px; font-size:1.5rem;"><i class="fas ${icon}"></i></div>
+          <div style="font-weight:600; color:var(--p1); font-size:1.1rem; text-align:center;">${label}</div>
+          <div style="font-size:0.8rem; color:var(--t2); margin-top:10px;">Masuk ke Portal <i class="fas fa-arrow-right"></i></div>
+        </div>
+      `;
+    });
+    return;
+  }
+  
+  // Single Portal or Admin/Wadir
+  document.getElementById('portalSelectionWrapper').style.display = 'none';
   document.getElementById('appWrapper').style.display = 'block';
   
   const tbTitle = document.getElementById('topbarTitle');
@@ -147,29 +228,36 @@ function showAppBasedOnRole() {
   if(navUsers) navUsers.style.display = 'none';
 
   if (currentRole === 'admin' || currentRole === 'direktur') {
+    window.activeBidangPortal = null;
     document.querySelectorAll('.sb-link.dept').forEach(el => el.style.display = 'flex');
     if(adminSection) adminSection.style.display = 'block';
     if(navUsers) navUsers.style.display = 'flex';
   } else if (currentRole === 'wadir1') {
+    window.activeBidangPortal = null;
     ['akademik', 'sistem_pendidikan', 'laboratorium', 'perpustakaan'].forEach(b => {
       let el = document.getElementById('nav-'+b);
       if(el) el.style.display = 'flex';
     });
   } else if (currentRole === 'wadir2') {
+    window.activeBidangPortal = null;
     ['umum', 'kepegawaian', 'keuangan', 'rumah_tangga', 'sarana', 'sistem_informasi', 'humas', 'kerjasama'].forEach(b => {
       let el = document.getElementById('nav-'+b);
       if(el) el.style.display = 'flex';
     });
   } else if (currentRole === 'wadir3') {
+    window.activeBidangPortal = null;
     ['kemahasiswaan', 'lppm', 'pengabdian'].forEach(b => {
       let el = document.getElementById('nav-'+b);
       if(el) el.style.display = 'flex';
     });
   } else if (currentRole === 'staff') {
-    currentBidang.forEach(b => {
-      let el = document.getElementById('nav-'+b);
-      if(el) el.style.display = 'flex';
-    });
+    window.activeBidangPortal = currentBidang[0];
+    let el = document.getElementById('nav-'+currentBidang[0]);
+    if(el) {
+      el.style.display = 'flex';
+      setTimeout(() => el.click(), 100);
+    }
+    if(tbTitle) tbTitle.innerHTML = `Portal: ${BIDANG_LABELS[currentBidang[0]]} - ${currentName} (${currentRole.toUpperCase()})`;
   }
   
   if (typeof loadData === 'function') loadData();

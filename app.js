@@ -1524,7 +1524,10 @@ function updateBadges() {
 
 /* ÔòÉÔòÉÔòÉÔòÉÔòÉ DASHBOARD ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderDashboard() {
-  const data=arsip.filter(a=>!currentAY||a.ay===currentAY);
+  let data=arsip.filter(a=>!currentAY||a.ay===currentAY);
+  if(window.activeBidangPortal) {
+    data = data.filter(a => a.bidang === window.activeBidangPortal);
+  }
   initDashCharts(data); renderRecentList(data);
 }
 function renderRecentList(data) {
@@ -1633,6 +1636,7 @@ function renderArsipTable() {
   const tgl=document.getElementById('filterTgl')?.value||'';
 
   let data=arsip.filter(a=>{
+    if(window.activeBidangPortal && a.bidang !== window.activeBidangPortal) return false;
     if(currentAY&&a.ay!==currentAY)return false;
     if(dept&&a.bidang!==dept)return false;
     if(jenis&&a.jenis!==jenis)return false;
