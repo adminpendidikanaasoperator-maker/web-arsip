@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal Admin — SIMARSIP AAS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --danger: #e11d48;
+      --success: #22c55e;
+      --warning: #eab308;
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --t1: #0f172a;
+      --t2: #475569;
+      --t3: #94a3b8;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--t1); min-height: 100vh; }
+
+    /* TOPBAR */
+    .topbar {
+      background: #0b2239;
+      color: #fff;
+      padding: 0 28px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar-left { display: flex; align-items: center; gap: 14px; }
+    .topbar-logo { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,0.3); }
+    .topbar-title { font-weight: 700; font-size: 1rem; }
+    .topbar-subtitle { font-size: 0.75rem; color: rgba(255,255,255,0.6); }
+    .topbar-right { display: flex; align-items: center; gap: 10px; }
+    .btn { padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 7px; transition: all .2s; text-decoration: none; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-outline { background: transparent; color: #fff; border: 1.5px solid rgba(255,255,255,0.4); }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-danger:hover { background: #be123c; }
+
+    /* MAIN CONTENT */
+    .main-content { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #0b2239 0%, #1e40af 100%);
+      border-radius: 20px;
+      padding: 36px 40px;
+      margin-bottom: 28px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; right: -40px; top: -40px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .hero-icon {
+      width: 72px; height: 72px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    .hero-title { font-size: 1.7rem; font-weight: 800; margin-bottom: 6px; }
+    .hero-sub { color: rgba(255,255,255,0.75); font-size: 0.95rem; }
+
+    /* STATS */
+    .stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .stat-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      display: flex; align-items: center; gap: 14px;
+    }
+    .stat-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .stat-label { font-size: 0.78rem; color: var(--t3); font-weight: 500; }
+    .stat-value { font-size: 1.6rem; font-weight: 800; color: var(--t1); line-height: 1.2; }
+
+    /* SECTION TITLE */
+    .section-title { font-weight: 700; font-size: 1rem; color: var(--t1); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+
+    /* QUICK ACTIONS GRID */
+    .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .action-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+      border: 2px solid transparent;
+      transition: all .2s;
+      text-decoration: none;
+      display: block;
+      color: inherit;
+    }
+    .action-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37,99,235,0.12); }
+    .action-card-icon { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 auto 14px; }
+    .action-card-title { font-weight: 700; font-size: 1rem; color: var(--t1); margin-bottom: 4px; }
+    .action-card-desc { font-size: 0.78rem; color: var(--t3); }
+
+    /* PENDING TABLE */
+    .card { background: var(--card); border-radius: 14px; padding: 22px; box-shadow: 0 1px 8px rgba(0,0,0,0.06); }
+    .pending-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 12px; }
+    .pending-item:last-child { border-bottom: none; }
+    .pending-name { font-weight: 600; font-size: 0.9rem; }
+    .pending-meta { font-size: 0.78rem; color: var(--t3); margin-top: 2px; }
+    .btn-approve { background: var(--success); color: #fff; border: none; padding: 7px 16px; border-radius: 7px; cursor: pointer; font-weight: 600; font-size: 0.8rem; transition: background .2s; white-space: nowrap; }
+    .btn-approve:hover { background: #16a34a; }
+
+    /* LOADING / AUTH CHECK */
+    .auth-check { display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column; gap: 14px; color: var(--t2); }
+    .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- AUTH CHECK OVERLAY -->
+<div id="authCheck" class="auth-check">
+  <div class="spinner"></div>
+  <div>Memeriksa sesi admin...</div>
+</div>
+
+<!-- MAIN APP (hidden until auth verified) -->
+<div id="adminApp" class="hidden">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <img src="logo.jpg" alt="Logo AAS" class="topbar-logo" onerror="this.style.display='none'">
+      <div>
+        <div class="topbar-title">SIMARSIP AAS</div>
+        <div class="topbar-subtitle">Portal Admin</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <a href="index.html" class="btn btn-primary" onclick="goToPortalUtama(event)">
+        <i class="fas fa-house"></i> Portal Utama
+      </a>
+      <button class="btn btn-danger" onclick="doLogout()">
+        <i class="fas fa-sign-out-alt"></i> Keluar
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-icon"><i class="fas fa-shield-halved"></i></div>
+      <div>
+        <div class="hero-title">Portal Admin SIMARSIP</div>
+        <div class="hero-sub">Selamat datang, <strong id="adminName">Admin</strong> — kelola sistem dan pengguna dari sini.</div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#dbeafe; color:#2563eb;"><i class="fas fa-users"></i></div>
+        <div>
+          <div class="stat-label">Total Pengguna</div>
+          <div class="stat-value" id="statTotalUsers">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fef9c3; color:#ca8a04;"><i class="fas fa-user-clock"></i></div>
+        <div>
+          <div class="stat-label">Menunggu Persetujuan</div>
+          <div class="stat-value" id="statPending">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#dcfce7; color:#16a34a;"><i class="fas fa-file-alt"></i></div>
+        <div>
+          <div class="stat-label">Total Arsip</div>
+          <div class="stat-value" id="statTotalArsip">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#ede9fe; color:#7c3aed;"><i class="fas fa-user-check"></i></div>
+        <div>
+          <div class="stat-label">Pengguna Aktif</div>
+          <div class="stat-value" id="statActive">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="section-title"><i class="fas fa-bolt" style="color:#f59e0b;"></i> Akses Cepat</div>
+    <div class="action-grid">
+      <a class="action-card" href="index.html" onclick="goToPortalUtama(event)">
+        <div class="action-card-icon" style="background:#dbeafe; color:#2563eb;"><i class="fas fa-house"></i></div>
+        <div class="action-card-title">Portal Utama</div>
+        <div class="action-card-desc">Dashboard & Statistik Arsip</div>
+      </a>
+      <a class="action-card" href="index.html#users" onclick="goToPage(event, 'users')">
+        <div class="action-card-icon" style="background:#fce7f3; color:#db2777;"><i class="fas fa-users-gear"></i></div>
+        <div class="action-card-title">Manajemen Pengguna</div>
+        <div class="action-card-desc">Tambah, edit & setujui akun</div>
+      </a>
+      <a class="action-card" href="index.html#arsip" onclick="goToPage(event, 'arsip')">
+        <div class="action-card-icon" style="background:#dcfce7; color:#16a34a;"><i class="fas fa-folder-tree"></i></div>
+        <div class="action-card-title">Semua Arsip</div>
+        <div class="action-card-desc">Kelola seluruh dokumen arsip</div>
+      </a>
+      <a class="action-card" href="index.html#generator" onclick="goToPage(event, 'generator')">
+        <div class="action-card-icon" style="background:#ede9fe; color:#7c3aed;"><i class="fas fa-file-word"></i></div>
+        <div class="action-card-title">Generator Dokumen</div>
+        <div class="action-card-desc">Buat dokumen otomatis</div>
+      </a>
+      <a class="action-card" href="index.html#sdm" onclick="goToPage(event, 'sdm')">
+        <div class="action-card-icon" style="background:#fef3c7; color:#d97706;"><i class="fas fa-id-card"></i></div>
+        <div class="action-card-title">Data SDM</div>
+        <div class="action-card-desc">Data tenaga pengajar & mahasiswa</div>
+      </a>
+      <a class="action-card" href="index.html#banpt" onclick="goToPage(event, 'banpt')">
+        <div class="action-card-icon" style="background:#fee2e2; color:#dc2626;"><i class="fas fa-building-columns"></i></div>
+        <div class="action-card-title">Borang BAN-PT</div>
+        <div class="action-card-desc">Laporan akreditasi</div>
+      </a>
+    </div>
+
+    <!-- PENDING USERS -->
+    <div class="section-title"><i class="fas fa-user-clock" style="color:#ca8a04;"></i> Pengguna Menunggu Persetujuan</div>
+    <div class="card">
+      <div id="pendingList">
+        <div style="color:var(--t3); text-align:center; padding:20px;"><i class="fas fa-spinner fa-spin"></i> Memuat data...</div>
+      </div>
+    </div>
+
+    <!-- ALL USERS TABLE -->
+    <div class="section-title" style="margin-top:28px;"><i class="fas fa-users" style="color:#2563eb;"></i> Semua Pengguna Terdaftar</div>
+    <div class="card" style="overflow-x:auto;">
+      <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+        <thead>
+          <tr style="background:#f8fafc; border-bottom:2px solid var(--border);">
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Nama</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Email</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Role</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Bidang</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Status</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="allUsersBody">
+          <tr><td colspan="6" style="text-align:center;padding:20px;color:var(--t3);"><i class="fas fa-spinner fa-spin"></i> Memuat...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /adminApp -->
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCdOtyCix06Cty82u7ls1YT-WhKcUMpjIo",
+  authDomain: "arsip-aas.firebaseapp.com",
+  projectId: "arsip-aas",
+  storageBucket: "arsip-aas.firebasestorage.app",
+  messagingSenderId: "958092839381",
+  appId: "1:958092839381:web:ba6936a7a4fccc11bfd55c"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ── Auth Guard ──────────────────────────────────────────────
+auth.onAuthStateChanged(async (user) => {
+  if (!user) {
+    // Not logged in → back to login page
+    window.location.href = 'index.html';
+    return;
+  }
+
+  try {
+    const doc = await db.collection('users').doc(user.uid).get();
+    if (!doc.exists) { auth.signOut(); window.location.href = 'index.html'; return; }
+    const data = doc.data();
+
+    if (data.role !== 'admin' && data.role !== 'direktur') {
+      // Not admin → go to main portal
+      sessionStorage.setItem('skipAdminPortal', 'true');
+      window.location.href = 'index.html';
+      return;
+    }
+
+    // All good — show admin portal
+    document.getElementById('authCheck').style.display = 'none';
+    document.getElementById('adminApp').classList.remove('hidden');
+    document.getElementById('adminName').textContent = data.name || user.email;
+
+    loadStats();
+
+  } catch(e) {
+    console.error(e);
+    window.location.href = 'index.html';
+  }
+});
+
+// ── Navigation helpers ────────────────────────────────────
+function goToPortalUtama(e) {
+  e.preventDefault();
+  sessionStorage.setItem('skipAdminPortal', 'true');
+  sessionStorage.setItem('targetPage', 'dashboard');
+  window.location.href = 'index.html';
+}
+
+function goToPage(e, page) {
+  e.preventDefault();
+  sessionStorage.setItem('skipAdminPortal', 'true');
+  sessionStorage.setItem('targetPage', page);
+  window.location.href = 'index.html';
+}
+
+function doLogout() {
+  auth.signOut().then(() => window.location.href = 'index.html');
+}
+
+// ── Load Stats ────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const usersSnap = await db.collection('users').get();
+    let totalUsers = usersSnap.size;
+    let pending = 0, active = 0;
+    let pendingHtml = '';
+    let allUsersHtml = '';
+
+    const ROLE_LABELS = { admin:'Admin Utama', direktur:'Direktur', wadir1:'Wadir I', wadir2:'Wadir II', wadir3:'Wadir III', staff:'Staf' };
+
+    usersSnap.forEach(doc => {
+      const u = doc.data();
+      if (u.status === 'pending') {
+        pending++;
+        pendingHtml += `
+          <div class="pending-item">
+            <div>
+              <div class="pending-name">${u.name || '(Tanpa Nama)'}</div>
+              <div class="pending-meta">${u.email} · ${Array.isArray(u.bidang) ? u.bidang.join(', ') : (u.bidang || '—')}</div>
+            </div>
+            <button class="btn-approve" onclick="approveUser('${doc.id}')"><i class="fas fa-check"></i> Setujui</button>
+          </div>`;
+      } else {
+        active++;
+      }
+
+      const statusBadge = u.status === 'active'
+        ? '<span style="background:#dcfce7;color:#16a34a;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">Aktif</span>'
+        : '<span style="background:#fef9c3;color:#ca8a04;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">Pending</span>';
+
+      const roleBadge = `<span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">${ROLE_LABELS[u.role] || u.role}</span>`;
+
+      allUsersHtml += `
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 14px;">${u.name || '—'}</td>
+          <td style="padding:10px 14px;color:var(--t2);">${u.email}</td>
+          <td style="padding:10px 14px;">${roleBadge}</td>
+          <td style="padding:10px 14px;color:var(--t2);">${Array.isArray(u.bidang) ? u.bidang.join(', ') : (u.bidang || '—')}</td>
+          <td style="padding:10px 14px;">${statusBadge}</td>
+          <td style="padding:10px 14px;">
+            ${u.status === 'pending' ? `<button class="btn-approve" onclick="approveUser('${doc.id}')"><i class="fas fa-check"></i> Setujui</button>` : ''}
+          </td>
+        </tr>`;
+    });
+
+    document.getElementById('statTotalUsers').textContent = totalUsers;
+    document.getElementById('statPending').textContent     = pending;
+    document.getElementById('statActive').textContent      = active;
+
+    document.getElementById('pendingList').innerHTML = pending === 0
+      ? '<div style="color:#22c55e;padding:16px;text-align:center;"><i class="fas fa-check-circle"></i> Tidak ada pengguna yang menunggu persetujuan.</div>'
+      : pendingHtml;
+
+    document.getElementById('allUsersBody').innerHTML = allUsersHtml || '<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--t3);">Belum ada data pengguna.</td></tr>';
+
+    // Count arsip
+    const arsipSnap = await db.collection('arsip').get();
+    document.getElementById('statTotalArsip').textContent = arsipSnap.size;
+
+  } catch(e) {
+    console.error('loadStats error:', e);
+  }
+}
+
+// ── Approve User ───────────────────────────────────────────
+async function approveUser(uid) {
+  const btn = event.target.closest('button');
+  if(btn) { btn.disabled = true; btn.textContent = 'Menyetujui...'; }
+  try {
+    await db.collection('users').doc(uid).update({ status: 'active' });
+    loadStats();
+  } catch(e) {
+    alert('Gagal menyetujui: ' + e.message);
+    if(btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-check"></i> Setujui'; }
+  }
+}
+</script>
+</body>
+</html>

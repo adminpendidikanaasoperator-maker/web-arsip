@@ -292,13 +292,27 @@ function showAppBasedOnRole() {
   }
   
   if (currentRole === 'admin' || currentRole === 'direktur') {
-    // Admin lands on Portal Admin
-    setTimeout(() => {
-      const el = document.getElementById('nav-admin-portal');
-      if(el) el.click();
-      // Load admin portal stats
-      if (typeof loadAdminPortalStats === 'function') loadAdminPortalStats();
-    }, 150);
+    // If coming back from portal-admin.html, go directly to target page
+    const skip = sessionStorage.getItem('skipAdminPortal');
+    const target = sessionStorage.getItem('targetPage') || 'dashboard';
+    sessionStorage.removeItem('skipAdminPortal');
+    sessionStorage.removeItem('targetPage');
+
+    if (skip) {
+      // Coming from portal-admin: go to requested page
+      setTimeout(() => {
+        const el = document.getElementById('nav-' + target);
+        if(el) el.click();
+        else {
+          const dash = document.getElementById('nav-dashboard');
+          if(dash) dash.click();
+        }
+      }, 150);
+    } else {
+      // First login: redirect to portal-admin.html
+      window.location.href = 'portal-admin.html';
+      return;
+    }
   } else {
     setTimeout(() => { let el = document.getElementById('nav-dashboard'); if(el) el.click(); }, 150);
   }
