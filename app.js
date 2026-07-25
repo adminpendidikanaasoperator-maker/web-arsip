@@ -4477,7 +4477,7 @@ async function exportBanpt(type) {
 /* =========================================
    AUTHENTICATION LOGIC
 ========================================= */
-let currentUser = JSON.parse(localStorage.getItem('SIMARSIP_USER')) || null;
+// currentUser, currentRole, currentBidang declared in auth.js
 
 
 

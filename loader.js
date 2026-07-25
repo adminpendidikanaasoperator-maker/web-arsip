@@ -18,11 +18,8 @@ async function loadModal(modalName) {
 }
 
 async function loadAllModals() {
-  await Promise.all([
-    loadModal('arsip'),
-    loadModal('user'),
-    loadModal('sdm_mhs')
-  ]);
+  // Modals are already embedded in index.html - no fetch needed
+  return;
 }
 
 async function loadPage(pageId) {
