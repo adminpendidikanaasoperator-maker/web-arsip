@@ -138,4 +138,69 @@ document.addEventListener('DOMContentLoaded', () => {
       loadUsers();
     });
   }
+
+  // Also load stats when Portal Admin nav clicked
+  const navAdminPortal = document.getElementById('nav-admin-portal');
+  if(navAdminPortal) {
+    navAdminPortal.addEventListener('click', () => {
+      loadAdminPortalStats();
+    });
+  }
 });
+
+async function loadAdminPortalStats() {
+  // Set admin name
+  const nameEl = document.getElementById('adminPortalName');
+  if(nameEl && typeof currentName !== 'undefined') nameEl.textContent = currentName;
+
+  try {
+    // Count users
+    const usersSnap = await db.collection('users').get();
+    const totalUsers = usersSnap.size;
+    let pendingCount = 0;
+    let pendingHtml = '';
+
+    usersSnap.forEach(doc => {
+      const u = doc.data();
+      if (u.status === 'pending') {
+        pendingCount++;
+        pendingHtml += `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);">
+          <div>
+            <strong>${u.name || u.email}</strong>
+            <div style="font-size:0.78rem;color:var(--t3);">${u.email} · ${u.bidang?.join(', ') || '—'}</div>
+          </div>
+          <button onclick="approveUser('${doc.id}')" style="background:#22c55e;color:#fff;border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:0.8rem;font-weight:600;">✓ Setujui</button>
+        </div>`;
+      }
+    });
+
+    const totalEl = document.getElementById('stat-total-users');
+    const pendingEl = document.getElementById('stat-pending-users');
+    if(totalEl) totalEl.textContent = totalUsers;
+    if(pendingEl) pendingEl.textContent = pendingCount;
+
+    const pendingList = document.getElementById('adminPortalPendingList');
+    if(pendingList) {
+      pendingList.innerHTML = pendingCount === 0
+        ? '<span style="color:#22c55e;"><i class="fas fa-check-circle"></i> Tidak ada pengguna yang menunggu persetujuan.</span>'
+        : pendingHtml;
+    }
+
+    // Count arsip
+    const arsipSnap = await db.collection('arsip').get();
+    const totalArsipEl = document.getElementById('stat-total-arsip-admin');
+    if(totalArsipEl) totalArsipEl.textContent = arsipSnap.size;
+
+  } catch(e) {
+    console.error('loadAdminPortalStats error:', e);
+  }
+}
+
+async function approveUser(uid) {
+  try {
+    await db.collection('users').doc(uid).update({ status: 'active' });
+    loadAdminPortalStats(); // refresh
+  } catch(e) {
+    alert('Gagal menyetujui: ' + e.message);
+  }
+}

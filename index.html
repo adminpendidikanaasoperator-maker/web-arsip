@@ -138,7 +138,7 @@
   <nav class="sb-nav">
     <div class="sb-section">Beranda</div>
     <a class="sb-link active" href="#" data-page="dashboard" id="nav-dashboard"><i class="fas fa-house"></i><span>Portal Utama</span></a>
-
+    <a class="sb-link" href="#" data-page="admin-portal" id="nav-admin-portal" style="display:none;"><i class="fas fa-shield-halved" style="color:#e11d48;"></i><span>Portal Admin</span></a>
 
 
     <div class="sb-section">Manajemen Arsip</div>
@@ -921,7 +921,70 @@
       </section>
     </div>
   </main>
-<main class="page" id="page-dashboard">
+<!-- PAGE: PORTAL ADMIN -->
+<main class="page hidden" id="page-admin-portal">
+  <div class="portal-header" style="background: linear-gradient(135deg,#0b2239 0%,#1e3a5f 100%); color:#fff; border-radius:16px; padding:32px 36px; margin-bottom:24px;">
+    <div style="display:flex; align-items:center; gap:20px;">
+      <div style="width:64px;height:64px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;"><i class="fas fa-shield-halved"></i></div>
+      <div>
+        <h1 style="color:#fff; margin:0; font-size:1.6rem;">Portal Admin SIMARSIP</h1>
+        <p style="color:rgba(255,255,255,0.8); margin:4px 0 0; font-size:0.95rem;">Selamat datang, <strong id="adminPortalName"></strong> — kelola sistem dan pengguna dari sini.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Admin -->
+  <div class="stat-cards" id="adminPortalStats" style="margin-bottom:24px;">
+    <div class="stat-card">
+      <div class="sc-icon" style="background:#dbeafe18;color:#3b82f6;"><i class="fas fa-users"></i></div>
+      <div class="sc-label">Total Pengguna</div><div class="sc-value" id="stat-total-users">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-icon" style="background:#fef9c318;color:#eab308;"><i class="fas fa-user-clock"></i></div>
+      <div class="sc-label">Menunggu Persetujuan</div><div class="sc-value" id="stat-pending-users">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-icon" style="background:#dcfce718;color:#22c55e;"><i class="fas fa-file-alt"></i></div>
+      <div class="sc-label">Total Arsip</div><div class="sc-value" id="stat-total-arsip-admin">—</div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div style="margin-bottom:20px;font-weight:700;font-size:1rem;color:var(--t1);">Akses Cepat</div>
+  <div class="stat-cards">
+    <div class="stat-card" style="cursor:pointer;flex-direction:column;align-items:center;padding:28px 16px;text-align:center;" onclick="document.getElementById('nav-dashboard').click()">
+      <div class="stat-icon" style="margin-bottom:12px;width:56px;height:56px;background:#dbeafe;color:#2563eb;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;"><i class="fas fa-house"></i></div>
+      <div style="font-weight:700;color:var(--t1);font-size:1rem;">Portal Utama</div>
+      <div style="font-size:0.78rem;color:var(--t2);margin-top:6px;">Dashboard & Statistik Arsip</div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;flex-direction:column;align-items:center;padding:28px 16px;text-align:center;" onclick="document.getElementById('nav-users').click()">
+      <div class="stat-icon" style="margin-bottom:12px;width:56px;height:56px;background:#fce7f3;color:#ec4899;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;"><i class="fas fa-users-gear"></i></div>
+      <div style="font-weight:700;color:var(--t1);font-size:1rem;">Manajemen Pengguna</div>
+      <div style="font-size:0.78rem;color:var(--t2);margin-top:6px;">Tambah, edit & setujui akun</div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;flex-direction:column;align-items:center;padding:28px 16px;text-align:center;" onclick="document.getElementById('nav-arsip').click()">
+      <div class="stat-icon" style="margin-bottom:12px;width:56px;height:56px;background:#dcfce7;color:#16a34a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;"><i class="fas fa-folder-tree"></i></div>
+      <div style="font-weight:700;color:var(--t1);font-size:1rem;">Semua Arsip</div>
+      <div style="font-size:0.78rem;color:var(--t2);margin-top:6px;">Kelola seluruh dokumen arsip</div>
+    </div>
+    <div class="stat-card" style="cursor:pointer;flex-direction:column;align-items:center;padding:28px 16px;text-align:center;" onclick="document.getElementById('nav-generator').click()">
+      <div class="stat-icon" style="margin-bottom:12px;width:56px;height:56px;background:#ede9fe;color:#7c3aed;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.4rem;"><i class="fas fa-file-word"></i></div>
+      <div style="font-weight:700;color:var(--t1);font-size:1rem;">Generator Dokumen</div>
+      <div style="font-size:0.78rem;color:var(--t2);margin-top:6px;">Buat dokumen otomatis</div>
+    </div>
+  </div>
+
+  <!-- Pending Users Table -->
+  <div style="margin-top:28px;background:var(--card);border-radius:12px;padding:20px;box-shadow:0 1px 6px rgba(0,0,0,0.06);">
+    <div style="font-weight:700;font-size:1rem;color:var(--t1);margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+      <i class="fas fa-user-clock" style="color:#eab308;"></i> Pengguna Menunggu Persetujuan
+    </div>
+    <div id="adminPortalPendingList" style="color:var(--t3);font-size:0.9rem;">Memuat...</div>
+  </div>
+</main>
+
+<main class="page hidden" id="page-dashboard">
+
     <div class="portal-header">
       <h1>Portal SIMARSIP Akademik</h1>
       <p>Sistem Informasi Manajemen Arsip Terpadu Kelola dan pantau seluruh dokumen akademik, keuangan, dan data induk dalam satu platform tersentralisasi.</p>

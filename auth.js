@@ -260,6 +260,9 @@ function showAppBasedOnRole() {
     document.querySelectorAll('.sb-link.dept').forEach(el => el.style.display = 'flex');
     if(adminSection) adminSection.style.display = 'block';
     if(navUsers) navUsers.style.display = 'flex';
+    // Show Portal Admin nav link
+    const navAdminPortal = document.getElementById('nav-admin-portal');
+    if(navAdminPortal) navAdminPortal.style.display = 'flex';
   } else if (currentRole === 'wadir1') {
     window.activeBidangPortal = null;
     ['akademik', 'sistem_pendidikan', 'laboratorium', 'perpustakaan'].forEach(b => {
@@ -288,8 +291,16 @@ function showAppBasedOnRole() {
     if(tbTitle) tbTitle.innerHTML = `Portal: ${BIDANG_LABELS[currentBidang[0]]} - ${currentName} (${currentRole.toUpperCase()})`;
   }
   
-  if (currentRole !== 'staff') {
-    setTimeout(() => { let el = document.getElementById('nav-dashboard'); if(el) el.click(); }, 100);
+  if (currentRole === 'admin' || currentRole === 'direktur') {
+    // Admin lands on Portal Admin
+    setTimeout(() => {
+      const el = document.getElementById('nav-admin-portal');
+      if(el) el.click();
+      // Load admin portal stats
+      if (typeof loadAdminPortalStats === 'function') loadAdminPortalStats();
+    }, 150);
+  } else {
+    setTimeout(() => { let el = document.getElementById('nav-dashboard'); if(el) el.click(); }, 150);
   }
   
   if (typeof loadData === 'function') loadData();
