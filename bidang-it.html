@@ -130,6 +130,15 @@
     .btn-approve { background: var(--success); color: #fff; border: none; padding: 7px 16px; border-radius: 7px; cursor: pointer; font-weight: 600; font-size: 0.8rem; transition: background .2s; white-space: nowrap; }
     .btn-approve:hover { background: #16a34a; }
 
+    /* IT TABS */
+    .it-tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+    .it-tab { padding: 10px 18px; border-radius: 8px; font-weight: 600; font-size: 0.9rem; cursor: pointer; background: var(--card); color: var(--t2); border: 1px solid var(--border); transition: all .2s; white-space: nowrap; }
+    .it-tab:hover { background: #f1f5f9; color: var(--primary); }
+    .it-tab.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 4px 10px rgba(37,99,235,0.2); }
+    .it-tab-content { display: none; }
+    .it-tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
     /* LOADING / AUTH CHECK */
     .auth-check { display: flex; align-items: center; justify-content: center; min-height: 100vh; flex-direction: column; gap: 14px; color: var(--t2); }
     .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -340,26 +349,45 @@
       </table>
     </div>
 
-    <!-- RIWAYAT KINERJA IT -->
+    <!-- MODUL KHUSUS BIDANG IT -->
     <div class="section-title" style="margin-top:28px; justify-content:space-between;">
-      <div><i class="fas fa-clipboard-check" style="color:#10b981;"></i> Riwayat Kinerja Bidang IT</div>
+      <div><i class="fas fa-clipboard-check" style="color:#10b981;"></i> Manajemen Kinerja & Log IT</div>
       <button class="btn btn-outline" style="color:var(--primary); border-color:var(--primary);" onclick="window.print()">
         <i class="fas fa-print"></i> Cetak PDF
       </button>
     </div>
-    <div class="card" style="overflow-x:auto; margin-bottom:40px;">
+    
+    <!-- Tab Navigation -->
+    <div class="it-tabs">
+      <div class="it-tab active" onclick="switchITTab(event, 'Semua')"><i class="fas fa-list-ul"></i> Semua Tiket</div>
+      <div class="it-tab" onclick="switchITTab(event, 'Infrastruktur & Jaringan')"><i class="fas fa-server"></i> Infrastruktur</div>
+      <div class="it-tab" onclick="switchITTab(event, 'Backup Data')"><i class="fas fa-database"></i> Backup Data</div>
+      <div class="it-tab" onclick="switchITTab(event, 'Keamanan & Database')"><i class="fas fa-shield-alt"></i> Keamanan Siber</div>
+      <div class="it-tab" onclick="switchITTab(event, 'Sistem Informasi (Web/Aplikasi)')"><i class="fas fa-code"></i> Pengembangan Sistem</div>
+    </div>
+
+    <!-- Active Tab Label -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div style="font-weight:600; color:var(--primary);" id="activeTabTitle">Menampilkan: Semua Tiket Laporan</div>
+      <button class="btn btn-primary" onclick="openModalKinerja()" style="padding:6px 14px; font-size:0.8rem; border-radius:6px; border:none; cursor:pointer;">
+        <i class="fas fa-plus"></i> Tambah Log <span id="addBtnLabel">IT</span>
+      </button>
+    </div>
+
+    <!-- Data Table Container -->
+    <div class="card" style="overflow-x:auto; margin-bottom:40px; border-top:4px solid var(--primary);">
       <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
         <thead>
           <tr style="background:#f8fafc; border-bottom:2px solid var(--border);">
             <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Tanggal</th>
-            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">No. Tiket</th>
-            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Pemohon & Kategori</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">No. Referensi</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Kategori & Detail</th>
             <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Status & Prioritas</th>
-            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Deskripsi & Solusi</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Catatan / Solusi</th>
           </tr>
         </thead>
         <tbody id="riwayatKinerjaBody">
-          <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--t3);"><i class="fas fa-spinner fa-spin"></i> Memuat riwayat kinerja...</td></tr>
+          <tr><td colspan="5" style="text-align:center;padding:20px;color:var(--t3);"><i class="fas fa-spinner fa-spin"></i> Memuat data...</td></tr>
         </tbody>
       </table>
     </div>
@@ -723,6 +751,43 @@ async function submitKinerjaIT() {
   }
 }
 
+// ── Tab Management & Dynamic Modal ─────────────────────────
+let currentITTab = 'Semua';
+
+function switchITTab(event, tabName) {
+  // Update Tab Styling
+  document.querySelectorAll('.it-tab').forEach(el => el.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  
+  // Update State & Labels
+  currentITTab = tabName;
+  document.getElementById('activeTabTitle').textContent = `Menampilkan: Tiket ${tabName}`;
+  
+  if(tabName === 'Semua') {
+    document.getElementById('addBtnLabel').textContent = 'IT';
+  } else if(tabName === 'Infrastruktur & Jaringan') {
+    document.getElementById('addBtnLabel').textContent = 'Infrastruktur';
+  } else if(tabName === 'Backup Data') {
+    document.getElementById('addBtnLabel').textContent = 'Backup';
+  } else if(tabName === 'Keamanan & Database') {
+    document.getElementById('addBtnLabel').textContent = 'Keamanan';
+  } else if(tabName === 'Sistem Informasi (Web/Aplikasi)') {
+    document.getElementById('addBtnLabel').textContent = 'Web/Sistem';
+  }
+  
+  // Reload Data
+  loadKinerjaIT();
+}
+
+function openModalKinerja() {
+  document.getElementById('modalKinerjaIT').style.display = 'flex';
+  
+  // Auto-select category if not in 'Semua'
+  if (currentITTab !== 'Semua') {
+    document.getElementById('itKinerjaKategori').value = currentITTab;
+  }
+}
+
 // ── Load Riwayat Kinerja IT ───────────────────────────────
 async function loadKinerjaIT() {
   try {
@@ -739,6 +804,15 @@ async function loadKinerjaIT() {
 
     kinerjaSnap.forEach(doc => {
       const data = doc.data();
+      
+      // Filter based on currentITTab
+      if(currentITTab !== 'Semua') {
+        if(currentITTab === 'Infrastruktur & Jaringan' && data.kategori !== 'Infrastruktur & Jaringan' && data.kategori !== 'Hardware & Software') return;
+        if(currentITTab === 'Backup Data' && data.kategori !== 'Backup Data Rutin') return;
+        if(currentITTab === 'Keamanan & Database' && data.kategori !== 'Keamanan & Database') return;
+        if(currentITTab === 'Sistem Informasi (Web/Aplikasi)' && data.kategori !== 'Pengembangan Sistem/Web' && data.kategori !== 'Sistem Informasi (Web/Aplikasi)') return;
+      }
+
       const tgl = data.timestamp ? new Date(data.timestamp.toMillis()).toLocaleString('id-ID') : '-';
       
       // Status Badge
@@ -781,6 +855,10 @@ async function loadKinerjaIT() {
         </tr>
       `;
     });
+    
+    if(html === '') {
+      html = `<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--t3);">Belum ada catatan kinerja untuk kategori <b>${currentITTab}</b>.</td></tr>`;
+    }
     
     document.getElementById('riwayatKinerjaBody').innerHTML = html;
   } catch(e) {
