@@ -395,29 +395,87 @@
   </div><!-- /main-content -->
 </div><!-- /adminApp -->
 
-<!-- MODAL KINERJA IT -->
-<div id="modalKinerjaIT" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
-  <div class="card" style="width:90%; max-width:500px; padding:25px; position:relative; background:#fff; border-radius:8px;">
+<!-- MODAL CMD LOG -->
+<div id="modalCmdLog" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.7); align-items:center; justify-content:center;">
+  <div style="width:90%; max-width:800px; background:#000; color:#0f0; border-radius:8px; border:2px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.9); display:flex; flex-direction:column; overflow:hidden;">
+    <div style="background:#222; padding:10px 15px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #444;">
+      <div style="font-family:monospace; font-size:0.9rem; color:#aaa;"><i class="fas fa-terminal"></i> root@server:~/logs</div>
+      <button onclick="document.getElementById('modalCmdLog').style.display='none'" style="background:transparent; border:none; color:#ff5555; cursor:pointer; font-size:1.2rem;"><i class="fas fa-times"></i></button>
+    </div>
+    <div id="cmdLogBody" style="padding:20px; font-family:monospace; font-size:0.9rem; line-height:1.5; min-height:300px; max-height:60vh; overflow-y:auto; white-space:pre-wrap;"></div>
+  </div>
+</div>
+
+<div id="modalKinerjaIT" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; overflow-y:auto; padding:20px 0;">
+  <div class="card" style="width:90%; max-width:600px; padding:25px; position:relative; background:#fff; border-radius:8px; margin:auto;">
     <h3 style="margin-top:0; color:var(--primary);"><i class="fas fa-clipboard-list"></i> Form Pencatatan Kinerja IT (ITSM)</h3>
     <p style="color:var(--t2); font-size:0.85rem; margin-bottom:20px;">Catat laporan kendala, perbaikan, atau tugas IT secara detail sesuai standar manajemen layanan IT.</p>
     
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
       <!-- Kiri -->
       <div>
-        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Unit Kerja / Pemohon</label>
-        <input type="text" id="itKinerjaPemohon" placeholder="Misal: BAAK / Dosen" style="width:100%; padding:9px; border:1px solid var(--border); border-radius:6px; font-family:inherit;">
-      </div>
-      <div>
         <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Kategori Pekerjaan</label>
-        <select id="itKinerjaKategori" style="width:100%; padding:9px; border:1px solid var(--border); border-radius:6px; font-family:inherit;">
+        <select id="itKinerjaKategori" onchange="toggleDynamicFields()" style="width:100%; padding:9px; border:1px solid var(--border); border-radius:6px; font-family:inherit;">
           <option value="Infrastruktur & Jaringan">Infrastruktur & Jaringan</option>
           <option value="Hardware & Software">Hardware & Software</option>
           <option value="Sistem Informasi (Web/Aplikasi)">Sistem Informasi (Web/Aplikasi)</option>
-          <option value="Database & Keamanan">Database & Keamanan</option>
+          <option value="Keamanan & Database">Keamanan & Database</option>
+          <option value="Backup Data Rutin">Backup Data Rutin</option>
           <option value="Penanganan Kendala (Helpdesk)">Penanganan Kendala (Helpdesk)</option>
           <option value="Lainnya">Lainnya</option>
         </select>
       </div>
+      <div id="fieldPemohon">
+        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Unit Kerja / Pelapor</label>
+        <input type="text" id="itKinerjaPemohon" placeholder="Misal: BAAK / Dosen" style="width:100%; padding:9px; border:1px solid var(--border); border-radius:6px; font-family:inherit;">
+      </div>
+    </div>
+    
+    <!-- DYNAMIC FIELDS: INFRASTRUKTUR -->
+    <div id="groupInfra" style="display:none; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px; padding:12px; background:#f8fafc; border-radius:8px; border:1px dashed #cbd5e1;">
+      <div>
+        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.8rem;">Nama Perangkat</label>
+        <input type="text" id="itKinerjaDeviceName" placeholder="Contoh: Router Mikrotik LT2" style="width:100%; padding:7px; border:1px solid var(--border); border-radius:4px; font-size:0.85rem;">
+      </div>
+      <div>
+        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.8rem;">Durasi Downtime (Menit)</label>
+        <input type="number" id="itKinerjaDowntime" placeholder="0 jika tidak mati" style="width:100%; padding:7px; border:1px solid var(--border); border-radius:4px; font-size:0.85rem;">
+      </div>
+    </div>
+
+    <!-- DYNAMIC FIELDS: BACKUP -->
+    <div id="groupBackup" style="display:none; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px; padding:12px; background:#f8fafc; border-radius:8px; border:1px dashed #cbd5e1;">
+      <div>
+        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.8rem;">Nama DB / File System</label>
+        <input type="text" id="itKinerjaDBName" placeholder="Contoh: db_akademik_2026" style="width:100%; padding:7px; border:1px solid var(--border); border-radius:4px; font-size:0.85rem;">
+      </div>
+      <div>
+        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.8rem;">Ukuran Backup (MB/GB)</label>
+        <input type="text" id="itKinerjaFileSize" placeholder="Contoh: 1.2 GB" style="width:100%; padding:7px; border:1px solid var(--border); border-radius:4px; font-size:0.85rem;">
+      </div>
+      <div style="grid-column: span 2;">
+        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.8rem;">Lokasi Penyimpanan</label>
+        <input type="text" id="itKinerjaStorageLoc" placeholder="Contoh: Google Drive / NAS Server" style="width:100%; padding:7px; border:1px solid var(--border); border-radius:4px; font-size:0.85rem;">
+      </div>
+    </div>
+
+    <!-- DYNAMIC FIELDS: SECURITY -->
+    <div id="groupSecurity" style="display:none; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px; padding:12px; background:#fef2f2; border-radius:8px; border:1px dashed #fca5a5;">
+      <div>
+        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.8rem;">Target Sistem/IP</label>
+        <input type="text" id="itKinerjaTargetSystem" placeholder="Contoh: Portal Web / IP Server" style="width:100%; padding:7px; border:1px solid var(--border); border-radius:4px; font-size:0.85rem;">
+      </div>
+      <div>
+        <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.8rem;">Tingkat Ancaman</label>
+        <select id="itKinerjaThreatLevel" style="width:100%; padding:7px; border:1px solid var(--border); border-radius:4px; font-size:0.85rem;">
+          <option value="Low">Low (Peringatan)</option>
+          <option value="Medium">Medium (Mencurigakan)</option>
+          <option value="Critical">Critical (Serangan Aktif)</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
       <div>
         <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Prioritas</label>
         <select id="itKinerjaPrioritas" style="width:100%; padding:9px; border:1px solid var(--border); border-radius:6px; font-family:inherit;">
@@ -440,16 +498,16 @@
 
     <div style="margin-bottom:15px;">
       <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Lokasi / Ruangan</label>
-      <input type="text" id="itKinerjaLokasi" placeholder="Misal: Lab Komputer 1 / Ruang Rapat" style="width:100%; padding:9px; border:1px solid var(--border); border-radius:6px; font-family:inherit;">
+      <input type="text" id="itKinerjaLokasi" placeholder="Misal: Lab Komputer 1 / Ruang Rapat / Ruang Server" style="width:100%; padding:9px; border:1px solid var(--border); border-radius:6px; font-family:inherit;">
     </div>
     
     <div style="margin-bottom:15px;">
-      <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Deskripsi Kendala / Pekerjaan</label>
+      <label id="lblDeskripsi" style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Deskripsi Kendala / Pekerjaan</label>
       <textarea id="itKinerjaDeskripsi" rows="3" style="width:100%; padding:9px; border:1px solid var(--border); border-radius:6px; font-family:inherit;" placeholder="Rincikan masalah atau tugas yang dilakukan..."></textarea>
     </div>
 
     <div style="margin-bottom:15px;">
-      <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Tindakan yang Dilakukan (Solusi)</label>
+      <label id="lblSolusi" style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Tindakan yang Dilakukan (Solusi/Mitigasi)</label>
       <textarea id="itKinerjaSolusi" rows="3" style="width:100%; padding:9px; border:1px solid var(--border); border-radius:6px; font-family:inherit;" placeholder="Apa yang dilakukan tim IT untuk menyelesaikan masalah..."></textarea>
     </div>
     
@@ -462,6 +520,13 @@
         <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem;">Waktu Selesai</label>
         <input type="time" id="itKinerjaSelesai" style="width:100%; padding:9px; border:1px solid var(--border); border-radius:6px; font-family:inherit;">
       </div>
+    </div>
+
+    <!-- LAMPIRAN -->
+    <div style="margin-bottom:20px; padding:12px; background:#f8fafc; border:1px dashed var(--primary); border-radius:8px;">
+      <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.85rem; color:var(--primary);"><i class="fas fa-paperclip"></i> Bukti Lampiran (Foto/PDF)</label>
+      <input type="file" id="itKinerjaLampiran" accept="image/*,.pdf" style="width:100%; font-size:0.85rem; color:var(--t2);">
+      <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">* Maksimal 5MB. Lampirkan foto server, log error, atau surat tugas.</div>
     </div>
     
     <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
@@ -691,8 +756,17 @@ async function submitKinerjaIT() {
   const waktuMulai = document.getElementById('itKinerjaMulai').value;
   const waktuSelesai = document.getElementById('itKinerjaSelesai').value;
   
-  if (!pemohon || !deskripsi || !solusi) {
-      alert('Unit Kerja, Deskripsi Kendala, dan Solusi harus diisi!');
+  // Dynamic fields
+  const deviceName = document.getElementById('itKinerjaDeviceName').value.trim();
+  const downtime = document.getElementById('itKinerjaDowntime').value.trim();
+  const dbName = document.getElementById('itKinerjaDBName').value.trim();
+  const fileSize = document.getElementById('itKinerjaFileSize').value.trim();
+  const storageLoc = document.getElementById('itKinerjaStorageLoc').value.trim();
+  const targetSystem = document.getElementById('itKinerjaTargetSystem').value.trim();
+  const threatLevel = document.getElementById('itKinerjaThreatLevel').value;
+  
+  if (!deskripsi) {
+      alert('Deskripsi Kendala/Pekerjaan harus diisi!');
       return;
   }
   
@@ -713,7 +787,24 @@ async function submitKinerjaIT() {
       const randomId = Math.floor(1000 + Math.random() * 9000);
       const noTiket = `IT-${dateStr}-${randomId}`;
 
-      await db.collection('kinerja_bidang').add({
+      // Handle File Upload
+      const fileInput = document.getElementById('itKinerjaLampiran');
+      let lampiranUrl = '';
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        if (file.size > 5 * 1024 * 1024) {
+          throw new Error('Ukuran file maksimal 5MB');
+        }
+        const storageRef = storage.ref();
+        const fileRef = storageRef.child(`lampiran_it/${Date.now()}_${file.name}`);
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengunggah File...';
+        await fileRef.put(file);
+        lampiranUrl = await fileRef.getDownloadURL();
+      }
+
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan Data...';
+      
+      const payload = {
           noTiket: noTiket,
           userId: user.uid,
           userName: pelaporNama,
@@ -728,8 +819,24 @@ async function submitKinerjaIT() {
           solusi: solusi,
           waktuMulai: waktuMulai,
           waktuSelesai: waktuSelesai,
+          lampiranUrl: lampiranUrl,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
-      });
+      };
+      
+      // Append dynamic fields
+      if (kategori === 'Infrastruktur & Jaringan' || kategori === 'Hardware & Software') {
+        payload.deviceName = deviceName;
+        payload.downtime = downtime;
+      } else if (kategori === 'Backup Data Rutin') {
+        payload.dbName = dbName;
+        payload.fileSize = fileSize;
+        payload.storageLoc = storageLoc;
+      } else if (kategori === 'Keamanan & Database') {
+        payload.targetSystem = targetSystem;
+        payload.threatLevel = threatLevel;
+      }
+
+      await db.collection('kinerja_bidang').add(payload);
       
       document.getElementById('modalKinerjaIT').style.display = 'none';
       document.getElementById('itKinerjaPemohon').value = '';
@@ -738,6 +845,13 @@ async function submitKinerjaIT() {
       document.getElementById('itKinerjaSolusi').value = '';
       document.getElementById('itKinerjaMulai').value = '';
       document.getElementById('itKinerjaSelesai').value = '';
+      document.getElementById('itKinerjaDeviceName').value = '';
+      document.getElementById('itKinerjaDowntime').value = '';
+      document.getElementById('itKinerjaDBName').value = '';
+      document.getElementById('itKinerjaFileSize').value = '';
+      document.getElementById('itKinerjaStorageLoc').value = '';
+      document.getElementById('itKinerjaTargetSystem').value = '';
+      document.getElementById('itKinerjaLampiran').value = '';
       
       alert('Laporan Kinerja IT berhasil disimpan dan masuk ke Dashboard Utama!');
       loadKinerjaIT();
@@ -779,13 +893,96 @@ function switchITTab(event, tabName) {
   loadKinerjaIT();
 }
 
+function toggleDynamicFields() {
+  const cat = document.getElementById('itKinerjaKategori').value;
+  
+  // Reset all
+  document.getElementById('groupInfra').style.display = 'none';
+  document.getElementById('groupBackup').style.display = 'none';
+  document.getElementById('groupSecurity').style.display = 'none';
+  document.getElementById('fieldPemohon').style.display = 'block';
+  document.getElementById('lblDeskripsi').textContent = 'Deskripsi Kendala / Pekerjaan';
+  document.getElementById('lblSolusi').textContent = 'Tindakan yang Dilakukan (Solusi/Mitigasi)';
+  
+  if (cat === 'Infrastruktur & Jaringan' || cat === 'Hardware & Software') {
+    document.getElementById('groupInfra').style.display = 'grid';
+    document.getElementById('lblDeskripsi').textContent = 'Detail Maintenance / Kerusakan';
+  } else if (cat === 'Backup Data Rutin') {
+    document.getElementById('groupBackup').style.display = 'grid';
+    document.getElementById('lblDeskripsi').textContent = 'Catatan Backup (Opsional)';
+    document.getElementById('lblSolusi').textContent = 'Keterangan Hasil Backup';
+  } else if (cat === 'Keamanan & Database') {
+    document.getElementById('groupSecurity').style.display = 'grid';
+    document.getElementById('lblDeskripsi').textContent = 'Deskripsi Insiden / Pengecekan';
+  } else if (cat === 'Sistem Informasi (Web/Aplikasi)') {
+    document.getElementById('lblDeskripsi').textContent = 'Fitur yang Dikerjakan / Bug';
+    document.getElementById('lblSolusi').textContent = 'Penjelasan Update (Changelog)';
+  }
+}
+
+function openCmdLog(kategori, noTiket, deskripsi) {
+  document.getElementById('modalCmdLog').style.display = 'flex';
+  const body = document.getElementById('cmdLogBody');
+  body.innerHTML = ''; // clear
+
+  const lines = [
+    `> Initializing diagnostic tool for [${noTiket}]...`,
+    `> Analyzing context: ${kategori}`,
+    `> User description: "${deskripsi}"`,
+    `> Fetching system metrics... [OK]`,
+    `> Connecting to node daemon... [OK]`,
+    `> Running full system trace...`,
+    `  - Memory usage: 45% (Normal)`,
+    `  - CPU Load: 12% (Normal)`,
+    `  - Network latency: 15ms`,
+    `> Diagnostics complete. Applying resolution patch...`,
+    `> [SUCCESS] Operation completed with 0 errors.`,
+    `> Connection closed.`
+  ];
+
+  let i = 0;
+  function typeLine() {
+    if (i < lines.length) {
+      const p = document.createElement('div');
+      p.textContent = lines[i];
+      p.style.marginBottom = '4px';
+      if(lines[i].includes('[OK]') || lines[i].includes('[SUCCESS]')) p.style.color = '#0f0';
+      if(lines[i].includes('Error') || lines[i].includes('Failed')) p.style.color = '#f00';
+      
+      body.appendChild(p);
+      body.scrollTop = body.scrollHeight; // auto scroll
+      i++;
+      setTimeout(typeLine, Math.random() * 300 + 100);
+    } else {
+      const cursor = document.createElement('span');
+      cursor.textContent = '_';
+      cursor.style.animation = 'blink 1s step-end infinite';
+      body.appendChild(cursor);
+      
+      // Inject blink keyframes if not exists
+      if(!document.getElementById('cmdBlinkStyle')) {
+        const style = document.createElement('style');
+        style.id = 'cmdBlinkStyle';
+        style.innerHTML = `@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }`;
+        document.head.appendChild(style);
+      }
+    }
+  }
+  
+  setTimeout(typeLine, 500);
+}
+
 function openModalKinerja() {
   document.getElementById('modalKinerjaIT').style.display = 'flex';
   
   // Auto-select category if not in 'Semua'
   if (currentITTab !== 'Semua') {
     document.getElementById('itKinerjaKategori').value = currentITTab;
+  } else {
+    document.getElementById('itKinerjaKategori').value = 'Penanganan Kendala (Helpdesk)';
   }
+  
+  toggleDynamicFields();
 }
 
 // ── Load Riwayat Kinerja IT ───────────────────────────────
@@ -829,6 +1026,44 @@ async function loadKinerjaIT() {
       else if(data.prioritas === 'Tinggi') { prioColor = '#c2410c'; prioBg = '#ffedd5'; }
       else if(data.prioritas === 'Mendesak') { prioColor = '#e11d48'; prioBg = '#ffe4e6'; }
       
+      // Dynamic Details
+      let dynamicDetails = '';
+      if(data.kategori === 'Infrastruktur & Jaringan' || data.kategori === 'Hardware & Software') {
+        dynamicDetails = `
+          <div style="margin-top:6px; padding:8px; background:#f8fafc; border-radius:4px; font-size:0.75rem;">
+            <div><strong>Perangkat:</strong> ${data.deviceName || '-'}</div>
+            <div><strong>Downtime:</strong> ${data.downtime ? data.downtime + ' Menit' : '-'}</div>
+          </div>
+        `;
+      } else if(data.kategori === 'Backup Data Rutin') {
+        dynamicDetails = `
+          <div style="margin-top:6px; padding:8px; background:#f8fafc; border-radius:4px; font-size:0.75rem;">
+            <div><strong>Database/File:</strong> ${data.dbName || '-'}</div>
+            <div><strong>Ukuran:</strong> ${data.fileSize || '-'}</div>
+            <div><strong>Lokasi:</strong> ${data.storageLoc || '-'}</div>
+          </div>
+        `;
+      } else if(data.kategori === 'Keamanan & Database') {
+        dynamicDetails = `
+          <div style="margin-top:6px; padding:8px; background:#fef2f2; border-radius:4px; font-size:0.75rem;">
+            <div><strong>Target:</strong> ${data.targetSystem || '-'}</div>
+            <div><strong>Ancaman:</strong> ${data.threatLevel || '-'}</div>
+          </div>
+        `;
+      }
+      
+      let lampiranBtn = '';
+      if(data.lampiranUrl) {
+        lampiranBtn = `<a href="${data.lampiranUrl}" target="_blank" style="display:inline-block; margin-top:8px; font-size:0.75rem; color:#fff; background:var(--primary); padding:4px 10px; border-radius:12px; text-decoration:none; margin-right:5px;"><i class="fas fa-paperclip"></i> Lihat Lampiran</a>`;
+      }
+      
+      // Escape quotes for JS string argument
+      const safeKategori = (data.kategori || '').replace(/'/g, "\\'");
+      const safeNoTiket = (data.noTiket || '').replace(/'/g, "\\'");
+      const safeDeskripsi = (data.deskripsi || '').replace(/'/g, "\\'");
+      
+      const cmdLogBtn = `<button onclick="openCmdLog('${safeKategori}', '${safeNoTiket}', '${safeDeskripsi}')" style="display:inline-block; margin-top:8px; font-size:0.75rem; color:#0f0; background:#000; padding:4px 10px; border-radius:12px; border:1px solid #333; cursor:pointer;"><i class="fas fa-terminal"></i> Simulasi Log Sistem</button>`;
+
       html += `
         <tr style="border-bottom:1px solid var(--border); vertical-align:top;">
           <td style="padding:12px 14px;">
@@ -849,8 +1084,13 @@ async function loadKinerjaIT() {
           <td style="padding:12px 14px; max-width:350px;">
             <div style="font-size:0.85rem; color:var(--t1); margin-bottom:6px;"><strong>Kendala:</strong> ${data.deskripsi || '-'}</div>
             <div style="font-size:0.8rem; color:var(--t2); padding-left:10px; border-left:3px solid var(--success);"><strong>Solusi:</strong> ${data.solusi || '-'}</div>
+            ${dynamicDetails}
             ${data.lokasi ? `<div style="font-size:0.75rem; color:var(--t3); margin-top:6px;"><i class="fas fa-map-marker-alt"></i> ${data.lokasi}</div>` : ''}
             ${data.waktuMulai && data.waktuSelesai ? `<div style="font-size:0.75rem; color:var(--t3); margin-top:2px;"><i class="fas fa-clock"></i> Pengerjaan: ${data.waktuMulai} - ${data.waktuSelesai}</div>` : ''}
+            <div>
+              ${lampiranBtn}
+              ${cmdLogBtn}
+            </div>
           </td>
         </tr>
       `;
