@@ -684,7 +684,7 @@ async function loadKinerjaIT() {
     const urlMatch = errorString.match(/https:\/\/console\.firebase\.google\.com[^\s]*/);
     
     if(urlMatch) {
-        document.getElementById('riwayatKinerjaBody').innerHTML = \`
+        document.getElementById('riwayatKinerjaBody').innerHTML = `
           <tr><td colspan="4" style="text-align:center;padding:25px;">
             <div style="color:var(--danger); font-weight:600; margin-bottom:10px;">
               <i class="fas fa-exclamation-triangle"></i> Database Membutuhkan Indeks Baru
@@ -693,13 +693,13 @@ async function loadKinerjaIT() {
               Sistem membutuhkan indeks khusus (Composite Index) untuk mengurutkan riwayat. 
               Silakan klik tombol di bawah ini (akan membuka tab baru ke Firebase Console), lalu klik <b>"Create Index" / "Simpan"</b>.
             </p>
-            <a href="\${urlMatch[0]}" target="_blank" class="btn btn-primary" style="text-decoration:none;">
+            <a href="${urlMatch[0]}" target="_blank" class="btn btn-primary" style="text-decoration:none;">
               <i class="fas fa-external-link-alt"></i> Buat Indeks Database Sekarang
             </a>
             <p style="color:var(--t3); margin-top:15px; font-size:0.8rem;">
               Setelah mengeklik "Create Index" di Firebase, tunggu sekitar 3-5 menit sampai proses "Building" selesai, lalu refresh halaman ini.
             </p>
-          </td></tr>\`;
+          </td></tr>`;
     } else {
         document.getElementById('riwayatKinerjaBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--danger);">Gagal memuat riwayat kinerja: ' + e.message + '</td></tr>';
     }
