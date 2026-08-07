@@ -136,6 +136,22 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .hidden { display: none; }
+    @media print {
+      body * { visibility: hidden; }
+      .topbar, .hero, .stat-cards, .action-grid, .section-title { display: none !important; }
+      #modalKinerjaIT { display: none !important; }
+      #adminApp, #adminApp * { visibility: visible; }
+      .card { box-shadow: none; border: none; padding: 0; margin: 0; }
+      .btn { display: none !important; }
+      .section-title { display: flex !important; margin-top: 0 !important; page-break-after: avoid; }
+      
+      /* Only print the Riwayat Kinerja block */
+      .main-content > div:not(.section-title):not(.card) { display: none; }
+      
+      /* Make sure table is visible */
+      table { border-collapse: collapse !important; width: 100% !important; }
+      th, td { border: 1px solid #ccc !important; padding: 8px !important; }
+    }
   </style>
 </head>
 <body>
@@ -324,6 +340,29 @@
       </table>
     </div>
 
+    <!-- RIWAYAT KINERJA IT -->
+    <div class="section-title" style="margin-top:28px; justify-content:space-between;">
+      <div><i class="fas fa-clipboard-check" style="color:#10b981;"></i> Riwayat Kinerja Bidang IT</div>
+      <button class="btn btn-outline" style="color:var(--primary); border-color:var(--primary);" onclick="window.print()">
+        <i class="fas fa-print"></i> Cetak PDF
+      </button>
+    </div>
+    <div class="card" style="overflow-x:auto; margin-bottom:40px;">
+      <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+        <thead>
+          <tr style="background:#f8fafc; border-bottom:2px solid var(--border);">
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Tanggal</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Pelapor</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Kategori</th>
+            <th style="padding:10px 14px; text-align:left; font-weight:600; color:var(--t2);">Deskripsi Kinerja</th>
+          </tr>
+        </thead>
+        <tbody id="riwayatKinerjaBody">
+          <tr><td colspan="4" style="text-align:center;padding:20px;color:var(--t3);"><i class="fas fa-spinner fa-spin"></i> Memuat riwayat kinerja...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
   </div><!-- /main-content -->
 </div><!-- /adminApp -->
 
@@ -402,6 +441,7 @@ auth.onAuthStateChanged(async (user) => {
 
     loadStats();
     loadLaporanIT();
+    loadKinerjaIT();
 
   } catch(e) {
     console.error(e);
@@ -598,6 +638,7 @@ async function submitKinerjaIT() {
       document.getElementById('modalKinerjaIT').style.display = 'none';
       document.getElementById('itKinerjaDeskripsi').value = '';
       alert('Laporan Kinerja IT berhasil disimpan dan masuk ke Dashboard Utama!');
+      loadKinerjaIT();
       
   } catch(e) {
       console.error(e);
@@ -605,6 +646,45 @@ async function submitKinerjaIT() {
   } finally {
       btn.disabled = false;
       btn.innerHTML = oriText;
+  }
+}
+
+// ── Load Riwayat Kinerja IT ───────────────────────────────
+async function loadKinerjaIT() {
+  try {
+    const kinerjaSnap = await db.collection('kinerja_bidang')
+                                .where('bidangId', '==', 'sistem_informasi')
+                                .orderBy('timestamp', 'desc')
+                                .get();
+    let html = '';
+
+    if (kinerjaSnap.empty) {
+      document.getElementById('riwayatKinerjaBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--t3);">Belum ada catatan kinerja IT.</td></tr>';
+      return;
+    }
+
+    kinerjaSnap.forEach(doc => {
+      const data = doc.data();
+      const tgl = data.timestamp ? new Date(data.timestamp.toMillis()).toLocaleString('id-ID') : '-';
+      html += `
+        <tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 14px;">${tgl}</td>
+          <td style="padding:10px 14px; font-weight:500;">${data.userName || '-'}</td>
+          <td style="padding:10px 14px;"><span style="background:#e0f2fe;color:#0369a1;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;">${data.kategori}</span></td>
+          <td style="padding:10px 14px; max-width:300px; word-wrap:break-word;">${data.deskripsi}</td>
+        </tr>
+      `;
+    });
+    
+    document.getElementById('riwayatKinerjaBody').innerHTML = html;
+  } catch(e) {
+    console.error('Error load kinerja:', e);
+    // Fallback if index is missing (firestore needs composite index for where + orderBy)
+    if(e.message.includes('index')) {
+        document.getElementById('riwayatKinerjaBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--warning);">Sedang membangun indeks database... Harap tunggu beberapa saat.</td></tr>';
+    } else {
+        document.getElementById('riwayatKinerjaBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--danger);">Gagal memuat riwayat kinerja.</td></tr>';
+    }
   }
 }
 </script>
