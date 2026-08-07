@@ -52,6 +52,20 @@
         <div class="chart-wrap chart-center"><canvas id="chartStatus"></canvas></div>
       </div>
     </div>
+    <div class="grid-2-1" style="margin-bottom: 24px;">
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-clipboard-list"></i> Aktivitas Kinerja Terkini</h3></div>
+        <div class="recent-list" id="kinerjaList" style="max-height: 400px; overflow-y: auto;">
+          <!-- Items will be populated here -->
+          <div style="text-align:center; padding:20px; color:var(--t2);">Memuat data kinerja...</div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-pie"></i> Kinerja per Bidang</h3></div>
+        <div class="chart-wrap chart-center"><canvas id="chartKinerjaPie"></canvas></div>
+      </div>
+    </div>
+
     <div class="panel panel-fill" style="margin-bottom:24px;">
       <div class="panel-hd"><h3><i class="fas fa-clock"></i> Arsip Terbaru</h3></div>
       <div class="recent-list" id="recentList"></div>
