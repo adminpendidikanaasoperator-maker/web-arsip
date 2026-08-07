@@ -105,28 +105,132 @@ async function generatePDF() {
 
 function generateWord() {
   const type = document.getElementById('genType').value;
-  alert('Fitur DOCX menggunakan pustaka eksternal docx.js.\nSedang diproses...');
   
-  // Minimalist DOCX mapping
+  // Kop Surat Common Elements
+  const kopSurat = [
+    new docx.Paragraph({
+      text: "AKADEMI AKUPUNKTUR SURABAYA",
+      heading: docx.HeadingLevel.HEADING_2,
+      alignment: docx.AlignmentType.CENTER,
+      border: {
+        bottom: { color: "auto", space: 1, value: "single", size: 6 }
+      }
+    }),
+    new docx.Paragraph({
+      text: "Jl Parang Kusumo 14 Surabaya - 60176 Telp. 031.3526916",
+      alignment: docx.AlignmentType.CENTER,
+    }),
+    new docx.Paragraph({
+      text: "Email : akademi.akupunktur@gmail.com  www.akademiakupunktursurabaya.ac.id",
+      alignment: docx.AlignmentType.CENTER,
+    }),
+    new docx.Paragraph({
+      text: "Akreditasi BAN-PT No : 2523/SK/BAN-PT/Ak.S/2.0/PT/IX/2025",
+      alignment: docx.AlignmentType.CENTER,
+    }),
+    new docx.Paragraph({
+      text: "Akreditasi LAM-PTKes No : 0179/LAM-PTKes/Akr/Dip/V/2021",
+      alignment: docx.AlignmentType.CENTER,
+      spacing: { after: 400 }
+    })
+  ];
+
+  let children = [...kopSurat];
+
+  if (type === 'surat_tugas') {
+    const no = document.getElementById('genNoSurat').value || '.../.../.../...';
+    const nama = document.getElementById('genNamaDosen').value || '.........................';
+    const tugas = document.getElementById('genTugas').value || '.........................';
+    const tanggal = document.getElementById('genTanggal').value || '.........................';
+
+    children.push(
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({ text: "SURAT TUGAS", bold: true, underline: {} })
+        ],
+        alignment: docx.AlignmentType.CENTER,
+      }),
+      new docx.Paragraph({
+        text: `Nomor: ${no}`,
+        alignment: docx.AlignmentType.CENTER,
+        spacing: { after: 400 }
+      }),
+      new docx.Paragraph({
+        text: "Direktur Akademi Akupunktur Surabaya, dengan ini menugaskan kepada:",
+        spacing: { after: 200 }
+      }),
+      new docx.Table({
+        width: { size: 100, type: docx.WidthType.PERCENTAGE },
+        borders: docx.TableBorders.NONE,
+        rows: [
+          new docx.TableRow({
+            children: [
+              new docx.TableCell({ children: [new docx.Paragraph("Nama")] }),
+              new docx.TableCell({ children: [new docx.Paragraph(":")] }),
+              new docx.TableCell({ children: [new docx.Paragraph({ children: [new docx.TextRun({ text: nama, bold: true })] })] })
+            ]
+          })
+        ]
+      }),
+      new docx.Paragraph({
+        text: `Untuk melaksanakan tugas: ${tugas}`,
+        spacing: { before: 200, after: 200 }
+      }),
+      new docx.Paragraph({
+        text: `Tugas ini dilaksanakan pada tanggal ${tanggal}. Demikian surat tugas ini dibuat untuk dilaksanakan dengan penuh tanggung jawab.`,
+        spacing: { after: 600 }
+      }),
+      new docx.Paragraph({
+        text: `Surabaya, ${new Date().toLocaleDateString('id-ID')}`,
+        alignment: docx.AlignmentType.RIGHT
+      }),
+      new docx.Paragraph({
+        text: "Direktur,",
+        alignment: docx.AlignmentType.RIGHT,
+        spacing: { after: 800 }
+      }),
+      new docx.Paragraph({
+        children: [new docx.TextRun({ text: "( ______________________ )", bold: true })],
+        alignment: docx.AlignmentType.RIGHT
+      })
+    );
+  } else if (type === 'rps_obe') {
+    const makul = document.getElementById('genMakul').value || '.........................';
+    const cpl = document.getElementById('genCPL').value || '.........................';
+
+    children.push(
+      new docx.Paragraph({
+        children: [
+          new docx.TextRun({ text: "Rencana Pembelajaran Semester (RPS) Berbasis OBE", bold: true, size: 28 })
+        ],
+        alignment: docx.AlignmentType.CENTER,
+        spacing: { after: 400 }
+      }),
+      new docx.Table({
+        width: { size: 100, type: docx.WidthType.PERCENTAGE },
+        borders: docx.TableBorders.NONE,
+        rows: [
+          new docx.TableRow({
+            children: [
+              new docx.TableCell({ children: [new docx.Paragraph("Mata Kuliah")] }),
+              new docx.TableCell({ children: [new docx.Paragraph(":")] }),
+              new docx.TableCell({ children: [new docx.Paragraph({ children: [new docx.TextRun({ text: makul, bold: true })] })] })
+            ]
+          }),
+          new docx.TableRow({
+            children: [
+              new docx.TableCell({ children: [new docx.Paragraph("Capaian Pembelajaran (CPL)")] }),
+              new docx.TableCell({ children: [new docx.Paragraph(":")] }),
+              new docx.TableCell({ children: [new docx.Paragraph(cpl)] })
+            ]
+          })
+        ]
+      })
+    );
+  }
+
   const doc = new docx.Document({
-    sections: [{
-      properties: {},
-      children: [
-        new docx.Paragraph({
-          text: "AKADEMI AKUPUNKTUR SURABAYA",
-          heading: docx.HeadingLevel.HEADING_2,
-          alignment: docx.AlignmentType.CENTER,
-        }),
-        new docx.Paragraph({
-          text: "Jl Parang Kusumo 14 Surabaya - 60176 Telp. 031.3526916",
-          alignment: docx.AlignmentType.CENTER,
-        }),
-        new docx.Paragraph({
-          text: "Dokumen yang di-generate via sistem",
-          alignment: docx.AlignmentType.CENTER,
-        }),
-      ],
-    }],
+    sections: [{ properties: {}, children: children }],
   });
   
   docx.Packer.toBlob(doc).then(blob => {
