@@ -1,9 +1,16 @@
 <main class="page hidden" id="page-dept">
-    <div class="dept-banner" id="deptBanner">
-      <div class="dept-banner-icon" id="deptBannerIcon"></div>
+    <div class="dept-banner" id="deptBanner" style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="display:flex; align-items:center; gap:16px;">
+        <div class="dept-banner-icon" id="deptBannerIcon"></div>
+        <div>
+          <h2 id="deptBannerName">Bidang</h2>
+          <p id="deptBannerSub">Manajemen arsip</p>
+        </div>
+      </div>
       <div>
-        <h2 id="deptBannerName">Bidang</h2>
-        <p id="deptBannerSub">Manajemen arsip</p>
+        <button class="tb-btn tb-btn-primary" onclick="openKinerjaModal()" style="background:#e11d48; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer; display:flex; align-items:center; gap:8px;">
+          <i class="fas fa-clipboard-list"></i> Catat Kinerja
+        </button>
       </div>
     </div>
     <div id="deptArsipCharts">
