@@ -19,28 +19,36 @@ const GAS_URL = 'https://script.google.com/macros/s/AKfycby0heFyeXzAmm_uNBvItuoC
 
 /* ÔöÇÔöÇÔöÇ DEPARTEMEN ÔöÇÔöÇÔöÇ */
 const DEPT = {
-  // Wadir I
-  akademik: { label:'Bidang Administrasi Akademik & Pendidikan', icon:'fas fa-graduation-cap', color:'#3b82f6' },
-  sistem_pendidikan: { label:'Bidang Administrasi Sistem Informasi Pendidikan Tinggi', icon:'fas fa-laptop-code', color:'#6366f1' },
-  laboratorium: { label:'Bidang Laboratorium', icon:'fas fa-vials', color:'#8b5cf6' },
-  perpustakaan: { label:'Bidang Perpustakaan', icon:'fas fa-book', color:'#a855f7' },
-  lppm: { label:'Bidang Penelitian & Pelatihan (LPPM)', icon:'fas fa-microscope', color:'#d946ef' },
-  kemahasiswaan: { label:'Bidang Kemahasiswaan & Alumni', icon:'fas fa-users', color:'#ec4899' },
-  pengabdian: { label:'Bidang Pengabdian Masyarakat', icon:'fas fa-hands-helping', color:'#f43f5e' },
-  
-  // Wadir II
-  umum: { label:'Bidang Administrasi Umum & Kelembagaan', icon:'fas fa-building', color:'#f97316' },
-  kepegawaian: { label:'Bidang Administrasi Kepegawaian', icon:'fas fa-user-tie', color:'#f59e0b' },
-  keuangan: { label:'Bidang Administrasi Keuangan Institusi & Pendidikan', icon:'fas fa-coins', color:'#eab308' },
-  rumah_tangga: { label:'Bidang Rumah Tangga', icon:'fas fa-home', color:'#84cc16' },
-  sarana: { label:'Bidang Sarana Prasarana', icon:'fas fa-tools', color:'#22c55e' },
-  sistem_informasi: { label:'Bidang Sistem Informasi', icon:'fas fa-network-wired', color:'#10b981' },
-  humas: { label:'Bidang HUMAS', icon:'fas fa-bullhorn', color:'#14b8a6' },
-  kerjasama: { label:'Bidang Kerjasama', icon:'fas fa-handshake', color:'#06b6d4' },
+  akademik: { label:'Bidang Administrasi Akademik', icon:'fas fa-graduation-cap', color:'#3b82f6' },
+  ketenagaan: { label:'Bidang Ketenagaan', icon:'fas fa-users-gear', color:'#6366f1' },
+  pendidikan: { label:'Bidang Pendidikan', icon:'fas fa-chalkboard-teacher', color:'#8b5cf6' },
+  administrasi: { label:'Bidang Administrasi', icon:'fas fa-folder-open', color:'#a855f7' },
+  sistem_pendidikan: { label:'Bidang Administrasi Sistem Informasi Pendidikan Tinggi', icon:'fas fa-laptop-code', color:'#d946ef' },
+  laboratorium: { label:'Bidang Laboratorium', icon:'fas fa-vials', color:'#ec4899' },
+  perpustakaan: { label:'Bidang Perpustakaan', icon:'fas fa-book', color:'#f43f5e' },
+  penelitian_pelatihan: { label:'Bidang Penelitian dan Pelatihan', icon:'fas fa-microscope', color:'#f97316' },
+  kemahasiswaan: { label:'Bidang Kemahasiswaan dan Alumni', icon:'fas fa-user-graduate', color:'#f59e0b' },
+  pengabdian: { label:'Bidang Pengabdian Masyarakat', icon:'fas fa-hands-helping', color:'#eab308' },
+  admin_kelembagaan: { label:'Bidang Administrasi dan Kelembagaan', icon:'fas fa-sitemap', color:'#84cc16' },
+  admin_umum: { label:'Bidang Administrasi Umum', icon:'fas fa-building', color:'#22c55e' },
+  admin_kepegawaian: { label:'Bidang Administrasi Kepegawaian', icon:'fas fa-user-tie', color:'#10b981' },
+  admin_keuangan: { label:'Bidang Administrasi Keuangan Institusi dan Pendidikan', icon:'fas fa-coins', color:'#14b8a6' },
+  rumah_tangga: { label:'Bidang Rumah Tangga', icon:'fas fa-home', color:'#06b6d4' },
+  sarana: { label:'Bidang Sarana dan Prasarana', icon:'fas fa-tools', color:'#0ea5e9' },
+  sistem_informasi: { label:'Bidang Sistem Informasi', icon:'fas fa-network-wired', color:'#0284c7' },
+  humas: { label:'Bidang Humas', icon:'fas fa-bullhorn', color:'#3b82f6' },
+  promosi: { label:'Bidang Promosi', icon:'fas fa-ad', color:'#4f46e5' },
+  kerjasama: { label:'Bidang Kerjasama', icon:'fas fa-handshake', color:'#7c3aed' },
+  it: { label:'Bidang IT', icon:'fas fa-server', color:'#db2777' },
+  spmi: { label:'Bidang SPMI', icon:'fas fa-shield-check', color:'#f43f5e' },
+  ami: { label:'Bidang AMI', icon:'fas fa-clipboard-check', color:'#10b981' },
 
-  // Backward compatibility keys (if they existed previously, they'll fall back gracefully or just display their label)
-  pendidikan: { label:'Pendidikan', icon:'fas fa-graduation-cap', color:'#3b82f6' },
-  sdm: { label:'SDM & Kepegawaian', icon:'fas fa-user-tie', color:'#ec4899' }
+  // Backward compatibility aliases
+  lppm: { label:'Bidang Penelitian dan Pelatihan', icon:'fas fa-microscope', color:'#f97316' },
+  umum: { label:'Bidang Administrasi Umum', icon:'fas fa-building', color:'#22c55e' },
+  kepegawaian: { label:'Bidang Administrasi Kepegawaian', icon:'fas fa-user-tie', color:'#10b981' },
+  keuangan: { label:'Bidang Administrasi Keuangan', icon:'fas fa-coins', color:'#14b8a6' },
+  sdm: { label:'SDM & Kepegawaian', icon:'fas fa-user-tie', color:'#10b981' }
 };
 
 /* ÔöÇÔöÇÔöÇ JENIS DOKUMEN PER BIDANG (tidak ada "Lainnya") ÔöÇÔöÇÔöÇ */
@@ -1173,8 +1181,10 @@ async function loadData() {
 arsip = JSON.parse(localStorage.getItem('SIMARSIP_AAS')) || [];
 let dataMigrated = false;
 arsip.forEach(a => {
-  if (a.bidang === 'pendidikan') { a.bidang = 'akademik'; dataMigrated = true; }
-  if (a.bidang === 'sdm') { a.bidang = 'kepegawaian'; dataMigrated = true; }
+  if (a.bidang === 'lppm') { a.bidang = 'penelitian_pelatihan'; dataMigrated = true; }
+  if (a.bidang === 'umum') { a.bidang = 'admin_umum'; dataMigrated = true; }
+  if (a.bidang === 'kepegawaian' || a.bidang === 'sdm') { a.bidang = 'admin_kepegawaian'; dataMigrated = true; }
+  if (a.bidang === 'keuangan') { a.bidang = 'admin_keuangan'; dataMigrated = true; }
 });
 if (dataMigrated) {
   save(); // Save to localStorage
@@ -1408,7 +1418,7 @@ async function showPage(page) {
   
   const btnAdd = document.getElementById('btnGlobalAdd');
   if(btnAdd) {
-    btnAdd.style.display = (page === 'banpt' || page === 'lamptkes' || page === 'analytics' || page === 'aktivitas' || page === 'users' || page === 'generator') ? 'none' : 'inline-flex';
+    btnAdd.style.display = (page === 'banpt' || page === 'lamptkes' || page === 'analytics' || page === 'aktivitas' || page === 'users' || page === 'generator' || page === 'dashboard') ? 'none' : 'inline-flex';
   }
 
   const banptMenu = document.getElementById('banpt-sub-menu');
@@ -1531,9 +1541,6 @@ function updateBadges() {
 /* ÔòÉÔòÉÔòÉÔòÉÔòÉ DASHBOARD ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderDashboard() {
   let data=arsip.filter(a=>!currentAY||a.ay===currentAY);
-  if(window.activeBidangPortal) {
-    data = data.filter(a => a.bidang === window.activeBidangPortal);
-  }
   initDashCharts(data); renderRecentList(data);
 }
 function renderRecentList(data) {
