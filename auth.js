@@ -291,15 +291,17 @@ function showAppBasedOnRole() {
     if(tbTitle) tbTitle.innerHTML = `Portal: ${BIDANG_LABELS[currentBidang[0]]} - ${currentName} (${currentRole.toUpperCase()})`;
   }
   
-  if (currentRole === 'admin' || currentRole === 'direktur') {
-    // If coming back from portal-admin.html, go directly to target page
+  const isIT = currentBidang && currentBidang.includes('it');
+  
+  if (currentRole === 'admin' || currentRole === 'direktur' || isIT) {
+    // If coming back from bidang-it.html, go directly to target page
     const skip = sessionStorage.getItem('skipAdminPortal');
     const target = sessionStorage.getItem('targetPage') || 'dashboard';
     sessionStorage.removeItem('skipAdminPortal');
     sessionStorage.removeItem('targetPage');
 
     if (skip) {
-      // Coming from portal-admin: go to requested page
+      // Coming from bidang-it: go to requested page
       setTimeout(() => {
         const el = document.getElementById('nav-' + target);
         if(el) el.click();
@@ -309,8 +311,8 @@ function showAppBasedOnRole() {
         }
       }, 150);
     } else {
-      // First login: redirect to portal-admin.html
-      window.location.href = 'portal-admin.html';
+      // First login: redirect to bidang-it.html
+      window.location.href = 'bidang-it.html';
       return;
     }
   } else {

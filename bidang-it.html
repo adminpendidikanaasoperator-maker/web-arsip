@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portal Admin — SIMARSIP AAS</title>
+  <title>Portal Admin & Bidang IT — SIMARSIP AAS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
@@ -155,7 +155,7 @@
       <img src="logo.jpg" alt="Logo AAS" class="topbar-logo" onerror="this.style.display='none'">
       <div>
         <div class="topbar-title">SIMARSIP AAS</div>
-        <div class="topbar-subtitle">Portal Admin</div>
+        <div class="topbar-subtitle">Portal Admin & Bidang IT</div>
       </div>
     </div>
     <div class="topbar-right">
@@ -172,11 +172,35 @@
   <div class="main-content">
 
     <!-- HERO -->
-    <div class="hero">
-      <div class="hero-icon"><i class="fas fa-shield-halved"></i></div>
+    <div class="hero" style="margin-bottom: 20px;">
+      <div class="hero-icon"><i class="fas fa-server"></i></div>
       <div>
-        <div class="hero-title">Portal Admin SIMARSIP</div>
-        <div class="hero-sub">Selamat datang, <strong id="adminName">Admin</strong> — kelola sistem dan pengguna dari sini.</div>
+        <div class="hero-title">Portal Admin & Bidang IT SIMARSIP</div>
+        <div class="hero-sub">Selamat datang, <strong id="adminName">Admin</strong> — kelola sistem, infrastruktur IT, dan pengguna dari sini.</div>
+      </div>
+    </div>
+
+    <!-- IT INFOS -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 28px;">
+      <div class="card" style="padding: 20px;">
+        <h3 style="font-size: 1rem; margin-bottom: 12px; color: var(--primary);"><i class="fas fa-sitemap"></i> Fungsi Utama Bidang IT</h3>
+        <ul style="list-style: none; padding: 0; font-size: 0.85rem; line-height: 1.6; color: var(--t2);">
+          <li style="margin-bottom: 6px;"><strong>Infrastruktur:</strong> Menjaga jaringan, server, dan perangkat keras tetap aktif.</li>
+          <li style="margin-bottom: 6px;"><strong>Operasional:</strong> Memastikan sistem komputer dan aplikasi berjalan lancar.</li>
+          <li style="margin-bottom: 6px;"><strong>Keamanan:</strong> Melindungi data penting dari ancaman siber.</li>
+          <li style="margin-bottom: 6px;"><strong>Pengembangan:</strong> Membuat inovasi program atau situs web baru.</li>
+        </ul>
+      </div>
+      <div class="card" style="padding: 20px;">
+        <h3 style="font-size: 1rem; margin-bottom: 12px; color: var(--primary);"><i class="fas fa-tasks"></i> Tugas Pokok Bidang IT</h3>
+        <ul style="padding-left: 18px; font-size: 0.85rem; line-height: 1.6; color: var(--t2);">
+          <li style="margin-bottom: 4px;">Mengatur dan merawat jaringan internet serta server kantor.</li>
+          <li style="margin-bottom: 4px;">Menangani perbaikan perangkat keras dan perangkat lunak.</li>
+          <li style="margin-bottom: 4px;">Mengembangkan dan memelihara aplikasi atau situs web perusahaan.</li>
+          <li style="margin-bottom: 4px;">Mengelola basis data agar informasi aman dan teratur.</li>
+          <li style="margin-bottom: 4px;">Melakukan backup data secara rutin untuk cegah kehilangan.</li>
+          <li style="margin-bottom: 4px;">Memberikan solusi atas kendala teknis harian pengguna.</li>
+        </ul>
       </div>
     </div>
 
@@ -308,14 +332,15 @@ auth.onAuthStateChanged(async (user) => {
     if (!doc.exists) { auth.signOut(); window.location.href = 'index.html'; return; }
     const data = doc.data();
 
-    if (data.role !== 'admin' && data.role !== 'direktur') {
-      // Not admin → go to main portal
+    const isIT = data.bidang && Array.isArray(data.bidang) ? data.bidang.includes('it') : data.bidang === 'it';
+    if (data.role !== 'admin' && data.role !== 'direktur' && !isIT) {
+      // Not admin/IT → go to main portal
       sessionStorage.setItem('skipAdminPortal', 'true');
       window.location.href = 'index.html';
       return;
     }
 
-    // All good — show admin portal
+    // All good — show admin/IT portal
     document.getElementById('authCheck').style.display = 'none';
     document.getElementById('adminApp').classList.remove('hidden');
     document.getElementById('adminName').textContent = data.name || user.email;
