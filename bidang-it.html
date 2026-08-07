@@ -679,11 +679,29 @@ async function loadKinerjaIT() {
     document.getElementById('riwayatKinerjaBody').innerHTML = html;
   } catch(e) {
     console.error('Error load kinerja:', e);
-    // Fallback if index is missing (firestore needs composite index for where + orderBy)
-    if(e.message.includes('index')) {
-        document.getElementById('riwayatKinerjaBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--warning);">Sedang membangun indeks database... Harap tunggu beberapa saat.</td></tr>';
+    // Extract index URL if present
+    const errorString = e.toString();
+    const urlMatch = errorString.match(/https:\/\/console\.firebase\.google\.com[^\s]*/);
+    
+    if(urlMatch) {
+        document.getElementById('riwayatKinerjaBody').innerHTML = \`
+          <tr><td colspan="4" style="text-align:center;padding:25px;">
+            <div style="color:var(--danger); font-weight:600; margin-bottom:10px;">
+              <i class="fas fa-exclamation-triangle"></i> Database Membutuhkan Indeks Baru
+            </div>
+            <p style="color:var(--t2); margin-bottom:15px; font-size:0.9rem;">
+              Sistem membutuhkan indeks khusus (Composite Index) untuk mengurutkan riwayat. 
+              Silakan klik tombol di bawah ini (akan membuka tab baru ke Firebase Console), lalu klik <b>"Create Index" / "Simpan"</b>.
+            </p>
+            <a href="\${urlMatch[0]}" target="_blank" class="btn btn-primary" style="text-decoration:none;">
+              <i class="fas fa-external-link-alt"></i> Buat Indeks Database Sekarang
+            </a>
+            <p style="color:var(--t3); margin-top:15px; font-size:0.8rem;">
+              Setelah mengeklik "Create Index" di Firebase, tunggu sekitar 3-5 menit sampai proses "Building" selesai, lalu refresh halaman ini.
+            </p>
+          </td></tr>\`;
     } else {
-        document.getElementById('riwayatKinerjaBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--danger);">Gagal memuat riwayat kinerja.</td></tr>';
+        document.getElementById('riwayatKinerjaBody').innerHTML = '<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--danger);">Gagal memuat riwayat kinerja: ' + e.message + '</td></tr>';
     }
   }
 }
