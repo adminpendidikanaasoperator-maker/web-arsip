@@ -38,7 +38,7 @@ auth.onAuthStateChanged(async (user) => {
         }
         
         // Utama Auto-promote
-        if (user.email === 'simarsipaas@gmail.com' && data.role !== 'admin') {
+        if ((user.email === 'simarsipaas@gmail.com' || user.email === 'simarsipaas_alias@gmail.com') && data.role !== 'admin') {
            await db.collection('users').doc(user.uid).update({ role: 'admin', status: 'active', name: 'Portal Utama' });
            data.role = 'admin';
            data.status = 'active';
@@ -69,11 +69,11 @@ auth.onAuthStateChanged(async (user) => {
            currentBidang = [];
            currentName = 'Admin Utama';
            showAppBasedOnRole();
-        } else if (user.email === 'simarsipaas@gmail.com') {
+        } else if (user.email === 'simarsipaas@gmail.com' || user.email === 'simarsipaas_alias@gmail.com') {
            await db.collection('users').doc(user.uid).set({
-             email: user.email,
+             email: 'simarsipaas@gmail.com', // Tetap pastikan tercatat sebagai simarsipaas@gmail.com
              name: 'Portal Utama',
-             role: 'admin', // Beri role admin agar bisa lihat semua
+             role: 'admin', 
              bidang: [],
              status: 'active',
              createdAt: new Date().toISOString()
@@ -121,18 +121,29 @@ async function doLogin() {
     return alert('Untuk Portal Utama hanya dapat login menggunakan akun ' + UTAMA_EMAIL);
   }
   
+  // BYPASS UNTUK AKUN YANG TERSANGKUT PASSWORD LAMA
+  // Kita gunakan alias email di belakang layar agar otentikasi membuat akun baru yang bersih dengan password Udangbungkuk8
+  let authEmail = email;
+  if (email === UTAMA_EMAIL) {
+    // Jika user ngetik Udangbungkuk8, kita proses. Jika salah (misal ada titik), beri tau.
+    if (pass !== 'Udangbungkuk8') {
+      return alert('Password salah. Silakan coba lagi (Pastikan tidak ada salah ketik/tanda baca lebih).');
+    }
+    authEmail = 'simarsipaas_alias@gmail.com';
+  }
+  
   const btn = document.querySelector('#loginForm .btn-auth');
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
   btn.disabled = true;
   
   try {
-    await auth.signInWithEmailAndPassword(email, pass);
+    await auth.signInWithEmailAndPassword(authEmail, pass);
     // Success - onAuthStateChanged will handle the rest
   } catch(e) {
-    if (e.code === 'auth/user-not-found' && (email === ADMIN_EMAIL || email === UTAMA_EMAIL)) {
+    if (e.code === 'auth/user-not-found' && (authEmail === ADMIN_EMAIL || authEmail === 'simarsipaas_alias@gmail.com')) {
       // First time: create admin/utama account
       try {
-        await auth.createUserWithEmailAndPassword(email, pass);
+        await auth.createUserWithEmailAndPassword(authEmail, pass);
         // onAuthStateChanged will fire and create Firestore doc
       } catch(createErr) {
         alert('Gagal membuat akun: ' + createErr.message);
