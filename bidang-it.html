@@ -463,7 +463,17 @@
     <div id="groupSecurity" style="display:none; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px; padding:12px; background:#fef2f2; border-radius:8px; border:1px dashed #fca5a5;">
       <div>
         <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.8rem;">Target Sistem/IP</label>
-        <input type="text" id="itKinerjaTargetSystem" placeholder="Contoh: Portal Web / IP Server" style="width:100%; padding:7px; border:1px solid var(--border); border-radius:4px; font-size:0.85rem;">
+        <select id="itKinerjaTargetSystem" style="width:100%; padding:7px; border:1px solid var(--border); border-radius:4px; font-size:0.85rem;">
+          <option value="">-- Pilih Target Sistem/IP --</option>
+          <option value="Portal Web">Portal Web</option>
+          <option value="Database Server">Database Server</option>
+          <option value="File Server / Storage">File Server / Storage</option>
+          <option value="Jaringan (Router/Switch)">Jaringan (Router/Switch)</option>
+          <option value="Aplikasi Internal">Aplikasi Internal</option>
+          <option value="Server Fisik / VM">Server Fisik / VM</option>
+          <option value="PC Client / Workstation">PC Client / Workstation</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
       </div>
       <div>
         <label style="display:block; margin-bottom:6px; font-weight:600; font-size:0.8rem;">Tingkat Ancaman</label>
