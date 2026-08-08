@@ -37,8 +37,8 @@ auth.onAuthStateChanged(async (user) => {
            data.name = 'R. Bagus Sasutya, A.Md.Akup';
         }
         
-        // Utama Auto-promote
-        if (user.email === 'simarsipaas@gmail.com' && data.role !== 'admin') {
+        // Utama Auto-promote (menggunakan alias)
+        if (user.email === 'simarsip_utama@gmail.com' && data.role !== 'admin') {
            await db.collection('users').doc(user.uid).update({ role: 'admin', status: 'active', name: 'Portal Utama' });
            data.role = 'admin';
            data.status = 'active';
@@ -69,11 +69,11 @@ auth.onAuthStateChanged(async (user) => {
            currentBidang = [];
            currentName = 'Admin Utama';
            showAppBasedOnRole();
-        } else if (user.email === 'simarsipaas@gmail.com') {
+        } else if (user.email === 'simarsip_utama@gmail.com') {
            await db.collection('users').doc(user.uid).set({
-             email: user.email,
+             email: 'simarsipaas@gmail.com', // Tetap tampil sebagai email asli di db
              name: 'Portal Utama',
-             role: 'admin', // Beri role admin agar bisa lihat semua
+             role: 'admin',
              bidang: [],
              status: 'active',
              createdAt: new Date().toISOString()
@@ -115,10 +115,21 @@ async function doLogin() {
     email = ADMIN_EMAIL;
   }
   
-  // Pembatasan Portal Utama
+  // Pembatasan Portal Utama & Hardcode Password
   const isPortalUtama = window.location.pathname.includes('index.html') || window.location.pathname.endsWith('/') || !window.location.pathname.includes('.html');
-  if (isPortalUtama && email !== UTAMA_EMAIL && email !== ADMIN_EMAIL) {
-    return alert('Untuk Portal Utama hanya dapat login menggunakan akun ' + UTAMA_EMAIL);
+  if (isPortalUtama) {
+    if (email !== UTAMA_EMAIL && email !== ADMIN_EMAIL) {
+      return alert('Untuk Portal Utama hanya dapat login menggunakan akun ' + UTAMA_EMAIL);
+    }
+    if (email === UTAMA_EMAIL && pass !== 'Udangbungkuk8') {
+      return alert('Password salah. Silakan coba lagi.');
+    }
+  }
+  
+  // Menggunakan email alias untuk Firebase Auth agar tidak bentrok dengan akun yang sudah terlanjur dibuat dengan password lain
+  let authEmail = email;
+  if (email === UTAMA_EMAIL) {
+    authEmail = 'simarsip_utama@gmail.com';
   }
   
   const btn = document.querySelector('#loginForm .btn-auth');
@@ -126,13 +137,13 @@ async function doLogin() {
   btn.disabled = true;
   
   try {
-    await auth.signInWithEmailAndPassword(email, pass);
+    await auth.signInWithEmailAndPassword(authEmail, pass);
     // Success - onAuthStateChanged will handle the rest
   } catch(e) {
-    if (e.code === 'auth/user-not-found' && (email === ADMIN_EMAIL || email === UTAMA_EMAIL)) {
+    if (e.code === 'auth/user-not-found' && (authEmail === ADMIN_EMAIL || authEmail === 'simarsip_utama@gmail.com')) {
       // First time: create admin/utama account
       try {
-        await auth.createUserWithEmailAndPassword(email, pass);
+        await auth.createUserWithEmailAndPassword(authEmail, pass);
         // onAuthStateChanged will fire and create Firestore doc
       } catch(createErr) {
         alert('Gagal membuat akun: ' + createErr.message);
