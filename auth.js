@@ -38,7 +38,7 @@ auth.onAuthStateChanged(async (user) => {
         }
         
         // Utama Auto-promote
-        if (user.email === 'simarsipaas@gmail.com' && data.role !== 'admin') {
+        if ((user.email === 'simarsipaas@gmail.com' || user.email === 'simarsip_utama@gmail.com') && data.role !== 'admin') {
            await db.collection('users').doc(user.uid).update({ role: 'admin', status: 'active', name: 'Portal Utama' });
            data.role = 'admin';
            data.status = 'active';
@@ -69,9 +69,9 @@ auth.onAuthStateChanged(async (user) => {
            currentBidang = [];
            currentName = 'Admin Utama';
            showAppBasedOnRole();
-        } else if (user.email === 'simarsipaas@gmail.com') {
+        } else if (user.email === 'simarsipaas@gmail.com' || user.email === 'simarsip_utama@gmail.com') {
            await db.collection('users').doc(user.uid).set({
-             email: user.email,
+             email: 'simarsipaas@gmail.com', // Tetap pastikan tercatat sebagai simarsipaas@gmail.com
              name: 'Portal Utama',
              role: 'admin', 
              bidang: [],
@@ -120,19 +120,25 @@ async function doLogin() {
   if (isPortalUtama && email !== UTAMA_EMAIL && email !== ADMIN_EMAIL) {
     return alert('Untuk Portal Utama hanya dapat login menggunakan akun ' + UTAMA_EMAIL);
   }
+
+  // ALIAS INVISIBLE: Bypass riwayat password salah di Firebase Auth
+  let authEmail = email;
+  if (email === UTAMA_EMAIL) {
+    authEmail = 'simarsip_utama@gmail.com';
+  }
   
   const btn = document.querySelector('#loginForm .btn-auth');
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
   btn.disabled = true;
   
   try {
-    await auth.signInWithEmailAndPassword(email, pass);
+    await auth.signInWithEmailAndPassword(authEmail, pass);
     // Success - onAuthStateChanged will handle the rest
   } catch(e) {
-    if (e.code === 'auth/user-not-found' && (email === ADMIN_EMAIL || email === UTAMA_EMAIL)) {
+    if (e.code === 'auth/user-not-found' && (authEmail === ADMIN_EMAIL || authEmail === 'simarsip_utama@gmail.com')) {
       // First time: create admin/utama account
       try {
-        await auth.createUserWithEmailAndPassword(email, pass);
+        await auth.createUserWithEmailAndPassword(authEmail, pass);
         // onAuthStateChanged will fire and create Firestore doc
       } catch(createErr) {
         alert('Gagal membuat akun: ' + createErr.message);
@@ -140,16 +146,7 @@ async function doLogin() {
         btn.disabled = false;
       }
     } else if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
-      if (email === UTAMA_EMAIL) {
-        // Mengirimkan email reset password secara otomatis
-        auth.sendPasswordResetEmail(email).then(() => {
-          alert('Password Anda salah.\n\nKarena ini adalah akun Gmail asli Anda, kami telah mengirimkan LINK RESET PASSWORD ke email simarsipaas@gmail.com.\n\nSilakan buka kotak masuk/spam Gmail Anda, klik link tersebut, dan buat password baru Anda (Udangbungkuk8).');
-        }).catch((err) => {
-          alert('Password salah. Gagal mengirim email reset: ' + err.message);
-        });
-      } else {
-        alert('Password salah. Silakan coba lagi.');
-      }
+      alert('Password salah. Silakan coba lagi.');
       btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
       btn.disabled = false;
     } else if (e.code === 'auth/invalid-email') {
