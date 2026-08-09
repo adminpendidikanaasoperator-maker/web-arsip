@@ -1082,43 +1082,45 @@ function processSnapshot(snapshot, collectionName) {
              let j = a.jenis || '';
              
              // Mapping based on common keywords
-             // Academic & Curriculum (K2 & K3)
-             if (j.includes('kurikulum') || j.includes('rps') || j.includes('pembelajaran') || j.includes('modul')) {
-                 if (!j.match(/^k[23]_/)) { a.jenis = 'k2_2'; a.bidang = 'akademik'; changed = true; }
-             }
-             else if (j.includes('nilai') || j.includes('logbook') || j.includes('remedial') || j.includes('cbt') || j.includes('osce')) {
-                 if (!j.match(/^k[23]_/)) { a.jenis = 'k3_1'; a.bidang = 'akademik'; changed = true; }
-             }
-             // Mahasiswa (K4)
-             else if (j.includes('mhs') || j.includes('mahasiswa') || j.includes('tracer') || j.includes('lulusan') || j.includes('alumni')) {
-                 if (!j.match(/^k4_/)) { a.jenis = 'k4_2'; a.bidang = 'kemahasiswaan'; changed = true; }
-             }
-             // SDM / Dosen / Tendik (K5)
-             else if (j.includes('dosen') || j.includes('tendik') || j.includes('sdm') || j.includes('pelatihan')) {
-                 if (!j.match(/^k5_/)) { a.jenis = 'k5_1'; a.bidang = 'kepegawaian'; changed = true; }
-             }
-             // Penelitian & PkM (K5)
-             else if (j.includes('penelitian') || j.includes('pkm') || j.includes('jurnal') || j.includes('haki') || j.includes('paten')) {
-                 if (!j.match(/^k5_/)) { a.jenis = 'k5_9'; a.bidang = 'penelitian_pengabdian'; changed = true; }
-             }
-             // Sarpras & Keuangan (K6)
-             else if (j.includes('sarana') || j.includes('prasarana') || j.includes('fasilitas') || j.includes('alat') || j.includes('ruang') || j.includes('lab')) {
-                 if (!j.match(/^k6_/)) { a.jenis = 'k6_1'; a.bidang = 'sarpras'; changed = true; }
-             }
-             else if (j.includes('uang') || j.includes('anggaran') || j.includes('dana')) {
-                 if (!j.match(/^k[68]_/)) { a.jenis = 'k6_14'; a.bidang = 'keuangan'; changed = true; }
-             }
-             // Penjaminan Mutu (K7)
-             else if (j.includes('mutu') || j.includes('spmi') || j.includes('ami') || j.includes('audit') || j.includes('led')) {
-                 if (!j.match(/^k7_/)) { a.jenis = 'k7_2'; a.bidang = 'penjaminan_mutu'; changed = true; }
-             }
-             // Visi Misi & Tata Kelola (K1 & K8)
-             else if (j.includes('visi') || j.includes('misi') || j.includes('renstra') || j.includes('renop')) {
-                 if (!j.match(/^k1_/)) { a.jenis = 'k1_4'; a.bidang = 'pimpinan'; changed = true; }
-             }
-             else if (j.includes('sk') || j.includes('keputusan') || j.includes('sop') || j.includes('kinerja')) {
-                 // Might just leave them as is, but if they are stuck in kriteria_9:
-                 if (a.bidang === 'kriteria_9') { a.jenis = 'k8_1'; a.bidang = 'pimpinan'; changed = true; }
+             if (!a.id || !a.id.startsWith('SIMLAB-')) {
+                 // Academic & Curriculum (K2 & K3)
+                 if (j.includes('kurikulum') || j.includes('rps') || j.includes('pembelajaran') || j.includes('modul')) {
+                     if (!j.match(/^k[23]_/)) { a.jenis = 'k2_2'; a.bidang = 'akademik'; changed = true; }
+                 }
+                 else if (j.includes('nilai') || j.includes('logbook') || j.includes('remedial') || j.includes('cbt') || j.includes('osce')) {
+                     if (!j.match(/^k[23]_/)) { a.jenis = 'k3_1'; a.bidang = 'akademik'; changed = true; }
+                 }
+                 // Mahasiswa (K4)
+                 else if (j.includes('mhs') || j.includes('mahasiswa') || j.includes('tracer') || j.includes('lulusan') || j.includes('alumni')) {
+                     if (!j.match(/^k4_/)) { a.jenis = 'k4_2'; a.bidang = 'kemahasiswaan'; changed = true; }
+                 }
+                 // SDM / Dosen / Tendik (K5)
+                 else if (j.includes('dosen') || j.includes('tendik') || j.includes('sdm') || j.includes('pelatihan')) {
+                     if (!j.match(/^k5_/)) { a.jenis = 'k5_1'; a.bidang = 'kepegawaian'; changed = true; }
+                 }
+                 // Penelitian & PkM (K5)
+                 else if (j.includes('penelitian') || j.includes('pkm') || j.includes('jurnal') || j.includes('haki') || j.includes('paten')) {
+                     if (!j.match(/^k5_/)) { a.jenis = 'k5_9'; a.bidang = 'penelitian_pengabdian'; changed = true; }
+                 }
+                 // Sarpras & Keuangan (K6)
+                 else if (j.includes('sarana') || j.includes('prasarana') || j.includes('fasilitas') || j.includes('alat') || j.includes('ruang') || j.includes('lab')) {
+                     if (!j.match(/^k6_/)) { a.jenis = 'k6_1'; a.bidang = 'sarpras'; changed = true; }
+                 }
+                 else if (j.includes('uang') || j.includes('anggaran') || j.includes('dana')) {
+                     if (!j.match(/^k[68]_/)) { a.jenis = 'k6_14'; a.bidang = 'keuangan'; changed = true; }
+                 }
+                 // Penjaminan Mutu (K7)
+                 else if (j.includes('mutu') || j.includes('spmi') || j.includes('ami') || j.includes('audit') || j.includes('led')) {
+                     if (!j.match(/^k7_/)) { a.jenis = 'k7_2'; a.bidang = 'penjaminan_mutu'; changed = true; }
+                 }
+                 // Visi Misi & Tata Kelola (K1 & K8)
+                 else if (j.includes('visi') || j.includes('misi') || j.includes('renstra') || j.includes('renop')) {
+                     if (!j.match(/^k1_/)) { a.jenis = 'k1_4'; a.bidang = 'pimpinan'; changed = true; }
+                 }
+                 else if (j.includes('sk') || j.includes('keputusan') || j.includes('sop') || j.includes('kinerja')) {
+                     // Might just leave them as is, but if they are stuck in kriteria_9:
+                     if (a.bidang === 'kriteria_9') { a.jenis = 'k8_1'; a.bidang = 'pimpinan'; changed = true; }
+                 }
              }
              
              // Fallback for ANY old k-prefixed items that still don't match the new keys exactly
