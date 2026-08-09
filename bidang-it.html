@@ -847,7 +847,28 @@ async function submitKinerjaIT() {
         payload.threatLevel = threatLevel;
       }
 
-      await db.collection('kinerja_bidang').add(payload);
+      const docRef = await db.collection('kinerja_bidang').add(payload);
+      
+      // Sync ke Portal Utama (Arsip)
+      try {
+          await db.collection('arsip').doc(docRef.id).set({
+              id: docRef.id,
+              judul: `Kinerja IT: ${kategori}`,
+              bidang: 'sistem_pendidikan',
+              jenis: 'kinerja_it',
+              format: lampiranUrl ? 'pdf' : 'lainnya',
+              tanggal: waktuMulai ? waktuMulai.substring(0,10) : new Date().toISOString().slice(0,10),
+              keterangan: `Pemohon: ${pemohon} | Lokasi: ${lokasi} | Status: ${status} | Solusi: ${solusi || '-'}`,
+              nomor: noTiket,
+              pengirim: pemohon || pelaporNama,
+              url: lampiranUrl || '',
+              fileName: lampiranUrl ? 'Lampiran_IT.pdf' : '',
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              status: 'aktif'
+          });
+      } catch (e) {
+          console.error("Gagal sinkronisasi arsip:", e);
+      }
       
       document.getElementById('modalKinerjaIT').style.display = 'none';
       document.getElementById('itKinerjaPemohon').value = '';

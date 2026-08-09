@@ -3693,7 +3693,7 @@ async function submitLaporanIT() {
             pelaporNama = currentUserData.name;
         }
 
-        await db.collection('laporan_it').add({
+        const docRef = await db.collection('laporan_it').add({
             pelaporId: user.uid,
             pelaporNama: pelaporNama,
             pelaporEmail: user.email,
@@ -3702,6 +3702,27 @@ async function submitLaporanIT() {
             status: 'Menunggu',
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
+        
+        // Sync ke Portal Utama (Arsip)
+        try {
+            await db.collection('arsip').doc(docRef.id).set({
+                id: docRef.id,
+                judul: `Laporan Kendala IT: ${kategori}`,
+                bidang: 'sistem_pendidikan',
+                jenis: 'laporan_it',
+                format: 'lainnya',
+                tanggal: new Date().toISOString().slice(0,10),
+                keterangan: `Pelapor: ${pelaporNama} | Deskripsi: ${deskripsi}`,
+                nomor: 'HLP-' + Math.floor(1000 + Math.random() * 9000),
+                pengirim: pelaporNama,
+                url: '',
+                fileName: '',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'aktif'
+            });
+        } catch(e) {
+            console.error("Gagal sinkronisasi arsip:", e);
+        }
         
         document.getElementById('modalLaporanIT').style.display = 'none';
         toast('Laporan IT berhasil dikirim. Tim IT akan segera memprosesnya.', 'success');
