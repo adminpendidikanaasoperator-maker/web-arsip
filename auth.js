@@ -38,11 +38,12 @@ auth.onAuthStateChanged(async (user) => {
         }
         
         // Utama Auto-promote
-        if ((user.email === 'simarsipaas@gmail.com' || user.email === 'simarsip_utama@gmail.com') && data.role !== 'utama') {
-           await db.collection('users').doc(user.uid).update({ role: 'utama', status: 'active', name: 'Portal Utama' });
+        if ((user.email === 'simarsipaas@gmail.com' || user.email === 'simarsip_utama@gmail.com') && (data.role !== 'utama' || (data.bidang && data.bidang.length > 0))) {
+           await db.collection('users').doc(user.uid).update({ role: 'utama', status: 'active', name: 'Portal Utama', bidang: [] });
            data.role = 'utama';
            data.status = 'active';
            data.name = 'Portal Utama';
+           data.bidang = [];
         }
         
         if (data.status === 'pending') {
@@ -128,6 +129,7 @@ async function doLogin() {
   btn.disabled = true;
   
   try {
+    await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
     await auth.signInWithEmailAndPassword(authEmail, pass);
     // Success - onAuthStateChanged will handle the rest
   } catch(e) {
