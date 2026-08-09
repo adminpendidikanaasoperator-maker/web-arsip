@@ -2277,7 +2277,7 @@ async function saveArsip(e) {
   // Lakukan upload di background setelah form ditutup
   if (fileToUpload) {
     toast(`Mulai mengunggah ${fileToUpload.name} ke GDrive... Jangan tutup halaman.`, 'info');
-    uploadToGDrive(fileToUpload, bidang, jenis, tahun).then(res => {
+    uploadToGDrive(fileToUpload, bidang, jenis, tahun, record.tanggal).then(res => {
       if (res && res.fileUrl) {
         const idx = arsip.findIndex(x => x.id === record.id);
         if (idx > -1) {
@@ -2307,7 +2307,7 @@ async function saveArsip(e) {
   }
 }
 
-async function uploadToGDrive(file, bidang, jenis, tahun) {
+async function uploadToGDrive(file, bidang, jenis, tahun, tanggal = new Date().toISOString().slice(0, 10)) {
   if (!GAS_URL) {
     // Simulasi jika belum punya URL GAS
     return new Promise(resolve => {
@@ -2324,7 +2324,7 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
     const reader = new FileReader();
     reader.onload = async function() {
       const base64Data = reader.result.split(',')[1];
-              const payload = {
+      const payload = {
           fileName: file.name,
           filename: file.name,
           mimeType: file.type || 'application/octet-stream',
@@ -2334,23 +2334,15 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
           jenis: jenis,
           tahun: tahun,
           folderPath: (function() {
-            let level2 = DEPT[bidang]?.label || bidang;
-            let level3 = tahun ? "TA " + tahun : "TA Umum";
-            let level4 = "Umum";
-            const kMatch = getJenisLabel(bidang, jenis).match(/\[?(Kriteria \d+)\]?/i);
+            let levelBidang = DEPT[bidang]?.label || bidang;
             
-            if (bidang === 'lamptkes_led') {
-               level2 = 'Akreditasi LAM-PTKes';
-               level3 = 'Laporan Evaluasi Diri (LED)';
-               level4 = kMatch ? kMatch[1] : "Umum";
-            } else if (bidang === 'lamptkes_spmi') {
-               level2 = 'Akreditasi LAM-PTKes';
-               level3 = 'Sistem Penjaminan Mutu Internal (SPMI)';
-               level4 = kMatch ? kMatch[1] : "Umum";
-            } else {
-               level4 = getJenisLabel(bidang, jenis) || "Umum";
-            }
-            return ["SIMARSIP AAS", level2, level3, level4];
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const tgl = new Date(tanggal);
+            const levelTahun = isNaN(tgl.getFullYear()) ? (tahun || "Umum") : tgl.getFullYear().toString();
+            const levelBulan = isNaN(tgl.getMonth()) ? "Bulan Umum" : monthNames[tgl.getMonth()];
+            const levelTanggal = isNaN(tgl.getDate()) ? "Tanggal Umum" : String(tgl.getDate()).padStart(2, '0');
+            
+            return ["SIMARSIP AAS", levelBidang, levelTahun, levelBulan, levelTanggal];
           })()
         };
 
