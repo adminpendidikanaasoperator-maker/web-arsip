@@ -186,6 +186,7 @@ const COMMON_JENIS = [
   { val: 'umum_surat_keluar', label: 'Surat Keluar', icon: 'fas fa-paper-plane', color: '#10b981' },
   { val: 'umum_sk', label: 'Surat Keputusan (SK)', icon: 'fas fa-gavel', color: '#f59e0b' },
   { val: 'umum_laporan', label: 'Laporan', icon: 'fas fa-file-alt', color: '#6366f1' },
+  { val: 'umum_rab', label: 'Rencana Anggaran Biaya (RAB)', icon: 'fas fa-money-check-alt', color: '#059669' },
   { val: 'umum_notulen', label: 'Notulen Rapat', icon: 'fas fa-users', color: '#8b5cf6' },
   { val: 'umum_lainnya', label: 'Lainnya', icon: 'fas fa-file', color: '#6b7280' }
 ];
