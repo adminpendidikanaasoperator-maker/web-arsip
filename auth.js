@@ -328,7 +328,7 @@ function showAppBasedOnRole() {
   
   const isIT = currentBidang && currentBidang.includes('it');
   
-  if (currentRole === 'admin' || currentRole === 'direktur' || currentRole === 'utama' || isIT) {
+  if (currentRole === 'admin' || currentRole === 'direktur' || isIT) {
     // If coming back from bidang-it.html, go directly to target page
     const skip = sessionStorage.getItem('skipAdminPortal');
     const target = sessionStorage.getItem('targetPage') || 'dashboard';
