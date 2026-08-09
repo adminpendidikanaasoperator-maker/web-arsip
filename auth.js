@@ -13,6 +13,7 @@ if (!firebase.apps.length) {
 }
 
 const auth = firebase.auth();
+auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(console.error);
 const db = firebase.firestore();
 const storage = firebase.storage();
 
