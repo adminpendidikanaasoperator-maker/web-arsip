@@ -121,11 +121,7 @@ async function doLogin() {
     return alert('Untuk Portal Utama hanya dapat login menggunakan akun ' + UTAMA_EMAIL);
   }
 
-  // ALIAS INVISIBLE: Bypass riwayat password salah di Firebase Auth
   let authEmail = email;
-  if (email === UTAMA_EMAIL) {
-    authEmail = 'simarsip_utama@gmail.com';
-  }
   
   const btn = document.querySelector('#loginForm .btn-auth');
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
@@ -135,7 +131,7 @@ async function doLogin() {
     await auth.signInWithEmailAndPassword(authEmail, pass);
     // Success - onAuthStateChanged will handle the rest
   } catch(e) {
-    if (e.code === 'auth/user-not-found' && (authEmail === ADMIN_EMAIL || authEmail === 'simarsip_utama@gmail.com')) {
+    if (e.code === 'auth/user-not-found' && (authEmail === ADMIN_EMAIL || authEmail === UTAMA_EMAIL)) {
       // First time: create admin/utama account
       try {
         await auth.createUserWithEmailAndPassword(authEmail, pass);
