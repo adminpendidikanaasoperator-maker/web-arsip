@@ -1516,6 +1516,19 @@ function updateBadges() {
   const bLamptkes = document.getElementById('badge-lamptkes');
   if(bLamptkes) bLamptkes.textContent = lamptkesCount;
 
+  // Dashboard Badges
+  const bdTotal = document.getElementById('badge-dash-total');
+  if (bdTotal) bdTotal.textContent = f.length;
+  
+  const bdAktif = document.getElementById('badge-aktif');
+  if (bdAktif) bdAktif.textContent = f.filter(a => (a.status || 'aktif').toLowerCase() === 'aktif').length;
+
+  const bdBanptDash = document.getElementById('badge-dash-banpt');
+  if (bdBanptDash) bdBanptDash.textContent = banptCount;
+
+  const bdLamptkesDash = document.getElementById('badge-dash-lamptkes');
+  if (bdLamptkesDash) bdLamptkesDash.textContent = lamptkesCount;
+
   // Update specific K badges
   for (let i = 1; i <= 9; i++) {
      let el = document.getElementById('badge-banpt-k' + i);
