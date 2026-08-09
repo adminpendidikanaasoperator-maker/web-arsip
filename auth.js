@@ -38,9 +38,9 @@ auth.onAuthStateChanged(async (user) => {
         }
         
         // Utama Auto-promote
-        if ((user.email === 'simarsipaas@gmail.com' || user.email === 'simarsip_utama@gmail.com') && data.role !== 'admin') {
-           await db.collection('users').doc(user.uid).update({ role: 'admin', status: 'active', name: 'Portal Utama' });
-           data.role = 'admin';
+        if ((user.email === 'simarsipaas@gmail.com' || user.email === 'simarsip_utama@gmail.com') && data.role !== 'utama') {
+           await db.collection('users').doc(user.uid).update({ role: 'utama', status: 'active', name: 'Portal Utama' });
+           data.role = 'utama';
            data.status = 'active';
            data.name = 'Portal Utama';
         }
@@ -73,12 +73,12 @@ auth.onAuthStateChanged(async (user) => {
            await db.collection('users').doc(user.uid).set({
              email: 'simarsipaas@gmail.com', // Tetap pastikan tercatat sebagai simarsipaas@gmail.com
              name: 'Portal Utama',
-             role: 'admin', 
+             role: 'utama', 
              bidang: [],
              status: 'active',
              createdAt: new Date().toISOString()
            });
-           currentRole = 'admin';
+           currentRole = 'utama';
            currentBidang = [];
            currentName = 'Portal Utama';
            showAppBasedOnRole();
@@ -295,6 +295,9 @@ function showAppBasedOnRole() {
     // Show Portal Admin nav link
     const navAdminPortal = document.getElementById('nav-admin-portal');
     if(navAdminPortal) navAdminPortal.style.display = 'flex';
+  } else if (currentRole === 'utama') {
+    window.activeBidangPortal = null;
+    document.querySelectorAll('.sb-link.dept').forEach(el => el.style.display = 'flex');
   } else if (currentRole === 'wadir1') {
     window.activeBidangPortal = null;
     ['akademik', 'sistem_pendidikan', 'laboratorium', 'perpustakaan'].forEach(b => {
@@ -325,7 +328,7 @@ function showAppBasedOnRole() {
   
   const isIT = currentBidang && currentBidang.includes('it');
   
-  if (currentRole === 'admin' || currentRole === 'direktur' || isIT) {
+  if (currentRole === 'admin' || currentRole === 'direktur' || currentRole === 'utama' || isIT) {
     // If coming back from bidang-it.html, go directly to target page
     const skip = sessionStorage.getItem('skipAdminPortal');
     const target = sessionStorage.getItem('targetPage') || 'dashboard';
@@ -383,6 +386,7 @@ async function loadUsers() {
       const id = doc.id;
       
       const roleBadge = u.role === 'admin' ? '<span class="badge-k3">Admin Utama</span>' :
+                        u.role === 'utama' ? '<span class="badge-k3">Portal Utama</span>' :
                         u.role === 'direktur' ? '<span class="badge-k3">Direktur</span>' :
                         u.role === 'wadir1' ? '<span class="badge-k4">Wadir I</span>' :
                         u.role === 'wadir2' ? '<span class="badge-k5">Wadir II</span>' :
