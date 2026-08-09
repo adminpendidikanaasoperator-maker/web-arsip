@@ -181,6 +181,16 @@ const LAMPTKES_SPECIAL_TYPES = [
     { val: 'spmi_semua', label: '[SPMI FINISH] Dokumen Mutu Lengkap' }
   ];
 
+const COMMON_JENIS = [
+  { val: 'umum_surat_masuk', label: 'Surat Masuk', icon: 'fas fa-inbox', color: '#3b82f6' },
+  { val: 'umum_surat_keluar', label: 'Surat Keluar', icon: 'fas fa-paper-plane', color: '#10b981' },
+  { val: 'umum_sk', label: 'Surat Keputusan (SK)', icon: 'fas fa-gavel', color: '#f59e0b' },
+  { val: 'umum_laporan', label: 'Laporan', icon: 'fas fa-file-alt', color: '#6366f1' },
+  { val: 'umum_notulen', label: 'Notulen Rapat', icon: 'fas fa-users', color: '#8b5cf6' },
+  { val: 'umum_lainnya', label: 'Lainnya', icon: 'fas fa-file', color: '#6b7280' }
+];
+
+
 const DEPT_JENIS = {
     "akademik": [
         {
