@@ -1574,6 +1574,40 @@ function updateBadges() {
 /* ÔòÉÔòÉÔòÉÔòÉÔòÉ DASHBOARD ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderDashboard() {
   let data=arsip.filter(a=>!currentAY||a.ay===currentAY);
+
+  // --- START RAB WIDGET LOGIC ---
+  let totalRAB = 0, realisasi = 0, ditolak = 0, sisa = 0;
+  
+  data.filter(a => a.isAnggaran === true || a.jenis === 'anggaran' || a.jenis === 'umum_rab' || a.kategori === 'Anggaran').forEach(item => {
+      let amt = Number(item.rab_amount) || Number(item.totalAnggaran) || (Number(item.harga || 0) * Number(item.volume || 1)) || 0;
+      let stat = (item.rab_status || item.status || '').toLowerCase();
+      
+      totalRAB += amt;
+      if (stat.includes('terealisasi') || stat.includes('disetujui') || stat.includes('selesai')) {
+          realisasi += amt;
+      } else if (stat.includes('tolak') || stat.includes('batal')) {
+          ditolak += amt;
+      } else {
+          sisa += amt;
+      }
+  });
+
+  const formatRp = (num) => 'Rp ' + num.toLocaleString('id-ID');
+  
+  const sect = document.getElementById('dashboard-anggaran-section');
+  if (sect) {
+      if (totalRAB > 0) {
+        sect.style.display = 'block';
+        if(document.getElementById('badge-rab-total')) document.getElementById('badge-rab-total').innerText = formatRp(totalRAB);
+        if(document.getElementById('badge-rab-realisasi')) document.getElementById('badge-rab-realisasi').innerText = formatRp(realisasi);
+        if(document.getElementById('badge-rab-sisa')) document.getElementById('badge-rab-sisa').innerText = formatRp(sisa);
+        if(document.getElementById('badge-rab-ditolak')) document.getElementById('badge-rab-ditolak').innerText = formatRp(ditolak);
+      } else {
+        sect.style.display = 'none';
+      }
+  }
+  // --- END RAB WIDGET LOGIC ---
+
   initDashCharts(data); renderRecentList(data);
 }
 function renderRecentList(data) {
@@ -1724,6 +1758,38 @@ function renderDeptPage(dept) {
   document.getElementById('deptBannerIcon').innerHTML=`<i class="${d.icon}"></i>`;
   document.getElementById('deptBannerName').textContent=d.label;
   document.getElementById('deptBannerSub').textContent=`Manajemen arsip bidang ${d.label} ┬À TA ${currentAY}`;
+
+  // --- START RAB WIDGET LOGIC PER BIDANG ---
+  let deptTotalRAB = 0, deptRealisasi = 0, deptDitolak = 0, deptSisa = 0;
+  
+  all.filter(a => a.isAnggaran === true || a.jenis === 'anggaran' || a.jenis === 'umum_rab' || a.kategori === 'Anggaran').forEach(item => {
+      let amt = Number(item.rab_amount) || Number(item.totalAnggaran) || (Number(item.harga || 0) * Number(item.volume || 1)) || 0;
+      let stat = (item.rab_status || item.status || '').toLowerCase();
+      
+      deptTotalRAB += amt;
+      if (stat.includes('terealisasi') || stat.includes('disetujui') || stat.includes('selesai')) {
+          deptRealisasi += amt;
+      } else if (stat.includes('tolak') || stat.includes('batal')) {
+          deptDitolak += amt;
+      } else {
+          deptSisa += amt;
+      }
+  });
+
+  const deptSect = document.getElementById('dept-dashboard-anggaran-section');
+  if (deptSect) {
+      if (deptTotalRAB > 0) {
+        deptSect.style.display = 'block';
+        const formatRp = (num) => 'Rp ' + num.toLocaleString('id-ID');
+        if(document.getElementById('dept-badge-rab-total')) document.getElementById('dept-badge-rab-total').innerText = formatRp(deptTotalRAB);
+        if(document.getElementById('dept-badge-rab-realisasi')) document.getElementById('dept-badge-rab-realisasi').innerText = formatRp(deptRealisasi);
+        if(document.getElementById('dept-badge-rab-sisa')) document.getElementById('dept-badge-rab-sisa').innerText = formatRp(deptSisa);
+        if(document.getElementById('dept-badge-rab-ditolak')) document.getElementById('dept-badge-rab-ditolak').innerText = formatRp(deptDitolak);
+      } else {
+        deptSect.style.display = 'none';
+      }
+  }
+  // --- END RAB WIDGET LOGIC PER BIDANG ---
 
   document.getElementById('deptStatRow').innerHTML=[
     {lb:'Total Arsip',val:all.length,ic:'archive',c:d.color},
@@ -3785,3 +3851,5 @@ async function submitKinerjaBidang() {
         btn.innerHTML = oriText;
     }
 }
+
+
