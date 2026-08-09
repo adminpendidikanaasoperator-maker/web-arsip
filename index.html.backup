@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SIMARSIP - Akademi Akupunktur Surabaya</title>
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <meta name="description" content="Sistem Manajemen Arsip Digital Akademi Akupunktur Surabaya" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+  <link rel="stylesheet" href="style.css?v=1000" />
+</head>
+<body>
+
+<div id="authWrapper" class="auth-container">
+  <div class="auth-box">
+    <div class="auth-header">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+        <img src="logo.jpg" alt="Logo AAS" style="margin-bottom: 0;">
+        <div style="text-align: left;">
+          <h1 style="color: #0b2239; font-size: 1.1rem; font-weight: 800; margin: 0; line-height: 1.2;">AKADEMI AKUPUNKTUR<br>SURABAYA</h1>
+        </div>
+      </div>
+      <h2>SIMARSIP AAS</h2>
+      <p>Sistem Manajemen Arsip Digital</p>
+    </div>
+    
+    <div id="loginForm">
+      <div class="form-group">
+        <label><i class="fas fa-envelope"></i> Email</label>
+        <input type="email" id="loginUsername" placeholder="Masukkan email" class="form-input">
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <div style="position: relative;">
+          <input type="password" id="loginPassword" placeholder="Masukkan password" class="form-input" style="padding-right: 40px;">
+          <i class="fas fa-eye" id="toggleLoginPassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--t3);" onclick="togglePassword('loginPassword', 'toggleLoginPassword')"></i>
+        </div>
+      </div>
+      <button onclick="doLogin()" class="btn-auth"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+      <div class="auth-links">
+        Belum punya akun? <a href="javascript:void(0)" onclick="window.showRegister()" style="color:var(--primary); font-weight:600; text-decoration:none;">Daftar disini</a>
+      </div>
+    </div>
+    
+    <div id="registerForm" style="display:none;">
+      
+      <div class="form-group">
+        <label><i class="fas fa-id-card"></i> Nama Lengkap</label>
+        <input type="text" id="regName" placeholder="Nama lengkap dengan gelar" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-envelope"></i> Email Login</label>
+        <input type="email" id="regUsername" placeholder="Email Anda" class="form-input">
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <div style="position: relative;">
+          <input type="password" id="regPassword" placeholder="Buat password" class="form-input" style="padding-right: 40px;">
+          <i class="fas fa-eye" id="toggleRegPassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--t3);" onclick="togglePassword('regPassword', 'toggleRegPassword')"></i>
+        </div>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-briefcase"></i> Bidang Tugas (Pilih minimal satu)</label>
+        <div class="form-input checkbox-list" style="max-height: 200px; overflow-y: auto; padding-bottom: 10px;">
+          <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:5px; margin-bottom:5px;">Pilih Bidang</div>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="akademik"> Administrasi Akademik</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="ketenagaan"> Ketenagaan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="pendidikan"> Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="administrasi"> Administrasi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="sistem_pendidikan"> Sistem Informasi Pendidikan Tinggi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="laboratorium"> Laboratorium</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="perpustakaan"> Perpustakaan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="penelitian_pelatihan"> Penelitian dan Pelatihan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="kemahasiswaan"> Kemahasiswaan dan Alumni</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="pengabdian"> Pengabdian Masyarakat</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="admin_kelembagaan"> Administrasi dan Kelembagaan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="admin_umum"> Administrasi Umum</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="admin_kepegawaian"> Administrasi Kepegawaian</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="admin_keuangan"> Keuangan Institusi dan Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="rumah_tangga"> Rumah Tangga</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="sarana"> Sarana dan Prasarana</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="sistem_informasi"> Sistem Informasi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="humas"> Humas</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="promosi"> Promosi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="kerjasama"> Kerjasama</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="it"> IT</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="spmi"> Bidang SPMI</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px; font-weight:normal; color:var(--t1);"><input type="checkbox" name="regBidang" value="ami"> Bidang AMI</label>
+
+          <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:12px; margin-bottom:5px;">Pimpinan & Admin</div>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="direktur_bidang"> Direktur</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="admin_bidang"> Admin Utama</label>
+        </div>
+      </div>
+      <button onclick="doRegister()" class="btn-auth"><i class="fas fa-user-plus"></i> Daftar Akun</button>
+      <div class="auth-links">
+        Sudah punya akun? <a href="javascript:void(0)" onclick="window.showLogin()" style="color:var(--primary); font-weight:600; text-decoration:none;">Login disini</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ÔòÉÔòÉÔòÉ PORTAL SELECTION (MULTI-BIDANG) ÔòÉÔòÉÔòÉ -->
+<div id="portalSelectionWrapper" class="auth-container" style="display:none; background: var(--bg-main);">
+  <div class="auth-box" style="max-width: 800px; text-align:center;">
+    <h2 style="color:var(--p1); margin-bottom:10px;"><i class="fas fa-layer-group"></i> Pilih Portal Bidang Tugas</h2>
+    <p style="color:var(--t2); margin-bottom: 30px;">Anda memegang lebih dari 1 bidang tugas. Silakan pilih portal yang ingin Anda masuki saat ini.</p>
+    <div id="portalCardsContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+      <!-- Portal cards will be injected here -->
+    </div>
+    <div style="margin-top: 30px;">
+      <button onclick="auth.signOut()" class="btn-ghost-sm danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+</div>
+
+<div id="appWrapper" style="display:none;">
+
+
+<!-- ÔòÉÔòÉÔòÉ SIDEBAR ÔòÉÔòÉÔòÉ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-logo-wrap"><img src="logo.jpg" alt="Logo AAS" class="sb-logo" /></div>
+    <div class="sb-brand-text">
+      <span class="sb-name">Akademi Akupunktur</span>
+      <span class="sb-city">SURABAYA</span>
+    </div>
+  </div>
+  <div class="sb-app-label"><i class="fas fa-boxes-stacked"></i>&nbsp;SIMARSIP <span class="sb-version">v3.0</span></div>
+
+  <nav class="sb-nav">
+    <div class="sb-section">Beranda</div>
+    <a class="sb-link active" href="#" data-page="dashboard" id="nav-dashboard"><i class="fas fa-house"></i><span>Portal Utama</span></a>
+    <a class="sb-link" href="bidang-it.html" id="nav-admin-portal" style="display:none;"><i class="fas fa-server" style="color:#e11d48;"></i><span>Portal Admin & IT</span></a>
+
+
+    <div class="sb-section">Manajemen Arsip</div>
+    <a class="sb-link" href="#" data-page="arsip" id="nav-arsip"><i class="fas fa-folder-tree"></i><span>Semua Arsip</span><em id="badge-total">0</em></a>
+    <div class="sb-section">Daftar Bidang / Departemen</div>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="akademik" id="nav-akademik"><i class="fas fa-graduation-cap" style="color:#3b82f6"></i><span>Administrasi Akademik</span><em id="badge-akademik">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="ketenagaan" id="nav-ketenagaan"><i class="fas fa-users-gear" style="color:#6366f1"></i><span>Ketenagaan</span><em id="badge-ketenagaan">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="pendidikan" id="nav-pendidikan"><i class="fas fa-chalkboard-teacher" style="color:#8b5cf6"></i><span>Pendidikan</span><em id="badge-pendidikan">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="administrasi" id="nav-administrasi"><i class="fas fa-folder-open" style="color:#a855f7"></i><span>Administrasi</span><em id="badge-administrasi">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="sistem_pendidikan" id="nav-sistem_pendidikan"><i class="fas fa-laptop-code" style="color:#d946ef"></i><span>Sistem Informasi Pendidikan Tinggi</span><em id="badge-sistem_pendidikan">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="laboratorium" id="nav-laboratorium"><i class="fas fa-vials" style="color:#ec4899"></i><span>Laboratorium</span><em id="badge-laboratorium">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="perpustakaan" id="nav-perpustakaan"><i class="fas fa-book" style="color:#f43f5e"></i><span>Perpustakaan</span><em id="badge-perpustakaan">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="penelitian_pelatihan" id="nav-penelitian_pelatihan"><i class="fas fa-microscope" style="color:#f97316"></i><span>Penelitian dan Pelatihan</span><em id="badge-penelitian_pelatihan">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="kemahasiswaan" id="nav-kemahasiswaan"><i class="fas fa-user-graduate" style="color:#f59e0b"></i><span>Kemahasiswaan dan Alumni</span><em id="badge-kemahasiswaan">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="pengabdian" id="nav-pengabdian"><i class="fas fa-hands-helping" style="color:#eab308"></i><span>Pengabdian Masyarakat</span><em id="badge-pengabdian">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_kelembagaan" id="nav-admin_kelembagaan"><i class="fas fa-sitemap" style="color:#84cc16"></i><span>Administrasi dan Kelembagaan</span><em id="badge-admin_kelembagaan">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_umum" id="nav-admin_umum"><i class="fas fa-building" style="color:#22c55e"></i><span>Administrasi Umum</span><em id="badge-admin_umum">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_kepegawaian" id="nav-admin_kepegawaian"><i class="fas fa-user-tie" style="color:#10b981"></i><span>Administrasi Kepegawaian</span><em id="badge-admin_kepegawaian">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_keuangan" id="nav-admin_keuangan"><i class="fas fa-coins" style="color:#14b8a6"></i><span>Keuangan Institusi dan Pendidikan</span><em id="badge-admin_keuangan">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="rumah_tangga" id="nav-rumah_tangga"><i class="fas fa-home" style="color:#06b6d4"></i><span>Rumah Tangga</span><em id="badge-rumah_tangga">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="sarana" id="nav-sarana"><i class="fas fa-tools" style="color:#0ea5e9"></i><span>Sarana dan Prasarana</span><em id="badge-sarana">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="sistem_informasi" id="nav-sistem_informasi"><i class="fas fa-network-wired" style="color:#0284c7"></i><span>Sistem Informasi</span><em id="badge-sistem_informasi">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="humas" id="nav-humas"><i class="fas fa-bullhorn" style="color:#3b82f6"></i><span>Humas</span><em id="badge-humas">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="promosi" id="nav-promosi"><i class="fas fa-ad" style="color:#4f46e5"></i><span>Promosi</span><em id="badge-promosi">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="kerjasama" id="nav-kerjasama"><i class="fas fa-handshake" style="color:#7c3aed"></i><span>Kerjasama</span><em id="badge-kerjasama">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="it" id="nav-it"><i class="fas fa-server" style="color:#db2777"></i><span>IT</span><em id="badge-it">0</em></a>
+    <a class="sb-link dept" href="#" data-page="dept" data-dept="ami" id="nav-ami"><i class="fas fa-clipboard-check" style="color:#10b981"></i><span>AMI</span><em id="badge-ami">0</em></a>
+
+    <div class="sb-section" id="sb-admin-section">Admin Khusus</div>
+    <a class="sb-link" href="#" data-page="users" id="nav-users"><i class="fas fa-users-gear" style="color:#f43f5e"></i><span>Manajemen Pengguna</span></a>
+    
+    <div class="sb-section" id="sb-generator-section">Alat Interaktif</div>
+    <a class="sb-link" href="#" data-page="generator" id="nav-generator"><i class="fas fa-file-word" style="color:#2563eb"></i><span>Generator Dokumen</span></a>
+    <a class="sb-link" href="#" onclick="openLaporanITModal()"><i class="fas fa-headset" style="color:#e11d48"></i><span>Lapor Kendala IT</span></a>
+
+    <div class="sb-section">Laporan & Sistem</div>
+    <a class="sb-link" href="#" data-page="banpt" id="nav-banpt"><i class="fas fa-building-columns" style="color:#3b82f6"></i><span>Borang BAN-PT</span><em id="badge-banpt">0</em></a>
+    <ul class="sb-sub-menu" id="banpt-sub-menu" style="display:none;">
+      <li onclick="isBanptMode=true; isLamptkesMode=false; openForm();" style="color:#3b82f6; font-weight:600;"><i class="fas fa-cloud-upload-alt"></i> Upload LED / SPMI</li>
+      <li class="active" onclick="switchBanptTab(1, this)"><i class="fas fa-bullseye"></i> <span style="flex:1;">K1. Visi Misi & Strategi</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k1">0</span></li>
+      <li onclick="switchBanptTab(2, this)"><i class="fas fa-sitemap"></i> <span style="flex:1;">K2. Tata Pamong & Kerjasama</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k2">0</span></li>
+      <li onclick="switchBanptTab(3, this)"><i class="fas fa-user-graduate"></i> <span style="flex:1;">K3. Mahasiswa</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k3">0</span></li>
+      <li onclick="switchBanptTab(4, this)"><i class="fas fa-users-cog"></i> <span style="flex:1;">K4. Sumber Daya Manusia</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k4">0</span></li>
+      <li onclick="switchBanptTab(5, this)"><i class="fas fa-coins"></i> <span style="flex:1;">K5. Keuangan & Sarpras</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k5">0</span></li>
+      <li onclick="switchBanptTab(6, this)"><i class="fas fa-book-open"></i> <span style="flex:1;">K6. Pendidikan</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k6">0</span></li>
+      <li onclick="switchBanptTab(7, this)"><i class="fas fa-flask"></i> <span style="flex:1;">K7. Penelitian</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k7">0</span></li>
+      <li onclick="switchBanptTab(8, this)"><i class="fas fa-hands-helping"></i> <span style="flex:1;">K8. Pengabdian (PkM)</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k8">0</span></li>
+      <li onclick="switchBanptTab(9, this)"><i class="fas fa-award"></i> <span style="flex:1;">K9. Luaran & Capaian</span> <span class="badge bg-p2 k-badge" id="badge-banpt-k9">0</span></li>
+    </ul>
+
+    <a class="sb-link" href="#" data-page="lamptkes" id="nav-lamptkes"><i class="fas fa-notes-medical" style="color:#10b981"></i><span>Borang LAM-PTKes</span><em id="badge-lamptkes">0</em></a>
+    <ul class="sb-sub-menu" id="lamptkes-sub-menu" style="display:none;">
+      <li class="active" onclick="switchLamptkesTab(1, this)"><i class="fas fa-bullseye"></i> <span style="flex:1;">K1. Visi, Misi & Strategi</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k1">0</span></li>
+      <li onclick="switchLamptkesTab(2, this)"><i class="fas fa-book"></i> <span style="flex:1;">K2. Kurikulum</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k2">0</span></li>
+      <li onclick="switchLamptkesTab(3, this)"><i class="fas fa-check-circle"></i> <span style="flex:1;">K3. Penilaian</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k3">0</span></li>
+      <li onclick="switchLamptkesTab(4, this)"><i class="fas fa-user-graduate"></i> <span style="flex:1;">K4. Mahasiswa</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k4">0</span></li>
+      <li onclick="switchLamptkesTab(5, this)"><i class="fas fa-chalkboard-teacher"></i> <span style="flex:1;">K5. SDM (Dosen & Tendik)</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k5">0</span></li>
+      <li onclick="switchLamptkesTab(6, this)"><i class="fas fa-building"></i> <span style="flex:1;">K6. Sarpras & Keuangan</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k6">0</span></li>
+      <li onclick="switchLamptkesTab(7, this)"><i class="fas fa-shield-alt"></i> <span style="flex:1;">K7. Penjaminan Mutu</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k7">0</span></li>
+      <li onclick="switchLamptkesTab(8, this)"><i class="fas fa-sitemap"></i> <span style="flex:1;">K8. Tata Kelola Administrasi</span> <span class="badge bg-p2 k-badge" id="badge-lamptkes-k8">0</span></li>
+
+      <li onclick="switchLamptkesTab(10, this)"><i class="fas fa-table"></i> <span style="flex:1;">Bab II (Tabel LKPS)</span></li>
+      <li onclick="switchLamptkesTab(11, this)"><i class="fas fa-book-open"></i> <span style="flex:1;">LED (Semua Kriteria)</span></li>
+      <li onclick="switchLamptkesTab(12, this)"><i class="fas fa-tasks"></i> <span style="flex:1;">SPMI (Per Bidang)</span></li>
+      <hr style="border-color: rgba(255,255,255,0.05); margin: 4px 15px;">
+      <li onclick="isLamptkesMode=true; isBanptMode=false; openForm();" style="color:#10b981; font-weight:600;"><i class="fas fa-cloud-upload-alt"></i> Upload LED / SPMI</li>
+    </ul>
+    <a class="sb-link" href="#" data-page="analytics" id="nav-analytics"><i class="fas fa-chart-pie"></i><span>Analitik & Laporan</span></a>
+    <a class="sb-link" href="#" data-page="aktivitas" id="nav-aktivitas"><i class="fas fa-clock-rotate-left"></i><span>Riwayat Aktivitas</span></a>
+  </nav>
+  <div class="sb-foot"><div id="sidebarDate" class="sb-date"></div></div>
+</aside>
+
+<!-- ÔòÉÔòÉÔòÉ MAIN ÔòÉÔòÉÔòÉ -->
+<div class="main" id="mainWrap">
+
+  <!-- TOPBAR -->
+  <header class="topbar" id="topbar">
+    <button class="hamburger" id="hamburger" aria-label="Menu"><i class="fas fa-bars"></i></button>
+    <div class="topbar-title" id="topbarTitle">Dashboard</div>
+    <div class="topbar-actions">
+
+      <button class="tb-btn tb-btn-outline" style="color:#b91c1c; border-color:#b91c1c; margin-left:10px;" onclick="doLogout()">
+        <i class="fas fa-sign-out-alt"></i> Keluar
+      </button>
+
+      <div class="ayear-box">
+        <i class="fas fa-calendar-alt"></i>
+        <select id="globalAYear" onchange="onAYearChange()" title="Filter Tahun"></select>
+      </div>
+      <div class="export-box">
+        <button class="tb-btn tb-btn-outline" onclick="toggleExportMenu()">
+          <i class="fas fa-download"></i> Ekspor <i class="fas fa-caret-down"></i>
+        </button>
+        <div class="export-menu" id="exportMenu">
+          <span class="export-label">Pilih Format</span>
+          <button onclick="exportExcel()"><i class="fas fa-file-excel"></i> Excel (.xlsx)</button>
+          <button onclick="exportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+          <button onclick="exportWord()"><i class="fas fa-file-word"></i> Word (.docx)</button>
+          <hr/>
+          <button onclick="exportJSON()"><i class="fas fa-database"></i> JSON Backup</button>
+        </div>
+      </div>
+      
+      <button class="notif-btn" id="btnExpiryNotif" onclick="openExpiryModal()" title="Peringatan Pembaruan Dokumen">
+        <i class="fas fa-bell"></i>
+        <span class="badge" id="expiryBadge">0</span>
+      </button>
+      <button id="btnGlobalAdd"
+ class="tb-btn tb-btn-primary" onclick="isLamptkesMode=false; isBanptMode=false; openForm();">
+        <i class="fas fa-plus"></i> <span>Tambah Arsip</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ÔöÇÔöÇÔöÇ DASHBOARD ÔöÇÔöÇÔöÇ -->
+  
+
+  <!-- ÔöÇÔöÇÔöÇ SEMUA ARSIP ÔöÇÔöÇÔöÇ -->
+  
+
+  <!-- ÔöÇÔöÇÔöÇ PER BIDANG ÔöÇÔöÇÔöÇ -->
+  
+
+  <!-- ÔöÇÔöÇÔöÇ MANAJEMEN PENGGUNA ÔöÇÔöÇÔöÇ -->
+  
+
+
+  <!-- ÔöÇÔöÇÔöÇ GENERATOR DOKUMEN ÔöÇÔöÇÔöÇ -->
+  
+
+  <!-- ÔöÇÔöÇÔöÇ ANALITIK ÔöÇÔöÇÔöÇ -->
+  
+
+  <!-- ÔöÇÔöÇÔöÇ DATA MAHASISWA ÔöÇÔöÇÔöÇ -->
+
+
+  <!-- ÔöÇÔöÇÔöÇ BORANG BAN-PT ÔöÇÔöÇÔöÇ -->
+  
+
+  <!-- ÔöÇÔöÇÔöÇ BORANG LAM-PTKes ÔöÇÔöÇÔöÇ -->
+  
+
+  <!-- ÔöÇÔöÇÔöÇ AKTIVITAS ÔöÇÔöÇÔöÇ -->
+  
+
+</div><!-- end main -->
+
+<!-- ÔòÉÔòÉÔòÉ MODAL: FORM ARSIP ÔòÉÔòÉÔòÉ -->
+<div class="overlay" id="overlayForm" onclick="closeFormOut(event)">
+  <div class="modal-box" id="formBox">
+    <div class="modal-head">
+      <div class="modal-head-title" id="formTitle"><i class="fas fa-file-circle-plus"></i> Tambah Arsip</div>
+      <button class="close-btn" onclick="closeForm()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll">
+      <form id="arsipForm" onsubmit="saveArsip(event)" novalidate>
+        <input type="hidden" id="editId" />
+
+        <div class="form-row-2">
+          <div class="form-field">
+            <label>Nomor Surat / Arsip <span class="req">*</span></label>
+            <input type="text" id="fNomor" placeholder="001/AKP/KU/I/2025" required />
+          </div>
+          <div class="form-field">
+            <label>Tanggal <span class="req">*</span></label>
+            <input type="date" id="fTanggal" required  />
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Judul / Perihal <span class="req">*</span></label>
+          <input type="text" id="fJudul" placeholder="Judul atau perihal dokumen..." required />
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-field">
+            <label id="fBidangLabel">Bidang <span class="req">*</span></label>
+            <select id="fBidang" required onchange="onBidangChange()">
+              <option value="">-- Pilih Bidang --</option>
+              <option value="kriteria1">Kriteria 1. Visi, Misi</option>
+              <option value="kriteria2">Kriteria 2. Kurikulum</option>
+              <option value="kriteria3">Kriteria 3. Penilaian</option>
+              <option value="kriteria4">Kriteria 4. Mahasiswa</option>
+              <option value="kriteria5">Kriteria 5. SDM & Penelitian</option>
+              <option value="kriteria6">Kriteria 6. Sarana & Keuangan</option>
+              <option value="kriteria7">Kriteria 7. Mutu</option>
+              <option value="kriteria8">Kriteria 8. Tata Kelola</option>
+            </select>
+          </div>
+          <div class="form-field" style="position:relative;">
+            <label>Jenis Dokumen <span class="req">*</span></label>
+            <div class="custom-select-wrapper" id="fJenisWrapper">
+              <div class="custom-select-trigger" id="fJenisTrigger" onclick="toggleJenisOptions()">
+                <span id="fJenisLabelText">-- Pilih Bidang dulu --</span>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <div class="custom-select-options" id="fJenisOptions"></div>
+            </div>
+            <input type="hidden" id="fJenis" required onchange="onJenisChange()">
+          </div>
+        </div>
+
+        <!-- ÔöÇÔöÇ DYNAMIC METADATA FIELDS ÔöÇÔöÇ -->
+        <div id="dynamicFieldsContainer"></div>
+
+        <div class="form-row-2">
+          <div class="form-field">
+            <label>Pengirim / Pembuat</label>
+            <input type="text" id="fPengirim" placeholder="Nama pengirim atau pembuat..." />
+          </div>
+          <div class="form-field">
+            <label>Status</label>
+            <select id="fStatus">
+              <option value="aktif">Aktif</option>
+              <option value="diproses">Sedang Diproses</option>
+              <option value="selesai">Selesai</option>
+              <option value="arsip">Diarsipkan</option>
+            </select>
+          </div>
+        </div>
+
+                <div class="form-field" style="margin-bottom:12px">
+          <label>Tahun Akademik <span class="req">*</span></label>
+          <select id="fAYear" required style="padding:10px; border:1px solid var(--border); border-radius:6px; background:#fff; font-size:0.9rem; color:var(--text-main); cursor:pointer">
+          </select>
+        </div>
+
+        <!-- ÔöÇÔöÇ DOKUMEN GOOGLE DRIVE ÔöÇÔöÇ -->
+        <div class="gdrive-section">
+          <div class="gdrive-section-title">
+            <i class="fab fa-google-drive" style="color:#4285f4"></i>
+            Lampiran Dokumen (Google Drive)
+          </div>
+
+          <div class="form-row-2">
+            <div class="form-field">
+              <label>Format Dokumen</label>
+              <select id="fFormat">
+                <option value="pdf">­PDF</option>
+                <option value="excel">­Excel (.xlsx/.xls)</option>
+                <option value="word">­Word (.docx/.doc)</option>
+                <option value="image">­Gambar / Foto</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label>Nama File</label>
+              <input type="text" id="fFileName" placeholder="Contoh: SK_Direktur_2025.pdf" />
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label>Upload Dokumen ke GDrive (Auto-Sync)</label>
+            <input type="file" id="fUploadFile" onchange="autoDetectFormat(this)" style="padding: 10px; background: #fff;" />
+            <div id="fUploadStatus" style="font-size: 0.8rem; color: var(--primary); font-weight: 600; display: none; word-break: break-word;">Mengunggah ke GDrive...</div>
+          </div>
+
+          <div class="form-field" style="margin-top:12px;">
+            <label>Atau Paste Link GDrive Manual</label>
+            <div class="gdrive-field" id="gdriveFld">
+              <i class="fab fa-google-drive gdrive-field-icon"></i>
+              <input type="url" id="fGdriveLink"
+                placeholder="https://drive.google.com/file/d/.../view?usp=sharing" />
+              <button type="button" class="gdrive-test-btn" onclick="testGDriveLink()" title="Verifikasi & buka link">
+                <i class="fas fa-arrow-up-right-from-square"></i>
+              </button>
+            </div>
+            <div class="gdrive-guide">
+              <i class="fas fa-circle-info"></i>
+              <span>File yang di-upload akan otomatis tersimpan dalam folder <b>SIMARSIP/[Bidang]/[Tahun]</b></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label>Keterangan</label>
+          <textarea id="fKeterangan" rows="3" placeholder="Catatan atau keterangan tambahan..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" onclick="closeForm()">Batal</button>
+          <button type="submit" class="tb-btn tb-btn-primary" id="btnSimpan">
+            <i class="fas fa-floppy-disk"></i> Simpan
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ÔòÉÔòÉÔòÉ MODAL: DETAIL ÔòÉÔòÉÔòÉ -->
+<div class="overlay" id="overlayDetail" onclick="closeDetailOut(event)">
+  <div class="modal-box detail-box" id="detailBox">
+    <div class="modal-head">
+      <div class="modal-head-title"><i class="fas fa-file-lines"></i> Detail Arsip</div>
+      <button class="close-btn" onclick="closeDetail()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll" id="detailContent"></div>
+  </div>
+</div>
+
+<!-- ÔòÉÔòÉÔòÉ MODAL: PRATINJAU DOKUMEN ÔòÉÔòÉÔòÉ -->
+<div class="overlay pdf-overlay" id="overlayPDF">
+  <div class="pdf-box">
+    <div class="pdf-head">
+      <div class="pdf-head-title" id="pdfHeadTitle" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%;"><i class="fas fa-file-pdf"></i> Pratinjau Dokumen</div>
+      <div class="pdf-head-actions">
+        <button class="btn-ghost-sm" onclick="openInGDrive()">
+          <i class="fab fa-google-drive"></i> Buka di Google Drive
+        </button>
+        <button class="close-btn" onclick="closePDF()"><i class="fas fa-xmark"></i></button>
+      </div>
+    </div>
+    <div class="pdf-body">
+      <iframe id="pdfFrame" src="" frameborder="0" title="Pratinjau Dokumen" allowfullscreen></iframe>
+      <div class="pdf-nofile hidden" id="pdfNoFile">
+        <i class="fab fa-google-drive" style="color:#4285f4;font-size:3rem;display:block;margin-bottom:16px;opacity:.5"></i>
+        <h3>Belum ada dokumen dilampirkan</h3>
+        <p>Edit arsip ini untuk menambahkan link Google Drive.</p>
+        <button class="tb-btn tb-btn-primary" style="margin-top:16px" onclick="closePDF()"><i class="fas fa-pen"></i> Edit Arsip</button>
+      </div>
+    </div>
+  </div>
+<!-- ÔòÉÔòÉÔòÉ MODAL: USER MANAGEMENT (auth.js version) ÔòÉÔòÉÔòÉ -->
+<div class="overlay" id="userModal" onclick="if(event.target===this)closeUserModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-title"><i class="fas fa-user-pen"></i> <span id="userModalTitle">Edit Pengguna</span></div>
+      <button class="close-btn" onclick="closeUserModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll">
+      <form id="userForm" onsubmit="event.preventDefault(); saveUser();" novalidate>
+        <input type="hidden" id="editUid" />
+        
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" id="editName" class="form-input" required />
+        </div>
+        
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="editEmail" class="form-input" required />
+        </div>
+        
+        <div class="form-group" id="groupPassword">
+          <label>Password (Untuk pengguna baru)</label>
+          <input type="password" id="editPassword" class="form-input" />
+        </div>
+        
+        <div class="form-field">
+          <label>Role Utama</label>
+          <select id="editRole" class="form-input" required>
+            <option value="admin">Admin Utama</option>
+            <option value="direktur">Direktur</option>
+            <option value="wadir1">Wadir I (Akademik)</option>
+            <option value="wadir2">Wadir II (Umum & Kerjasama)</option>
+            <option value="wadir3">Wadir III (Kemahasiswaan dll)</option>
+            <option value="staff">Staf Bidang</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Bidang Tugas (Multi-Select)</label>
+          <div class="checkbox-list" style="max-height:150px; overflow-y:auto; border:1px solid var(--b2); padding:10px; border-radius:8px;">
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="akademik"> Akademik & Pendidikan</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="sistem_pendidikan"> Sistem Informasi Pendidikan</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="laboratorium"> Laboratorium</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="perpustakaan"> Perpustakaan</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="umum"> Umum & Kelembagaan</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="kepegawaian"> Administrasi Kepegawaian (Ketenagaan)</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="keuangan"> Keuangan & Institusi</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="rumah_tangga"> Rumah Tangga</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="sarana"> Sarana Prasarana</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="sistem_informasi"> Sistem Informasi</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="humas"> HUMAS</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="kerjasama"> Kerjasama</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="kemahasiswaan"> Kemahasiswaan & Alumni</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="lppm"> Penelitian & Pelatihan (LPPM)</label>
+            <label style="display:block; margin-bottom:5px; font-size:0.85rem;"><input type="checkbox" name="editBidang" value="pengabdian"> Pengabdian Masyarakat</label>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" onclick="closeUserModal()">Batal</button>
+          <button type="submit" class="tb-btn tb-btn-primary" id="btnSaveUser"><i class="fas fa-save"></i> Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ÔòÉÔòÉÔòÉ MODAL: FORM MAHASISWA ÔòÉÔòÉÔòÉ -->
+<div class="overlay" id="overlayMhsForm" onclick="if(event.target===this)closeMhsForm()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-title" id="mhsFormTitle"><i class="fas fa-user-graduate"></i> Tambah Mahasiswa</div>
+      <button class="close-btn" onclick="closeMhsForm()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll">
+      <form id="mhsForm" onsubmit="saveMahasiswa(event)" novalidate>
+        <input type="hidden" id="editMhsId" />
+        <div class="form-split">
+          <div class="fs-left">
+            <div class="foto-upload-box" onclick="document.getElementById('fmFoto').click()">
+              <img id="mhsPreview" src="" />
+              <i class="fas fa-camera" id="mhsPreviewIcon"></i>
+            </div>
+            <div class="foto-upload-hint">Klik kotak di atas<br>untuk unggah foto</div>
+            <input type="file" id="fmFoto" accept="image/*" style="display:none" onchange="previewImage(event, 'mhsPreview', 'fmFotoBase64')" />
+            <input type="hidden" id="fmFotoBase64" />
+          </div>
+          <div class="fs-right">
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>NIM <span class="req">*</span></label>
+                <input type="text" id="fmNIM" required />
+              </div>
+              <div class="form-field">
+                <label>Nama Lengkap <span class="req">*</span></label>
+                <input type="text" id="fmNama" required />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Tanggal Angkatan / Masuk <span class="req">*</span></label>
+                <input type="date" id="fmAngkatan" required />
+              </div>
+              <div class="form-field">
+                <label>Semester <span class="req">*</span></label>
+                <select id="fmSemester" required>
+                  <option value="">-- Pilih --</option>
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
+                  <option value="3">Semester 3</option>
+                  <option value="4">Semester 4</option>
+                  <option value="5">Semester 5</option>
+                  <option value="6">Semester 6</option>
+                  <option value="Lulus">Lulus / Alumni</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-field">
+              <label>Status Akademik <span class="req">*</span></label>
+              <select id="fmStatus" required>
+                <option value="aktif">Aktif</option>
+                <option value="cuti">Cuti</option>
+                <option value="lulus">Lulus</option>
+                <option value="keluar">Mengundurkan Diri / Keluar</option>
+              </select>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Tempat Lahir</label>
+                <input type="text" id="fmTempatLahir" />
+              </div>
+              <div class="form-field">
+                <label>Tanggal Lahir</label>
+                <input type="date" id="fmTanggalLahir" />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Jenis Kelamin</label>
+                <select id="fmJK">
+                  <option value="">-- Pilih --</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Agama</label>
+                <select id="fmAgama">
+                  <option value="">-- Pilih --</option>
+                  <option value="Islam">Islam</option>
+                  <option value="Kristen">Kristen</option>
+                  <option value="Katolik">Katolik</option>
+                  <option value="Hindu">Hindu</option>
+                  <option value="Buddha">Buddha</option>
+                  <option value="Konghucu">Konghucu</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>No. Handphone (WA)</label>
+                <input type="text" id="fmNoHp" />
+              </div>
+              <div class="form-field">
+                <label>Email</label>
+                <input type="email" id="fmEmail" />
+              </div>
+            </div>
+            <div class="form-field">
+              <label>Nama Orang Tua / Wali</label>
+              <input type="text" id="fmNamaOrtu" />
+            </div>
+            <div class="form-field">
+              <label>Alamat Lengkap</label>
+              <textarea id="fmAlamat" rows="2"></textarea>
+            </div>
+            <div class="form-field">
+              <label>No. BPJS / Jaminan Kesehatan</label>
+              <input type="text" id="fmNoBpjs" />
+            </div>
+            <div class="form-field">
+              <label>Catatan / Riwayat Akademik</label>
+              <textarea id="fmCatatan" rows="2" placeholder="Contoh: Semester 2 Tahun 2025 - 2026 Ganjil Lulus..."></textarea>
+            </div>
+            <div class="gdrive-section" style="margin-top:10px;">
+              <div class="gdrive-section-title"><i class="fas fa-folder-open" style="color:#4285f4"></i> Dokumen Penunjang Pribadi</div>
+              <div class="gdrive-guide" style="margin-top:0; margin-bottom:12px;">
+                <i class="fas fa-info-circle"></i>
+                <span><b>Struktur Folder GDrive:</b><br/>SIMARSIP / Mahasiswa / [Angkatan] / [NIM - Nama Lengkap]<br/>Pastikan Anda memasukkan link dari folder GDrive yang telah disusun rapi sesuai format di atas.</span>
+              </div>
+              <div class="form-field">
+                <label>Kumpulan Link Dokumen (Pisahkan dengan baris baru)</label>
+                <textarea id="fmDokumen" rows="3" placeholder="https://drive.google.com/...&#10;https://docs.google.com/..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" onclick="closeMhsForm()">Batal</button>
+          <button type="submit" class="tb-btn tb-btn-primary"><i class="fas fa-floppy-disk"></i> Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ÔòÉÔòÉÔòÉ MODAL: FORM SDM ÔòÉÔòÉÔòÉ -->
+<div class="overlay" id="overlaySdmForm" onclick="if(event.target===this)closeSdmForm()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-title" id="sdmFormTitle"><i class="fas fa-user-tie"></i> Tambah SDM</div>
+      <button class="close-btn" onclick="closeSdmForm()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll">
+      <form id="sdmForm" onsubmit="saveSdm(event)" novalidate>
+        <input type="hidden" id="editSdmId" />
+        <div class="form-split">
+          <div class="fs-left">
+            <div class="foto-upload-box" onclick="document.getElementById('fsFoto').click()">
+              <img id="sdmPreview" src="" />
+              <i class="fas fa-camera" id="sdmPreviewIcon"></i>
+            </div>
+            <div class="foto-upload-hint">Klik kotak di atas<br>untuk unggah foto</div>
+            <input type="file" id="fsFoto" accept="image/*" style="display:none" onchange="previewImage(event, 'sdmPreview', 'fsFotoBase64')" />
+            <input type="hidden" id="fsFotoBase64" />
+          </div>
+          <div class="fs-right">
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>NIDN / NIK <span class="req">*</span></label>
+                <input type="text" id="fsNik" required />
+              </div>
+              <div class="form-field">
+                <label>Nama Lengkap (beserta gelar) <span class="req">*</span></label>
+                <input type="text" id="fsNama" required />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Jabatan / Bidang <span class="req">*</span></label>
+                <input type="text" id="fsJabatan" list="jabatanList" placeholder="Pilih atau ketik posisi..." required />
+                <datalist id="jabatanList">
+                  <option value="Direktur"></option>
+                  <option value="Wakil Direktur I"></option>
+                  <option value="Wakil Direktur II"></option>
+                  <option value="Wakil Direktur III"></option>
+                  <option value="Dosen"></option>
+                  <option value="Bidang Keuangan"></option>
+                  <option value="Bidang Pendidikan"></option>
+                  <option value="Bidang Promosi"></option>
+                  <option value="Staff Umum / Administrasi"></option>
+                </datalist>
+              </div>
+              <div class="form-field">
+                <label>Status Kepegawaian <span class="req">*</span></label>
+                <select id="fsStatus" required>
+                  <option value="aktif">Aktif</option>
+                  <option value="tugas_belajar">Tugas Belajar</option>
+                  <option value="pensiun">Pensiun</option>
+                  <option value="keluar">Berhenti / Keluar</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Tempat Lahir</label>
+                <input type="text" id="fsTempatLahir" />
+              </div>
+              <div class="form-field">
+                <label>Tanggal Lahir</label>
+                <input type="date" id="fsTanggalLahir" />
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>Jenis Kelamin</label>
+                <select id="fsJK">
+                  <option value="">-- Pilih --</option>
+                  <option value="Laki-laki">Laki-laki</option>
+                  <option value="Perempuan">Perempuan</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label>Agama</label>
+                <select id="fsAgama">
+                  <option value="">-- Pilih --</option>
+                  <option value="Islam">Islam</option>
+                  <option value="Kristen">Kristen</option>
+                  <option value="Katolik">Katolik</option>
+                  <option value="Hindu">Hindu</option>
+                  <option value="Buddha">Buddha</option>
+                  <option value="Konghucu">Konghucu</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-field">
+                <label>No. Handphone (WA)</label>
+                <input type="text" id="fsNoHp" />
+              </div>
+              <div class="form-field">
+                <label>Email</label>
+                <input type="email" id="fsEmail" />
+              </div>
+            </div>
+            <div class="form-field">
+              <label>Alamat Lengkap</label>
+              <textarea id="fsAlamat" rows="2"></textarea>
+            </div>
+            <div class="form-field">
+              <label>No. BPJS / Jaminan Kesehatan</label>
+              <input type="text" id="fsNoBpjs" />
+            </div>
+            <div class="form-field">
+              <label>Catatan / Riwayat</label>
+              <textarea id="fsCatatan" rows="2" placeholder="Contoh: Semester 2 Tahun 2025 - 2026 Ganjil..."></textarea>
+            </div>
+            <div class="gdrive-section" style="margin-top:10px;">
+              <div class="gdrive-section-title"><i class="fas fa-folder-open" style="color:#4285f4"></i> Dokumen Penunjang Pribadi</div>
+              <div class="gdrive-guide" style="margin-top:0; margin-bottom:12px;">
+                <i class="fas fa-info-circle"></i>
+                <span><b>Struktur Folder GDrive:</b><br/>SIMARSIP / SDM / [Jabatan atau Bidang] / [NIK - Nama Lengkap]<br/>Pastikan Anda memasukkan link dari folder GDrive yang telah disusun rapi sesuai format di atas.</span>
+              </div>
+              <div class="form-field">
+                <label>Kumpulan Link Dokumen (Ijazah, Sertifikat, dll. Pisahkan dengan baris baru)</label>
+                <textarea id="fsDokumen" rows="3" placeholder="https://drive.google.com/...&#10;https://docs.google.com/..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-ghost" onclick="closeSdmForm()">Batal</button>
+          <button type="submit" class="tb-btn tb-btn-primary"><i class="fas fa-floppy-disk"></i> Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ÔòÉÔòÉÔòÉ MODAL: DETAIL PERSON (MHS / SDM) ÔòÉÔòÉÔòÉ -->
+<div class="overlay" id="overlayPerson" onclick="if(event.target===this)closePersonDetail()">
+  <div class="modal-box detail-box">
+    <div class="modal-head">
+      <div class="modal-head-title"><i class="fas fa-address-card"></i> Detail Profil</div>
+      <button class="close-btn" onclick="closePersonDetail()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll" id="personContent"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="mainContent" class="main-content">
+<main class="page hidden" id="page-aktivitas">
+    <div class="page-section-header row">
+      <div>
+        <h2><i class="fas fa-clock-rotate-left"></i> Riwayat Aktivitas</h2>
+        <p>Semua perubahan data arsip dicatat secara otomatis</p>
+      </div>
+      <button class="btn-ghost-sm danger" onclick="clearActivity()"><i class="fas fa-trash"></i> Hapus Semua</button>
+    </div>
+    <div class="activity-feed" id="activityList"></div>
+  </main>
+<main class="page hidden" id="page-analytics">
+    <div class="page-section-header">
+      <h2><i class="fas fa-chart-line"></i> Analitik & Perbandingan</h2>
+      <p>Visualisasi tingkat kerja antar bidang dan antar tahun akademik</p>
+    </div>
+    <div class="grid-1-1">
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-bar"></i> Arsip Per Bidang</h3><span class="panel-sub" id="anSub1"></span></div>
+        <div class="chart-wrap"><canvas id="chartAnBar"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-calendar-alt"></i> Tren Per Tahun Akademik</h3></div>
+        <div class="chart-wrap"><canvas id="chartAnYear"></canvas></div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:18px">
+      <div class="panel-hd"><h3><i class="fas fa-table-cells"></i> Matriks Kinerja Bidang</h3></div>
+      <div class="dept-matrix" id="deptMatrix"></div>
+    </div>
+  </main>
+<main class="page hidden" id="page-arsip">
+    <div class="filter-strip">
+      <div class="search-field">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Cari nomor, judul, pengirim, jenis dokumen..." oninput="renderArsipTable()" />
+      </div>
+      <select id="filterDept" onchange="onFilterDeptChange()">
+        <option value="">Semua Bidang</option>
+        <option value="kriteria1">Kriteria 1. Visi, Misi</option>
+        <option value="kriteria2">Kriteria 2. Kurikulum</option>
+        <option value="kriteria3">Kriteria 3. Penilaian</option>
+        <option value="kriteria4">Kriteria 4. Mahasiswa</option>
+        <option value="kriteria5">Kriteria 5. SDM & Penelitian</option>
+        <option value="kriteria6">Kriteria 6. Sarana & Keuangan</option>
+        <option value="kriteria7">Kriteria 7. Mutu</option>
+        <option value="kriteria8">Kriteria 8. Tata Kelola</option>
+      </select>
+      <select id="filterJenis" onchange="renderArsipTable()">
+        <option value="">Semua Jenis</option>
+      </select>
+      <select id="filterFormat" onchange="renderArsipTable()">
+        <option value="">Semua Format</option>
+        <option value="pdf">PDF</option>
+        <option value="excel">Excel</option>
+        <option value="word">Word</option>
+        <option value="image">Gambar</option>
+      </select>
+      <input type="date" id="filterTgl" onchange="renderArsipTable()" title="Filter Tanggal" />
+      <button class="btn-ghost-sm" onclick="clearFilters()"><i class="fas fa-xmark"></i> Reset</button>
+      <button class="btn-ghost-sm" onclick="generateIntegratedReport('excel')" style="margin-left:auto; background:var(--bg-card); border:1px solid var(--border); color:#107c41; font-weight:600;"><i class="fas fa-file-excel"></i> Laporan (Excel)</button>
+      <button class="btn-ghost-sm" onclick="generateIntegratedReport('pdf')" style="margin-left:8px; background:var(--bg-card); border:1px solid var(--border); color:#b91c1c; font-weight:600;"><i class="fas fa-file-pdf"></i> Laporan (PDF)</button>
+      <button class="btn-ghost-sm" onclick="generateIntegratedReport('word')" style="margin-left:8px; background:var(--bg-card); border:1px solid var(--border); color:#2563eb; font-weight:600;"><i class="fas fa-file-word"></i> Laporan (Word)</button>
+    </div>
+    <button onclick="window.openUserModal()" class="btn-arsip" style="background:#2563eb; color:#fff; margin-bottom:15px;"><i class="fas fa-user-plus"></i> Tambah Pengguna Baru</button>
+    <div class="table-card">
+      <table class="data-table">
+        <thead><tr>
+          <th style="width:40px">#</th>
+          <th style="width:13%">Nomor Arsip</th>
+          <th style="width:15%">Judul / Perihal</th>
+          <th style="width:14%">Bidang</th>
+          <th style="width:15%">Jenis Dokumen</th>
+          <th style="width:8%">Tanggal</th>
+                    <th style="width:8%">Status</th>
+          <th style="width:8%">Dokumen</th>
+          <th style="width:10%">Aksi</th>
+        </tr></thead>
+        <tbody id="arsipBody"></tbody>
+      </table>
+      <div class="empty-state hidden" id="tableEmpty">
+        <i class="fas fa-folder-open"></i>
+        <p>Tidak ada arsip ditemukan</p>
+        <button class="tb-btn tb-btn-primary" onclick="openEmptyStateForm();"><i class="fas fa-plus"></i> Tambah Arsip</button>
+      </div>
+      <div class="table-foot" id="tableInfo"></div>
+    </div>
+  </main>
+<main class="page hidden" id="page-banpt">
+    <div class="dept-banner banpt-banner">
+      <div class="dept-banner-icon"><i class="fas fa-building-columns"></i></div>
+      <div>
+        <h2>Dashboard Borang BAN-PT</h2>
+        <p>Laporan Institusi, Tata Kelola Makro, dan Keuangan</p>
+      </div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button onclick="exportBanpt('excel')" class="tb-btn" style="background:#107c41; color:#fff; border:none;"><i class="fas fa-file-excel"></i> Export Excel</button>
+        <button onclick="exportBanpt('pdf')" class="tb-btn" style="background:#b91c1c; color:#fff; border:none;"><i class="fas fa-file-pdf"></i> Export PDF</button>
+        <button onclick="exportBanpt('word')" class="tb-btn" style="background:#2563eb; color:#fff; border:none;"><i class="fas fa-file-word"></i> Export Word</button>
+      </div>
+    </div>
+
+    <div class="akr-dashboard">
+      <div id="banptStatRow" class="stat-row" style="margin-bottom: 20px; flex-wrap: wrap;"></div>
+      <section class="akr-content">
+                <div id="banptReportContainer">
+          <!-- Tabel Dinamis BAN-PT Kriteria 1-9 akan di-render di sini -->
+        </div>
+      </section>
+    </div>
+  </main>
+<main class="page hidden" id="page-dashboard">
+
+    <div class="portal-header">
+      <h1>Portal SIMARSIP Akademik</h1>
+      <p>Sistem Informasi Manajemen Arsip Terpadu Kelola dan pantau seluruh dokumen akademik, keuangan, dan data induk dalam satu platform tersentralisasi.</p>
+    </div>
+    
+
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#84cc1618; color:#84cc16;"><i class="fas fa-file-alt"></i></div>
+        <div class="sc-label">Total Arsip TA Ini</div><div class="sc-value" id="badge-total">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#22c55e18; color:#22c55e;"><i class="fas fa-check-circle"></i></div>
+        <div class="sc-label">Arsip Aktif</div><div class="sc-value" id="badge-aktif">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#3b82f618; color:#3b82f6;"><i class="fas fa-building-columns"></i></div>
+        <div class="sc-label">Total BAN-PT</div><div class="sc-value" id="badge-dash-banpt">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="sc-icon" style="background:#10b98118; color:#10b981;"><i class="fas fa-notes-medical"></i></div>
+        <div class="sc-label">Total LAM-PTKes</div><div class="sc-value" id="badge-dash-lamptkes">0</div>
+      </div>
+    </div>
+    
+    <div class="grid-1-1">
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-line"></i> Tren Arsip Bulanan</h3><span class="panel-sub" id="dashLineSub"></span></div>
+        <div class="chart-wrap"><canvas id="chartLine"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <h3><i class="fas fa-chart-area"></i> Tren Arsip Tahunan</h3>
+          <span class="panel-sub" style="display:inline-flex; align-items:center; gap:6px;">
+            Tahun:
+            <input type="number" id="trendStartY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2021" min="2014" max="2050" oninput="updateYearlyChart()">
+            <span style="color:var(--text-sub)">-</span>
+            <input type="number" id="trendEndY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2025" min="2014" max="2050" oninput="updateYearlyChart()">
+          </span>
+        </div>
+        <div class="chart-wrap"><canvas id="chartYearlyLine"></canvas></div>
+      </div>
+    </div>
+    <div class="grid-2-1">
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-bar"></i> Distribusi Bidang</h3></div>
+        <div class="chart-wrap chart-center" style="width:100%;"><canvas id="chartDoughnut" height="250"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-signal"></i> Status Overview</h3></div>
+        <div class="chart-wrap chart-center"><canvas id="chartStatus"></canvas></div>
+      </div>
+    </div>
+    <div class="panel panel-fill" style="margin-bottom:24px;">
+      <div class="panel-hd"><h3><i class="fas fa-clock"></i> Arsip Terbaru</h3></div>
+      <div class="recent-list" id="recentList"></div>
+    </div>
+  </main>
+<main class="page hidden" id="page-dept">
+    <div class="dept-banner" id="deptBanner">
+      <div class="dept-banner-icon" id="deptBannerIcon"></div>
+      <div>
+        <h2 id="deptBannerName">Bidang</h2>
+        <p id="deptBannerSub">Manajemen arsip</p>
+      </div>
+    </div>
+    <div id="deptArsipCharts">
+      <div class="stat-row" id="deptStatRow"></div>
+      <div class="grid-2-1">
+        <div class="panel">
+          <div class="panel-hd"><h3><i class="fas fa-chart-bar"></i> Tingkat Kerja Bulanan</h3><span class="panel-sub" id="deptChartSub"></span></div>
+          <div class="chart-wrap"><canvas id="chartDeptBar"></canvas></div>
+        </div>
+        <div class="panel">
+          <div class="panel-hd"><h3><i class="fas fa-circle-half-stroke"></i> Status Arsip</h3></div>
+          <div class="chart-wrap chart-center"><canvas id="chartDeptDonut"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="mhsChartContainer" style="display:none;" class="grid-1-1">
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-bar"></i> Tren Mahasiswa (5 Tahun Terakhir)</h3></div>
+        <div class="chart-wrap"><canvas id="mhsTrendChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hd"><h3><i class="fas fa-chart-pie"></i> Komposisi Status Mahasiswa</h3></div>
+        <div class="chart-wrap chart-center"><canvas id="mhsStatusChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Arsip Table -->
+    <div id="deptTableContainer" class="table-card">
+      <div class="table-top-row">
+        <h3 id="deptTableTitle">Daftar Arsip</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select id="deptFilterJenis" onchange="renderDeptTable()" style="background:var(--bg3);border:1px solid var(--b1);border-radius:var(--r3);color:var(--t1);font-size:.8rem;padding:7px 10px;outline:none">
+            <option value="">Semua Jenis</option>
+          </select>
+          <div class="search-field" style="max-width:250px">
+            <i class="fas fa-search"></i>
+            <input type="text" id="deptSearch" placeholder="Cari arsip bidang ini..." oninput="renderDeptTable()" />
+          </div>
+        </div>
+      </div>
+      <table class="data-table">
+        <thead id="deptHead"></thead>
+        <tbody id="deptBody"></tbody>
+      </table>
+      <div class="empty-state hidden" id="deptEmpty">
+        <i class="fas fa-inbox"></i>
+        <p>Belum ada arsip untuk bidang ini pada tahun akademik ini</p>
+      </div>
+      <div class="table-foot" id="deptInfo"></div>
+    </div>
+
+    <!-- Mahasiswa Table -->
+    <div id="deptMhsContainer" style="display:none;">
+      <div class="filter-strip" style="margin-bottom:16px">
+        <div class="search-field">
+          <i class="fas fa-search"></i>
+          <input type="text" id="mhsSearch" placeholder="Cari nama, NIM, angkatan..." oninput="renderMahasiswaPage()" />
+        </div>
+        <select id="mhsFilterAy" onchange="renderMahasiswaPage()">
+          <option value="">Semua Tahun Akademik</option>
+        </select>
+        <select id="mhsFilterStatus" onchange="renderMahasiswaPage()">
+          <option value="">Semua Status</option>
+          <option value="aktif">Aktif</option>
+          <option value="cuti">Cuti</option>
+          <option value="lulus">Lulus</option>
+          <option value="keluar">Mengundurkan Diri / Keluar</option>
+        </select>
+        <button class="tb-btn tb-btn-primary" style="margin-left:auto" onclick="openMhsForm()"><i class="fas fa-plus"></i> Tambah Mahasiswa</button>
+      </div>
+      <div class="grid-profile" id="mhsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"></div>
+      <div class="empty-state hidden" id="mhsEmpty"><i class="fas fa-users-slash"></i><p>Tidak ada data mahasiswa ditemukan</p></div>
+    </div>
+
+    <!-- SDM Grid -->
+    <div id="deptSdmContainer" style="display:none;">
+      <div class="filter-strip" style="margin-bottom:16px">
+        <div class="search-field">
+          <i class="fas fa-search"></i>
+          <input type="text" id="sdmSearch" placeholder="Cari nama, NIDN/NIK, jabatan..." oninput="renderSdmPage()" />
+        </div>
+        <select id="sdmFilterAy" onchange="renderSdmPage()">
+          <option value="">Semua Tahun Akademik</option>
+        </select>
+        <select id="sdmFilterStatus" onchange="renderSdmPage()">
+          <option value="">Semua Status</option>
+          <option value="aktif">Aktif</option>
+          <option value="tugas_belajar">Tugas Belajar</option>
+          <option value="pensiun">Pensiun</option>
+          <option value="keluar">Berhenti / Keluar</option>
+        </select>
+        <button class="tb-btn tb-btn-primary" style="margin-left:auto" onclick="openSdmForm()"><i class="fas fa-plus"></i> Tambah SDM</button>
+      </div>
+      <div class="grid-profile" id="sdmGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px"></div>
+      <div class="empty-state hidden" id="sdmEmpty"><i class="fas fa-users-slash"></i><p>Tidak ada data SDM ditemukan</p></div>
+    </div>
+  </main>
+<main class="page hidden" id="page-generator">
+    <div class="page-section-header">
+      <h2><i class="fas fa-file-signature"></i> Generator Dokumen Resmi</h2>
+      <p>Buat Surat Tugas Dosen, RPS OBE, dll dengan Kop Surat Resmi AAS. Teks akan berformat Times New Roman ukuran 12 hitam sesuai pedoman.</p>
+    </div>
+    
+    <div class="form-card">
+      <div class="form-group">
+        <label>Jenis Dokumen</label>
+        <select id="genType" class="form-input" onchange="changeGenForm()">
+          <option value="surat_tugas">Surat Tugas Dosen</option>
+          <option value="rps_obe">RPS Berbasis OBE</option>
+        </select>
+      </div>
+      
+      <!-- Form Surat Tugas -->
+      <div id="form-surat_tugas" class="gen-form-group">
+        <div class="form-group">
+          <label>Nomor Surat</label>
+          <input type="text" id="genNoSurat" class="form-input" placeholder="Contoh: 001/ST/AAS/X/2026">
+        </div>
+        <div class="form-group">
+          <label>Nama Dosen Ditugaskan</label>
+          <input type="text" id="genNamaDosen" class="form-input" placeholder="Nama Lengkap beserta gelar">
+        </div>
+        <div class="form-group">
+          <label>Tugas / Kegiatan</label>
+          <textarea id="genTugas" class="form-input" rows="3" placeholder="Deskripsi tugas"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Tanggal Pelaksanaan</label>
+          <input type="date" id="genTanggal" class="form-input">
+        </div>
+      </div>
+      
+      <!-- Form RPS -->
+      <div id="form-rps_obe" class="gen-form-group" style="display:none;">
+        <div class="form-group">
+          <label>Nama Mata Kuliah</label>
+          <input type="text" id="genMakul" class="form-input">
+        </div>
+        <div class="form-group">
+          <label>Capaian Pembelajaran (CPL)</label>
+          <textarea id="genCPL" class="form-input" rows="3"></textarea>
+        </div>
+      </div>
+      
+      <div style="margin-top:20px; display:flex; gap:10px;">
+        <button class="btn-arsip" onclick="generateWord()" style="background:#2563eb;color:#fff"><i class="fas fa-file-word"></i> Export Word</button>
+        <button class="btn-arsip" onclick="generatePDF()" style="background:#dc2626;color:#fff"><i class="fas fa-file-pdf"></i> Export PDF</button>
+      </div>
+    </div>
+    
+    <!-- Template HTML Hidden for PDF Rendering -->
+    <div id="pdf-template" style="display:none; width:800px; padding:20px; background:white; font-family:'Times New Roman', Times, serif; color:black; font-size:12pt; text-align:justify;"></div>
+  </main>
+<main class="page hidden" id="page-lamptkes">
+    <div class="dept-banner lamptkes-banner">
+      <div class="dept-banner-icon"><i class="fas fa-notes-medical"></i></div>
+      <div>
+        <h2>Dashboard Borang LAM-PTKes</h2>
+        <p>Laporan Kompetensi Klinis, UKOM, dan Wahana Praktik D-III Akupunktur</p>
+      </div>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button onclick="exportLamptkes('excel')" class="tb-btn" style="background:#107c41; color:#fff; border:none;"><i class="fas fa-file-excel"></i> Export Excel</button>
+        <button onclick="exportLamptkes('pdf')" class="tb-btn" style="background:#b91c1c; color:#fff; border:none;"><i class="fas fa-file-pdf"></i> Export PDF</button>
+        <button onclick="exportLamptkes('word')" class="tb-btn" style="background:#2563eb; color:#fff; border:none;"><i class="fas fa-file-word"></i> Export Word</button>
+      </div>
+    </div>
+
+    <div class="akr-dashboard">
+      <div id="lamptkesStatRow" class="stat-row" style="margin-bottom: 20px; flex-wrap: wrap;"></div>
+      <section class="akr-content" id="lamptkesReportContainer">
+        <!-- Rendered by JS -->
+      </section>
+    </div>
+  </main>
+<main class="page hidden" id="page-users">
+    <div class="page-section-header">
+      <h2><i class="fas fa-users-gear"></i> Manajemen Pengguna & Hak Akses</h2>
+      <p>Kelola persetujuan staf baru dan penetapan jabatan (Wadir / Staf Bidang).</p>
+    </div>
+    
+    <div class="filter-bar" style="margin-bottom: 20px; display: flex; justify-content: flex-end;">
+      <button class="tb-btn tb-btn-primary" onclick="openUserModal()"><i class="fas fa-plus"></i> Tambah Pengguna</button>
+    </div>
+    
+    <div class="table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Nama Lengkap</th>
+            <th>Email</th>
+            <th>Role / Jabatan</th>
+            <th>Bidang (Staf)</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+</div>
+<div class="toast-stack" id="toastStack"></div>
+<div class="sb-overlay hidden" id="sbOverlay" onclick="closeSidebar()"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="loader.js?v=1014" defer></script>
+<script src="generator.js?v=1014" defer></script>
+<script src="auth.js?v=1014" defer></script>
+<script src="admin.js?v=1014" defer></script>
+<script src="app.js?v=1014" defer></script>
+
+<!-- Notification Sounds -->
+
+
+</div>
+<div class="overlay" id="editUserOverlay" style="display:none; z-index:9999;">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 style="margin:0"><i class="fas fa-user-edit"></i> Edit Pengguna</h3>
+        <button onclick="document.getElementById('editUserOverlay').style.display='none'" class="btn-close"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+        <input type="hidden" id="editUserId">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="editUsername" class="form-input" disabled>
+        </div>
+        <div class="form-group">
+          <label>Role</label>
+          <select id="editUserRole" class="form-input">
+            <option value="staf">Staf</option>
+            <option value="wadir1">Wakil Direktur I</option>
+            <option value="wadir2">Wakil Direktur II</option>
+            <option value="wadir3">Wakil Direktur III</option>
+            <option value="direktur">Direktur</option>
+            <option value="admin">Admin Utama</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Bidang Tugas</label>
+          <div class="form-input checkbox-list" style="max-height: 200px; overflow-y: auto; padding-bottom: 10px;" id="editUserBidangList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid var(--b1); display: flex; justify-content: flex-end; gap: 10px;">
+        <button onclick="document.getElementById('editUserOverlay').style.display='none'" class="btn-action" style="background:#64748b; color:white;">Batal</button>
+        <button onclick="saveUserEdit()" class="btn-action btn-upload"><i class="fas fa-save"></i> Simpan Perubahan</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MODAL PENGGUNA -->
+  <div id="userModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+    <div class="modal-content" style="background:#fff; width:90%; max-width:500px; padding:25px; border-radius:8px; position:relative; max-height:90vh; overflow-y:auto;">
+      <h3 id="userModalTitle" style="margin-top:0; color:var(--t1);">Tambah / Edit Pengguna</h3>
+      <input type="hidden" id="editUid">
+      <div class="form-group">
+        <label><i class="fas fa-id-card"></i> Nama Lengkap</label>
+        <input type="text" id="editName" class="form-input" placeholder="Nama Lengkap">
+      </div>
+      <div class="form-group" id="groupEmail">
+        <label><i class="fas fa-envelope"></i> Email Login</label>
+        <input type="email" id="editEmail" class="form-input" placeholder="Email">
+      </div>
+      <div class="form-group" id="groupPassword">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <input type="password" id="editPassword" class="form-input" placeholder="Password (Min. 6 karakter)">
+        <small style="color:var(--p2);">Kosongkan jika tidak ingin mengubah password saat edit.</small>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-user-tag"></i> Jabatan (Role)</label>
+        <select id="editRole" class="form-input">
+          <option value="staff">Staf</option>
+          <option value="wadir1">Wakil Direktur I</option>
+          <option value="wadir2">Wakil Direktur II</option>
+          <option value="wadir3">Wakil Direktur III</option>
+          <option value="direktur">Direktur</option>
+          <option value="admin">Admin Utama</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-briefcase"></i> Bidang (Khusus Staf & Wadir)</label>
+        <div id="editBidangList" class="form-input checkbox-list" style="max-height:150px; overflow-y:auto;">
+          <!-- Wadir I -->
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="akademik"> Akademik & Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="sistem_pendidikan"> Sistem Informasi Pendidikan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="laboratorium"> Laboratorium</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="perpustakaan"> Perpustakaan</label>
+          <!-- Wadir II -->
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="umum"> Umum & Kelembagaan</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="kepegawaian"> Administrasi Kepegawaian</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="keuangan"> Keuangan & Institusi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="rumah_tangga"> Rumah Tangga</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="sarana"> Sarana Prasarana</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="sistem_informasi"> Sistem Informasi</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="humas"> HUMAS</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="kerjasama"> Kerjasama</label>
+          <!-- Wadir III -->
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="kemahasiswaan"> Kemahasiswaan & Alumni</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="lppm"> Penelitian & Pelatihan (LPPM)</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="pengabdian"> Pengabdian Masyarakat</label>
+
+          <div style="font-weight:600; color:var(--p2); font-size:0.85rem; margin-top:12px; margin-bottom:5px;">Pimpinan & Admin</div>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="direktur_bidang"> Direktur</label>
+          <label style="display:block; font-size:0.85rem; margin-bottom:4px;"><input type="checkbox" name="editBidang" value="admin_bidang"> Admin Utama</label>
+        </div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button onclick="window.closeUserModal()" class="btn-arsip" style="background:#dc2626; color:#fff;"><i class="fas fa-times"></i> Batal</button>
+        <button onclick="window.saveUser()" class="btn-arsip" id="btnSaveUser" style="background:#2563eb; color:#fff;"><i class="fas fa-save"></i> Simpan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LAPORAN IT -->
+  <div id="modalLaporanIT" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+    <div class="modal-content" style="background:#fff; width:90%; max-width:500px; padding:25px; border-radius:8px; position:relative;">
+      <h3 style="margin-top:0; color:var(--t1);"><i class="fas fa-headset" style="color:#e11d48;"></i> Buat Laporan Kendala IT</h3>
+      <p style="color:var(--t2); font-size:0.85rem; margin-bottom:20px;">Laporkan kendala terkait sistem, jaringan, atau hardware ke tim IT.</p>
+      
+      <div class="form-group">
+        <label><i class="fas fa-list"></i> Kategori Kendala</label>
+        <select id="laporKategori" class="form-input">
+          <option value="Aplikasi / Software">Aplikasi / Software (Error, Bug)</option>
+          <option value="Jaringan / Internet">Jaringan / Internet</option>
+          <option value="Hardware / Perangkat">Hardware / Perangkat Komputer</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-align-left"></i> Deskripsi Kendala</label>
+        <textarea id="laporDeskripsi" class="form-input" rows="4" placeholder="Jelaskan detail masalah yang Anda alami..."></textarea>
+      </div>
+      
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button onclick="document.getElementById('modalLaporanIT').style.display='none'" class="btn-arsip" style="background:#64748b; color:#fff;">Batal</button>
+        <button onclick="submitLaporanIT()" class="btn-arsip" id="btnSubmitLaporanIT" style="background:#e11d48; color:#fff;"><i class="fas fa-paper-plane"></i> Kirim Laporan</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL KINERJA BIDANG -->
+  <div id="modalKinerjaBidang" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+    <div class="modal-content" style="background:#fff; width:90%; max-width:500px; padding:25px; border-radius:8px; position:relative;">
+      <h3 style="margin-top:0; color:var(--t1);"><i class="fas fa-clipboard-list" style="color:#2563eb;"></i> Catat Kinerja Bidang</h3>
+      <p style="color:var(--t2); font-size:0.85rem; margin-bottom:20px;">Catat laporan aktivitas operasional, inventaris, atau kegiatan hari ini agar terpantau di Dashboard Utama.</p>
+      
+      <div class="form-group">
+        <label><i class="fas fa-tags"></i> Kategori Kinerja</label>
+        <select id="kinerjaKategori" class="form-input">
+          <option value="Tugas Rutin Harian">Tugas Rutin Harian</option>
+          <option value="Laporan Khusus">Laporan Khusus</option>
+          <option value="Inventaris & Anggaran">Inventaris & Anggaran</option>
+          <option value="Perbaikan & Maintenance">Perbaikan & Maintenance</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><i class="fas fa-align-left"></i> Deskripsi Aktivitas</label>
+        <textarea id="kinerjaDeskripsi" class="form-input" rows="4" placeholder="Misal: Input data inventaris bahan praktikum Rp 2.000.000"></textarea>
+      </div>
+      
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button onclick="document.getElementById('modalKinerjaBidang').style.display='none'" class="btn-arsip" style="background:#64748b; color:#fff;">Batal</button>
+        <button onclick="submitKinerjaBidang()" class="btn-arsip" id="btnSubmitKinerja" style="background:#2563eb; color:#fff;"><i class="fas fa-save"></i> Simpan Laporan</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+  </script>
+</body>
+</html>

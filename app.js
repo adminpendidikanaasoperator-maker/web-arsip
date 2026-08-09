@@ -1083,7 +1083,7 @@ function processSnapshot(snapshot, collectionName) {
              let j = a.jenis || '';
              
              // Mapping based on common keywords
-             if (!a.id || !a.id.startsWith('SIMLAB-')) {
+             if (!a.id || (!a.id.startsWith('SIMLAB-') && !a.id.startsWith('SIMSPRAS-'))) {
                  // Academic & Curriculum (K2 & K3)
                  if (j.includes('kurikulum') || j.includes('rps') || j.includes('pembelajaran') || j.includes('modul')) {
                      if (!j.match(/^k[23]_/)) { a.jenis = 'k2_2'; a.bidang = 'akademik'; changed = true; }
