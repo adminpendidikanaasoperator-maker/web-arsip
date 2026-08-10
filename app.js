@@ -2079,15 +2079,23 @@ function chartOpts(extra={}) {
         }
       },
       datalabels: {
-        display: function(context) { return context.chart.config.type === 'doughnut' || context.chart.config.type === 'pie'; },
-        color: '#fff',
-        font: { weight: 'bold', size: 11 },
+        display: function(context) { 
+           return context.chart.data.datasets[context.datasetIndex].data[context.dataIndex] > 0;
+        },
+        color: function(context) { 
+           return (context.chart.config.type === 'doughnut' || context.chart.config.type === 'pie') ? '#fff' : '#8b9dbf'; 
+        },
+        font: { weight: 'bold', size: 10 },
+        anchor: function(context) { return (context.chart.config.type === 'bar' || context.chart.config.type === 'line') ? 'end' : 'center'; },
+        align: function(context) { return (context.chart.config.type === 'bar' || context.chart.config.type === 'line') ? 'end' : 'center'; },
         formatter: (value, context) => {
           let sum = 0;
           let dataArr = context.chart.data.datasets[context.datasetIndex].data;
           dataArr.forEach(data => { sum += Number(data) || 0; });
           if(sum > 0 && value > 0) {
-            return (value * 100 / sum).toFixed(1).replace('.0', '') + "%";
+            let p = (value * 100 / sum).toFixed(1).replace('.0', '') + "%";
+            if (context.chart.config.type === 'doughnut' || context.chart.config.type === 'pie') return p;
+            return value + ' (' + p + ')';
           }
           return null;
         }
