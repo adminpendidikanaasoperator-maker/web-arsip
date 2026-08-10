@@ -1811,7 +1811,9 @@ function renderDeptPage(dept) {
   const mhsCharts = document.getElementById('mhsChartContainer');
   if(mhsCharts) mhsCharts.style.display = (dept === 'kemahasiswaan') ? 'grid' : 'none';
   if(dept === 'kemahasiswaan') {
-    initMhsCharts(mahasiswa.filter(m=>!currentAY||m.ay===currentAY));
+    if(typeof renderMahasiswaCharts === 'function') {
+      renderMahasiswaCharts(mahasiswa.filter(m=>!currentAY||m.ay===currentAY));
+    }
   }
 
 
