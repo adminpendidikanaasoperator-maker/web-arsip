@@ -1360,6 +1360,7 @@ function sampleData() {
 
 /* ÔöÇÔöÇÔöÇ HELPERS ÔöÇÔöÇÔöÇ */
 function getJenisLabel(bidang, jenis) {
+  if (!jenis) return '-';
   const groups = DEPT_JENIS[bidang] || [];
   let found = null;
   for (let group of groups) {
@@ -1369,7 +1370,7 @@ function getJenisLabel(bidang, jenis) {
     }
   }
 
-  return found || jenis.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  return found || String(jenis).replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 }
 function getFormatCfg(fmt) { return FORMAT_MAP[fmt] || FORMAT_MAP.pdf; }
 
