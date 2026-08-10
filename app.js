@@ -2051,9 +2051,52 @@ function renderDeptMatrix() {
 /* ÔöÇÔöÇÔöÇ CHART HELPER ÔöÇÔöÇÔöÇ */
 function destroyChart(c){try{c?.destroy()}catch{}}
 function chartOpts(extra={}) {
-  return{responsive:true,maintainAspectRatio:true,animation:{duration:600,easing:'easeOutCubic'},
-    plugins:{tooltip:{backgroundColor:'rgba(20,28,46,.95)',borderColor:'rgba(255,255,255,.08)',borderWidth:1,titleColor:'#f0f6ff',bodyColor:'#8b9dbf',padding:10},legend:{display:false,...extra.plugins?.legend},...extra.plugins},
-    scales:extra.scales,...Object.fromEntries(Object.entries(extra).filter(([k])=>!['plugins','scales'].includes(k)))};
+  return{
+    responsive:true,
+    maintainAspectRatio:true,
+    animation:{duration:600,easing:'easeOutCubic'},
+    plugins:{
+      tooltip:{
+        backgroundColor:'rgba(20,28,46,.95)',borderColor:'rgba(255,255,255,.08)',borderWidth:1,titleColor:'#f0f6ff',bodyColor:'#8b9dbf',padding:10,
+        callbacks: {
+          label: function(context) {
+            let label = context.dataset.label || '';
+            if (label) label += ': ';
+            else if (context.label) label = context.label + ': ';
+            
+            const value = context.raw || 0;
+            if (context.chart.config.type === 'doughnut' || context.chart.config.type === 'pie') {
+              let total = 0;
+              const dataArr = context.chart.data.datasets[context.datasetIndex].data;
+              dataArr.forEach(d => { total += Number(d) || 0; });
+              let percentage = 0;
+              if (total > 0) percentage = ((value / total) * 100).toFixed(1).replace('.0', '') + '%';
+              return label + value + ' (' + percentage + ')';
+            }
+            return label + value;
+          }
+        }
+      },
+      datalabels: {
+        display: function(context) { return context.chart.config.type === 'doughnut' || context.chart.config.type === 'pie'; },
+        color: '#fff',
+        font: { weight: 'bold', size: 11 },
+        formatter: (value, context) => {
+          let sum = 0;
+          let dataArr = context.chart.data.datasets[context.datasetIndex].data;
+          dataArr.forEach(data => { sum += Number(data) || 0; });
+          if(sum > 0 && value > 0) {
+            return (value * 100 / sum).toFixed(1).replace('.0', '') + "%";
+          }
+          return null;
+        }
+      },
+      legend:{display:false,...extra.plugins?.legend},
+      ...extra.plugins
+    },
+    scales:extra.scales,
+    ...Object.fromEntries(Object.entries(extra).filter(([k])=>!['plugins','scales'].includes(k)))
+  };
 }
 
 /* ÔòÉÔòÉÔòÉÔòÉÔòÉ FORM MODAL ÔòÉÔòÉÔòÉÔòÉÔòÉ */
@@ -2661,8 +2704,7 @@ function renderMahasiswaCharts(data) {
         borderRadius: 4
       }]
     },
-    options: {
-      responsive: true,
+    options: chartOpts({
       maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
@@ -2671,7 +2713,7 @@ function renderMahasiswaCharts(data) {
       scales: {
         y: { beginAtZero: true, ticks: { stepSize: 1 } }
       }
-    }
+    })
   });
 
   // 2. Status Chart
@@ -2690,14 +2732,13 @@ function renderMahasiswaCharts(data) {
         borderWidth: 0
       }]
     },
-    options: {
-      responsive: true,
+    options: chartOpts({
       maintainAspectRatio: false,
       plugins: {
         legend: { position: 'bottom' },
         title: { display: false }
       }
-    }
+    })
   });
 }
 function openMhsForm() {
