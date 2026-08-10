@@ -1394,6 +1394,7 @@ function now() { return new Date().toISOString().slice(0,10); }
 function setupNav() {
   document.querySelectorAll('.sb-link').forEach(link => {
     link.addEventListener('click', e => {
+      if (link.getAttribute('href') && link.getAttribute('href') !== '#') return;
       e.preventDefault();
       const page = link.dataset.page, dept = link.dataset.dept||'';
       
