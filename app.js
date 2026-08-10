@@ -945,7 +945,12 @@ function switchDeptSub(subId, element, deptId) {
   document.querySelectorAll(`#submenu-${deptId} li`).forEach(li => li.classList.remove('active'));
   element.classList.add('active');
   currentDeptSub = subId;
-  renderDeptPage(deptId);
+  if (currentDept !== deptId) {
+    currentDept = deptId;
+    showPage('dept');
+  } else {
+    renderDeptPage(deptId);
+  }
 }
 
 let isLamptkesMode = false;

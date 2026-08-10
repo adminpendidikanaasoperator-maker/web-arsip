@@ -1,0 +1,21 @@
+[debug] [2026-08-10T05:33:42.065Z] ----------------------------------------------------------------------
+[debug] [2026-08-10T05:33:42.070Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\Admin\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2026-08-10T05:33:42.071Z] CLI Version:   15.19.0
+[debug] [2026-08-10T05:33:42.071Z] Platform:      win32
+[debug] [2026-08-10T05:33:42.071Z] Node Version:  v24.16.0
+[debug] [2026-08-10T05:33:42.072Z] Time:          Mon Aug 10 2026 12:33:42 GMT+0700 (Western Indonesia Time)
+[debug] [2026-08-10T05:33:42.072Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-08-10T05:33:46.142Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-10T05:33:46.143Z] > authorizing via signed-in user (adminpendidikanaas.operator@gmail.com)
+[debug] [2026-08-10T05:33:46.143Z] [iam] checking project gen-lang-client-0061932363 for permissions ["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2026-08-10T05:33:46.146Z] Checked if tokens are valid: true, expires at: 1786341748751
+[debug] [2026-08-10T05:33:46.146Z] Checked if tokens are valid: true, expires at: 1786341748751
+[debug] [2026-08-10T05:33:46.147Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/gen-lang-client-0061932363:testIamPermissions [none]
+[debug] [2026-08-10T05:33:46.148Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/gen-lang-client-0061932363:testIamPermissions  x-goog-user-project=gen-lang-client-0061932363
+[debug] [2026-08-10T05:33:46.148Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/gen-lang-client-0061932363:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-10T05:33:46.663Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/gen-lang-client-0061932363:testIamPermissions 200
+[debug] [2026-08-10T05:33:46.663Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/gen-lang-client-0061932363:testIamPermissions {"permissions":["datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2026-08-10T05:33:46.664Z] Checked if tokens are valid: true, expires at: 1786341748751
+[debug] [2026-08-10T05:33:46.664Z] Checked if tokens are valid: true, expires at: 1786341748751
+[debug] [2026-08-10T05:33:46.665Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/gen-lang-client-0061932363 [none]
