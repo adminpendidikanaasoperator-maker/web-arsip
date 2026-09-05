@@ -2033,6 +2033,108 @@ function initDeptCharts(dept,data,color) {
 
     const hasData = (avgF + avgA + avgL) > 0;
     
+    // Calculate 27 indicator averages
+    const allIndicators = [
+      'f_ruangKelas', 'f_kebersihanKelas', 'f_perpustakaan', 'f_labAkupunktur', 'f_saranaIbadah', 'f_toilet', 'f_wifi', 'f_parkir', 'f_areaPublik', 'f_ketersediaanModul',
+      'a_kualitasDosen', 'a_kedisiplinanDosen', 'a_relevansiKurikulum', 'a_bimbinganDPA', 'a_bimbinganKTI', 'a_keadilanNilai', 'a_ketersediaanBahanAjar', 'a_prosesKRS', 'a_jadwalKuliah',
+      'l_layananBAAK', 'l_layananKeuangan', 'l_infoBeasiswa', 'l_dukunganBEM', 'l_layananKominf', 'l_dukunganUKM', 'l_bimbinganKarir', 'l_responsivitasKeluhan'
+    ];
+    
+    const indicatorLabels = {
+      f_ruangKelas: 'Kenyamanan Ruang Kelas', f_kebersihanKelas: 'Kebersihan Kelas', f_perpustakaan: 'Fasilitas Perpustakaan', f_labAkupunktur: 'Laboratorium Akupunktur', f_saranaIbadah: 'Sarana Ibadah', f_toilet: 'Kondisi Toilet', f_wifi: 'Koneksi WiFi', f_parkir: 'Fasilitas Parkir', f_areaPublik: 'Area Publik/Kantin', f_ketersediaanModul: 'Ketersediaan Modul',
+      a_kualitasDosen: 'Kualitas Mengajar Dosen', a_kedisiplinanDosen: 'Kedisiplinan Dosen', a_relevansiKurikulum: 'Relevansi Kurikulum', a_bimbinganDPA: 'Bimbingan Akademik (DPA)', a_bimbinganKTI: 'Bimbingan KTI', a_keadilanNilai: 'Keadilan Pemberian Nilai', a_ketersediaanBahanAjar: 'Ketersediaan Bahan Ajar', a_prosesKRS: 'Proses KRS', a_jadwalKuliah: 'Jadwal Kuliah',
+      l_layananBAAK: 'Layanan BAAK', l_layananKeuangan: 'Layanan Keuangan', l_infoBeasiswa: 'Informasi Beasiswa', l_dukunganBEM: 'Dukungan BEM', l_layananKominf: 'Layanan Kominf', l_dukunganUKM: 'Dukungan UKM', l_bimbinganKarir: 'Bimbingan Karir', l_responsivitasKeluhan: 'Responsivitas Keluhan'
+    };
+
+    const indSums = {};
+    const indCounts = {};
+    allIndicators.forEach(k => { indSums[k] = 0; indCounts[k] = 0; });
+
+    tracerData.forEach(a => {
+      if (a.metadata && a.metadata.scores) {
+        allIndicators.forEach(k => {
+          if (a.metadata.scores[k]) {
+            indSums[k] += a.metadata.scores[k];
+            indCounts[k]++;
+          }
+        });
+      }
+    });
+
+    const indAverages = allIndicators.map(k => {
+      const avg = indCounts[k] > 0 ? (indSums[k] / indCounts[k]).toFixed(1) : 0;
+      return parseFloat(avg);
+    });
+
+    // Inject Custom Container for Detailed Chart
+    let detailContainer = document.getElementById('kemahasiswaanDetailCharts');
+    if (!detailContainer) {
+      const parent = document.getElementById('deptArsipCharts');
+      if (parent) {
+        parent.insertAdjacentHTML('beforeend', `
+          <div id="kemahasiswaanDetailCharts" style="margin-top: 20px;" class="grid-1-1">
+            <div class="panel">
+              <div class="panel-hd"><h3><i class="fas fa-list"></i> Rata-rata Skor per Indikator (Skala 1-5)</h3></div>
+              <div class="chart-wrap" style="height: 600px; padding: 15px;"><canvas id="chartKemahasiswaanDetail"></canvas></div>
+            </div>
+          </div>
+        `);
+        detailContainer = document.getElementById('kemahasiswaanDetailCharts');
+      }
+    }
+    if (detailContainer) detailContainer.style.display = 'block';
+
+    if (window.cKemDetail) {
+      window.cKemDetail.destroy();
+    }
+    const ctxKemDetail = document.getElementById('chartKemahasiswaanDetail')?.getContext('2d');
+    if (ctxKemDetail) {
+      const bgColors = allIndicators.map((k, i) => {
+        if (i < 10) return color + 'cc'; // Fasilitas
+        if (i < 19) return '#3b82f6cc'; // Akademik
+        return '#f59e0bcc'; // Layanan
+      });
+      const borderColors = allIndicators.map((k, i) => {
+        if (i < 10) return color; // Fasilitas
+        if (i < 19) return '#3b82f6'; // Akademik
+        return '#f59e0b'; // Layanan
+      });
+
+      window.cKemDetail = new Chart(ctxKemDetail, {
+        type: 'bar',
+        data: {
+          labels: allIndicators.map(k => indicatorLabels[k]),
+          datasets: [{
+            label: 'Skor Rata-rata (1-5)',
+            data: indAverages,
+            backgroundColor: bgColors,
+            borderColor: borderColors,
+            borderWidth: 1.5,
+            borderRadius: 4
+          }]
+        },
+        options: chartOpts({
+          indexAxis: 'y',
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            datalabels: {
+              anchor: 'end',
+              align: 'right',
+              color: '#8b9dbf',
+              font: { weight: 'bold', size: 10 },
+              formatter: (v) => v > 0 ? v : ''
+            }
+          },
+          scales: {
+            x: { max: 5, beginAtZero: true, grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#4f617d' } },
+            y: { grid: { display: false }, ticks: { color: '#8b9dbf', font: { size: 10 } } }
+          }
+        }),
+        plugins: [ChartDataLabels]
+      });
+    }
+    
     destroyChart(cDeptBar);
     const ctxB=document.getElementById('chartDeptBar')?.getContext('2d');
     if(ctxB) {
@@ -2111,6 +2213,10 @@ function initDeptCharts(dept,data,color) {
     destroyChart(cDeptDonut);
     const ctxD=document.getElementById('chartDeptDonut')?.getContext('2d');
     if(ctxD){const sK=['aktif','diproses','selesai','arsip'],sL=['Aktif','Diproses','Selesai','Diarsipkan'],sV=sK.map(s=>data.filter(a=>a.status===s).length),sC=['#22c55e','#f59e0b','#3b82f6','#94a3b8'];cDeptDonut=new Chart(ctxD,{type:'doughnut',plugins:[ChartDataLabels],data:{labels:sL,datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]},options:chartOpts({plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},cutout:'65%'})})}
+    
+    // Hide kemahasiswaan detail chart if it exists
+    const detailContainer = document.getElementById('kemahasiswaanDetailCharts');
+    if (detailContainer) detailContainer.style.display = 'none';
   }
 }
 
