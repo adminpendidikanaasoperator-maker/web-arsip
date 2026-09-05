@@ -1622,7 +1622,58 @@ function renderDashboard() {
   // --- END RAB WIDGET LOGIC ---
 
   initDashCharts(data); renderRecentList(data);
+  renderDashMahasiswaCharts();
 }
+
+let dashMhsTrendIns = null, dashMhsStatusIns = null;
+function renderDashMahasiswaCharts() {
+  if (dashMhsTrendIns) { dashMhsTrendIns.destroy(); dashMhsTrendIns = null; }
+  if (dashMhsStatusIns) { dashMhsStatusIns.destroy(); dashMhsStatusIns = null; }
+
+  // Tren per Angkatan
+  const ayCounts = {};
+  mahasiswa.forEach(m => {
+    if (!m.angkatan) return;
+    const yr = String(m.angkatan).substring(0, 4);
+    if (yr) ayCounts[yr] = (ayCounts[yr] || 0) + 1;
+  });
+  const ayKeys = Object.keys(ayCounts).sort();
+  const ayVals = ayKeys.map(k => ayCounts[k]);
+
+  const ctxT = document.getElementById('dashMhsTrendChart')?.getContext('2d');
+  if (ctxT) {
+    dashMhsTrendIns = new Chart(ctxT, {
+      type: 'bar',
+      data: {
+        labels: ayKeys.length ? ayKeys : ['Belum ada data'],
+        datasets: [{ label: 'Jumlah Mahasiswa', data: ayKeys.length ? ayVals : [0], backgroundColor: '#3b82f6', borderRadius: 4 }]
+      },
+      options: chartOpts({ plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } })
+    });
+  }
+
+  // Komposisi Status
+  const statusColors = { aktif: '#22c55e', cuti: '#f59e0b', lulus: '#3b82f6', keluar: '#ef4444', DO: '#ef4444' };
+  const sCounts = {};
+  mahasiswa.forEach(m => { const s = m.status || 'aktif'; sCounts[s] = (sCounts[s] || 0) + 1; });
+  const sKeys = Object.keys(sCounts);
+  const sVals = sKeys.map(k => sCounts[k]);
+  const sColors = sKeys.map(k => statusColors[k] || '#94a3b8');
+
+  const ctxS = document.getElementById('dashMhsStatusChart')?.getContext('2d');
+  if (ctxS) {
+    dashMhsStatusIns = new Chart(ctxS, {
+      type: 'doughnut',
+      plugins: [ChartDataLabels],
+      data: {
+        labels: sKeys.length ? sKeys.map(s => s.charAt(0).toUpperCase() + s.slice(1)) : ['Belum ada data'],
+        datasets: [{ data: sKeys.length ? sVals : [1], backgroundColor: sKeys.length ? sColors.map(c => c + '99') : ['#e2e8f0'], borderColor: sKeys.length ? sColors : ['#cbd5e1'], borderWidth: 2 }]
+      },
+      options: chartOpts({ plugins: { legend: { position: 'bottom', labels: { color: '#8b9dbf', font: { size: 11 }, padding: 10 } } }, cutout: '60%' })
+    });
+  }
+}
+
 function renderRecentList(data) {
   const el=document.getElementById('recentList'); if(!el)return;
   const recent=[...data].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
