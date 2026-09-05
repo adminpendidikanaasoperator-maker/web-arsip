@@ -2018,11 +2018,20 @@ function initDeptCharts(dept,data,color) {
     if (t2) t2.innerHTML = `<i class="fas fa-user-graduate"></i> Status Tracer Alumni`;
     
     const tracerData = data.filter(a => a.pengirim === 'Tracer Mahasiswa' || (a.nomor && a.nomor.includes('IKM')));
-    const ikmValues = tracerData.map(a => {
-      const match = a.nomor ? a.nomor.match(/IKM:\s*(\d+)%/) : null;
-      return match ? parseInt(match[1]) : 0;
-    }).filter(v => v > 0);
-    const avgIKM = ikmValues.length > 0 ? Math.round(ikmValues.reduce((a,b)=>a+b,0)/ikmValues.length) : 0;
+    const fScores = [], aScores = [], lScores = [];
+    tracerData.forEach(a => {
+      if (a.metadata) {
+        if (a.metadata.f_score_pct) fScores.push(a.metadata.f_score_pct);
+        if (a.metadata.a_score_pct) aScores.push(a.metadata.a_score_pct);
+        if (a.metadata.l_score_pct) lScores.push(a.metadata.l_score_pct);
+      }
+    });
+
+    const avgF = fScores.length > 0 ? Math.round(fScores.reduce((a,b)=>a+b,0)/fScores.length) : 0;
+    const avgA = aScores.length > 0 ? Math.round(aScores.reduce((a,b)=>a+b,0)/aScores.length) : 0;
+    const avgL = lScores.length > 0 ? Math.round(lScores.reduce((a,b)=>a+b,0)/lScores.length) : 0;
+
+    const hasData = (avgF + avgA + avgL) > 0;
     
     destroyChart(cDeptBar);
     const ctxB=document.getElementById('chartDeptBar')?.getContext('2d');
@@ -2030,20 +2039,33 @@ function initDeptCharts(dept,data,color) {
       cDeptBar=new Chart(ctxB,{
         type:'bar',
         data:{
-          labels:['Rata-rata IKM (%)'],
+          labels:['Fasilitas', 'Akademik', 'Pelayanan'],
           datasets:[{
-            label:'Skor IKM',
-            data:[avgIKM],
-            backgroundColor: color+'88',
-            borderColor: color,
+            label:'Skor Rata-rata (%)',
+            data:[avgF, avgA, avgL],
+            backgroundColor: [color+'cc', '#3b82f6cc', '#f59e0bcc'],
+            borderColor: [color, '#3b82f6', '#f59e0b'],
             borderWidth: 1.5,
             borderRadius: 6
           }]
         },
         options:chartOpts({
-          plugins:{legend:{display:false}},
-          scales:{y:{max:100, beginAtZero:true, grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#4f617d'}}, x:{grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#4f617d'}}}
-        })
+          plugins:{
+            legend:{display:false},
+            datalabels: {
+              anchor: 'end',
+              align: 'top',
+              color: '#8b9dbf',
+              font: { weight: 'bold' },
+              formatter: (v) => v > 0 ? v + '%' : ''
+            }
+          },
+          scales:{
+            y:{max:100, beginAtZero:true, grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#4f617d'}}, 
+            x:{grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#4f617d', font:{weight:'bold'}}}
+          }
+        }),
+        plugins: [ChartDataLabels]
       });
     }
 
