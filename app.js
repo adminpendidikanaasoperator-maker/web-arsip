@@ -1818,14 +1818,27 @@ function renderDeptPage(dept) {
   initDeptCharts(dept,all,d.color);
 
   const mhsCharts = document.getElementById('mhsChartContainer');
-  if(mhsCharts) mhsCharts.style.display = (dept === 'kemahasiswaan') ? 'grid' : 'none';
-  if(dept === 'kemahasiswaan') {
-    if(typeof renderMahasiswaCharts === 'function') {
-      // Pass all mahasiswa data - chart shows trend by angkatan (enrollment year), not arsip year
-      renderMahasiswaCharts(mahasiswa);
-    }
-  }
+  if(mhsCharts) mhsCharts.style.display = 'none'; // Obsolete
 
+  const iframeContainer = document.getElementById('kemahasiswaanIframeContainer');
+  const iframe = document.getElementById('kemahasiswaanIframe');
+  const deptArsipCharts = document.getElementById('deptArsipCharts');
+  const statRow = document.getElementById('deptStatRow');
+
+  if (dept === 'kemahasiswaan') {
+    if (iframeContainer) iframeContainer.style.display = 'block';
+    if (iframe && iframe.src === '') {
+      // Set the production URL for the embed dashboard
+      iframe.src = 'https://gen-lang-client-0061932363.web.app/embed/dashboard';
+    }
+    // Optionally hide the standard stats and charts to avoid clutter since the iframe has them
+    if (deptArsipCharts) deptArsipCharts.style.display = 'none';
+    if (statRow) statRow.style.display = 'none';
+  } else {
+    if (iframeContainer) iframeContainer.style.display = 'none';
+    if (deptArsipCharts) deptArsipCharts.style.display = 'block';
+    if (statRow) statRow.style.display = 'flex';
+  }
 
   document.getElementById('deptTableTitle').textContent=`Daftar Arsip ${d.label}`;
   document.getElementById('deptSearch').value='';
