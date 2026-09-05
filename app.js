@@ -1622,57 +1622,9 @@ function renderDashboard() {
   // --- END RAB WIDGET LOGIC ---
 
   initDashCharts(data); renderRecentList(data);
-  renderDashMahasiswaCharts();
 }
 
-let dashMhsTrendIns = null, dashMhsStatusIns = null;
-function renderDashMahasiswaCharts() {
-  if (dashMhsTrendIns) { dashMhsTrendIns.destroy(); dashMhsTrendIns = null; }
-  if (dashMhsStatusIns) { dashMhsStatusIns.destroy(); dashMhsStatusIns = null; }
 
-  // Tren per Angkatan
-  const ayCounts = {};
-  mahasiswa.forEach(m => {
-    if (!m.angkatan) return;
-    const yr = String(m.angkatan).substring(0, 4);
-    if (yr) ayCounts[yr] = (ayCounts[yr] || 0) + 1;
-  });
-  const ayKeys = Object.keys(ayCounts).sort();
-  const ayVals = ayKeys.map(k => ayCounts[k]);
-
-  const ctxT = document.getElementById('dashMhsTrendChart')?.getContext('2d');
-  if (ctxT) {
-    dashMhsTrendIns = new Chart(ctxT, {
-      type: 'bar',
-      data: {
-        labels: ayKeys.length ? ayKeys : ['Belum ada data'],
-        datasets: [{ label: 'Jumlah Mahasiswa', data: ayKeys.length ? ayVals : [0], backgroundColor: '#3b82f6', borderRadius: 4 }]
-      },
-      options: chartOpts({ plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } })
-    });
-  }
-
-  // Komposisi Status
-  const statusColors = { aktif: '#22c55e', cuti: '#f59e0b', lulus: '#3b82f6', keluar: '#ef4444', DO: '#ef4444' };
-  const sCounts = {};
-  mahasiswa.forEach(m => { const s = m.status || 'aktif'; sCounts[s] = (sCounts[s] || 0) + 1; });
-  const sKeys = Object.keys(sCounts);
-  const sVals = sKeys.map(k => sCounts[k]);
-  const sColors = sKeys.map(k => statusColors[k] || '#94a3b8');
-
-  const ctxS = document.getElementById('dashMhsStatusChart')?.getContext('2d');
-  if (ctxS) {
-    dashMhsStatusIns = new Chart(ctxS, {
-      type: 'doughnut',
-      plugins: [ChartDataLabels],
-      data: {
-        labels: sKeys.length ? sKeys.map(s => s.charAt(0).toUpperCase() + s.slice(1)) : ['Belum ada data'],
-        datasets: [{ data: sKeys.length ? sVals : [1], backgroundColor: sKeys.length ? sColors.map(c => c + '99') : ['#e2e8f0'], borderColor: sKeys.length ? sColors : ['#cbd5e1'], borderWidth: 2 }]
-      },
-      options: chartOpts({ plugins: { legend: { position: 'bottom', labels: { color: '#8b9dbf', font: { size: 11 }, padding: 10 } } }, cutout: '60%' })
-    });
-  }
-}
 
 function renderRecentList(data) {
   const el=document.getElementById('recentList'); if(!el)return;
@@ -2982,10 +2934,12 @@ function renderMahasiswaPage() {
   renderMahasiswaCharts(data);
 }
 
-let mhsTrendChartIns=null, mhsStatusChartIns=null;
+let mhsTrendChartIns=null, mhsStatusChartIns=null, mhsJkChartIns=null, mhsAgamaChartIns=null;
 function renderMahasiswaCharts(data) {
   if (mhsTrendChartIns) mhsTrendChartIns.destroy();
   if (mhsStatusChartIns) mhsStatusChartIns.destroy();
+  if (mhsJkChartIns) mhsJkChartIns.destroy();
+  if (mhsAgamaChartIns) mhsAgamaChartIns.destroy();
 
   // 1. Trend Chart
   const ayCounts = {};
@@ -3045,6 +2999,63 @@ function renderMahasiswaCharts(data) {
       }
     })
   });
+
+  // 3. Jenis Kelamin Chart
+  const jkCounts = { L:0, P:0 };
+  data.forEach(m => {
+    if (m.jk === 'L' || m.jk === 'Laki-Laki') jkCounts.L++;
+    if (m.jk === 'P' || m.jk === 'Perempuan') jkCounts.P++;
+  });
+  const ctxJk = document.getElementById('mhsJkChart')?.getContext('2d');
+  if (ctxJk) {
+    mhsJkChartIns = new Chart(ctxJk, {
+      type: 'doughnut',
+      plugins: [ChartDataLabels],
+      data: {
+        labels: ['Laki-Laki', 'Perempuan'],
+        datasets: [{
+          data: [jkCounts.L, jkCounts.P],
+          backgroundColor: ['#3b82f6', '#ec4899'],
+          borderWidth: 0
+        }]
+      },
+      options: chartOpts({
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' }, title: { display: false } },
+        cutout: '50%'
+      })
+    });
+  }
+
+  // 4. Agama Chart
+  const agamaCounts = {};
+  data.forEach(m => {
+    if(m.agama) {
+      agamaCounts[m.agama] = (agamaCounts[m.agama]||0) + 1;
+    }
+  });
+  const agamaKeys = Object.keys(agamaCounts);
+  const agamaVals = agamaKeys.map(k => agamaCounts[k]);
+  const ctxAg = document.getElementById('mhsAgamaChart')?.getContext('2d');
+  if (ctxAg) {
+    mhsAgamaChartIns = new Chart(ctxAg, {
+      type: 'doughnut',
+      plugins: [ChartDataLabels],
+      data: {
+        labels: agamaKeys.length ? agamaKeys : ['Belum ada data'],
+        datasets: [{
+          data: agamaKeys.length ? agamaVals : [1],
+          backgroundColor: ['#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#64748b'],
+          borderWidth: 0
+        }]
+      },
+      options: chartOpts({
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' }, title: { display: false } },
+        cutout: '50%'
+      })
+    });
+  }
 }
 function openMhsForm() {
   document.getElementById('mhsForm').reset();
