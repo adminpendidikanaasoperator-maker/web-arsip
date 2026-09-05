@@ -1827,7 +1827,7 @@ function renderDeptPage(dept) {
 
   if (dept === 'kemahasiswaan') {
     if (iframeContainer) iframeContainer.style.display = 'block';
-    if (iframe && iframe.src === '') {
+    if (iframe && !iframe.src.includes('gen-lang-client')) {
       // Set the production URL for the embed dashboard
       iframe.src = 'https://gen-lang-client-0061932363.web.app/embed/dashboard';
     }
