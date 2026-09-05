@@ -2756,10 +2756,40 @@ async function uploadToGDrive(file, bidang, jenis, tahun, tanggal = new Date().t
   });
 }
 
+let dbSumber = null;
+try {
+  if (typeof firebase !== 'undefined') {
+    const appSumber = firebase.initializeApp({
+      apiKey: "AIzaSyBgc1Gqfhk2dhqmcL0Un7dkDzHZzrxcW9s",
+      authDomain: "bidkemahasiswaandanalumn-93be8.firebaseapp.com",
+      projectId: "bidkemahasiswaandanalumn-93be8"
+    }, 'sumber');
+    dbSumber = appSumber.firestore();
+  }
+} catch (e) {
+  console.warn("Gagal inisialisasi dbSumber", e);
+}
+
 async function deleteArsip(id) {
   const a=arsip.find(x=>x.id===id);
   if(!a||!confirm(`Hapus arsip "${a.judul}"?\n\nTindakan ini tidak dapat dibatalkan.`))return;
+  
+  // Hapus dari DATA WEB ARSIP
   try { await db.collection('arsip').doc(id).delete(); } catch(e) { console.error(e); toast('Gagal menghapus dari database','error'); return; }
+  
+  // Hapus dari Portal Kemahasiswaan
+  if (dbSumber && a.bidang === 'kemahasiswaan') {
+    try {
+      if (id.startsWith('alumni_')) await dbSumber.collection('alumniData').doc(id.replace('alumni_', '')).delete();
+      else if (id.startsWith('beasiswa_')) await dbSumber.collection('beasiswaData').doc(id.replace('beasiswa_', '')).delete();
+      else if (id.startsWith('bem_')) await dbSumber.collection('bemData').doc(id.replace('bem_', '')).delete();
+      else if (id.startsWith('laporan_kmhs_')) await dbSumber.collection('laporanData').doc(id.replace('laporan_kmhs_', '')).delete();
+      else if (id.startsWith('sk_kmhs_')) await dbSumber.collection('skData').doc(id.replace('sk_kmhs_', '')).delete();
+      else if (id.startsWith('anggaran_kmhs_')) await dbSumber.collection('anggaranData').doc(id.replace('anggaran_kmhs_', '')).delete();
+      else if (id.startsWith('tracer_mhs_')) await dbSumber.collection('tracerMahasiswaData').doc(id.replace('tracer_mhs_', '')).delete();
+    } catch(e) { console.warn("Gagal menghapus dari dbSumber", e); }
+  }
+
   arsip=arsip.filter(x=>x.id!==id);
   log('delete',`Menghapus arsip: "${a.judul}"`);
   save(); updateBadges(); toast('Arsip berhasil dihapus.','success');
@@ -2768,7 +2798,6 @@ async function deleteArsip(id) {
   else if(currentPage==='dept')renderDeptPage(currentDept);
   else if(currentPage==='analytics')renderAnalytics();
 }
-
 /* ÔòÉÔòÉÔòÉÔòÉÔòÉ DETAIL MODAL ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function viewDetail(id) {
   const a=arsip.find(x=>x.id===id); if(!a)return;
