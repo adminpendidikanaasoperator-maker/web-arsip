@@ -2663,6 +2663,19 @@ async function saveArsip(e) {
         } catch (e) {
           console.warn("Gagal update dokumen di Portal Kemahasiswaan", e);
         }
+      } else if (!id && dbSumber && record.bidang === 'kemahasiswaan') {
+          // Sinkronisasi buat dokumen baru ke Portal Kemahasiswaan
+          if (record.judul.startsWith('Data Mahasiswa:')) {
+            try {
+              await dbSumber.collection('dokumenMahasiswaData').doc(record.id).set({
+                title: record.judul.replace('Data Mahasiswa: ', '').replace('Data Mahasiswa:', ''),
+                year: record.ay || record.tanggal.substring(0, 4),
+                date: record.tanggal,
+                type: 'Data Mahasiswa',
+                link: record.gdriveLink || ''
+              });
+            } catch (e) { console.warn("Gagal add ke Portal Kemahasiswaan", e); }
+          }
       }
     } catch(e) {
       console.error(e);
