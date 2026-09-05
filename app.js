@@ -999,6 +999,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 /* ÔöÇÔöÇÔöÇ ACADEMIC YEAR ÔöÇÔöÇÔöÇ */
 function getAY(dateStr) {
   if (!dateStr) return '';
+  if (String(dateStr).length === 4) return String(dateStr);
   const d = new Date(dateStr + 'T00:00:00');
   return d.getFullYear().toString();
 }
@@ -1175,7 +1176,11 @@ function processSnapshot(snapshot, collectionName) {
       }
   }
   else if (collectionName === 'activity') { activity = data; }
-  else if (collectionName === 'mahasiswa') { mahasiswa = data; }
+  else if (collectionName === 'mahasiswa') { 
+    // Compute ay from angkatan (4-digit year) so filtering works correctly
+    data.forEach(m => { if (!m.ay && m.angkatan) m.ay = String(m.angkatan).substring(0,4); });
+    mahasiswa = data; 
+  }
   else if (collectionName === 'sdm') { sdm = data; }
 
   if (!isInitialLoad[collectionName]) {
@@ -1620,14 +1625,12 @@ function renderDashboard() {
   renderDashMahasiswaCharts();
 }
 
-let dashMhsTrendIns = null, dashMhsStatusIns = null, dashMhsJkIns = null, dashMhsAgamaIns = null;
+let dashMhsTrendIns = null, dashMhsStatusIns = null;
 function renderDashMahasiswaCharts() {
   if (dashMhsTrendIns) { dashMhsTrendIns.destroy(); dashMhsTrendIns = null; }
   if (dashMhsStatusIns) { dashMhsStatusIns.destroy(); dashMhsStatusIns = null; }
-  if (dashMhsJkIns) { dashMhsJkIns.destroy(); dashMhsJkIns = null; }
-  if (dashMhsAgamaIns) { dashMhsAgamaIns.destroy(); dashMhsAgamaIns = null; }
 
-  // 1. Tren per Angkatan
+  // Tren per Angkatan
   const ayCounts = {};
   mahasiswa.forEach(m => {
     if (!m.angkatan) return;
@@ -1637,22 +1640,19 @@ function renderDashMahasiswaCharts() {
   const ayKeys = Object.keys(ayCounts).sort();
   const ayVals = ayKeys.map(k => ayCounts[k]);
 
-  const elTrend = document.getElementById('dashMhsTrendChart');
-  if (elTrend) {
-    const ctxT = elTrend.getContext('2d');
-    if (ctxT) {
-      dashMhsTrendIns = new Chart(ctxT, {
-        type: 'bar',
-        data: {
-          labels: ayKeys.length ? ayKeys : ['Belum ada data'],
-          datasets: [{ label: 'Jumlah Mahasiswa', data: ayKeys.length ? ayVals : [0], backgroundColor: '#3b82f6', borderRadius: 4 }]
-        },
-        options: chartOpts({ plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } })
-      });
-    }
+  const ctxT = document.getElementById('dashMhsTrendChart')?.getContext('2d');
+  if (ctxT) {
+    dashMhsTrendIns = new Chart(ctxT, {
+      type: 'bar',
+      data: {
+        labels: ayKeys.length ? ayKeys : ['Belum ada data'],
+        datasets: [{ label: 'Jumlah Mahasiswa', data: ayKeys.length ? ayVals : [0], backgroundColor: '#3b82f6', borderRadius: 4 }]
+      },
+      options: chartOpts({ plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } })
+    });
   }
 
-  // 2. Komposisi Status
+  // Komposisi Status
   const statusColors = { aktif: '#22c55e', cuti: '#f59e0b', lulus: '#3b82f6', keluar: '#ef4444', DO: '#ef4444' };
   const sCounts = {};
   mahasiswa.forEach(m => { const s = m.status || 'aktif'; sCounts[s] = (sCounts[s] || 0) + 1; });
@@ -1660,112 +1660,20 @@ function renderDashMahasiswaCharts() {
   const sVals = sKeys.map(k => sCounts[k]);
   const sColors = sKeys.map(k => statusColors[k] || '#94a3b8');
 
-  const elStatus = document.getElementById('dashMhsStatusChart');
-  if (elStatus) {
-    const ctxS = elStatus.getContext('2d');
-    if (ctxS) {
-      dashMhsStatusIns = new Chart(ctxS, {
-        type: 'doughnut',
-        plugins: [ChartDataLabels],
-        data: {
-          labels: sKeys.length ? sKeys.map(s => s.charAt(0).toUpperCase() + s.slice(1)) : ['Belum ada data'],
-          datasets: [{ data: sKeys.length ? sVals : [1], backgroundColor: sKeys.length ? sColors.map(c => c + '99') : ['#e2e8f0'], borderColor: sKeys.length ? sColors : ['#cbd5e1'], borderWidth: 2 }]
-        },
-        options: chartOpts({ plugins: { legend: { position: 'bottom', labels: { color: '#8b9dbf', font: { size: 11 }, padding: 10 } } }, cutout: '60%' })
-      });
-    }
-  }
-
-  // 3. Jenis Kelamin
-  const jkCounts = { 'Laki-laki': 0, 'Perempuan': 0, 'Lainnya': 0 };
-  mahasiswa.forEach(m => {
-    const jk = (m.jk || '').toLowerCase();
-    if (jk.includes('laki')) jkCounts['Laki-laki']++;
-    else if (jk.includes('perempuan') || jk.includes('wanita')) jkCounts['Perempuan']++;
-    else if (m.jk) jkCounts['Lainnya']++;
-  });
-  const jkKeys = Object.keys(jkCounts).filter(k => jkCounts[k] > 0);
-  const jkVals = jkKeys.map(k => jkCounts[k]);
-  const jkColors = { 'Laki-laki': '#3b82f6', 'Perempuan': '#ec4899', 'Lainnya': '#94a3b8' };
-
-  const elJk = document.getElementById('dashMhsJkChart');
-  if (elJk) {
-    const ctxJk = elJk.getContext('2d');
-    if (ctxJk) {
-      dashMhsJkIns = new Chart(ctxJk, {
-        type: 'doughnut',
-        plugins: [ChartDataLabels],
-        data: {
-          labels: jkKeys.length ? jkKeys : ['Belum ada data'],
-          datasets: [{
-            data: jkKeys.length ? jkVals : [1],
-            backgroundColor: jkKeys.length ? jkKeys.map(k => (jkColors[k] || '#94a3b8') + '99') : ['#e2e8f0'],
-            borderColor: jkKeys.length ? jkKeys.map(k => jkColors[k] || '#94a3b8') : ['#cbd5e1'],
-            borderWidth: 2
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          cutout: '55%',
-          animation: { duration: 600 },
-          plugins: {
-            legend: { position: 'bottom', labels: { color: '#8b9dbf', font: { size: 11 }, padding: 10 } },
-            tooltip: { backgroundColor: 'rgba(20,28,46,.95)', titleColor: '#f0f6ff', bodyColor: '#8b9dbf' },
-            datalabels: {
-              display: (ctx) => ctx.dataset.data[ctx.dataIndex] > 0,
-              color: '#fff',
-              font: { weight: 'bold', size: 12 },
-              formatter: (val, ctx) => {
-                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                return total ? Math.round(val / total * 100) + '%' : '';
-              }
-            }
-          }
-        }
-      });
-    }
-  }
-
-  // 4. Agama
-  const agamaCounts = {};
-  mahasiswa.forEach(m => {
-    const ag = m.agama ? m.agama.trim() : 'Tidak Diketahui';
-    agamaCounts[ag] = (agamaCounts[ag] || 0) + 1;
-  });
-  const agKeys = Object.keys(agamaCounts).sort((a, b) => agamaCounts[b] - agamaCounts[a]);
-  const agVals = agKeys.map(k => agamaCounts[k]);
-  const agPalette = ['#6366f1', '#f59e0b', '#10b981', '#ef4444', '#3b82f6', '#ec4899', '#94a3b8'];
-
-  const elAgama = document.getElementById('dashMhsAgamaChart');
-  if (elAgama) {
-    const ctxAg = elAgama.getContext('2d');
-    if (ctxAg) {
-      dashMhsAgamaIns = new Chart(ctxAg, {
-        type: 'bar',
-        data: {
-          labels: agKeys.length ? agKeys : ['Belum ada data'],
-          datasets: [{
-            label: 'Jumlah',
-            data: agKeys.length ? agVals : [0],
-            backgroundColor: agKeys.map((_, i) => agPalette[i % agPalette.length] + 'cc'),
-            borderColor: agKeys.map((_, i) => agPalette[i % agPalette.length]),
-            borderWidth: 1,
-            borderRadius: 5
-          }]
-        },
-        options: chartOpts({
-          indexAxis: 'y',
-          plugins: { legend: { display: false } },
-          scales: {
-            x: { beginAtZero: true, ticks: { precision: 0, color: '#4f617d' }, grid: { color: 'rgba(255,255,255,.05)' } },
-            y: { ticks: { color: '#8b9dbf', font: { size: 11 } }, grid: { display: false } }
-          }
-        })
-      });
-    }
+  const ctxS = document.getElementById('dashMhsStatusChart')?.getContext('2d');
+  if (ctxS) {
+    dashMhsStatusIns = new Chart(ctxS, {
+      type: 'doughnut',
+      plugins: [ChartDataLabels],
+      data: {
+        labels: sKeys.length ? sKeys.map(s => s.charAt(0).toUpperCase() + s.slice(1)) : ['Belum ada data'],
+        datasets: [{ data: sKeys.length ? sVals : [1], backgroundColor: sKeys.length ? sColors.map(c => c + '99') : ['#e2e8f0'], borderColor: sKeys.length ? sColors : ['#cbd5e1'], borderWidth: 2 }]
+      },
+      options: chartOpts({ plugins: { legend: { position: 'bottom', labels: { color: '#8b9dbf', font: { size: 11 }, padding: 10 } } }, cutout: '60%' })
+    });
   }
 }
+
 function renderRecentList(data) {
   const el=document.getElementById('recentList'); if(!el)return;
   const recent=[...data].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
@@ -1961,7 +1869,8 @@ function renderDeptPage(dept) {
   if(mhsCharts) mhsCharts.style.display = (dept === 'kemahasiswaan') ? 'grid' : 'none';
   if(dept === 'kemahasiswaan') {
     if(typeof renderMahasiswaCharts === 'function') {
-      renderMahasiswaCharts(mahasiswa.filter(m=>!currentAY||m.ay===currentAY));
+      // Pass all mahasiswa data - chart shows trend by angkatan (enrollment year), not arsip year
+      renderMahasiswaCharts(mahasiswa);
     }
   }
 
@@ -2036,11 +1945,22 @@ function initSidebarSubMenus() {
     ul.id = `dept-${k}-sub-menu`;
     ul.style.display = 'none';
 
-    const types = [...(DEPT_JENIS[k] || []), ...COMMON_JENIS];
-    
     let html = `<li class="active" onclick="filterByJenisFromSidebar('', '${k}', this)"><i class="fas fa-layer-group"></i> Semua Jenis</li>`;
-    types.forEach(t => {
-      html += `<li title="${t.label.replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${t.val}', '${k}', this)"><i class="${t.icon || 'fas fa-file-lines'}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${t.label}</span></li>`;
+    
+    const dJenis = DEPT_JENIS[k] || [];
+    dJenis.forEach(t => {
+      if (t.group && t.items) {
+        html += `<li style="pointer-events:none; font-size:0.75rem; font-weight:700; color:var(--t3); text-transform:uppercase; margin-top:8px; padding-left:15px; padding-bottom:4px;">${t.group}</li>`;
+        t.items.forEach(item => {
+          html += `<li title="${(item.label||'').replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${item.val}', '${k}', this)" style="padding-left:25px;"><i class="${item.icon || 'fas fa-file-lines'}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span></li>`;
+        });
+      } else {
+        html += `<li title="${(t.label||'').replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${t.val}', '${k}', this)"><i class="${t.icon || 'fas fa-file-lines'}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${t.label}</span></li>`;
+      }
+    });
+
+    COMMON_JENIS.forEach(t => {
+      html += `<li title="${(t.label||'').replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${t.val}', '${k}', this)"><i class="${t.icon || 'fas fa-file-lines'}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${t.label}</span></li>`;
     });
 
     ul.innerHTML = html;
@@ -3054,7 +2974,7 @@ function renderMahasiswaPage() {
       </div>
       <div class="profile-name">${esc(m.nama)}</div>
       <div class="profile-id">NIM: ${esc(m.nim)}</div>
-      <div class="profile-role">Tgl Masuk: ${fmtDate(m.angkatan)}</div>
+      <div class="profile-role">Angkatan: ${esc(m.angkatan||'-')}</div>
       <span class="p-badge pb-${m.status}">${m.status.replace('_',' ')}</span>
       <div class="doc-links"><button class="btn-ghost-sm" onclick="viewPersonDetail('${m.id}','mhs')"><i class="fas fa-address-card"></i> Detail Profil</button></div>
     </div>
@@ -3064,8 +2984,8 @@ function renderMahasiswaPage() {
 
 let mhsTrendChartIns=null, mhsStatusChartIns=null;
 function renderMahasiswaCharts(data) {
-  if (mhsTrendChartIns) { mhsTrendChartIns.destroy(); mhsTrendChartIns = null; }
-  if (mhsStatusChartIns) { mhsStatusChartIns.destroy(); mhsStatusChartIns = null; }
+  if (mhsTrendChartIns) mhsTrendChartIns.destroy();
+  if (mhsStatusChartIns) mhsStatusChartIns.destroy();
 
   // 1. Trend Chart
   const ayCounts = {};
@@ -3077,34 +2997,28 @@ function renderMahasiswaCharts(data) {
   const ayKeys = Object.keys(ayCounts).sort().slice(-5);
   const ayVals = ayKeys.map(k => ayCounts[k]);
 
-  const elTrend = document.getElementById('mhsTrendChart');
-  if (elTrend) {
-    const ctxT = elTrend.getContext('2d');
-    if (ctxT) {
-      mhsTrendChartIns = new Chart(ctxT, {
-        type: 'bar',
-        data: {
-          labels: ayKeys.length ? ayKeys : ['Belum ada data'],
-          datasets: [{
-            label: 'Mahasiswa Baru',
-            data: ayKeys.length ? ayVals : [0],
-            backgroundColor: '#10b981',
-            borderRadius: 4
-          }]
-        },
-        options: chartOpts({
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            title: { display: false }
-          },
-          scales: {
-            y: { beginAtZero: true, ticks: { stepSize: 1 } }
-          }
-        })
-      });
-    }
-  }
+  mhsTrendChartIns = new Chart(document.getElementById('mhsTrendChart'), {
+    type: 'bar',
+    data: {
+      labels: ayKeys.length ? ayKeys : ['Belum ada data'],
+      datasets: [{
+        label: 'Mahasiswa Baru',
+        data: ayKeys.length ? ayVals : [0],
+        backgroundColor: '#10b981',
+        borderRadius: 4
+      }]
+    },
+    options: chartOpts({
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        title: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+      }
+    })
+  });
 
   // 2. Status Chart
   const stCounts = { aktif:0, cuti:0, lulus:0, keluar:0 };
@@ -3112,31 +3026,25 @@ function renderMahasiswaCharts(data) {
     if(stCounts[m.status] !== undefined) stCounts[m.status]++;
   });
   
-  const elStatus = document.getElementById('mhsStatusChart');
-  if (elStatus) {
-    const ctxS = elStatus.getContext('2d');
-    if (ctxS) {
-      mhsStatusChartIns = new Chart(ctxS, {
-        type: 'doughnut',
-        plugins: [ChartDataLabels],
-        data: {
-          labels: ['Aktif', 'Cuti', 'Lulus', 'Keluar'],
-          datasets: [{
-            data: [stCounts.aktif, stCounts.cuti, stCounts.lulus, stCounts.keluar],
-            backgroundColor: ['#22c55e', '#f59e0b', '#3b82f6', '#ef4444'],
-            borderWidth: 0
-          }]
-        },
-        options: chartOpts({
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom' },
-            title: { display: false }
-          }
-        })
-      });
-    }
-  }
+  mhsStatusChartIns = new Chart(document.getElementById('mhsStatusChart'), {
+    type: 'doughnut',
+    plugins: [ChartDataLabels],
+    data: {
+      labels: ['Aktif', 'Cuti', 'Lulus', 'Keluar'],
+      datasets: [{
+        data: [stCounts.aktif, stCounts.cuti, stCounts.lulus, stCounts.keluar],
+        backgroundColor: ['#22c55e', '#f59e0b', '#3b82f6', '#ef4444'],
+        borderWidth: 0
+      }]
+    },
+    options: chartOpts({
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom' },
+        title: { display: false }
+      }
+    })
+  });
 }
 function openMhsForm() {
   document.getElementById('mhsForm').reset();
