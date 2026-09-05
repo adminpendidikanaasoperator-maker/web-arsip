@@ -2010,14 +2010,86 @@ function renderDeptTable() {
 
 /* ÔòÉÔòÉÔòÉÔòÉÔòÉ DEPT CHARTS ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function initDeptCharts(dept,data,color) {
-  const months=getAYMonths(currentAY),labels=months.map(getMonthLabel);
-  const counts=months.map(m=>data.filter(a=>a.tanggal?.startsWith(m)).length);
-  destroyChart(cDeptBar);
-  const ctxB=document.getElementById('chartDeptBar')?.getContext('2d');
-  if(ctxB){const g=ctxB.createLinearGradient(0,0,0,220);g.addColorStop(0,color+'cc');g.addColorStop(1,color+'33');cDeptBar=new Chart(ctxB,{type:'bar',data:{labels,datasets:[{label:'Jumlah Arsip',data:counts,backgroundColor:g,borderColor:color,borderWidth:1.5,borderRadius:6,borderSkipped:false}]},options:chartOpts({plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4f617d',font:{size:9}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4f617d',precision:0},beginAtZero:true}}})})}
-  destroyChart(cDeptDonut);
-  const ctxD=document.getElementById('chartDeptDonut')?.getContext('2d');
-  if(ctxD){const sK=['aktif','diproses','selesai','arsip'],sL=['Aktif','Diproses','Selesai','Diarsipkan'],sV=sK.map(s=>data.filter(a=>a.status===s).length),sC=['#22c55e','#f59e0b','#3b82f6','#94a3b8'];cDeptDonut=new Chart(ctxD,{type:'doughnut',plugins:[ChartDataLabels],data:{labels:sL,datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]},options:chartOpts({plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},cutout:'65%'})})}
+  const t1 = document.getElementById('deptChart1Title');
+  const t2 = document.getElementById('deptChart2Title');
+
+  if (dept === 'kemahasiswaan') {
+    if (t1) t1.innerHTML = `<i class="fas fa-chart-line"></i> Indeks Kepuasan Mahasiswa (IKM)`;
+    if (t2) t2.innerHTML = `<i class="fas fa-user-graduate"></i> Status Tracer Alumni`;
+    
+    const tracerData = data.filter(a => a.pengirim === 'Tracer Mahasiswa' || (a.nomor && a.nomor.includes('IKM')));
+    const ikmValues = tracerData.map(a => {
+      const match = a.nomor ? a.nomor.match(/IKM:\s*(\d+)%/) : null;
+      return match ? parseInt(match[1]) : 0;
+    }).filter(v => v > 0);
+    const avgIKM = ikmValues.length > 0 ? Math.round(ikmValues.reduce((a,b)=>a+b,0)/ikmValues.length) : 0;
+    
+    destroyChart(cDeptBar);
+    const ctxB=document.getElementById('chartDeptBar')?.getContext('2d');
+    if(ctxB) {
+      cDeptBar=new Chart(ctxB,{
+        type:'bar',
+        data:{
+          labels:['Rata-rata IKM (%)'],
+          datasets:[{
+            label:'Skor IKM',
+            data:[avgIKM],
+            backgroundColor: color+'88',
+            borderColor: color,
+            borderWidth: 1.5,
+            borderRadius: 6
+          }]
+        },
+        options:chartOpts({
+          plugins:{legend:{display:false}},
+          scales:{y:{max:100, beginAtZero:true, grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#4f617d'}}, x:{grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#4f617d'}}}
+        })
+      });
+    }
+
+    const alumniData = data.filter(a => (a.pengirim || '').includes('Tracer') || (a.judul && a.judul.includes('Tracer Study Alumni')));
+    let st = {bekerja:0, wirausaha:0, homecare:0, studi:0, mencari:0};
+    alumniData.forEach(a => {
+      const ket = (a.keterangan || '').toLowerCase();
+      if (ket.includes('status: bekerja')) st.bekerja++;
+      else if (ket.includes('wirausaha') || ket.includes('praktek mandiri')) st.wirausaha++;
+      else if (ket.includes('homecare')) st.homecare++;
+      else if (ket.includes('studi')) st.studi++;
+      else if (ket.includes('mencari')) st.mencari++;
+    });
+    
+    destroyChart(cDeptDonut);
+    const ctxD=document.getElementById('chartDeptDonut')?.getContext('2d');
+    if(ctxD){
+      const sL=['Bekerja','Wirausaha','Homecare','Studi','Mencari'];
+      const sV=[st.bekerja, st.wirausaha, st.homecare, st.studi, st.mencari];
+      const sC=['#22c55e','#f59e0b','#8b5cf6','#3b82f6','#ef4444'];
+      cDeptDonut=new Chart(ctxD,{
+        type:'doughnut',
+        plugins:[ChartDataLabels],
+        data:{
+          labels:sL,
+          datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]
+        },
+        options:chartOpts({
+          plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},
+          cutout:'65%'
+        })
+      });
+    }
+  } else {
+    if (t1) t1.innerHTML = `<i class="fas fa-chart-bar"></i> Tingkat Kerja Bulanan`;
+    if (t2) t2.innerHTML = `<i class="fas fa-circle-half-stroke"></i> Status Arsip`;
+
+    const months=getAYMonths(currentAY),labels=months.map(getMonthLabel);
+    const counts=months.map(m=>data.filter(a=>a.tanggal?.startsWith(m)).length);
+    destroyChart(cDeptBar);
+    const ctxB=document.getElementById('chartDeptBar')?.getContext('2d');
+    if(ctxB){const g=ctxB.createLinearGradient(0,0,0,220);g.addColorStop(0,color+'cc');g.addColorStop(1,color+'33');cDeptBar=new Chart(ctxB,{type:'bar',data:{labels,datasets:[{label:'Jumlah Arsip',data:counts,backgroundColor:g,borderColor:color,borderWidth:1.5,borderRadius:6,borderSkipped:false}]},options:chartOpts({plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4f617d',font:{size:9}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4f617d',precision:0},beginAtZero:true}}})})}
+    destroyChart(cDeptDonut);
+    const ctxD=document.getElementById('chartDeptDonut')?.getContext('2d');
+    if(ctxD){const sK=['aktif','diproses','selesai','arsip'],sL=['Aktif','Diproses','Selesai','Diarsipkan'],sV=sK.map(s=>data.filter(a=>a.status===s).length),sC=['#22c55e','#f59e0b','#3b82f6','#94a3b8'];cDeptDonut=new Chart(ctxD,{type:'doughnut',plugins:[ChartDataLabels],data:{labels:sL,datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]},options:chartOpts({plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},cutout:'65%'})})}
+  }
 }
 
 /* ÔòÉÔòÉÔòÉÔòÉÔòÉ ANALYTICS ÔòÉÔòÉÔòÉÔòÉÔòÉ */
