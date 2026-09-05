@@ -2651,6 +2651,19 @@ async function saveArsip(e) {
   }
     try {
       await db.collection('arsip').doc(record.id).set(record);
+      
+      // Sinkronisasi update ke Portal Kemahasiswaan jika dokumen asalnya dari sana
+      if (id && dbSumber && record.bidang === 'kemahasiswaan' && record.metadata && record.metadata.dokumenPortal && record.metadata.originalKoleksi && record.metadata.originalId) {
+        try {
+          await dbSumber.collection(record.metadata.originalKoleksi).doc(record.metadata.originalId).update({
+            judul: record.judul.replace(/^[^:]+:\s*/, ''), // Hapus prefix jenisLaporan jika ada
+            tahun: record.ay,
+            updatedAt: new Date().toISOString()
+          });
+        } catch (e) {
+          console.warn("Gagal update dokumen di Portal Kemahasiswaan", e);
+        }
+      }
     } catch(e) {
       console.error(e);
       alert('GAGAL MENYIMPAN KE DATABASE CLOUD: ' + e.message + '\n\nData hanya tersimpan sementara di browser. Periksa Koneksi atau Aturan Keamanan Firebase Anda.');
@@ -2780,13 +2793,17 @@ async function deleteArsip(id) {
   // Hapus dari Portal Kemahasiswaan
   if (dbSumber && a.bidang === 'kemahasiswaan') {
     try {
-      if (id.startsWith('alumni_')) await dbSumber.collection('alumniData').doc(id.replace('alumni_', '')).delete();
-      else if (id.startsWith('beasiswa_')) await dbSumber.collection('beasiswaData').doc(id.replace('beasiswa_', '')).delete();
-      else if (id.startsWith('bem_')) await dbSumber.collection('bemData').doc(id.replace('bem_', '')).delete();
-      else if (id.startsWith('laporan_kmhs_')) await dbSumber.collection('laporanData').doc(id.replace('laporan_kmhs_', '')).delete();
-      else if (id.startsWith('sk_kmhs_')) await dbSumber.collection('skData').doc(id.replace('sk_kmhs_', '')).delete();
-      else if (id.startsWith('anggaran_kmhs_')) await dbSumber.collection('anggaranData').doc(id.replace('anggaran_kmhs_', '')).delete();
-      else if (id.startsWith('tracer_mhs_')) await dbSumber.collection('tracerMahasiswaData').doc(id.replace('tracer_mhs_', '')).delete();
+      if (a.metadata && a.metadata.dokumenPortal && a.metadata.originalKoleksi && a.metadata.originalId) {
+        await dbSumber.collection(a.metadata.originalKoleksi).doc(a.metadata.originalId).delete();
+      } else {
+        if (id.startsWith('alumni_')) await dbSumber.collection('alumniData').doc(id.replace('alumni_', '')).delete();
+        else if (id.startsWith('beasiswa_')) await dbSumber.collection('beasiswaData').doc(id.replace('beasiswa_', '')).delete();
+        else if (id.startsWith('bem_')) await dbSumber.collection('bemData').doc(id.replace('bem_', '')).delete();
+        else if (id.startsWith('laporan_kmhs_')) await dbSumber.collection('laporanData').doc(id.replace('laporan_kmhs_', '')).delete();
+        else if (id.startsWith('sk_kmhs_')) await dbSumber.collection('skData').doc(id.replace('sk_kmhs_', '')).delete();
+        else if (id.startsWith('anggaran_kmhs_')) await dbSumber.collection('anggaranData').doc(id.replace('anggaran_kmhs_', '')).delete();
+        else if (id.startsWith('tracer_mhs_')) await dbSumber.collection('tracerMahasiswaData').doc(id.replace('tracer_mhs_', '')).delete();
+      }
     } catch(e) { console.warn("Gagal menghapus dari dbSumber", e); }
   }
 
