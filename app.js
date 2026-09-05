@@ -2072,10 +2072,23 @@ function initDeptCharts(dept,data,color) {
       const parent = document.getElementById('deptArsipCharts');
       if (parent) {
         parent.insertAdjacentHTML('beforeend', `
-          <div id="kemahasiswaanDetailCharts" style="margin-top: 20px;" class="grid-1-1">
+          <div id="kemahasiswaanDetailCharts" style="margin-top: 20px;">
             <div class="panel">
               <div class="panel-hd"><h3><i class="fas fa-list"></i> Rata-rata Skor per Indikator (Skala 1-5)</h3></div>
-              <div class="chart-wrap" style="height: 600px; padding: 15px;"><canvas id="chartKemahasiswaanDetail"></canvas></div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 15px;">
+                <div class="chart-wrap" style="height: 350px;">
+                  <h4 style="text-align:center; color:#3b82f6; margin-bottom:10px; font-size:14px;">Indikator Akademik</h4>
+                  <canvas id="chartKemAkademik"></canvas>
+                </div>
+                <div class="chart-wrap" style="height: 350px;">
+                  <h4 style="text-align:center; color:#10b981; margin-bottom:10px; font-size:14px;">Indikator Fasilitas</h4>
+                  <canvas id="chartKemFasilitas"></canvas>
+                </div>
+                <div class="chart-wrap" style="height: 350px;">
+                  <h4 style="text-align:center; color:#f59e0b; margin-bottom:10px; font-size:14px;">Indikator Layanan</h4>
+                  <canvas id="chartKemLayanan"></canvas>
+                </div>
+              </div>
             </div>
           </div>
         `);
@@ -2084,55 +2097,69 @@ function initDeptCharts(dept,data,color) {
     }
     if (detailContainer) detailContainer.style.display = 'block';
 
-    if (window.cKemDetail) {
-      window.cKemDetail.destroy();
-    }
-    const ctxKemDetail = document.getElementById('chartKemahasiswaanDetail')?.getContext('2d');
-    if (ctxKemDetail) {
-      const bgColors = allIndicators.map((k, i) => {
-        if (i < 10) return color + 'cc'; // Fasilitas
-        if (i < 19) return '#3b82f6cc'; // Akademik
-        return '#f59e0bcc'; // Layanan
-      });
-      const borderColors = allIndicators.map((k, i) => {
-        if (i < 10) return color; // Fasilitas
-        if (i < 19) return '#3b82f6'; // Akademik
-        return '#f59e0b'; // Layanan
-      });
+    if (window.cKemAkademik) window.cKemAkademik.destroy();
+    if (window.cKemFasilitas) window.cKemFasilitas.destroy();
+    if (window.cKemLayanan) window.cKemLayanan.destroy();
 
-      window.cKemDetail = new Chart(ctxKemDetail, {
-        type: 'bar',
-        data: {
-          labels: allIndicators.map(k => indicatorLabels[k]),
-          datasets: [{
-            label: 'Skor Rata-rata (1-5)',
-            data: indAverages,
-            backgroundColor: bgColors,
-            borderColor: borderColors,
-            borderWidth: 1.5,
-            borderRadius: 4
-          }]
-        },
-        options: chartOpts({
-          indexAxis: 'y',
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            datalabels: {
-              anchor: 'end',
-              align: 'right',
-              color: '#8b9dbf',
-              font: { weight: 'bold', size: 10 },
-              formatter: (v) => v > 0 ? v : ''
-            }
-          },
-          scales: {
-            x: { max: 5, beginAtZero: true, grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#4f617d' } },
-            y: { grid: { display: false }, ticks: { color: '#8b9dbf', font: { size: 10 } } }
+    const chartConfig = (labels, data, bg, border) => ({
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Skor Rata-rata (1-5)',
+          data: data,
+          backgroundColor: bg,
+          borderColor: border,
+          borderWidth: 1.5,
+          borderRadius: 4
+        }]
+      },
+      options: chartOpts({
+        indexAxis: 'y',
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          datalabels: {
+            anchor: 'end',
+            align: 'right',
+            color: '#8b9dbf',
+            font: { weight: 'bold', size: 10 },
+            formatter: (v) => v > 0 ? v : ''
           }
-        }),
-        plugins: [ChartDataLabels]
-      });
+        },
+        scales: {
+          x: { max: 5.5, beginAtZero: true, grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#4f617d', stepSize: 1 } },
+          y: { grid: { display: false }, ticks: { color: '#8b9dbf', font: { size: 10 } } }
+        }
+      }),
+      plugins: [ChartDataLabels]
+    });
+
+    const ctxAkademik = document.getElementById('chartKemAkademik')?.getContext('2d');
+    if (ctxAkademik) {
+      window.cKemAkademik = new Chart(ctxAkademik, chartConfig(
+        allIndicators.slice(10, 19).map(k => indicatorLabels[k]),
+        indAverages.slice(10, 19),
+        '#3b82f6cc', '#3b82f6'
+      ));
+    }
+    
+    const ctxFasilitas = document.getElementById('chartKemFasilitas')?.getContext('2d');
+    if (ctxFasilitas) {
+      window.cKemFasilitas = new Chart(ctxFasilitas, chartConfig(
+        allIndicators.slice(0, 10).map(k => indicatorLabels[k]),
+        indAverages.slice(0, 10),
+        '#10b981cc', '#10b981'
+      ));
+    }
+
+    const ctxLayanan = document.getElementById('chartKemLayanan')?.getContext('2d');
+    if (ctxLayanan) {
+      window.cKemLayanan = new Chart(ctxLayanan, chartConfig(
+        allIndicators.slice(19, 27).map(k => indicatorLabels[k]),
+        indAverages.slice(19, 27),
+        '#f59e0bcc', '#f59e0b'
+      ));
     }
     
     destroyChart(cDeptBar);
