@@ -999,6 +999,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 /* ÔöÇÔöÇÔöÇ ACADEMIC YEAR ÔöÇÔöÇÔöÇ */
 function getAY(dateStr) {
   if (!dateStr) return '';
+  if (String(dateStr).length === 4) return String(dateStr);
   const d = new Date(dateStr + 'T00:00:00');
   return d.getFullYear().toString();
 }
@@ -1175,7 +1176,11 @@ function processSnapshot(snapshot, collectionName) {
       }
   }
   else if (collectionName === 'activity') { activity = data; }
-  else if (collectionName === 'mahasiswa') { mahasiswa = data; }
+  else if (collectionName === 'mahasiswa') { 
+    // Compute ay from angkatan (4-digit year) so filtering works correctly
+    data.forEach(m => { if (!m.ay && m.angkatan) m.ay = String(m.angkatan).substring(0,4); });
+    mahasiswa = data; 
+  }
   else if (collectionName === 'sdm') { sdm = data; }
 
   if (!isInitialLoad[collectionName]) {
@@ -1813,7 +1818,8 @@ function renderDeptPage(dept) {
   if(mhsCharts) mhsCharts.style.display = (dept === 'kemahasiswaan') ? 'grid' : 'none';
   if(dept === 'kemahasiswaan') {
     if(typeof renderMahasiswaCharts === 'function') {
-      renderMahasiswaCharts(mahasiswa.filter(m=>!currentAY||m.ay===currentAY));
+      // Pass all mahasiswa data - chart shows trend by angkatan (enrollment year), not arsip year
+      renderMahasiswaCharts(mahasiswa);
     }
   }
 
@@ -2906,7 +2912,7 @@ function renderMahasiswaPage() {
       </div>
       <div class="profile-name">${esc(m.nama)}</div>
       <div class="profile-id">NIM: ${esc(m.nim)}</div>
-      <div class="profile-role">Tgl Masuk: ${fmtDate(m.angkatan)}</div>
+      <div class="profile-role">Angkatan: ${esc(m.angkatan||'-')}</div>
       <span class="p-badge pb-${m.status}">${m.status.replace('_',' ')}</span>
       <div class="doc-links"><button class="btn-ghost-sm" onclick="viewPersonDetail('${m.id}','mhs')"><i class="fas fa-address-card"></i> Detail Profil</button></div>
     </div>
