@@ -1701,13 +1701,25 @@ function renderDashMahasiswaCharts() {
           borderWidth: 2
         }]
       },
-      options: chartOpts({
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        cutout: '55%',
+        animation: { duration: 600 },
         plugins: {
           legend: { position: 'bottom', labels: { color: '#8b9dbf', font: { size: 11 }, padding: 10 } },
-          datalabels: { color: '#fff', font: { weight: 'bold', size: 12 }, formatter: (val, ctx) => { const total = ctx.dataset.data.reduce((a,b)=>a+b,0); return total ? Math.round(val/total*100)+'%' : ''; } }
-        },
-        cutout: '55%'
-      })
+          tooltip: { backgroundColor: 'rgba(20,28,46,.95)', titleColor: '#f0f6ff', bodyColor: '#8b9dbf' },
+          datalabels: {
+            display: (ctx) => ctx.dataset.data[ctx.dataIndex] > 0,
+            color: '#fff',
+            font: { weight: 'bold', size: 12 },
+            formatter: (val, ctx) => {
+              const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+              return total ? Math.round(val/total*100)+'%' : '';
+            }
+          }
+        }
+      }
     });
   }
 
@@ -2949,8 +2961,8 @@ function renderMahasiswaPage() {
 
 let mhsTrendChartIns = null, mhsStatusChartIns = null;
 function renderMahasiswaCharts(data) {
-  if (mhsTrendChartIns) mhsTrendChartIns.destroy();
-  if (mhsStatusChartIns) mhsStatusChartIns.destroy();
+  if (mhsTrendChartIns) { mhsTrendChartIns.destroy(); mhsTrendChartIns = null; }
+  if (mhsStatusChartIns) { mhsStatusChartIns.destroy(); mhsStatusChartIns = null; }
 
   // 1. Trend Chart
   const ayCounts = {};
@@ -2962,28 +2974,31 @@ function renderMahasiswaCharts(data) {
   const ayKeys = Object.keys(ayCounts).sort().slice(-5);
   const ayVals = ayKeys.map(k => ayCounts[k]);
 
-  mhsTrendChartIns = new Chart(document.getElementById('mhsTrendChart'), {
-    type: 'bar',
-    data: {
-      labels: ayKeys.length ? ayKeys : ['Belum ada data'],
-      datasets: [{
-        label: 'Mahasiswa Baru',
-        data: ayKeys.length ? ayVals : [0],
-        backgroundColor: '#10b981',
-        borderRadius: 4
-      }]
-    },
-    options: chartOpts({
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        title: { display: false }
+  const elTrend = document.getElementById('mhsTrendChart');
+  if (elTrend) {
+    mhsTrendChartIns = new Chart(elTrend, {
+      type: 'bar',
+      data: {
+        labels: ayKeys.length ? ayKeys : ['Belum ada data'],
+        datasets: [{
+          label: 'Mahasiswa Baru',
+          data: ayKeys.length ? ayVals : [0],
+          backgroundColor: '#10b981',
+          borderRadius: 4
+        }]
       },
-      scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1 } }
-      }
-    })
-  });
+      options: chartOpts({
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        }
+      })
+    });
+  }
 
   // 2. Status Chart
   const stCounts = { aktif: 0, cuti: 0, lulus: 0, keluar: 0 };
@@ -2991,25 +3006,28 @@ function renderMahasiswaCharts(data) {
     if (stCounts[m.status] !== undefined) stCounts[m.status]++;
   });
 
-  mhsStatusChartIns = new Chart(document.getElementById('mhsStatusChart'), {
-    type: 'doughnut',
-    plugins: [ChartDataLabels],
-    data: {
-      labels: ['Aktif', 'Cuti', 'Lulus', 'Keluar'],
-      datasets: [{
-        data: [stCounts.aktif, stCounts.cuti, stCounts.lulus, stCounts.keluar],
-        backgroundColor: ['#22c55e', '#f59e0b', '#3b82f6', '#ef4444'],
-        borderWidth: 0
-      }]
-    },
-    options: chartOpts({
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom' },
-        title: { display: false }
-      }
-    })
-  });
+  const elStatus = document.getElementById('mhsStatusChart');
+  if (elStatus) {
+    mhsStatusChartIns = new Chart(elStatus, {
+      type: 'doughnut',
+      plugins: [ChartDataLabels],
+      data: {
+        labels: ['Aktif', 'Cuti', 'Lulus', 'Keluar'],
+        datasets: [{
+          data: [stCounts.aktif, stCounts.cuti, stCounts.lulus, stCounts.keluar],
+          backgroundColor: ['#22c55e', '#f59e0b', '#3b82f6', '#ef4444'],
+          borderWidth: 0
+        }]
+      },
+      options: chartOpts({
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' },
+          title: { display: false }
+        }
+      })
+    });
+  }
 }
 function openMhsForm() {
   document.getElementById('mhsForm').reset();
