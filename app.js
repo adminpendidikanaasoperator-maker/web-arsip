@@ -271,7 +271,8 @@ const DEPT_JENIS = {
 {
   "group": "Kemahasiswaan & Alumni",
   "items": [
-    { "val": "Data Mahasiswa", "label": "Data Mahasiswa" },
+    { "val": "data_mahasiswa", "label": "Data Induk Mahasiswa", "icon": "fas fa-users" },
+    { "val": "Data Mahasiswa", "label": "Dokumen Mahasiswa" },
     { "val": "Alumni & Tracer Study", "label": "Alumni & Tracer Study" },
     { "val": "Beasiswa", "label": "Beasiswa" },
     { "val": "Penerima Beasiswa", "label": "Penerima Beasiswa" },
