@@ -268,45 +268,29 @@ const DEPT_JENIS = {
         }
     ],
     "kemahasiswaan": [
-        {
-            "group": "Mahasiswa",
-            "items": [
-                {
-                    "val": "k4_1",
-                    "label": "Peraturan tentang kebijakan seleksi dan penerimaan: penyelarasan dengan misi dan akreditasi/persyaratan, publisitas/sosialisasi, peninjauan, dan revisi."
-                },
-                {
-                    "val": "k4_2",
-                    "label": "Kebijakan, peraturan, prosedur dukungan/layanan mahasiswa, dan keselamatan lingkungan kerja"
-                },
-                {
-                    "val": "k4_3",
-                    "label": "Kebijakan, peraturan, dan prosedur konseling mahasiswa."
-                },
-                {
-                    "val": "k4_4",
-                    "label": "Pendukung sumber daya manusia, fasilitas, dan keuangan untuk sistem pendukung/layanan mahasiswa."
-                },
-                {
-                    "val": "k4_5",
-                    "label": "Monitoring dan evaluasi penerapan sistem pendukung/layanan kemahasiswaan."
-                },
-                {
-                    "val": "k4_6",
-                    "label": "Dokumen hasil survey kepuasaan mahasiswa terhadap layanan mahasiswa."
-                },
-                {
-                    "val": "k4_8",
-                    "label": "Kebijakan, peraturan mengenai \u2018kampus sehat\u2019 termasuk bebas dari kekerasan seksual, perundungan, intoleransi, bebas dari rokok dan narkotika."
-                },
-                {
-                    "val": "k4_10",
-                    "label": "Pemantauan dan evaluasi penerapan sistem pendukung mahasiswa dan keselamatan lingkungan kerja."
-                }
-            ]
-        }
-    ],
-    "kepegawaian": [
+{
+  "group": "Kemahasiswaan & Alumni",
+  "items": [
+    { "val": "Data Mahasiswa", "label": "Data Mahasiswa" },
+    { "val": "Alumni & Tracer Study", "label": "Alumni & Tracer Study" },
+    { "val": "Beasiswa", "label": "Beasiswa" },
+    { "val": "Penerima Beasiswa", "label": "Penerima Beasiswa" },
+    { "val": "Organisasi & BEM", "label": "Organisasi & BEM" },
+    { "val": "Laporan Tahunan", "label": "Laporan Tahunan" },
+    { "val": "Dokumen SK", "label": "Dokumen SK" },
+    { "val": "Rencana Anggaran", "label": "Rencana Anggaran" },
+    { "val": "Evaluasi & Kelengkapan", "label": "Evaluasi & Kelengkapan" },
+    { "val": "Prestasi Mahasiswa", "label": "Prestasi Mahasiswa" },
+    { "val": "Kegiatan UKM", "label": "Kegiatan UKM" },
+    { "val": "Bimbingan Konseling & Disiplin", "label": "Bimbingan Konseling & Disiplin" },
+    { "val": "Uji Kompetensi", "label": "Uji Kompetensi" },
+    { "val": "Laporan SOP", "label": "Laporan SOP" },
+    { "val": "Laporan Kebijakan", "label": "Laporan Kebijakan" },
+    { "val": "Pengaduan & Kritik Saran", "label": "Pengaduan & Kritik Saran" }
+  ]
+}
+],
+"kepegawaian": [
         {
             "group": "Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat",
             "items": [
