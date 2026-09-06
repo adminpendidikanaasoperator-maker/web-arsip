@@ -1877,9 +1877,13 @@ function filterByJenis(jenis) {
     if(dMhs) dMhs.style.display = 'none';
     if(dSdm) { dSdm.style.display = 'block'; renderSdmPage(); }
   } else {
-    if(arsipC) arsipC.style.display = 'block';
-    if(mhsC) mhsC.style.display = (currentDept === 'kemahasiswaan') ? 'grid' : 'none';
-    if(tC) tC.style.display = 'block';
+    const iframeC = document.getElementById('kemahasiswaanIframeContainer');
+    if(iframeC && currentDept === 'kemahasiswaan') {
+      iframeC.style.display = (jenis === '') ? 'block' : 'none';
+    }
+    if(arsipC) arsipC.style.display = (currentDept === 'kemahasiswaan' && jenis === '') ? 'none' : 'block';
+    if(mhsC) mhsC.style.display = (currentDept === 'kemahasiswaan' && (jenis === '' || jenis === 'data_mahasiswa')) ? 'grid' : 'none';
+    if(tC) tC.style.display = (currentDept === 'kemahasiswaan' && jenis === '') ? 'none' : 'block';
     if(dMhs) dMhs.style.display = 'none';
     if(dSdm) dSdm.style.display = 'none';
     renderDeptTable();
