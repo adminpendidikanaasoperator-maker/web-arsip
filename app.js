@@ -1812,9 +1812,9 @@ function renderDeptPage(dept) {
 
   if (dept === 'kemahasiswaan') {
     if (iframeContainer) iframeContainer.style.display = 'block';
-    if (iframe && !iframe.src.includes('bidkemahasiswaandanalumn')) {
+    if (iframe && !iframe.src.includes('adminpendidikanaas-operator.workers.dev')) {
       // Set the production URL for the embed dashboard
-      iframe.src = 'https://bidkemahasiswaandanalumn-93be8.web.app/embed/dashboard';
+      iframe.src = 'https://bid-kemahasiswaan-dan-alumni.adminpendidikanaas-operator.workers.dev/embed/dashboard';
     }
     // Optionally hide the standard stats and charts to avoid clutter since the iframe has them
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
