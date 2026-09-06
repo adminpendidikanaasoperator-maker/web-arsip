@@ -1690,9 +1690,21 @@ function onFilterDeptChange() {
   renderArsipTable();
 }
 function populateFilterJenis(dept, elId) {
-  const el=document.getElementById(elId); if(!el)return;
-  const types=dept?(DEPT_JENIS[dept]||COMMON_JENIS):COMMON_JENIS;
-  el.innerHTML=`<option value="">Semua Jenis</option>`+types.map(t=>`<option value="${t.val}">${t.label}</option>`).join('');
+const el=document.getElementById(elId); if(!el)return;
+const types=dept?(DEPT_JENIS[dept]||COMMON_JENIS):COMMON_JENIS;
+let html = `<option value="">Semua Jenis</option>`;
+types.forEach(t => {
+  if (t.group && t.items) {
+    html += `<optgroup label="${t.group}">`;
+    t.items.forEach(item => {
+      html += `<option value="${item.val}">${item.label}</option>`;
+    });
+    html += `</optgroup>`;
+  } else {
+    html += `<option value="${t.val}">${t.label}</option>`;
+  }
+});
+el.innerHTML = html;
 }
 
 function renderArsipTable() {
