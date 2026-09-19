@@ -1,162 +1,881 @@
-/* ═══════════════════════════════════════════════════════════════
-   SIMARSIP  —  app.js  v3.0
-   Akademi Akupunktur Surabaya
-   ═══════════════════════════════════════════════════════════════ */
-'use strict';
 
-/* ─── STORAGE KEYS ─── */
+
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+   SIMARSIP  ÔÇö  app.js  v3.0
+   Akademi Akupunktur Surabaya
+   ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */
+'use strict';
+Chart.register(ChartDataLabels);
+
+/* ÔöÇÔöÇÔöÇ STORAGE KEYS ÔöÇÔöÇÔöÇ */
 const SK  = 'aas_arsip_v3';
 const SAK = 'aas_activity_v3';
 const SK_MHS = 'aas_mhs_v3';
 const SK_SDM = 'aas_sdm_v3';
 
-/* ─── GOOGLE APPS SCRIPT URL ─── */
+/* ÔöÇÔöÇÔöÇ GOOGLE APPS SCRIPT URL ÔöÇÔöÇÔöÇ */
 // Paste URL "Web app" dari Google Apps Script di sini setelah melakukan Deployment.
 // Contoh: 'https://script.google.com/macros/s/AKfycby.../exec'
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbwB5UV8387xbunErJo_V2OHHoFQdM26VbZ4Cc-bfcrJ3EucUltIDXcmKaphcxeiFtbQPw/exec'; 
+const GAS_URL = 'https://script.google.com/macros/s/AKfycby0heFyeXzAmm_uNBvItuoCqFBe-79h6vL0sJ6iIYYJ-b-eWesITSu4MvHoSv4gqgMoNw/exec'; 
 
-/* ─── DEPARTEMEN ─── */
+/* ÔöÇÔöÇÔöÇ DEPARTEMEN ÔöÇÔöÇÔöÇ */
 const DEPT = {
-  keuangan:     { label:'Keuangan',          icon:'fas fa-coins',          color:'#f59e0b' },
-  pendidikan:   { label:'Pendidikan',         icon:'fas fa-graduation-cap', color:'#3b82f6' },
-  perpustakaan: { label:'Perpustakaan',       icon:'fas fa-book',           color:'#8b5cf6' },
-  kemahasiswaan:{ label:'Kemahasiswaan',      icon:'fas fa-users',          color:'#10b981' },
-  sdm:          { label:'SDM & Kepegawaian',  icon:'fas fa-user-tie',       color:'#ec4899' },
-  sarana:       { label:'Sarana & Prasarana', icon:'fas fa-building',       color:'#f97316' },
-  humas:        { label:'Humas',              icon:'fas fa-bullhorn',       color:'#06b6d4' },
-  lppm:         { label:'LPPM (Penelitian & PkM)', icon:'fas fa-flask',     color:'#14b8a6' },
-  laboratorium: { label:'Laboratorium (SIMLAB)',   icon:'fas fa-flask-vial', color:'#0ea5e9' },
+  akademik: { label:'Bidang Administrasi Akademik', icon:'fas fa-graduation-cap', color:'#3b82f6' },
+  ketenagaan: { label:'Bidang Ketenagaan', icon:'fas fa-users-gear', color:'#6366f1' },
+  pendidikan: { label:'Bidang Pendidikan', icon:'fas fa-chalkboard-teacher', color:'#8b5cf6' },
+  administrasi: { label:'Bidang Administrasi', icon:'fas fa-folder-open', color:'#a855f7' },
+  sistem_pendidikan: { label:'Bidang Administrasi Sistem Informasi Pendidikan Tinggi', icon:'fas fa-laptop-code', color:'#d946ef' },
+  laboratorium: { label:'Bidang Laboratorium', icon:'fas fa-vials', color:'#ec4899' },
+  perpustakaan: { label:'Bidang Perpustakaan', icon:'fas fa-book', color:'#f43f5e' },
+  penelitian_pelatihan: { label:'Bidang Penelitian dan Pelatihan', icon:'fas fa-microscope', color:'#f97316' },
+  kemahasiswaan: { label:'Bidang Kemahasiswaan dan Alumni', icon:'fas fa-user-graduate', color:'#f59e0b' },
+  pengabdian: { label:'Bidang Pengabdian Masyarakat', icon:'fas fa-hands-helping', color:'#eab308' },
+  admin_kelembagaan: { label:'Bidang Administrasi dan Kelembagaan', icon:'fas fa-sitemap', color:'#84cc16' },
+  admin_umum: { label:'Bidang Administrasi Umum', icon:'fas fa-building', color:'#22c55e' },
+  admin_kepegawaian: { label:'Bidang Administrasi Kepegawaian', icon:'fas fa-user-tie', color:'#10b981' },
+  admin_keuangan: { label:'Bidang Administrasi Keuangan Institusi dan Pendidikan', icon:'fas fa-coins', color:'#14b8a6' },
+  rumah_tangga: { label:'Bidang Rumah Tangga', icon:'fas fa-home', color:'#06b6d4' },
+  sarana: { label:'Bidang Sarana dan Prasarana', icon:'fas fa-tools', color:'#0ea5e9' },
+  sistem_informasi: { label:'Bidang Sistem Informasi', icon:'fas fa-network-wired', color:'#0284c7' },
+  humas: { label:'Bidang Humas', icon:'fas fa-bullhorn', color:'#3b82f6' },
+  promosi: { label:'Bidang Promosi', icon:'fas fa-ad', color:'#4f46e5' },
+  kerjasama: { label:'Bidang Kerjasama', icon:'fas fa-handshake', color:'#7c3aed' },
+  it: { label:'Bidang IT', icon:'fas fa-server', color:'#db2777' },
+  spmi: { label:'Bidang SPMI', icon:'fas fa-shield-check', color:'#f43f5e' },
+  ami: { label:'Bidang AMI', icon:'fas fa-clipboard-check', color:'#10b981' },
+
+  // Backward compatibility aliases
+  lppm: { label:'Bidang Penelitian dan Pelatihan', icon:'fas fa-microscope', color:'#f97316' },
+  umum: { label:'Bidang Administrasi Umum', icon:'fas fa-building', color:'#22c55e' },
+  kepegawaian: { label:'Bidang Administrasi Kepegawaian', icon:'fas fa-user-tie', color:'#10b981' },
+  keuangan: { label:'Bidang Administrasi Keuangan', icon:'fas fa-coins', color:'#14b8a6' },
+  sdm: { label:'SDM & Kepegawaian', icon:'fas fa-user-tie', color:'#10b981' }
 };
 
-/* ─── JENIS DOKUMEN PER BIDANG (tidak ada "Lainnya") ─── */
-const DEPT_JENIS = {
-  mutu: [
-    { val:'k1_1', label:'Notulen rapat pada saat perumusan visi, misi, tujuan, strategi dan unggulan PS yang berasal dari visi, misi, dan unggulan fakultas dan universitas.' },
-    { val:'k1_2', label:'Daftar hadir: mahasiswa, dosen, tenaga kependidikan, alumni, pemangku kepentingan, termasuk dokumentasi seperti rekaman foto/video pada saat pertemuan.' },
-    { val:'k1_3', label:'Media yang digunakan untuk publikasi visi, misi, dan unggulan.' },
-    { val:'k1_4', label:'Dokumen rencana strategis (renstra) dan rencana operasional (renop)' },
-    { val:'k1_5', label:'Dokumen tentang peraturan dan standar nasional yang relevan; peraturan dan standar mutu program studi.' },
-    { val:'k7_1', label:'Sistem penjaminan mutu: struktur dan tupoksi.' },
-    { val:'k7_2', label:'Dokumen mutu: kebijakan, standar, manual, formulir, dan dokumen pendukung lainnya.' },
-    { val:'k7_3', label:'Laporan audit mutu internal.' },
-    { val:'k7_4', label:'Sumber daya yang dialokasikan untuk penjaminan mutu.' },
-    { val:'k7_5', label:'Dokumen tindak lanjut atas umpan balik penjaminan mutu untuk peningkatan mutu berkelanjutan.' }
+/* ÔöÇÔöÇÔöÇ JENIS DOKUMEN PER BIDANG (tidak ada "Lainnya") ÔöÇÔöÇÔöÇ */
+
+
+const LAMPTKES_KRITERIA_JENIS = {
+  lamptkes_k1: [
+    {val: 'k1_1', label: 'Laporan kegiatan atau notulen rapat pada saat perumusan visi, misi, dan unggulan Program Studi yang berasal dari visi, misi, dan unggulan fakultas dan universitas. Visi, misi, dan unggulan tersebut mencakup peran UPPS dalam meningkatkan derajat kesehatan masyarakat.'},
+    {val: 'k1_2', label: 'Bukti kegiatan keterlibatan pemangku kepentingan internal (mahasiswa, dosen, tendik, pengelola) dan eksternal (lulusan, pengguna lulusan, mitra, pakar, organisasi profesi dan pemerintah) seperti daftar hadir, rekaman foto/video pada saat pertemuan.'},
+    {val: 'k1_3', label: 'Media yang digunakan untuk publikasi/sosialisasi visi, misi, dan unggulan.'},
+    {val: 'k1_4', label: 'Dokumen rencana strategi (renstra) dan rencana operasional (renop)'}
   ],
-  pendidikan: [
-    { val:'k2_1', label:'Notulen rapat komite kurikulum untuk merumuskan capaian pembelajaran lulusan setiap mata kuliah.' },
-    { val:'k2_2', label:'Buku kurikulum (kurikulum: prinsip, isi, urutan), peta kompetensi, Rencana Pembelajaran Semester (RPS), hasil pembelajaran, metode pendidikan, penilaian.' },
-    { val:'k2_3', label:'Daftar lahan praktik baik di rumah sakit, Puskesmas ataupun praktik klinik akupunktur untuk penempatan praktik mahasiswa.' },
-    { val:'k2_4', label:'Notulen rapat komite kurikulum tentang metode pendidikan, telaah kurikulum, evaluasi dan peninjauan kurikulum.' },
-    { val:'k2_5', label:'Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien.' },
-    { val:'k2_6', label:'Pedoman RCA (Root Cause Analysis).' },
-    { val:'k2_7', label:'Kebijakan dan prosedur mitigasi kasus risiko kecelakaan.' },
-    { val:'k3_1', label:'Prosedur operasional standar penilaian' },
-    { val:'k3_2', label:'Buku catatan mahasiswa (logbook), dokumen revisi strategi pengajaran: penilaian mahasiswa (evaluasi dan pemantauan kemajuan mahasiswa) dan umpan balik Dosen (strategi mengajar Dosen)' },
-    { val:'k3_3', label:'Mekanisme remedial dan konseling' },
-    { val:'k3_4', label:'Cetak biru (blueprint) penilaian' },
-    { val:'k3_5', label:'Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan' },
-    { val:'k3_6', label:'Kebijakan dan prosedur penilaian sesuai tempat pembelajaran' },
-    { val:'k3_7', label:'Lampiran hasil Uji Kompetensi' }
+  lamptkes_k2: [
+    {val: 'k2_1', label: 'Notulen rapat komite kurikulum untuk merumuskan capaian pembelajaran lulusan setiap mata kuliah (termasuk pengetahuan, keterampilan, dan perilaku) berdasarkan visi, misi, dan unggulan program studi dengan pelibatan pemangku kepentingan internal dan eksternal.'},
+    {val: 'k2_2', label: 'Buku kurikulum (kurikulum: prinsip, struktur, isi, urutan), peta kompetensi, rencana pembelajaran semester (RPS), hasil pembelajaran, metode pendidikan, penilaian.'},
+    {val: 'k2_3', label: 'Daftar departemen klinis untuk penempatan mahasiswa, Daftar penempatan mahasiswa untuk orientasi pembelajaran klinik profesional (early clinical exposure) pada tahap akademik dan praktek klinik profesional tahap profesi.'},
+    {val: 'k2_4', label: 'Daftar rumah sakit pendidikan, Daftar wahana praktek yang digunakan dan memenuhi persyaratan praktek klinik profesional mahasiswa'},
+    {val: 'k2_5', label: 'Notulen rapat komite kurikulum tentang metode pendidikan, telaah kurikulum, evaluasi dan peninjauan kurikulum.'},
+    {val: 'k2_6', label: 'Modul dan Panduan praktek klinik profesional mahasiswa'},
+    {val: 'k2_7', label: 'Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien'},
+    {val: 'k2_8', label: 'Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut'},
+    {val: 'k2_9', label: 'Kebijakan dan prosedur mitigasi kasus risiko kecelakaan'}
   ],
-  kemahasiswaan: [
-    { val:'k4_1', label:'Peraturan tentang kebijakan seleksi dan penerimaan: penyelarasan dengan misi dan akreditasi/persyaratan, publisitas, peninjauan, dan revisi.' },
-    { val:'k4_2', label:'Kebijakan, peraturan, prosedur layanan mahasiswa, dan keselamatan lingkungan kerja.' },
-    { val:'k4_3', label:'Kebijakan, peraturan, dan prosedur konseling mahasiswa.' },
-    { val:'k4_4', label:'Pendukung sumber daya manusia, fasilitas dan keuangan untuk sistem layanan mahasiswa.' },
-    { val:'k4_5', label:'Monitoring dan evaluasi penerapan sistem layanan kemahasiswaan.' },
-    { val:'k4_6', label:'Dokumen hasil survey kepuasaan mahasiswa terhadap layanan mahasiswa.' },
-    { val:'k4_7', label:'Dokumen hasil survey kepuasaan mahasiswa terhadap layanan manajemen.' },
-    { val:'k4_8', label:"Kebijakan, peraturan mengenai 'kampus sehat' termasuk bebas dari kekerasan seksual, perundungan, dan intoleransi." },
-    { val:'k4_9', label:'Pemantauan dan evaluasi penerapan sistem pendukung mahasiswa dan keselamatan lingkungan kerja.' },
-    { val:'k4_10', label:'Pedoman RCA (Root Cause Analysis).' }
+  lamptkes_k3: [
+    {val: 'k3_1', label: 'Prosedur operasional standar penilaian'},
+    {val: 'k3_2', label: 'Buku catatan mahasiswa (logbook), dokumen revisi strategi pengajaran: penilaian mahasiswa (evaluasi dan pemantauan kemajuan mahasiswa) dan umpan balik dosen (strategi mengajar dosen)'},
+    {val: 'k3_3', label: 'Mekanisme remedial dan konseling'},
+    {val: 'k3_4', label: 'Cetak (blueprint) penilaian'},
+    {val: 'k3_5', label: 'Prosedur mekanisme banding'},
+    {val: 'k3_6', label: 'Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan'},
+    {val: 'k3_7', label: 'Kebijakan dan prosedur penilaian sesuai tempat pembelajaran'},
+    {val: 'k3_8', label: 'Lampiran hasil Uji Kompetensi CBT dan OSCE'}
   ],
-  sdm: [
-    { val:'k5_1', label:'Rencana pengembangan sumber daya manusia (SDM) sesuai dengan kebutuhan masing-masing disiplin ilmu dan perkembangan ilmu pengetahuan.' },
-    { val:'k5_2', label:'Kebijakan dan prosedur pengembangan SDM (dosen dan tendik).' },
-    { val:'k5_3', label:'Notulen/risalah rapat dan daftar kehadiran terkait kegiatan pengembangan SDM.' },
-    { val:'k5_4', label:'Pemetaan disiplin kurikulum (kesesuaian bidang ilmu dengan mata kuliah yang diampu dan beban kerja).' },
-    { val:'k5_5', label:'Formulir monitoring dan evaluasi kinerja dosen, sampel formulir yang sudah diisi dari beberapa dosen, hasil penilaian kinerja setiap semester.' },
-    { val:'k5_6', label:'Laporan program pelatihan orientasi.' },
-    { val:'k5_7', label:'Laporan program pelatihan untuk dosen baru dan lama.' },
-    { val:'k5_8', label:'Rencana pengembangan sesuai dengan kebutuhan tendik' },
-    { val:'k5_9', label:'Kebijakan dan prosedur pengembangan tendik.' },
-    { val:'k5_10', label:'Formulir monitoring dan evaluasi kinerja tendik.' },
-    { val:'k5_11', label:'Laporan program pelatihan tendik.' },
-    { val:'k5_16', label:'Sertifikat Pendidik/Dosen, Sertifikat Kompetensi, dan Ijazah' },
-    { val:'k5_18', label:'Kebijakan pencegahan perundungan bagi dosen dan tenaga kependidikan.' },
-    { val:'k6_8', label:'Daftar pelatihan dan laporannya dari Dosen klinis dan pembimbing' }
+  lamptkes_k4: [
+    {val: 'k4_1', label: 'Peraturan tentang kebijakan seleksi dan penerimaan: penyelarasan dengan misi dan akreditasi/persyaratan, publisitas/sosialisasi, peninjauan, dan revisi.'},
+    {val: 'k4_2', label: 'Kebijakan, peraturan, prosedur dukungan/layanan mahasiswa, dan keselamatan lingkungan kerja'},
+    {val: 'k4_3', label: 'Kebijakan, peraturan, dan prosedur konseling mahasiswa.'},
+    {val: 'k4_4', label: 'Pendukung sumber daya manusia, fasilitas, dan keuangan untuk sistem pendukung/layanan mahasiswa.'},
+    {val: 'k4_5', label: 'Monitoring dan evaluasi penerapan sistem pendukung/layanan kemahasiswaan.'},
+    {val: 'k4_6', label: 'Dokumen hasil survey kepuasaan mahasiswa terhadap layanan mahasiswa.'},
+    {val: 'k4_7', label: 'Dokumen hasil survey kepuasaan mahasiswa terhadap layanan manajemen'},
+    {val: 'k4_8', label: 'Kebijakan, peraturan mengenai "kampus sehat" termasuk bebas dari kekerasan seksual, perundungan, intoleransi, bebas dari rokok dan narkotika.'},
+    {val: 'k4_9', label: 'Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut'},
+    {val: 'k4_10', label: 'Pemantauan dan evaluasi penerapan sistem pendukung mahasiswa dan keselamatan lingkungan kerja.'},
+    {val: 'k4_11', label: 'Pedoman RCA (Root Cause Analysis).'}
   ],
-  sarana: [
-    { val:'k6_1', label:'Daftar infrastruktur fisik' },
-    { val:'k6_2', label:'Daftar sistem pendukung pembelajaran lainnya. Sistem Manajemen Pembelajaran, kecepatan Internet' },
-    { val:'k6_3', label:'Daftar Rumah Sakit Pendidikan dan wahana praktik klinik.' },
-    { val:'k6_4', label:'Daftar fasilitas di Rumah Sakit Pendidikan dan Pengajaran Klinik (ruang diskusi, ruang shift malam, perpustakaan, dll.)' },
-    { val:'k6_5', label:'Daftar manekin yang tersedia untuk pelatihan keterampilan klinis mahasiswa.' },
-    { val:'k6_6', label:'Kebijakan mengenai Keselamatan dan Kesehatan Kerja civitas akademika.' },
-    { val:'k6_7', label:'Daftar pasien standar dan laporan pelatihannya.' },
-    { val:'k6_11', label:'Fasilitas untuk mengakses sumber informasi dan sumber belajar.' },
-    { val:'k6_13', label:'Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis.' }
+  lamptkes_k5: [
+    {val: 'k5_1', label: 'Rencana pengembangan sumber daya manusia (SDM) sesuai dengan kebutuhan masing-masing disiplin ilmu dan perkembangan ilmu pengetahuan.'},
+    {val: 'k5_2', label: 'Kebijakan dan prosedur pengembangan SDM (dosen dan tendik).'},
+    {val: 'k5_3', label: 'Notulen/risalah rapat dan daftar kehadiran terkait kegiatan pengembangan SDM.'},
+    {val: 'k5_4', label: 'Pemetaan disiplin kurikulum (kesesuaian bidang ilmu dengan mata kuliah yang diampu dan beban kerja).'},
+    {val: 'k5_5', label: 'Formulir monitoring dan evaluasi kinerja dosen, sampel formulir yang sudah diisi dari beberapa dosen, hasil penilaian kinerja setiap semester.'},
+    {val: 'k5_6', label: 'Laporan program pelatihan orientasi.'},
+    {val: 'k5_7', label: 'Laporan program pelatihan untuk dosen baru dan lama.'},
+    {val: 'k5_8', label: 'Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen.'},
+    {val: 'k5_9', label: 'Laporan penelitian dosen dan PkM dosen serta publikasinya.'},
+    {val: 'k5_10', label: 'Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten).'},
+    {val: 'k5_11', label: 'Kebijakan penelitian dan PkM serta integrasinya.'},
+    {val: 'k5_12', label: 'Sertifikat Pendidik/Dosen, Sertifikat Kompetensi, dan Ijazah'},
+    {val: 'k5_13', label: 'HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional'},
+    {val: 'k5_14', label: 'Formulir monitoring dan evaluasi kinerja tendik.'},
+    {val: 'k5_15', label: 'Laporan program pelatihan tendik.'}
   ],
-  keuangan: [
-    { val:'k8_2', label:'Prosedur operasional standar pengalokasian anggaran.' },
-    { val:'k6_14', label:'Dokumen audit: keuangan dan sarana prasarana.' }
+  lamptkes_k6: [
+    {val: 'k6_1', label: 'Daftar infrastruktur fisik/sarana dan prasarana'},
+    {val: 'k6_2', label: 'Daftar sistem pendukung pembelajaran lainnya. Sistem manajemen pembelajaran dan dukungan internet'},
+    {val: 'k6_3', label: 'Daftar rumah sakit pendidikan dan wahana praktek klinik.'},
+    {val: 'k6_4', label: 'Daftar fasilitas di rumah sakit pendidikan dan pengajaran klinik (ruang diskusi, ruang shift malam, perpustakaan, dll.)'},
+    {val: 'k6_5', label: 'Daftar manekin yang tersedia untuk pelatihan keterampilan klinis mahasiswa.'},
+    {val: 'k6_6', label: 'Kebijakan mengenai keselamatan dan kesehatan kerja civitas akademika.'},
+    {val: 'k6_7', label: 'Daftar pasien standar dan laporan pelatihannya.'},
+    {val: 'k6_8', label: 'Daftar pelatihan dan laporannya dari dosen klinis dan pembimbing'},
+    {val: 'k6_9', label: 'Daftar database jurnal yang tersedia'},
+    {val: 'k6_10', label: 'Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia'},
+    {val: 'k6_11', label: 'Fasilitas untuk mengakses sumber informasi dan sumber belajar.'},
+    {val: 'k6_12', label: 'Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni).'},
+    {val: 'k6_13', label: 'Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis.'},
+    {val: 'k6_14', label: 'Dokumen audit: keuangan dan sarana prasarana.'}
   ],
-  perpustakaan: [
-    { val:'k6_9', label:'Daftar database jurnal yang tersedia' },
-    { val:'k6_10', label:'Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia' }
+  lamptkes_k7: [
+    {val: 'k7_1', label: 'Sistem penjaminan mutu: struktur dan tupoksi.'},
+    {val: 'k7_2', label: 'Dokumen mutu: kebijakan, standar, manual, formulir, dan dokumen pendukung lainnya.'},
+    {val: 'k7_3', label: 'Laporan audit mutu internal.'},
+    {val: 'k7_4', label: 'Laporan rapat tinjauan manajemen.'},
+    {val: 'k7_5', label: 'Sumber daya yang dialokasikan untuk penjaminan mutu.'},
+    {val: 'k7_6', label: 'Notulen/risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem penjaminan mutu dan strategi keselamatan pasien.'},
+    {val: 'k7_7', label: 'Dokumen tindak lanjut atas umpan balik penjaminan mutu untuk peningkatan mutu berkelanjutan.'},
+    {val: 'k7_8', label: 'Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut'},
+    {val: 'k7_9', label: 'Kebijakan dan prosedur mitigasi kasus risiko.'}
   ],
-  lppm: [
-    { val:'k5_12', label:'Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen.' },
-    { val:'k5_13', label:'Laporan penelitian dosen dan PkM dosen serta publikasinya.' },
-    { val:'k5_15', label:'Kebijakan penelitian dan PkM serta integrasinya.' },
-    { val:'k9_5', label:'Dokumen laporan luaran penelitian dan PkM dosen' },
-    { val:'k9_6', label:'Dokumen publikasi karya ilmiah dosen / luaran PkM dosen' },
-    { val:'k5_14', label:'Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten).' },
-    { val:'k5_17', label:'HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional' }
-  ],
-  humas: [
-    { val:'k8_1', label:'Bagan organisasi pengelolaan dan administrasi beserta tupoksi.' },
-    { val:'k8_3', label:'Laporkan tinjauan kinerja institusi.' },
-    { val:'k8_4', label:'Dokumen identifikasi dan mitigasi risiko.' },
-    { val:'k8_5', label:'Laporan tentang mahasiswa dan dosen dalam pengambilan keputusan dan fungsi risalah rapat pembahasan.' },
-    { val:'k8_6', label:'Dokumen kebijakan organisasi kemahasiswaan, perwakilan mahasiswa' },
-    { val:'k8_7', label:'Daftar kehadiran dan risalah rapat mengenai isu-isu yang relevan, misalnya kurikulum, layanan mahasiswa, fasilitas, dll.' },
-    { val:'k8_8', label:'Standar Prosedur Operasional (SPO) untuk proses pengambilan keputusan.' },
-    { val:'k8_9', label:'Standar Prosedur Operasional (SPO) pelaporan pembelajaran, penelitian, dan pengabdian kepada masyarakat.' },
-    { val:'k8_10', label:'Dokumen indikator kinerja utama dan kinerja tambahan.' },
-    { val:'k6_12', label:'Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni).' }
-  ],
-  laboratorium: [
-    { val:'aset_laboratorium', label:'Inventaris & Aset Lab' },
-    { val:'bhp_laboratorium', label:'Bahan Habis Pakai (BHP)' },
-    { val:'jadwal_praktikum', label:'Jadwal Praktikum' },
-    { val:'peminjaman_lab', label:'Peminjaman Lab & Alat' },
-    { val:'logbook_laboratorium', label:'Logbook Penggunaan Lab' },
-    { val:'perawatan_alat', label:'Perawatan & Kalibrasi' },
-    { val:'anggaran_laboratorium', label:'Anggaran & Biaya (RAB)' },
-    { val:'dokumen_laboratorium', label:'Dokumen & SOP Lab' },
-    { val:'lpj_laboratorium', label:'Laporan (LPJ) Tahunan' },
-    { val:'anggaran_rab', label:'Anggaran RAB Lab' },
-    { val:'laporan_laboratorium', label:'Laporan Laboratorium' },
+  lamptkes_k8: [
+    {val: 'k8_1', label: 'Bagan organisasi pengelolaan dan administrasi beserta tupoksi.'},
+    {val: 'k8_2', label: 'Prosedur operasional standar pengalokasian anggaran.'},
+    {val: 'k8_3', label: 'Laporkan tinjauan kinerja institusi/UPPS'},
+    {val: 'k8_4', label: 'Dokumen identifikasi dan mitigasi risiko.'},
+    {val: 'k8_5', label: 'Laporan/risalah rapat keterlibatan mahasiswa dan dosen dalam pengambilan keputusan dan fungsi UPPS'},
+    {val: 'k8_6', label: 'Standar prosedur operasional (SPO) untuk proses pengambilan keputusan.'},
+    {val: 'k8_7', label: 'Standar prosedur operasional (SPO) pelaporan pembelajaran, penelitian, dan pengabdian kepada masyarakat.'},
+    {val: 'k8_8', label: 'Dokumen indikator kinerja utama dan kinerja tambahan.'}
   ]
 };
 
 
+let ORIGINAL_BIDANG_HTML = '';
+document.addEventListener('DOMContentLoaded', () => {
+    const b = document.getElementById('fBidang');
+    if(b) ORIGINAL_BIDANG_HTML = b.innerHTML;
+});
+
+const LAMPTKES_SPECIAL_TYPES = [
+    { val: 'k1_led', label: '[LED] Laporan Evaluasi Diri Kriteria 1' },
+    { val: 'k2_led', label: '[LED] Laporan Evaluasi Diri Kriteria 2' },
+    { val: 'k3_led', label: '[LED] Laporan Evaluasi Diri Kriteria 3' },
+    { val: 'k4_led', label: '[LED] Laporan Evaluasi Diri Kriteria 4' },
+    { val: 'k5_led', label: '[LED] Laporan Evaluasi Diri Kriteria 5' },
+    { val: 'k6_led', label: '[LED] Laporan Evaluasi Diri Kriteria 6' },
+    { val: 'k7_led', label: '[LED] Laporan Evaluasi Diri Kriteria 7' },
+    { val: 'k8_led', label: '[LED] Laporan Evaluasi Diri Kriteria 8' },
+    { val: 'led_semua', label: '[LED FINISH] Laporan Evaluasi Diri Lengkap' },
+    { val: 'spmi_akademik', label: '[SPMI] Bidang Akademik' },
+    { val: 'spmi_sistem_pendidikan', label: '[SPMI] Bidang Sistem Pendidikan' },
+    { val: 'spmi_kemahasiswaan', label: '[SPMI] Bidang Kemahasiswaan' },
+    { val: 'spmi_kepegawaian', label: '[SPMI] Bidang Kepegawaian (SDM)' },
+    { val: 'spmi_umum_keuangan', label: '[SPMI] Bidang Umum & Keuangan' },
+    { val: 'spmi_lppm', label: '[SPMI] Bidang LPPM' },
+    { val: 'spmi_penjaminan_mutu', label: '[SPMI] Bidang Penjaminan Mutu' },
+    { val: 'spmi_perpustakaan', label: '[SPMI] Bidang Perpustakaan' },
+    { val: 'spmi_it', label: '[SPMI] Bidang IT' },
+    { val: 'spmi_tata_usaha', label: '[SPMI] Bidang Tata Usaha' },
+    { val: 'spmi_semua', label: '[SPMI FINISH] Dokumen Mutu Lengkap' }
+  ];
 
 const COMMON_JENIS = [
-  { val:'surat_masuk',  label:'Surat Masuk' },
-  { val:'surat_keluar', label:'Surat Keluar' },
-  { val:'sk',           label:'SK / Keputusan / Peraturan' },
-  { val:'nota_dinas',   label:'Nota Dinas / Memo Internal' },
-  { val:'dokumentasi',  label:'Dokumentasi Kegiatan / Notulen' }
+  { val: 'umum_surat_masuk', label: 'Surat Masuk', icon: 'fas fa-inbox', color: '#3b82f6' },
+  { val: 'umum_surat_keluar', label: 'Surat Keluar', icon: 'fas fa-paper-plane', color: '#10b981' },
+  { val: 'umum_sk', label: 'Surat Keputusan (SK)', icon: 'fas fa-gavel', color: '#f59e0b' },
+  { val: 'umum_laporan', label: 'Laporan', icon: 'fas fa-file-alt', color: '#6366f1' },
+  { val: 'umum_rab', label: 'Rencana Anggaran Biaya (RAB)', icon: 'fas fa-money-check-alt', color: '#059669' },
+  { val: 'umum_notulen', label: 'Notulen Rapat', icon: 'fas fa-users', color: '#8b5cf6' },
+  { val: 'umum_lainnya', label: 'Lainnya', icon: 'fas fa-file', color: '#6b7280' }
 ];
 
-/* Format file */
+
+const DEPT_JENIS = {
+    "akademik": [
+        {
+            "group": "Kurikulum",
+            "items": [
+                {
+                    "val": "k2_1",
+                    "label": "Notulen rapat komite kurikulum untuk merumuskan capaian pembelajaran lulusan setiap mata kuliah (termasuk pengetahuan, keterampilan, dan perilaku) berdasarkan visi, misi, dan unggulan program studi dengan pelibatan pemangku kepentingan internal dan eksternal."
+                },
+                {
+                    "val": "k2_2",
+                    "label": "Buku kurikulum (kurikulum: prinsip, struktur, isi, urutan), peta kompetensi, rencana pembelajaran semester (RPS), hasil pembelajaran, metode pendidikan, penilaian."
+                },
+                {
+                    "val": "k2_3",
+                    "label": "Daftar departemen klinis untuk penempatan mahasiswa, Daftar penempatan mahasiswa untuk orientasi pembelajaran klinik profesional (early clinical exposure) pada tahap akademik dan praktek klinik profesional tahap profesi."
+                },
+                {
+                    "val": "k2_4",
+                    "label": "Daftar rumah sakit pendidikan, Daftar wahana praktek yang digunakan dan memenuhi persyaratan praktek klinik profesional mahasiswa"
+                },
+                {
+                    "val": "k2_5",
+                    "label": "Notulen rapat komite kurikulum tentang metode pendidikan, telaah kurikulum, evaluasi dan peninjauan kurikulum."
+                },
+                {
+                    "val": "k2_6",
+                    "label": "Modul dan Panduan praktek klinik profesional mahasiswa"
+                }
+            ]
+        },
+        {
+            "group": "Penilaian",
+            "items": [
+                {
+                    "val": "k3_1",
+                    "label": "Prosedur operasional standar penilaian"
+                },
+                {
+                    "val": "k3_2",
+                    "label": "Buku catatan mahasiswa (logbook), dokumen revisi strategi pengajaran: penilaian mahasiswa (evaluasi dan pemantauan kemajuan mahasiswa) dan umpan balik dosen (strategi mengajar dosen)"
+                },
+                {
+                    "val": "k3_3",
+                    "label": "Mekanisme remedial dan konseling"
+                },
+                {
+                    "val": "k3_4",
+                    "label": "Cetak (blueprint) penilaian"
+                },
+                {
+                    "val": "k3_5",
+                    "label": "Prosedur mekanisme banding"
+                },
+                {
+                    "val": "k3_7",
+                    "label": "Kebijakan dan prosedur penilaian sesuai tempat pembelajaran"
+                },
+                {
+                    "val": "k3_8",
+                    "label": "Lampiran hasil Uji Kompetensi CBT dan OSCE"
+                }
+            ]
+        },
+        {
+            "group": "Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat",
+            "items": [
+                {
+                    "val": "k5_4",
+                    "label": "Pemetaan disiplin kurikulum (kesesuaian bidang ilmu dengan mata kuliah yang diampu dan beban kerja)."
+                }
+            ]
+        }
+    ],
+    "kemahasiswaan": [
+{
+  "group": "Kemahasiswaan & Alumni",
+  "items": [
+    { "val": "data_mahasiswa", "label": "Data Induk Mahasiswa", "icon": "fas fa-users" },
+    { "val": "Data Mahasiswa", "label": "Dokumen Mahasiswa" },
+    { "val": "Alumni & Tracer Study", "label": "Alumni & Tracer Study" },
+    { "val": "Beasiswa", "label": "Beasiswa" },
+    { "val": "Penerima Beasiswa", "label": "Penerima Beasiswa" },
+    { "val": "Organisasi & BEM", "label": "Organisasi & BEM" },
+    { "val": "Laporan Tahunan", "label": "Laporan Tahunan" },
+    { "val": "Dokumen SK", "label": "Dokumen SK" },
+    { "val": "Rencana Anggaran", "label": "Rencana Anggaran" },
+    { "val": "Evaluasi & Kelengkapan", "label": "Evaluasi & Kelengkapan" },
+    { "val": "Prestasi Mahasiswa", "label": "Prestasi Mahasiswa" },
+    { "val": "Kegiatan UKM", "label": "Kegiatan UKM" },
+    { "val": "Bimbingan Konseling & Disiplin", "label": "Bimbingan Konseling & Disiplin" },
+    { "val": "Uji Kompetensi", "label": "Uji Kompetensi" },
+    { "val": "Laporan SOP", "label": "Laporan SOP" },
+    { "val": "Laporan Kebijakan", "label": "Laporan Kebijakan" },
+    { "val": "Pengaduan & Kritik Saran", "label": "Pengaduan & Kritik Saran" }
+  ]
+}
+],
+"kepegawaian": [
+        {
+            "group": "Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat",
+            "items": [
+                {
+                    "val": "k5_1",
+                    "label": "Rencana pengembangan sumber daya manusia (SDM) sesuai dengan kebutuhan masing-masing disiplin ilmu dan perkembangan ilmu pengetahuan."
+                },
+                {
+                    "val": "k5_2",
+                    "label": "Kebijakan dan prosedur pengembangan SDM (dosen dan tendik)."
+                },
+                {
+                    "val": "k5_3",
+                    "label": "Notulen/risalah rapat dan daftar kehadiran terkait kegiatan pengembangan SDM."
+                },
+                {
+                    "val": "k5_5",
+                    "label": "Formulir monitoring dan evaluasi kinerja dosen, sampel formulir yang sudah diisi dari beberapa dosen, hasil penilaian kinerja setiap semester."
+                },
+                {
+                    "val": "k5_6",
+                    "label": "Laporan program pelatihan orientasi."
+                },
+                {
+                    "val": "k5_7",
+                    "label": "Laporan program pelatihan untuk dosen baru dan lama."
+                },
+                {
+                    "val": "k5_12",
+                    "label": "Sertifikat Pendidik/Dosen, Sertifikat Kompetensi, dan Ijazah"
+                },
+                {
+                    "val": "k5_14",
+                    "label": "Formulir monitoring dan evaluasi kinerja tendik."
+                },
+                {
+                    "val": "k5_15",
+                    "label": "Laporan program pelatihan tendik."
+                }
+            ]
+        }
+    ],
+    "lppm": [
+        {
+            "group": "Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat",
+            "items": [
+                {
+                    "val": "k5_8",
+                    "label": "Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen."
+                },
+                {
+                    "val": "k5_9",
+                    "label": "Laporan penelitian dosen dan PkM dosen serta publikasinya."
+                },
+                {
+                    "val": "k5_10",
+                    "label": "Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten)."
+                },
+                {
+                    "val": "k5_11",
+                    "label": "Kebijakan penelitian dan PkM serta integrasinya."
+                },
+                {
+                    "val": "k5_13",
+                    "label": "HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional"
+                }
+            ]
+        },
+        {
+            "group": "Tata Kelola dan Administrasi",
+            "items": [
+                {
+                    "val": "k8_7",
+                    "label": "Standar prosedur operasional (SPO) pelaporan pembelajaran, penelitian, dan pengabdian kepada masyarakat."
+                }
+            ]
+        }
+    ],
+    "pengabdian": [
+        {
+            "group": "Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat",
+            "items": [
+                {
+                    "val": "k5_8",
+                    "label": "Roadmap penelitian, dan Pengabdian kepada Masyarakat dosen."
+                },
+                {
+                    "val": "k5_9",
+                    "label": "Laporan penelitian dosen dan PkM dosen serta publikasinya."
+                },
+                {
+                    "val": "k5_10",
+                    "label": "Bukti penghargaan atau pengakuan atas hasil penelitian (termasuk menerima: Hibah penelitian, HaKi, dan Paten)."
+                },
+                {
+                    "val": "k5_11",
+                    "label": "Kebijakan penelitian dan PkM serta integrasinya."
+                },
+                {
+                    "val": "k5_13",
+                    "label": "HaKI atau surat pengakuan/penghargaan dari lembaga nasional/internasional"
+                }
+            ]
+        },
+        {
+            "group": "Tata Kelola dan Administrasi",
+            "items": [
+                {
+                    "val": "k8_7",
+                    "label": "Standar prosedur operasional (SPO) pelaporan pembelajaran, penelitian, dan pengabdian kepada masyarakat."
+                }
+            ]
+        }
+    ],
+    "laboratorium": [
+        {
+            "group": "Kurikulum",
+            "items": [
+                {
+                    "val": "k2_9",
+                    "label": "Kebijakan dan prosedur mitigasi kasus risiko kecelakaan"
+                }
+            ]
+        },
+        {
+            "group": "Sarana, Prasarana Pendidikan, dan Keuangan",
+            "items": [
+                {
+                    "val": "k6_1",
+                    "label": "Daftar infrastruktur fisik/sarana dan prasarana"
+                },
+                {
+                    "val": "k6_3",
+                    "label": "Daftar rumah sakit pendidikan dan wahana praktek klinik."
+                },
+                {
+                    "val": "k6_4",
+                    "label": "Daftar fasilitas di rumah sakit pendidikan dan pengajaran klinik (ruang diskusi, ruang shift malam, perpustakaan, dll.)"
+                },
+                {
+                    "val": "k6_5",
+                    "label": "Daftar manekin yang tersedia untuk pelatihan keterampilan klinis mahasiswa."
+                },
+                {
+                    "val": "k6_6",
+                    "label": "Kebijakan mengenai keselamatan dan kesehatan kerja civitas akademika."
+                },
+                {
+                    "val": "k6_7",
+                    "label": "Daftar pasien standar dan laporan pelatihannya."
+                },
+                {
+                    "val": "k6_11",
+                    "label": "Fasilitas untuk mengakses sumber informasi dan sumber belajar."
+                },
+                {
+                    "val": "k6_13",
+                    "label": "Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
+                }
+            ]
+        }
+    ],
+    "sarana": [
+        {
+            "group": "Kurikulum",
+            "items": [
+                {
+                    "val": "k2_9",
+                    "label": "Kebijakan dan prosedur mitigasi kasus risiko kecelakaan"
+                }
+            ]
+        },
+        {
+            "group": "Sarana, Prasarana Pendidikan, dan Keuangan",
+            "items": [
+                {
+                    "val": "k6_1",
+                    "label": "Daftar infrastruktur fisik/sarana dan prasarana"
+                },
+                {
+                    "val": "k6_3",
+                    "label": "Daftar rumah sakit pendidikan dan wahana praktek klinik."
+                },
+                {
+                    "val": "k6_4",
+                    "label": "Daftar fasilitas di rumah sakit pendidikan dan pengajaran klinik (ruang diskusi, ruang shift malam, perpustakaan, dll.)"
+                },
+                {
+                    "val": "k6_5",
+                    "label": "Daftar manekin yang tersedia untuk pelatihan keterampilan klinis mahasiswa."
+                },
+                {
+                    "val": "k6_6",
+                    "label": "Kebijakan mengenai keselamatan dan kesehatan kerja civitas akademika."
+                },
+                {
+                    "val": "k6_7",
+                    "label": "Daftar pasien standar dan laporan pelatihannya."
+                },
+                {
+                    "val": "k6_11",
+                    "label": "Fasilitas untuk mengakses sumber informasi dan sumber belajar."
+                },
+                {
+                    "val": "k6_13",
+                    "label": "Data hasil survei kepuasan terhadap kecukupan, kualitas dan akses terhadap fasilitas dan peralatan fisik serta sumber informasi pendidikan dan pelatihan klinis."
+                }
+            ]
+        }
+    ],
+    "keuangan": [
+        {
+            "group": "Sarana, Prasarana Pendidikan, dan Keuangan",
+            "items": [
+                {
+                    "val": "k6_14",
+                    "label": "Dokumen audit: keuangan dan sarana prasarana."
+                }
+            ]
+        },
+        {
+            "group": "Tata Kelola dan Administrasi",
+            "items": [
+                {
+                    "val": "k8_2",
+                    "label": "Prosedur operasional standar pengalokasian anggaran."
+                }
+            ]
+        }
+    ],
+    "umum": [
+        {
+            "group": "Visi, Misi, Tujuan, dan Strategi",
+            "items": [
+                {
+                    "val": "k1_1",
+                    "label": "Laporan kegiatan atau notulen rapat pada saat perumusan visi, misi, dan unggulan Program Studi yang berasal dari visi, misi, dan unggulan fakultas dan universitas. Visi, misi, dan unggulan tersebut mencakup peran UPPS dalam meningkatkan derajat kesehatan masyarakat."
+                },
+                {
+                    "val": "k1_2",
+                    "label": "Bukti kegiatan keterlibatan pemangku kepentingan internal (mahasiswa, dosen, tendik, pengelola) dan eksternal (lulusan, pengguna lulusan, mitra, pakar, organisasi profesi dan pemerintah) seperti daftar hadir, rekaman foto/video pada saat pertemuan."
+                },
+                {
+                    "val": "k1_3",
+                    "label": "Media yang digunakan untuk publikasi/sosialisasi visi, misi, dan unggulan."
+                },
+                {
+                    "val": "k1_4",
+                    "label": "Dokumen rencana strategi (renstra) dan rencana operasional (renop)"
+                }
+            ]
+        },
+        {
+            "group": "Kurikulum",
+            "items": [
+                {
+                    "val": "k2_8",
+                    "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+                }
+            ]
+        },
+        {
+            "group": "Penilaian",
+            "items": [
+                {
+                    "val": "k3_6",
+                    "label": "Dokumen sistem Penjaminan Mutu: perencanaan dan pelaksanaan"
+                }
+            ]
+        },
+        {
+            "group": "Mahasiswa",
+            "items": [
+                {
+                    "val": "k4_9",
+                    "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+                },
+                {
+                    "val": "k4_11",
+                    "label": "Pedoman RCA (Root Cause Analysis)."
+                }
+            ]
+        },
+        {
+            "group": "Sarana, Prasarana Pendidikan, dan Keuangan",
+            "items": [
+                {
+                    "val": "k6_8",
+                    "label": "Daftar pelatihan dan laporannya dari dosen klinis dan pembimbing"
+                }
+            ]
+        },
+        {
+            "group": "Penjaminan Mutu",
+            "items": [
+                {
+                    "val": "k7_1",
+                    "label": "Sistem penjaminan mutu: struktur dan tupoksi."
+                },
+                {
+                    "val": "k7_2",
+                    "label": "Dokumen mutu: kebijakan, standar, manual, formulir, dan dokumen pendukung lainnya."
+                },
+                {
+                    "val": "k7_3",
+                    "label": "Laporan audit mutu internal."
+                },
+                {
+                    "val": "k7_4",
+                    "label": "Laporan rapat tinjauan manajemen."
+                },
+                {
+                    "val": "k7_5",
+                    "label": "Sumber daya yang dialokasikan untuk penjaminan mutu."
+                },
+                {
+                    "val": "k7_6",
+                    "label": "Notulen/risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem penjaminan mutu dan strategi keselamatan pasien."
+                },
+                {
+                    "val": "k7_7",
+                    "label": "Dokumen tindak lanjut atas umpan balik penjaminan mutu untuk peningkatan mutu berkelanjutan."
+                },
+                {
+                    "val": "k7_8",
+                    "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+                },
+                {
+                    "val": "k7_9",
+                    "label": "Kebijakan dan prosedur mitigasi kasus risiko."
+                }
+            ]
+        },
+        {
+            "group": "Tata Kelola dan Administrasi",
+            "items": [
+                {
+                    "val": "k8_1",
+                    "label": "Bagan organisasi pengelolaan dan administrasi beserta tupoksi."
+                },
+                {
+                    "val": "k8_3",
+                    "label": "Laporkan tinjauan kinerja institusi/UPPS"
+                },
+                {
+                    "val": "k8_4",
+                    "label": "Dokumen identifikasi dan mitigasi risiko."
+                },
+                {
+                    "val": "k8_5",
+                    "label": "Laporan/risalah rapat keterlibatan mahasiswa dan dosen dalam pengambilan keputusan dan fungsi UPPS"
+                },
+                {
+                    "val": "k8_6",
+                    "label": "Standar prosedur operasional (SPO) untuk proses pengambilan keputusan."
+                },
+                {
+                    "val": "k8_8",
+                    "label": "Dokumen indikator kinerja utama dan kinerja tambahan."
+                }
+            ]
+        }
+    ],
+    "sistem_pendidikan": [
+        {
+            "group": "Visi, Misi, Tujuan, dan Strategi",
+            "items": [
+                {
+                    "val": "k1_1",
+                    "label": "Laporan kegiatan atau notulen rapat pada saat perumusan visi, misi, dan unggulan Program Studi yang berasal dari visi, misi, dan unggulan fakultas dan universitas. Visi, misi, dan unggulan tersebut mencakup peran UPPS dalam meningkatkan derajat kesehatan masyarakat."
+                },
+                {
+                    "val": "k1_2",
+                    "label": "Bukti kegiatan keterlibatan pemangku kepentingan internal (mahasiswa, dosen, tendik, pengelola) dan eksternal (lulusan, pengguna lulusan, mitra, pakar, organisasi profesi dan pemerintah) seperti daftar hadir, rekaman foto/video pada saat pertemuan."
+                },
+                {
+                    "val": "k1_3",
+                    "label": "Media yang digunakan untuk publikasi/sosialisasi visi, misi, dan unggulan."
+                },
+                {
+                    "val": "k1_4",
+                    "label": "Dokumen rencana strategi (renstra) dan rencana operasional (renop)"
+                }
+            ]
+        },
+        {
+            "group": "Kurikulum",
+            "items": [
+                {
+                    "val": "k2_8",
+                    "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+                }
+            ]
+        },
+        {
+            "group": "Penjaminan Mutu",
+            "items": [
+                {
+                    "val": "k7_1",
+                    "label": "Sistem penjaminan mutu: struktur dan tupoksi."
+                },
+                {
+                    "val": "k7_2",
+                    "label": "Dokumen mutu: kebijakan, standar, manual, formulir, dan dokumen pendukung lainnya."
+                },
+                {
+                    "val": "k7_3",
+                    "label": "Laporan audit mutu internal."
+                },
+                {
+                    "val": "k7_4",
+                    "label": "Laporan rapat tinjauan manajemen."
+                },
+                {
+                    "val": "k7_5",
+                    "label": "Sumber daya yang dialokasikan untuk penjaminan mutu."
+                },
+                {
+                    "val": "k7_6",
+                    "label": "Notulen/risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem penjaminan mutu dan strategi keselamatan pasien."
+                },
+                {
+                    "val": "k7_7",
+                    "label": "Dokumen tindak lanjut atas umpan balik penjaminan mutu untuk peningkatan mutu berkelanjutan."
+                },
+                {
+                    "val": "k7_8",
+                    "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
+                },
+                {
+                    "val": "k7_9",
+                    "label": "Kebijakan dan prosedur mitigasi kasus risiko."
+                }
+            ]
+        },
+        {
+            "group": "Tata Kelola dan Administrasi",
+            "items": [
+                {
+                    "val": "k8_1",
+                    "label": "Bagan organisasi pengelolaan dan administrasi beserta tupoksi."
+                },
+                {
+                    "val": "k8_3",
+                    "label": "Laporkan tinjauan kinerja institusi/UPPS"
+                },
+                {
+                    "val": "k8_4",
+                    "label": "Dokumen identifikasi dan mitigasi risiko."
+                },
+                {
+                    "val": "k8_5",
+                    "label": "Laporan/risalah rapat keterlibatan mahasiswa dan dosen dalam pengambilan keputusan dan fungsi UPPS"
+                },
+                {
+                    "val": "k8_6",
+                    "label": "Standar prosedur operasional (SPO) untuk proses pengambilan keputusan."
+                },
+                {
+                    "val": "k8_8",
+                    "label": "Dokumen indikator kinerja utama dan kinerja tambahan."
+                }
+            ]
+        }
+    ],
+    "perpustakaan": [
+        {
+            "group": "Sarana, Prasarana Pendidikan, dan Keuangan",
+            "items": [
+                {
+                    "val": "k6_2",
+                    "label": "Daftar sistem pendukung pembelajaran lainnya. Sistem manajemen pembelajaran dan dukungan internet"
+                },
+                {
+                    "val": "k6_9",
+                    "label": "Daftar database jurnal yang tersedia"
+                },
+                {
+                    "val": "k6_10",
+                    "label": "Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
+                }
+            ]
+        }
+    ],
+    "sistem_informasi": [
+        {
+            "group": "Sarana, Prasarana Pendidikan, dan Keuangan",
+            "items": [
+                {
+                    "val": "k6_2",
+                    "label": "Daftar sistem pendukung pembelajaran lainnya. Sistem manajemen pembelajaran dan dukungan internet"
+                },
+                {
+                    "val": "k6_9",
+                    "label": "Daftar database jurnal yang tersedia"
+                },
+                {
+                    "val": "k6_10",
+                    "label": "Formulir evaluasi dan umpan balik dari mahasiswa dan staf akademik serta administrasi untuk sumber informasi yang tersedia"
+                }
+            ]
+        }
+    ],
+    "humas": [
+        {
+            "group": "Kurikulum",
+            "items": [
+                {
+                    "val": "k2_7",
+                    "label": "Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien"
+                }
+            ]
+        },
+        {
+            "group": "Mahasiswa",
+            "items": [
+                {
+                    "val": "k4_7",
+                    "label": "Dokumen hasil survey kepuasaan mahasiswa terhadap layanan manajemen"
+                }
+            ]
+        },
+        {
+            "group": "Sarana, Prasarana Pendidikan, dan Keuangan",
+            "items": [
+                {
+                    "val": "k6_12",
+                    "label": "Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
+                }
+            ]
+        }
+    ],
+    "kerjasama": [
+        {
+            "group": "Kurikulum",
+            "items": [
+                {
+                    "val": "k2_7",
+                    "label": "Risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem manajemen mutu dan strategi keselamatan pasien"
+                }
+            ]
+        },
+        {
+            "group": "Mahasiswa",
+            "items": [
+                {
+                    "val": "k4_7",
+                    "label": "Dokumen hasil survey kepuasaan mahasiswa terhadap layanan manajemen"
+                }
+            ]
+        },
+        {
+            "group": "Sarana, Prasarana Pendidikan, dan Keuangan",
+            "items": [
+                {
+                    "val": "k6_12",
+                    "label": "Data hasil survei kepuasan atas pelayanan yang diberikan manajemen kepada seluruh pemangku kepentingan (mahasiswa, dosen, pegawai, rekanan, dan pemberi kerja alumni)."
+                }
+            ]
+        }
+    ],
+    "rumah_tangga": [
+        {
+            "group": "Sarana, Prasarana Pendidikan, dan Keuangan",
+            "items": [
+                {
+                    "val": "k6_1",
+                    "label": "Daftar infrastruktur fisik/sarana dan prasarana"
+                },
+                {
+                    "val": "k6_6",
+                    "label": "Kebijakan mengenai keselamatan dan kesehatan kerja civitas akademika."
+                }
+            ]
+        }
+    ]
+};
+
+
 const FORMAT_MAP = {
-  pdf:   { icon:'fas fa-file-pdf',   color:'#ef4444', label:'PDF' },
-  excel: { icon:'fas fa-file-excel', color:'#22c55e', label:'Excel' },
-  word:  { icon:'fas fa-file-word',  color:'#3b82f6', label:'Word' },
-  image: { icon:'fas fa-file-image', color:'#f59e0b', label:'Gambar' },
+  pdf:   { icon: 'fa-file-pdf',   label: 'PDF' },
+  excel: { icon: 'fa-file-excel', label: 'Excel' },
+  word:  { icon: 'fa-file-word',  label: 'Word' },
+  image: { icon: 'fa-file-image', label: 'Gambar' }
 };
 
 const STATUS_CFG = {
@@ -166,25 +885,85 @@ const STATUS_CFG = {
   arsip:    { cls:'s-arsip',    icon:'fa-box-archive',    label:'Diarsipkan' },
 };
 
-/* ─── STATE ─── */
+/* ÔöÇÔöÇÔöÇ STATE ÔöÇÔöÇÔöÇ */
 let arsip    = [];
+let currentDeptSub = 'all';
+
+function renderDeptSubmenus() {
+  document.querySelectorAll('.sb-link[data-page="dept"]').forEach(link => {
+    const deptId = link.getAttribute('data-dept');
+    
+    let existingUl = link.nextElementSibling;
+    if (existingUl && existingUl.classList.contains('sb-sub-menu')) {
+      existingUl.remove();
+    }
+    
+    const ul = document.createElement('ul');
+    ul.className = 'sb-sub-menu';
+    ul.id = `submenu-${deptId}`;
+    ul.style.display = (currentPage === 'dept' && currentDept === deptId) ? 'block' : 'none';
+    
+    if (DEPT_JENIS[deptId]) {
+      let countAll = arsip.filter(a => a.bidang === deptId).length;
+      ul.innerHTML += `<li class="${currentDeptSub === 'all' && currentDept === deptId ? 'active' : ''}" onclick="switchDeptSub('all', this, '${deptId}')">
+        <i class="fas fa-folder-open"></i> Semua Arsip <span class="badge bg-p1" style="float:right; margin-top:2px;">${countAll}</span>
+      </li>`;
+      
+      DEPT_JENIS[deptId].forEach((group, index) => {
+        let count = arsip.filter(a => {
+           if(a.bidang !== deptId) return false;
+           return group.items.some(item => item.val === a.jenis);
+        }).length;
+        
+        let safeId = 'group_' + index;
+        let isActive = (currentDeptSub === safeId && currentDept === deptId) ? 'active' : '';
+        ul.innerHTML += `<li class="${isActive}" onclick="switchDeptSub('${safeId}', this, '${deptId}')">
+          <i class="fas fa-caret-right"></i> ${group.group} <span class="badge bg-p2" style="float:right; margin-top:2px;">${count}</span>
+        </li>`;
+      });
+    }
+    
+    link.parentNode.insertBefore(ul, link.nextSibling);
+  });
+}
+
+function switchDeptSub(subId, element, deptId) {
+  document.querySelectorAll(`#submenu-${deptId} li`).forEach(li => li.classList.remove('active'));
+  element.classList.add('active');
+  currentDeptSub = subId;
+  if (currentDept !== deptId) {
+    currentDept = deptId;
+    showPage('dept');
+  } else {
+    renderDeptPage(deptId);
+  }
+}
+
+let isLamptkesMode = false;
+let isBanptMode = false;
 let activity = [];
 let mahasiswa = [];
 let sdm = [];
 let currentPage = 'dashboard';
+let isAppLoaded = false;
+let uploadCount = 0;
+
+window.addEventListener('beforeunload', function (e) {
+  if (uploadCount > 0) {
+    e.preventDefault();
+    e.returnValue = 'Ada file yang masih dalam proses unggah. Jika Anda keluar, file akan macet pada status Mengunggah.';
+  }
+});
 let currentDept = '';
 let currentAY   = '';
 let pendingPdfId = '';
 let cLine, cYearlyLine, cDoughnut, cStatus, cDeptBar, cDeptDonut, cAnBar, cAnYear;
-let cLabLine, cLabAnggaran, cLabKondisi, cLabRuang, cLabKomposisi, cLabLogbook;
 
-/* ════════════════════════════════════════════════════════════
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
    INIT
-   ════════════════════════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', () => {
-  loadData();
+   ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */
+document.addEventListener('DOMContentLoaded', async () => {
   currentAY = getAY(new Date().toISOString().slice(0,10));
-  populateAYearSelect();
   renderSidebarDate();
   setupNav();
   setupHamburger();
@@ -193,30 +972,27 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('exportMenu').classList.remove('open');
   });
   initSidebarSubMenus();
+  await loadData();
+  isAppLoaded = true;
+  populateAYearSelect();
+  updateBadges();
+  generateBanptReport();
+  generateLamptkesReport();
   showPage('dashboard');
-  syncSimlabLive(true); // Tarik data live Firestore SIMLAB secara otomatis
 });
 
-/* ─── ACADEMIC YEAR ─── */
+/* ÔöÇÔöÇÔöÇ ACADEMIC YEAR ÔöÇÔöÇÔöÇ */
 function getAY(dateStr) {
   if (!dateStr) return '';
+  if (String(dateStr).length === 4) return String(dateStr);
   const d = new Date(dateStr + 'T00:00:00');
-  const m = d.getMonth() + 1, y = d.getFullYear();
-  let ay = '', sem = '';
-  if (m >= 8) { ay = `${y} - ${y+1}`; sem = 'GANJIL'; }
-  else if (m === 1) { ay = `${y-1} - ${y}`; sem = 'GANJIL'; }
-  else { ay = `${y-1} - ${y}`; sem = 'GENAP'; }
-  return `${ay} ${sem}`;
+  return d.getFullYear().toString();
 }
 function getAYMonths(ay) {
-  const parts = ay.split(' ');
-  const y1 = Number(parts[0]), y2 = Number(parts[2]), sem = parts[3];
+  if (!ay) return [];
   const ms = [];
-  if (sem === 'GANJIL') {
-    for (let m=8;m<=12;m++) ms.push(`${y1}-${String(m).padStart(2,'0')}`);
-    ms.push(`${y2}-01`);
-  } else {
-    for (let m=2; m<=7; m++) ms.push(`${y2}-${String(m).padStart(2,'0')}`);
+  for (let m=1; m<=12; m++) {
+    ms.push(`${ay}-${String(m).padStart(2,'0')}`);
   }
   return ms;
 }
@@ -227,10 +1003,9 @@ function getMonthLabel(ym) {
 }
 function allAYears() {
   const s = new Set(arsip.map(a=>a.ay||getAY(a.tanggal)));
-  s.add(currentAY);
-  for(let y=2014; y<=2026; y++) {
-    s.add(`${y} - ${y+1} GANJIL`);
-    s.add(`${y} - ${y+1} GENAP`);
+  if (currentAY) s.add(currentAY);
+  for(let y=2014; y<=2050; y++) {
+    s.add(y.toString());
   }
   return [...s].sort().reverse();
 }
@@ -241,10 +1016,10 @@ function populateAYearSelect() {
   
   const yrs = allAYears();
   
-  const globalHtml = '<option value="">Semua Tahun Akademik</option>' + yrs.map(y=>`<option value="${y}"${y===currentAY?' selected':''}>${y}</option>`).join('');
+  const globalHtml = '<option value="">Semua</option>' + yrs.map(y=>`<option value="${y}"${y===currentAY?' selected':''}>${y}</option>`).join('');
   if (sel) sel.innerHTML = globalHtml;
   
-  const filterHtml = '<option value="">Semua Tahun Akademik</option>' + yrs.map(y=>`<option value="${y}">${y}</option>`).join('');
+  const filterHtml = '<option value="">Semua</option>' + yrs.map(y=>`<option value="${y}">${y}</option>`).join('');
   if (mhsAy && !mhsAy.value) mhsAy.innerHTML = filterHtml;
   if (sdmAy && !sdmAy.value) sdmAy.innerHTML = filterHtml;
 }
@@ -255,29 +1030,292 @@ function onAYearChange() {
   else if (currentPage==='arsip') renderArsipTable();
   else if (currentPage==='dept')  renderDeptPage(currentDept);
   else if (currentPage==='analytics') renderAnalytics();
+  else if (currentPage==='lamptkes') initLamptkes();
+
 }
 
-/* ─── DATA ─── */
-function loadData() {
-  try {
-    arsip = JSON.parse(localStorage.getItem(SK))||[];
-    activity = JSON.parse(localStorage.getItem(SAK))||[];
-    mahasiswa = JSON.parse(localStorage.getItem(SK_MHS))||[];
-    sdm = JSON.parse(localStorage.getItem(SK_SDM))||[];
-  } catch { arsip=[]; activity=[]; mahasiswa=[]; sdm=[]; }
-  if (!arsip.length) { 
-    arsip = sampleData(); 
-  }
-  else { arsip.forEach(a=>{ a.ay=getAY(a.tanggal); }); }
-  if (!mahasiswa.length) { mahasiswa = sampleDataMahasiswa(); }
-  if (!sdm.length) { sdm = sampleDataSDM(); }
-  save();
+/* ÔöÇÔöÇÔöÇ DATA ÔöÇÔöÇÔöÇ */
+function checkKadaluarsa(tanggal) {
+  if(!tanggal) return 'aman';
+  const d = new Date(tanggal);
+  const now = new Date();
+  const diffYears = (now - d) / (1000 * 60 * 60 * 24 * 365.25);
+  if (diffYears >= 5) return 'kadaluarsa';
+  if (diffYears >= 4) return 'perlu_diperbarui';
+  return 'aman';
 }
+
+let isInitialLoad = { arsip: true, activity: true, mahasiswa: true, sdm: true };
+
+let hasMigratedK9 = false;
+function processSnapshot(snapshot, collectionName) {
+  const data = snapshot.docs.map(d => d.data());
+  
+  if (collectionName === 'arsip') { 
+      let isFirst = isInitialLoad.arsip;
+      // Force recalculate ay from tanggal so old database strings are ignored
+      data.forEach(a => { 
+          if (isFirst && a.gdriveLink === 'UPLOADING') {
+              a.gdriveLink = '';
+              try { db.collection('arsip').doc(a.id).update({ gdriveLink: '' }); } catch(e) {}
+          }
+          a.ay = getAY(a.tanggal); 
+      });
+      arsip = data;
+ 
+      
+      // MIGRATION SCRIPT FOR ALL K1-K8
+      if (!hasMigratedK9 && typeof db !== 'undefined') {
+          hasMigratedK9 = true;
+          let batch = db.batch();
+          let changedCount = 0;
+          
+          arsip.forEach(a => {
+             let changed = false;
+             let j = a.jenis || '';
+             
+             // Mapping based on common keywords
+             if (!a.id || (!a.id.startsWith('SIMLAB-') && !a.id.startsWith('SIMSPRAS-'))) {
+                 // Academic & Curriculum (K2 & K3)
+                 if (j.includes('kurikulum') || j.includes('rps') || j.includes('pembelajaran') || j.includes('modul')) {
+                     if (!j.match(/^k[23]_/)) { a.jenis = 'k2_2'; a.bidang = 'akademik'; changed = true; }
+                 }
+                 else if (j.includes('nilai') || j.includes('logbook') || j.includes('remedial') || j.includes('cbt') || j.includes('osce')) {
+                     if (!j.match(/^k[23]_/)) { a.jenis = 'k3_1'; a.bidang = 'akademik'; changed = true; }
+                 }
+                 // Mahasiswa (K4)
+                 else if (j.includes('mhs') || j.includes('mahasiswa') || j.includes('tracer') || j.includes('lulusan') || j.includes('alumni')) {
+                     if (!j.match(/^k4_/)) { a.jenis = 'k4_2'; a.bidang = 'kemahasiswaan'; changed = true; }
+                 }
+                 // SDM / Dosen / Tendik (K5)
+                 else if (j.includes('dosen') || j.includes('tendik') || j.includes('sdm') || j.includes('pelatihan')) {
+                     if (!j.match(/^k5_/)) { a.jenis = 'k5_1'; a.bidang = 'kepegawaian'; changed = true; }
+                 }
+                 // Penelitian & PkM (K5)
+                 else if (j.includes('penelitian') || j.includes('pkm') || j.includes('jurnal') || j.includes('haki') || j.includes('paten')) {
+                     if (!j.match(/^k5_/)) { a.jenis = 'k5_9'; a.bidang = 'penelitian_pengabdian'; changed = true; }
+                 }
+                 // Sarpras & Keuangan (K6)
+                 else if (j.includes('sarana') || j.includes('prasarana') || j.includes('fasilitas') || j.includes('alat') || j.includes('ruang') || j.includes('lab')) {
+                     if (!j.match(/^k6_/)) { a.jenis = 'k6_1'; a.bidang = 'sarpras'; changed = true; }
+                 }
+                 else if (j.includes('uang') || j.includes('anggaran') || j.includes('dana')) {
+                     if (!j.match(/^k[68]_/)) { a.jenis = 'k6_14'; a.bidang = 'keuangan'; changed = true; }
+                 }
+                 // Penjaminan Mutu (K7)
+                 else if (j.includes('mutu') || j.includes('spmi') || j.includes('ami') || j.includes('audit') || j.includes('led')) {
+                     if (!j.match(/^k7_/)) { a.jenis = 'k7_2'; a.bidang = 'penjaminan_mutu'; changed = true; }
+                 }
+                 // Visi Misi & Tata Kelola (K1 & K8)
+                 else if (j.includes('visi') || j.includes('misi') || j.includes('renstra') || j.includes('renop')) {
+                     if (!j.match(/^k1_/)) { a.jenis = 'k1_4'; a.bidang = 'pimpinan'; changed = true; }
+                 }
+                 else if (j.includes('sk') || j.includes('keputusan') || j.includes('sop') || j.includes('kinerja')) {
+                     // Might just leave them as is, but if they are stuck in kriteria_9:
+                     if (a.bidang === 'kriteria_9') { a.jenis = 'k8_1'; a.bidang = 'pimpinan'; changed = true; }
+                 }
+             }
+             
+             // Fallback for ANY old k-prefixed items that still don't match the new keys exactly
+             // (This ensures they map to something valid in the new dropdowns)
+             if (!changed && j.match(/^k[1-9]_/)) {
+                 // Try to keep them in their respective criteria group (K1 to K8)
+                 let kMatch = j.match(/^(k[1-8])_/);
+                 if (kMatch) {
+                     let prefix = kMatch[1];
+                     // Default maps for each group if not already mapped
+                     let defaults = {
+                         'k1': {j: 'k1_1', b: 'pimpinan'},
+                         'k2': {j: 'k2_1', b: 'akademik'},
+                         'k3': {j: 'k3_1', b: 'akademik'},
+                         'k4': {j: 'k4_1', b: 'kemahasiswaan'},
+                         'k5': {j: 'k5_1', b: 'kepegawaian'},
+                         'k6': {j: 'k6_1', b: 'sarpras'},
+                         'k7': {j: 'k7_1', b: 'penjaminan_mutu'},
+                         'k8': {j: 'k8_1', b: 'pimpinan'}
+                     };
+                     a.jenis = defaults[prefix].j;
+                     a.bidang = defaults[prefix].b;
+                     changed = true;
+                 } else if (j.startsWith('k9_')) {
+                     a.jenis = 'k8_8'; a.bidang = 'pimpinan'; changed = true;
+                 }
+             }
+
+             if (changed) {
+                 try {
+                     let docRef = db.collection('arsip').doc(a.id);
+                     batch.update(docRef, { jenis: a.jenis, bidang: a.bidang });
+                     changedCount++;
+                 } catch(e) { console.error(e); }
+             }
+          });
+          
+          if (changedCount > 0) {
+              console.log(`Migrating ${changedCount} Kriteria 9 documents...`);
+              batch.commit().then(() => {
+                  console.log("Kriteria 9 Migration complete.");
+                  save();
+              }).catch(e => console.error("Migration failed:", e));
+          }
+      }
+  }
+  else if (collectionName === 'activity') { activity = data; }
+  else if (collectionName === 'mahasiswa') { 
+    // Compute ay from angkatan (4-digit year) so filtering works correctly
+    data.forEach(m => { if (!m.ay && m.angkatan) m.ay = String(m.angkatan).substring(0,4); });
+    mahasiswa = data; 
+  }
+  else if (collectionName === 'sdm') { sdm = data; }
+
+  if (!isInitialLoad[collectionName]) {
+
+     
+     if (isAppLoaded) {
+       updateBadges();
+       initBanpt();
+       initLamptkes();
+       // Re-render visible page
+       const activePage = document.querySelector('.page.active');
+       if(activePage) {
+          const id = activePage.id;
+          if(id === 'page-dashboard') renderDashboard();
+          else if(id === 'page-analytics') renderAnalytics();
+          else if(id === 'page-dept' && currentDept) renderDeptPage(currentDept);
+          else if(id === 'page-lamptkes') generateLamptkesReport();
+          else if(id === 'page-mahasiswa') renderMahasiswaPage();
+          else if(id === 'page-sdm') renderSdmPage();
+          else if(id === 'page-arsip') renderArsipTable();
+          else if(id === 'page-banpt') generateBanptReport();
+       }
+     }
+  }
+}
+
+async function loadData() {
+// Migration: Update old bidang keys to new keys
+arsip = JSON.parse(localStorage.getItem('SIMARSIP_AAS')) || [];
+let dataMigrated = false;
+arsip.forEach(a => {
+  if (a.bidang === 'lppm') { a.bidang = 'penelitian_pelatihan'; dataMigrated = true; }
+  if (a.bidang === 'umum') { a.bidang = 'admin_umum'; dataMigrated = true; }
+  if (a.bidang === 'kepegawaian' || a.bidang === 'sdm') { a.bidang = 'admin_kepegawaian'; dataMigrated = true; }
+  if (a.bidang === 'keuangan') { a.bidang = 'admin_keuangan'; dataMigrated = true; }
+});
+if (dataMigrated) {
+  save(); // Save to localStorage
+  console.log('Migrated old arsip data to new Bidang keys');
+}
+
+  return new Promise((resolve) => {
+    let loadedCount = 0;
+    const checkDone = () => {
+      loadedCount++;
+      if(loadedCount === 4) {
+         // Check kadaluarsa
+         if(arsip.some(a => checkKadaluarsa(a.tanggal) !== 'aman')) {
+            const alert = document.getElementById('soundAlert');
+            if(alert) { alert.currentTime = 0; alert.play().catch(e=>console.log('Audio restricted', e)); }
+         }
+         resolve();
+      }
+    };
+
+    try {
+      db.collection('arsip').onSnapshot(snap => {
+        processSnapshot(snap, 'arsip');
+        if (isInitialLoad.arsip) { isInitialLoad.arsip = false; checkDone(); }
+      });
+      db.collection('activity').onSnapshot(snap => {
+        processSnapshot(snap, 'activity');
+        if (isInitialLoad.activity) { isInitialLoad.activity = false; checkDone(); }
+      });
+      db.collection('mahasiswa').onSnapshot(snap => {
+        processSnapshot(snap, 'mahasiswa');
+        if (isInitialLoad.mahasiswa) { isInitialLoad.mahasiswa = false; checkDone(); }
+      });
+      db.collection('sdm').onSnapshot(snap => {
+        processSnapshot(snap, 'sdm');
+        if (isInitialLoad.sdm) { isInitialLoad.sdm = false; checkDone(); }
+      });
+    } catch(err) {
+      console.error('Failed to set up onSnapshot', err);
+      try {
+        arsip = JSON.parse(localStorage.getItem('SIMARSIP_AAS'))||[];
+        activity = JSON.parse(localStorage.getItem('SIMARSIP_ACT'))||[];
+        mahasiswa = JSON.parse(localStorage.getItem('SIMARSIP_MHS'))||[];
+        sdm = JSON.parse(localStorage.getItem('SIMARSIP_SDM'))||[];
+      } catch { arsip=[]; activity=[]; mahasiswa=[]; sdm=[]; }
+      if (!arsip.length) { arsip = sampleData(); }
+      if (!mahasiswa.length) { mahasiswa = sampleDataMahasiswa(); }
+      if (!sdm.length) { sdm = sampleDataSDM(); }
+      resolve();
+    }
+  });
+    // Migration: K9 to respective criteria
+    let k9Migrated = false;
+    if (typeof db !== 'undefined') {
+      const batch = db.batch();
+      arsip.forEach(a => {
+         let changed = false;
+         if (a.jenis === 'k9_data_ipk') { a.jenis = 'k6_data_ipk'; changed = true; }
+         if (a.jenis === 'k9_capaian_pembelajaran') { a.jenis = 'k6_capaian_pembelajaran'; changed = true; }
+         if (a.jenis === 'k9_rekap_luaran_penelitian_dosen') { a.jenis = 'k7_rekap_luaran_penelitian_dosen'; changed = true; }
+         if (a.jenis === 'k9_rekap_luaran_penelitian_mhs') { a.jenis = 'k7_rekap_luaran_penelitian_mhs'; changed = true; }
+         if (a.jenis === 'k9_laporan_tracer_study') { a.jenis = 'k3_laporan_tracer_study'; changed = true; }
+         if (a.jenis === 'k9_survei_kepuasan_pengguna_lulusan') { a.jenis = 'k3_survei_kepuasan_pengguna_lulusan'; changed = true; }
+         if (a.jenis === 'k9_data_waktu_tunggu_lulusan') { a.jenis = 'k3_data_waktu_tunggu_lulusan'; changed = true; }
+         if (a.jenis === 'k9_data_pekerjaan_pertama') { a.jenis = 'k3_data_pekerjaan_pertama'; changed = true; }
+         if (a.jenis === 'k9_luaran_pkm_artikel') { a.jenis = 'k8_luaran_pkm_artikel'; changed = true; }
+         if (a.jenis === 'k9_luaran_pkm_buku') { a.jenis = 'k8_luaran_pkm_buku'; changed = true; }
+         if (a.jenis === 'k9_luaran_pkm_teknologi') { a.jenis = 'k8_luaran_pkm_teknologi'; changed = true; }
+         if (a.jenis === 'k9_led') { a.jenis = 'led_finish'; changed = true; }
+         if (a.jenis === 'k9_spmi') { a.jenis = 'spmi_finish'; changed = true; }
+         if (a.jenis && a.jenis.match(/^k[0-9]_spmi$/)) {
+             a.jenis = 'spmi_finish'; changed = true;
+         }
+         // Fallback catch-all for any other k9 data
+         if (a.jenis && a.jenis.startsWith('k9_') && !changed) {
+             a.jenis = a.jenis.replace('k9_', 'k8_');
+             changed = true;
+         }
+         
+         if (changed) {
+            k9Migrated = true;
+            try {
+              let docRef = db.collection('arsip').doc(a.id);
+              batch.update(docRef, { jenis: a.jenis });
+            } catch(e){}
+         }
+      });
+      if (k9Migrated) {
+         save(); // Ensure localStorage is also updated
+         try {
+           batch.commit().then(() => {
+              console.log("Migrated K9 documents to Firestore");
+              if (currentPage === 'lamptkes') generateLamptkesReport();
+              if (currentPage === 'arsip') renderArsipTable();
+           });
+         } catch(e){}
+      }
+    }
+    arsip.forEach(a => { a.ay = getAY(a.tanggal); });
+    populateAYearSelect();
+    updateBadges();
+    if(currentPage==='dashboard') renderDashboard();
+    else if(currentPage==='arsip') renderArsipTable();
+    else if(currentPage==='dept') renderDeptPage(currentDept);
+    else if(currentPage==='analytics') renderAnalytics();
+    else if(currentPage==='lamptkes') initLamptkes();
+
+  }
 function save() {
-  localStorage.setItem(SK, JSON.stringify(arsip));
-  localStorage.setItem(SAK, JSON.stringify(activity));
-  localStorage.setItem(SK_MHS, JSON.stringify(mahasiswa));
-  localStorage.setItem(SK_SDM, JSON.stringify(sdm));
+  try {
+    localStorage.setItem('SIMARSIP_AAS', JSON.stringify(arsip));
+    localStorage.setItem('SIMARSIP_ACT', JSON.stringify(activity));
+    localStorage.setItem('SIMARSIP_MHS', JSON.stringify(mahasiswa));
+    localStorage.setItem('SIMARSIP_SDM', JSON.stringify(sdm));
+  } catch(e) {}
 }
 function genId() { return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
 
@@ -300,6 +1338,7 @@ function sampleDataSDM() {
     { id:genId(), nik:'0702118803', nama:'Rina Wati, S.ST., M.Kes', jabatan:'Ka. Prodi Akupunktur', status:'tugas_belajar', tempatLahir:'Gresik', tanggalLahir:'1988-11-02', jk:'Perempuan', agama:'Islam', alamat:'Jl. Raya Gresik', noHp:'087766554433', email:'rina.w@example.com', noBpjs:'', foto:'', dokumen:'', createdAt:new Date().toISOString() },
     { id:genId(), nik:'1029301923', nama:'Bambang Sugiarto', jabatan:'Staff Keuangan', status:'pensiun', tempatLahir:'Surabaya', tanggalLahir:'1960-03-10', jk:'Laki-laki', agama:'Katolik', alamat:'Jl. Tua No. 1', noHp:'081211112222', email:'bambang.s@example.com', noBpjs:'000111999888', foto:'', dokumen:'', createdAt:new Date().toISOString() },
     { id:genId(), nik:'1029301923', nama:'Bambang Sugiarto', jabatan:'Staff Keuangan', status:'pensiun', tempatLahir:'Surabaya', tanggalLahir:'1960-03-10', jk:'Katolik', alamat:'Jl. Tua No. 1', noHp:'081211112222', email:'bambang.s@example.com', noBpjs:'000111999888', foto:'', dokumen:'', createdAt:new Date().toISOString() },
+    { id:genId(), nik:'1029301923', nama:'Bambang Sugiarto', jabatan:'Staff Keuangan', status:'pensiun', tempatLahir:'Surabaya', tanggalLahir:'1960-03-10', jk:'Katolik', alamat:'Jl. Tua No. 1', noHp:'081211112222', email:'bambang.s@example.com', noBpjs:'000111999888', foto:'', dokumen:'', createdAt:new Date().toISOString() },
   ];
 }
 
@@ -315,22 +1354,27 @@ function sampleData() {
   ];
 }
 
-/* ─── HELPERS ─── */
+/* ÔöÇÔöÇÔöÇ HELPERS ÔöÇÔöÇÔöÇ */
 function getJenisLabel(bidang, jenis) {
-  const list = [...(DEPT_JENIS[bidang]||[]), ...COMMON_JENIS];
-  return list.find(t=>t.val===jenis)?.label || jenis.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
+  if (!jenis) return '-';
+  const groups = DEPT_JENIS[bidang] || [];
+  let found = null;
+  for (let group of groups) {
+    if (group.items) {
+      let item = group.items.find(t => t.val === jenis);
+      if (item) { found = item.label; break; }
+    }
+  }
+
+  return found || String(jenis).replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());
 }
 function getFormatCfg(fmt) { return FORMAT_MAP[fmt] || FORMAT_MAP.pdf; }
 
 function fmtBadge(a) {
   if (!a.gdriveLink) return `<span class="no-file">—</span>`;
+  if (a.gdriveLink === 'UPLOADING') return `<span style="color:#f59e0b;font-size:0.85rem;white-space:nowrap"><i class="fas fa-spinner fa-spin"></i> Mengunggah...</span>`;
   const f = getFormatCfg(a.format);
-  return `<a href="${esc(a.gdriveLink)}" target="_blank" rel="noopener noreferrer"
-    class="fmt-btn fmt-${a.format||'pdf'}"
-    title="Buka di Google Drive: ${esc(a.fileName||'')}"
-    onclick="logGDriveOpen('${a.id}',event)">
-    <i class="${f.icon}"></i> ${f.label}
-  </a>`;
+  return `<a href="${esc(a.gdriveLink)}" target="_blank" rel="noopener noreferrer" class="fmt-btn fmt-${a.format||'pdf'}" title="Buka Dokumen: ${esc(a.fileName||a.judul||'')}"><i class="${f.icon}"></i> ${f.label}</a>`;
 }
 function logGDriveOpen(id, e) {
   const a = arsip.find(x=>x.id===id);
@@ -338,15 +1382,16 @@ function logGDriveOpen(id, e) {
 }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmtDate(d) { if(!d)return'—'; return new Date(d+'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
-function fmtDateTime(d) { if(!d)return'—'; return new Date(d).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function fmtDate(d) { if(!d)return'ÔÇö'; return new Date(d+'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
+function fmtDateTime(d) { if(!d)return'ÔÇö'; return new Date(d).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
 function statusBadge(status) { const c=STATUS_CFG[status]||STATUS_CFG.arsip; return `<span class="s-badge ${c.cls}"><i class="fas ${c.icon}"></i>${c.label}</span>`; }
 function now() { return new Date().toISOString().slice(0,10); }
 
-/* ─── NAVIGATION ─── */
+/* ÔöÇÔöÇÔöÇ NAVIGATION ÔöÇÔöÇÔöÇ */
 function setupNav() {
   document.querySelectorAll('.sb-link').forEach(link => {
     link.addEventListener('click', e => {
+      if (link.getAttribute('href') && link.getAttribute('href') !== '#') return;
       e.preventDefault();
       const page = link.dataset.page, dept = link.dataset.dept||'';
       
@@ -364,39 +1409,34 @@ function setupNav() {
 
       setActiveNav(link); currentDept = dept;
       showPage(page);
+      // Otomatis buka sub-menu dept yang dipilih, tutup yang lain
+      if (page === 'dept' && dept) {
+        Object.keys(DEPT).forEach(k => {
+          const m = document.getElementById(`dept-${k}-sub-menu`);
+          if (m) m.style.display = (k === dept) ? 'flex' : 'none';
+        });
+      }
       if (window.innerWidth<=768) closeSidebar();
     });
   });
 }
 function setActiveNav(el) { document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active')); el.classList.add('active'); }
-function showPage(page) {
+async function showPage(page) {
   currentPage = page;
-  document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
-  document.getElementById('page-'+page)?.classList.remove('hidden');
-  const titles={
-    dashboard:'Portal Utama',
-    arsip:'Semua Arsip',
-    dept:DEPT[currentDept]?.label||'Bidang',
-    analytics:'Analitik',
-    aktivitas:'Riwayat Aktivitas',
-    mahasiswa:'Data Mahasiswa',
-    sdm:'Data SDM & Dosen',
-    banpt:'Borang Akreditasi BAN-PT',
-    lamptkes:'Borang Akreditasi LAM-PTKes',
-    'lab-dashboard': 'Dashboard & Grafik Lab (SIMLAB)',
-    'lab-inventaris': 'Inventaris & Aset Laboratorium',
-    'lab-perawatan': 'Perawatan & Kalibrasi Alat Lab',
-    'lab-logbook': 'Logbook Praktikum Laboratorium',
-    'lab-jadwal': 'Jadwal Praktikum & Peminjaman Lab',
-    'lab-anggaran': 'Anggaran & RAB Laboratorium',
-    'lab-dokumen': 'Dokumen & SOP Laboratorium',
-    'lab-lpj': 'Laporan LPJ Laboratorium'
-  };
+  
+  if (typeof loadPage === 'function') {
+    await loadPage('page-' + page);
+  } else {
+    document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+    document.getElementById('page-'+page)?.classList.remove('hidden');
+  }
+
+  const titles={dashboard:'Portal Utama',arsip:'Semua Arsip',dept:DEPT[currentDept]?.label||'Bidang',analytics:'Analitik',aktivitas:'Riwayat Aktivitas',mahasiswa:'Data Mahasiswa',sdm:'Data SDM & Dosen',banpt:'Borang Akreditasi BAN-PT',lamptkes:'Borang Akreditasi LAM-PTKes',users:'Manajemen Pengguna',generator:'Generator Dokumen'};
   document.getElementById('topbarTitle').textContent = titles[page]||page;
   
   const btnAdd = document.getElementById('btnGlobalAdd');
   if(btnAdd) {
-    btnAdd.style.display = (page === 'banpt' || page === 'lamptkes' || page === 'analytics' || page === 'aktivitas' || page.startsWith('lab-')) ? 'none' : 'inline-flex';
+    btnAdd.style.display = (page === 'banpt' || page === 'lamptkes' || page === 'analytics' || page === 'aktivitas' || page === 'users' || page === 'generator' || page === 'dashboard') ? 'none' : 'inline-flex';
   }
 
   const banptMenu = document.getElementById('banpt-sub-menu');
@@ -404,6 +1444,7 @@ function showPage(page) {
 
   const lamptkesMenu = document.getElementById('lamptkes-sub-menu');
   if(lamptkesMenu) lamptkesMenu.style.display = (page === 'lamptkes') ? 'flex' : 'none';
+  if(page === 'lamptkes' && typeof generateLamptkesReport === 'function') generateLamptkesReport();
 
   Object.keys(DEPT).forEach(k => {
     const menu = document.getElementById(`dept-${k}-sub-menu`);
@@ -419,17 +1460,7 @@ function showPage(page) {
   if (page==='sdm')        renderSdmPage();
   if (page==='banpt')      { initBanpt(); }
   if (page==='lamptkes')   { initLamptkes(); }
-  
-  // Laboratorium Handlers
-  if (page==='lab-dashboard')  renderLabDashboard();
-  if (page==='lab-inventaris') renderLabInventarisTable();
-  if (page==='lab-perawatan')  renderLabPerawatanTable();
-  if (page==='lab-logbook')    renderLabLogbookTable();
-  if (page==='lab-jadwal')     renderLabJadwalTable();
-  if (page==='lab-anggaran')   renderLabAnggaranTable();
-  if (page==='lab-dokumen')    renderLabDokumenTable();
-  if (page==='lab-lpj')        renderLabLpjTable();
-
+  if (page==='users' && typeof loadUsers === 'function') loadUsers();
   updateBadges();
 }
 function setupHamburger() { document.getElementById('hamburger').addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sbOverlay').classList.toggle('hidden'); }); }
@@ -438,34 +1469,148 @@ function goToDept(dept) { currentDept=dept; document.querySelectorAll('.sb-link'
 function renderSidebarDate() { const el=document.getElementById('sidebarDate'); if(el) el.textContent=new Date().toLocaleDateString('id-ID',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}); }
 function updateBadges() {
   const f=arsip.filter(a=>!currentAY||a.ay===currentAY);
-  document.getElementById('badge-total').textContent=f.length;
-  Object.keys(DEPT).forEach(k=>{ const el=document.getElementById('badge-'+k); if(el) el.textContent=f.filter(a=>a.bidang===k).length; });
+  
+  // Total
+  const bt = document.getElementById('badge-total');
+  if (bt) bt.textContent = f.length;
+  
+  // Department Main Badges & Sub-Menu All Badges
+  Object.keys(DEPT).forEach(k => { 
+    const deptArsip = f.filter(a => a.bidang === k);
+    const el = document.getElementById('badge-'+k); 
+    if(el) el.textContent = deptArsip.length; 
+    
+    const subAllEl = document.getElementById('badge-dept-'+k+'-all');
+    if(subAllEl) subAllEl.textContent = deptArsip.length;
+  });
+
+  // Data Induk Badges
   const bMhs=document.getElementById('badge-mhs'); if(bMhs) bMhs.textContent=mahasiswa.length;
   const bSdm=document.getElementById('badge-sdm-induk'); if(bSdm) bSdm.textContent=sdm.length;
 
-  // Real-time Laboratory Badges
-  const labDocs = arsip.filter(a => a.bidang === 'laboratorium');
-  const bLabInv = document.getElementById('badge-lab-inv');
-  if (bLabInv) bLabInv.textContent = labDocs.filter(a => a.jenis === 'aset_laboratorium' || a.jenis === 'bhp_laboratorium').length;
-  const bLabPerawatan = document.getElementById('badge-lab-perawatan');
-  if (bLabPerawatan) bLabPerawatan.textContent = labDocs.filter(a => a.jenis === 'perawatan_alat').length;
-  const bLabLogbook = document.getElementById('badge-lab-logbook');
-  if (bLabLogbook) bLabLogbook.textContent = labDocs.filter(a => a.jenis === 'logbook_laboratorium').length;
-  const bLabJadwal = document.getElementById('badge-lab-jadwal');
-  if (bLabJadwal) bLabJadwal.textContent = labDocs.filter(a => a.jenis === 'jadwal_praktikum' || a.jenis === 'peminjaman_lab').length;
-  const bLabAnggaran = document.getElementById('badge-lab-anggaran');
-  if (bLabAnggaran) bLabAnggaran.textContent = labDocs.filter(a => a.jenis === 'anggaran_laboratorium' || a.jenis === 'anggaran_rab').length;
-  const bLabDokumen = document.getElementById('badge-lab-dokumen');
-  if (bLabDokumen) bLabDokumen.textContent = labDocs.filter(a => a.jenis === 'dokumen_laboratorium').length;
-  const bLabLpj = document.getElementById('badge-lab-lpj');
-  if (bLabLpj) bLabLpj.textContent = labDocs.filter(a => a.jenis === 'lpj_laboratorium' || a.jenis === 'laporan_laboratorium').length;
+  // BAN-PT & LAM-PTKes Badges
+  let banptCount = 0;
+  let lamptkesCount = 0;
+  let banptKCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0, 9:0};
+  let lamptkesKCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0};
+
+  f.forEach(a => {
+    let bk = getBanptCriteriaForUpload(a.bidang, a.jenis);
+    if (bk > 0) {
+       banptCount++;
+       if(banptKCounts[bk] !== undefined) banptKCounts[bk]++;
+    }
+    
+    if (a.jenis) {
+       let lk = getKriteriaNumber(a.jenis);
+       if (lk > 0 || a.jenis.includes('_led') || a.jenis.startsWith('led_') || a.jenis.includes('_spmi') || a.jenis.startsWith('spmi_')) {
+          lamptkesCount++;
+       }
+       if (lk >= 1 && lk <= 8) {
+          lamptkesKCounts[lk]++;
+       }
+    }
+  });
+
+  const bBanpt = document.getElementById('badge-banpt');
+  if(bBanpt) bBanpt.textContent = banptCount;
+  const bLamptkes = document.getElementById('badge-lamptkes');
+  if(bLamptkes) bLamptkes.textContent = lamptkesCount;
+
+  // Dashboard Badges
+  const bdTotal = document.getElementById('badge-dash-total');
+  if (bdTotal) bdTotal.textContent = f.length;
+  
+  const bdAktif = document.getElementById('badge-aktif');
+  if (bdAktif) bdAktif.textContent = f.filter(a => (a.status || 'aktif').toLowerCase() === 'aktif').length;
+
+  const bdBanptDash = document.getElementById('badge-dash-banpt');
+  if (bdBanptDash) bdBanptDash.textContent = banptCount;
+
+  const bdLamptkesDash = document.getElementById('badge-dash-lamptkes');
+  if (bdLamptkesDash) bdLamptkesDash.textContent = lamptkesCount;
+
+  // Update specific K badges
+  for (let i = 1; i <= 9; i++) {
+     let el = document.getElementById('badge-banpt-k' + i);
+     if (el) el.textContent = banptKCounts[i] || 0;
+  }
+  for (let i = 1; i <= 8; i++) {
+     let el = document.getElementById('badge-lamptkes-k' + i);
+     if (el) el.textContent = lamptkesKCounts[i] || 0;
+  }
+
+
+  // Sub-Menu Jenis Badges
+  // First, zero out all jenis badges
+  document.querySelectorAll('[id^="badge-jenis-"]').forEach(el => el.textContent = '0');
+  
+  // Then calculate counts grouped by jenis (for current active AY)
+  let counts = {};
+  f.forEach(a => {
+    if (a.jenis) {
+       // Only count for the correct department
+       let key = a.bidang + '_' + a.jenis; 
+       counts[key] = (counts[key] || 0) + 1;
+       
+       // Fallback for global jenis IDs just in case they are unique
+       counts[a.jenis] = (counts[a.jenis] || 0) + 1;
+    }
+  });
+
+  // Update specific badges based on ID
+  document.querySelectorAll('.sb-sub-menu').forEach(menu => {
+     let deptId = menu.id.replace('dept-', '').replace('-sub-menu', '');
+     menu.querySelectorAll('[id^="badge-jenis-"]').forEach(badge => {
+         let jenisId = badge.id.replace('badge-jenis-', '');
+         let val = counts[deptId + '_' + jenisId] || 0;
+         badge.textContent = val;
+     });
+  });
 }
 
-/* ═════ DASHBOARD ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DASHBOARD ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderDashboard() {
-  const data=arsip.filter(a=>!currentAY||a.ay===currentAY);
+  let data=arsip.filter(a=>!currentAY||a.ay===currentAY);
+
+  // --- START RAB WIDGET LOGIC ---
+  let totalRAB = 0, realisasi = 0, ditolak = 0, sisa = 0;
+  
+  data.filter(a => a.isAnggaran === true || a.jenis === 'anggaran' || a.jenis === 'umum_rab' || a.kategori === 'Anggaran').forEach(item => {
+      let amt = Number(item.rab_amount) || Number(item.totalAnggaran) || (Number(item.harga || 0) * Number(item.volume || 1)) || 0;
+      let stat = (item.rab_status || item.status || '').toLowerCase();
+      
+      totalRAB += amt;
+      if (stat.includes('terealisasi') || stat.includes('disetujui') || stat.includes('selesai')) {
+          realisasi += amt;
+      } else if (stat.includes('tolak') || stat.includes('batal')) {
+          ditolak += amt;
+      } else {
+          sisa += amt;
+      }
+  });
+
+  const formatRp = (num) => 'Rp ' + num.toLocaleString('id-ID');
+  
+  const sect = document.getElementById('dashboard-anggaran-section');
+  if (sect) {
+      if (totalRAB > 0) {
+        sect.style.display = 'block';
+        if(document.getElementById('badge-rab-total')) document.getElementById('badge-rab-total').innerText = formatRp(totalRAB);
+        if(document.getElementById('badge-rab-realisasi')) document.getElementById('badge-rab-realisasi').innerText = formatRp(realisasi);
+        if(document.getElementById('badge-rab-sisa')) document.getElementById('badge-rab-sisa').innerText = formatRp(sisa);
+        if(document.getElementById('badge-rab-ditolak')) document.getElementById('badge-rab-ditolak').innerText = formatRp(ditolak);
+      } else {
+        sect.style.display = 'none';
+      }
+  }
+  // --- END RAB WIDGET LOGIC ---
+
   initDashCharts(data); renderRecentList(data);
 }
+
+
+
 function renderRecentList(data) {
   const el=document.getElementById('recentList'); if(!el)return;
   const recent=[...data].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
@@ -476,7 +1621,7 @@ function renderRecentList(data) {
       <div class="ri-icon" style="background:${d.color||'#888'}18;color:${d.color||'#888'}"><i class="${d.icon||'fas fa-file'}"></i></div>
       <div class="ri-info">
         <div class="ri-title">${esc(a.judul)}</div>
-        <div class="ri-meta">${d.label||'—'} · ${getJenisLabel(a.bidang,a.jenis)} · ${fmtDate(a.tanggal)} ${a.gdriveLink?`<i class="fab fa-google-drive" style="color:#4285f4"></i>`:''}</div>
+        <div class="ri-meta">${d.label||'ÔÇö'} ┬À ${getJenisLabel(a.bidang,a.jenis)} ┬À ${fmtDate(a.tanggal)} ${a.gdriveLink?`<i class="fab fa-google-drive" style="color:#4285f4"></i>`:''}</div>
       </div>
     </div>`;
   }).join('');
@@ -492,13 +1637,26 @@ function initDashCharts(data) {
 
   // Yearly Trend
   destroyChart(cYearlyLine);
-  const ctxYL=document.getElementById('chartYearlyLine')?.getContext('2d');
-  if(ctxYL){
-    const currY = new Date().getFullYear();
-    const yLabels = [currY-4, currY-3, currY-2, currY-1, currY].map(String);
-    const yCounts = yLabels.map(y => arsip.filter(a=>a.tanggal?.startsWith(y)).length);
+    const ctxYL=document.getElementById('chartYearlyLine')?.getContext('2d');
+    if(ctxYL){
+      let startY = parseInt(document.getElementById('trendStartY')?.value || '2021', 10);
+      let endY = parseInt(document.getElementById('trendEndY')?.value || '2025', 10);
+      
+      if (startY > endY) {
+        let temp = startY; startY = endY; endY = temp;
+      }
+      
+      let allChrono = [...allAYears()].reverse(); // sorted chronologically (2014 -> 2050)
+      
+      let sy = allChrono.filter(ay => {
+        let ayStart = parseInt(ay.split('/')[0], 10);
+        return ayStart >= startY && ayStart <= endY;
+      });
+      
+      const yCounts = sy.map(y => arsip.filter(a=>a.ay===y).length);
+    
     const g=ctxYL.createLinearGradient(0,0,0,240);g.addColorStop(0,'rgba(59,130,246,.35)');g.addColorStop(1,'rgba(59,130,246,0)');
-    cYearlyLine=new Chart(ctxYL,{type:'line',data:{labels:yLabels,datasets:[{label:'Arsip Tahunan',data:yCounts,borderColor:'#3b82f6',backgroundColor:g,tension:.4,pointBackgroundColor:'#3b82f6',pointRadius:4,fill:true}]},options:chartOpts({plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',precision:0},beginAtZero:true}}})})
+    cYearlyLine=new Chart(ctxYL,{type:'line',data:{labels:sy,datasets:[{label:'Total Arsip',data:yCounts,borderColor:'#3b82f6',backgroundColor:g,tension:.4,pointBackgroundColor:'#3b82f6',pointRadius:4,fill:true}]},options:chartOpts({plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',precision:0},beginAtZero:true}}})})
   }
 
   destroyChart(cDoughnut);
@@ -522,19 +1680,31 @@ function initDashCharts(data) {
   }
   destroyChart(cStatus);
   const ctxS=document.getElementById('chartStatus')?.getContext('2d');
-  if(ctxS){const sL=['Aktif','Diproses','Selesai','Diarsipkan'],sK=['aktif','diproses','selesai','arsip'],sV=sK.map(s=>data.filter(a=>a.status===s).length),sC=['#22c55e','#f59e0b','#3b82f6','#94a3b8'];cStatus=new Chart(ctxS,{type:'doughnut',data:{labels:sL,datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]},options:chartOpts({plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},cutout:'65%'})})}
+  if(ctxS){const sL=['Aktif','Diproses','Selesai','Diarsipkan'],sK=['aktif','diproses','selesai','arsip'],sV=sK.map(s=>data.filter(a=>a.status===s).length),sC=['#22c55e','#f59e0b','#3b82f6','#94a3b8'];cStatus=new Chart(ctxS,{type:'doughnut',plugins:[ChartDataLabels],data:{labels:sL,datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]},options:chartOpts({plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},cutout:'65%'})})}
 }
 
-/* ═════ ARSIP TABLE ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ ARSIP TABLE ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function onFilterDeptChange() {
   const dept=document.getElementById('filterDept').value;
   populateFilterJenis(dept,'filterJenis');
   renderArsipTable();
 }
 function populateFilterJenis(dept, elId) {
-  const el=document.getElementById(elId); if(!el)return;
-  const types=dept?(DEPT_JENIS[dept]||COMMON_JENIS):COMMON_JENIS;
-  el.innerHTML=`<option value="">Semua Jenis</option>`+types.map(t=>`<option value="${t.val}">${t.label}</option>`).join('');
+const el=document.getElementById(elId); if(!el)return;
+const types=dept?(DEPT_JENIS[dept]||COMMON_JENIS):COMMON_JENIS;
+let html = `<option value="">Semua Jenis</option>`;
+types.forEach(t => {
+  if (t.group && t.items) {
+    html += `<optgroup label="${t.group}">`;
+    t.items.forEach(item => {
+      html += `<option value="${item.val}">${item.label}</option>`;
+    });
+    html += `</optgroup>`;
+  } else {
+    html += `<option value="${t.val}">${t.label}</option>`;
+  }
+});
+el.innerHTML = html;
 }
 
 function renderArsipTable() {
@@ -562,7 +1732,7 @@ function renderArsipTable() {
   if(!tbody)return;
   if(!data.length){tbody.innerHTML='';empty?.classList.remove('hidden');if(info)info.textContent='Tidak ada arsip ditemukan.';return;}
   empty?.classList.add('hidden');
-  if(info)info.textContent=`${data.length} dari ${arsip.filter(a=>!currentAY||a.ay===currentAY).length} arsip · TA ${currentAY}`;
+  if(info)info.textContent=`${data.length} dari ${arsip.filter(a=>!currentAY||a.ay===currentAY).length} arsip ┬À TA ${currentAY}`;
 
   tbody.innerHTML=data.map((a,i)=>{
     const d=DEPT[a.bidang]||{label:a.bidang,color:'#888',icon:'fas fa-file'};
@@ -570,10 +1740,10 @@ function renderArsipTable() {
       <td style="color:var(--t3);font-size:.72rem">${i+1}</td>
       <td><span class="td-nomor">${esc(a.nomor)}</span></td>
       <td><span class="td-judul" title="${esc(a.judul)}">${esc(a.judul)}</span></td>
-      <td><span class="d-badge" style="background:${d.color}18;color:${d.color}"><i class="${d.icon}"></i>${d.label}</span></td>
-      <td style="font-size:.78rem;color:var(--t2);"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/"/g, '&quot;')}" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${getJenisLabel(a.bidang,a.jenis)}</div></td>
+      <td><span class="d-badge" style="background:${d.color}18;color:${d.color}; white-space: normal !important; text-align: left; line-height: 1.2; min-width: 120px; display: inline-block;"><i class="${d.icon}"></i>${d.label}</span></td>
+      <td style="font-size:.78rem;color:var(--t2);"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/"/g, '&quot;')}" style="white-space:normal; line-height:1.3; word-break:normal; overflow-wrap:break-word; font-size:0.72rem;">${getJenisLabel(a.bidang,a.jenis)}</div></td>
       <td style="font-size:.78rem;">${fmtDate(a.tanggal)}</td>
-      <td><span class="td-ta" style="white-space:normal;">${a.ay||'—'}</span></td>
+      <td><span class="td-ta" style="white-space:normal;">${a.ay||'ÔÇö'}</span></td>
       <td>${statusBadge(a.status)}</td>
       <td>${fmtBadge(a)}</td>
       <td><div class="act-group">
@@ -591,7 +1761,7 @@ function clearFilters() {
   renderArsipTable();
 }
 
-/* ═════ DEPT PAGE ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DEPT PAGE ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderDeptPage(dept) {
   if(!dept)return;
   const d=DEPT[dept];
@@ -600,7 +1770,39 @@ function renderDeptPage(dept) {
   document.getElementById('deptBanner').style.cssText=`--dept-bg:${d.color}18;--dept-color:${d.color};background:linear-gradient(135deg,${d.color}12,transparent)`;
   document.getElementById('deptBannerIcon').innerHTML=`<i class="${d.icon}"></i>`;
   document.getElementById('deptBannerName').textContent=d.label;
-  document.getElementById('deptBannerSub').textContent=`Manajemen arsip bidang ${d.label} · TA ${currentAY}`;
+  document.getElementById('deptBannerSub').textContent=`Manajemen arsip bidang ${d.label} ┬À TA ${currentAY}`;
+
+  // --- START RAB WIDGET LOGIC PER BIDANG ---
+  let deptTotalRAB = 0, deptRealisasi = 0, deptDitolak = 0, deptSisa = 0;
+  
+  all.filter(a => a.isAnggaran === true || a.jenis === 'anggaran' || a.jenis === 'umum_rab' || a.kategori === 'Anggaran').forEach(item => {
+      let amt = Number(item.rab_amount) || Number(item.totalAnggaran) || (Number(item.harga || 0) * Number(item.volume || 1)) || 0;
+      let stat = (item.rab_status || item.status || '').toLowerCase();
+      
+      deptTotalRAB += amt;
+      if (stat.includes('terealisasi') || stat.includes('disetujui') || stat.includes('selesai')) {
+          deptRealisasi += amt;
+      } else if (stat.includes('tolak') || stat.includes('batal')) {
+          deptDitolak += amt;
+      } else {
+          deptSisa += amt;
+      }
+  });
+
+  const deptSect = document.getElementById('dept-dashboard-anggaran-section');
+  if (deptSect) {
+      if (deptTotalRAB > 0) {
+        deptSect.style.display = 'block';
+        const formatRp = (num) => 'Rp ' + num.toLocaleString('id-ID');
+        if(document.getElementById('dept-badge-rab-total')) document.getElementById('dept-badge-rab-total').innerText = formatRp(deptTotalRAB);
+        if(document.getElementById('dept-badge-rab-realisasi')) document.getElementById('dept-badge-rab-realisasi').innerText = formatRp(deptRealisasi);
+        if(document.getElementById('dept-badge-rab-sisa')) document.getElementById('dept-badge-rab-sisa').innerText = formatRp(deptSisa);
+        if(document.getElementById('dept-badge-rab-ditolak')) document.getElementById('dept-badge-rab-ditolak').innerText = formatRp(deptDitolak);
+      } else {
+        deptSect.style.display = 'none';
+      }
+  }
+  // --- END RAB WIDGET LOGIC PER BIDANG ---
 
   document.getElementById('deptStatRow').innerHTML=[
     {lb:'Total Arsip',val:all.length,ic:'archive',c:d.color},
@@ -613,11 +1815,27 @@ function renderDeptPage(dept) {
   initDeptCharts(dept,all,d.color);
 
   const mhsCharts = document.getElementById('mhsChartContainer');
-  if(mhsCharts) mhsCharts.style.display = (dept === 'kemahasiswaan') ? 'grid' : 'none';
-  if(dept === 'kemahasiswaan') {
-    initMhsCharts(mahasiswa.filter(m=>!currentAY||m.ay===currentAY));
-  }
+  if(mhsCharts) mhsCharts.style.display = 'none'; // Obsolete
 
+  const iframeContainer = document.getElementById('kemahasiswaanIframeContainer');
+  const iframe = document.getElementById('kemahasiswaanIframe');
+  const deptArsipCharts = document.getElementById('deptArsipCharts');
+  const statRow = document.getElementById('deptStatRow');
+
+  if (dept === 'kemahasiswaan') {
+    if (iframeContainer) iframeContainer.style.display = 'block';
+    if (iframe && !iframe.src.includes('adminpendidikanaas-operator.workers.dev')) {
+      // Set the production URL for the embed dashboard
+      iframe.src = 'https://bid-kemahasiswaan-dan-alumni.adminpendidikanaas-operator.workers.dev/embed/dashboard';
+    }
+    // Optionally hide the standard stats and charts to avoid clutter since the iframe has them
+    if (deptArsipCharts) deptArsipCharts.style.display = 'none';
+    if (statRow) statRow.style.display = 'none';
+  } else {
+    if (iframeContainer) iframeContainer.style.display = 'none';
+    if (deptArsipCharts) deptArsipCharts.style.display = 'block';
+    if (statRow) statRow.style.display = 'flex';
+  }
 
   document.getElementById('deptTableTitle').textContent=`Daftar Arsip ${d.label}`;
   document.getElementById('deptSearch').value='';
@@ -671,9 +1889,13 @@ function filterByJenis(jenis) {
     if(dMhs) dMhs.style.display = 'none';
     if(dSdm) { dSdm.style.display = 'block'; renderSdmPage(); }
   } else {
-    if(arsipC) arsipC.style.display = 'block';
-    if(mhsC) mhsC.style.display = (currentDept === 'kemahasiswaan') ? 'grid' : 'none';
-    if(tC) tC.style.display = 'block';
+    const iframeC = document.getElementById('kemahasiswaanIframeContainer');
+    if(iframeC && currentDept === 'kemahasiswaan') {
+      iframeC.style.display = (jenis === '') ? 'block' : 'none';
+    }
+    if(arsipC) arsipC.style.display = (currentDept === 'kemahasiswaan' && jenis === '') ? 'none' : 'block';
+    if(mhsC) mhsC.style.display = (currentDept === 'kemahasiswaan' && (jenis === '' || jenis === 'data_mahasiswa')) ? 'grid' : 'none';
+    if(tC) tC.style.display = (currentDept === 'kemahasiswaan' && jenis === '') ? 'none' : 'block';
     if(dMhs) dMhs.style.display = 'none';
     if(dSdm) dSdm.style.display = 'none';
     renderDeptTable();
@@ -689,11 +1911,22 @@ function initSidebarSubMenus() {
     ul.id = `dept-${k}-sub-menu`;
     ul.style.display = 'none';
 
-    const types = [...(DEPT_JENIS[k] || []), ...COMMON_JENIS];
-    
     let html = `<li class="active" onclick="filterByJenisFromSidebar('', '${k}', this)"><i class="fas fa-layer-group"></i> Semua Jenis</li>`;
-    types.forEach(t => {
-      html += `<li title="${t.label.replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${t.val}', '${k}', this)"><i class="${t.icon || 'fas fa-file-lines'}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${t.label}</span></li>`;
+    
+    const dJenis = DEPT_JENIS[k] || [];
+    dJenis.forEach(t => {
+      if (t.group && t.items) {
+        html += `<li style="pointer-events:none; font-size:0.75rem; font-weight:700; color:var(--t3); text-transform:uppercase; margin-top:8px; padding-left:15px; padding-bottom:4px;">${t.group}</li>`;
+        t.items.forEach(item => {
+          html += `<li title="${(item.label||'').replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${item.val}', '${k}', this)" style="padding-left:25px;"><i class="${item.icon || 'fas fa-file-lines'}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span></li>`;
+        });
+      } else {
+        html += `<li title="${(t.label||'').replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${t.val}', '${k}', this)"><i class="${t.icon || 'fas fa-file-lines'}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${t.label}</span></li>`;
+      }
+    });
+
+    COMMON_JENIS.forEach(t => {
+      html += `<li title="${(t.label||'').replace(/"/g, '&quot;')}" onclick="filterByJenisFromSidebar('${t.val}', '${k}', this)"><i class="${t.icon || 'fas fa-file-lines'}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${t.label}</span></li>`;
     });
 
     ul.innerHTML = html;
@@ -787,7 +2020,7 @@ function renderDeptTable() {
         tdHtml += `<td style="font-size:.8rem;color:var(--primary);font-weight:600;">${val}</td>`; 
       });
     } else {
-      tdHtml += `<td style="font-size:.78rem;color:var(--t2)"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/\"/g, '&quot;')}" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${getJenisLabel(a.bidang,a.jenis)}</div></td>`;
+      tdHtml += `<td style="font-size:.78rem;color:var(--t2)"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/\"/g, '&quot;')}" style="white-space:normal; line-height:1.3; word-break:normal; overflow-wrap:break-word; font-size:0.72rem;">${getJenisLabel(a.bidang,a.jenis)}</div></td>`;
     }
 
     tdHtml += `
@@ -809,19 +2042,246 @@ function renderDeptTable() {
   }
 }
 
-/* ═════ DEPT CHARTS ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DEPT CHARTS ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function initDeptCharts(dept,data,color) {
-  const months=getAYMonths(currentAY),labels=months.map(getMonthLabel);
-  const counts=months.map(m=>data.filter(a=>a.tanggal?.startsWith(m)).length);
-  destroyChart(cDeptBar);
-  const ctxB=document.getElementById('chartDeptBar')?.getContext('2d');
-  if(ctxB){const g=ctxB.createLinearGradient(0,0,0,220);g.addColorStop(0,color+'cc');g.addColorStop(1,color+'33');cDeptBar=new Chart(ctxB,{type:'bar',data:{labels,datasets:[{label:'Jumlah Arsip',data:counts,backgroundColor:g,borderColor:color,borderWidth:1.5,borderRadius:6,borderSkipped:false}]},options:chartOpts({plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4f617d',font:{size:9}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4f617d',precision:0},beginAtZero:true}}})})}
-  destroyChart(cDeptDonut);
-  const ctxD=document.getElementById('chartDeptDonut')?.getContext('2d');
-  if(ctxD){const sK=['aktif','diproses','selesai','arsip'],sL=['Aktif','Diproses','Selesai','Diarsipkan'],sV=sK.map(s=>data.filter(a=>a.status===s).length),sC=['#22c55e','#f59e0b','#3b82f6','#94a3b8'];cDeptDonut=new Chart(ctxD,{type:'doughnut',data:{labels:sL,datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]},options:chartOpts({plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},cutout:'65%'})})}
+  const t1 = document.getElementById('deptChart1Title');
+  const t2 = document.getElementById('deptChart2Title');
+
+  if (dept === 'kemahasiswaan') {
+    if (t1) t1.innerHTML = `<i class="fas fa-chart-line"></i> Indeks Kepuasan Mahasiswa (IKM)`;
+    if (t2) t2.innerHTML = `<i class="fas fa-user-graduate"></i> Status Tracer Alumni`;
+    
+    const tracerData = data.filter(a => a.pengirim === 'Tracer Mahasiswa' || (a.nomor && a.nomor.includes('IKM')));
+    const fScores = [], aScores = [], lScores = [];
+    tracerData.forEach(a => {
+      if (a.metadata) {
+        if (a.metadata.f_score_pct) fScores.push(a.metadata.f_score_pct);
+        if (a.metadata.a_score_pct) aScores.push(a.metadata.a_score_pct);
+        if (a.metadata.l_score_pct) lScores.push(a.metadata.l_score_pct);
+      }
+    });
+
+    const avgF = fScores.length > 0 ? Math.round(fScores.reduce((a,b)=>a+b,0)/fScores.length) : 0;
+    const avgA = aScores.length > 0 ? Math.round(aScores.reduce((a,b)=>a+b,0)/aScores.length) : 0;
+    const avgL = lScores.length > 0 ? Math.round(lScores.reduce((a,b)=>a+b,0)/lScores.length) : 0;
+
+    const hasData = (avgF + avgA + avgL) > 0;
+    
+    // Calculate 27 indicator averages
+    const allIndicators = [
+      'f_ruangKelas', 'f_kebersihanKelas', 'f_perpustakaan', 'f_labAkupunktur', 'f_saranaIbadah', 'f_toilet', 'f_wifi', 'f_parkir', 'f_areaPublik', 'f_ketersediaanModul',
+      'a_kualitasDosen', 'a_kedisiplinanDosen', 'a_relevansiKurikulum', 'a_bimbinganDPA', 'a_bimbinganKTI', 'a_keadilanNilai', 'a_ketersediaanBahanAjar', 'a_prosesKRS', 'a_jadwalKuliah',
+      'l_layananBAAK', 'l_layananKeuangan', 'l_infoBeasiswa', 'l_dukunganBEM', 'l_layananKominf', 'l_dukunganUKM', 'l_bimbinganKarir', 'l_responsivitasKeluhan'
+    ];
+    
+    const indicatorLabels = {
+      f_ruangKelas: 'Kenyamanan Ruang Kelas', f_kebersihanKelas: 'Kebersihan Kelas', f_perpustakaan: 'Fasilitas Perpustakaan', f_labAkupunktur: 'Laboratorium Akupunktur', f_saranaIbadah: 'Sarana Ibadah', f_toilet: 'Kondisi Toilet', f_wifi: 'Koneksi WiFi', f_parkir: 'Fasilitas Parkir', f_areaPublik: 'Area Publik/Kantin', f_ketersediaanModul: 'Ketersediaan Modul',
+      a_kualitasDosen: 'Kualitas Mengajar Dosen', a_kedisiplinanDosen: 'Kedisiplinan Dosen', a_relevansiKurikulum: 'Relevansi Kurikulum', a_bimbinganDPA: 'Bimbingan Akademik (DPA)', a_bimbinganKTI: 'Bimbingan KTI', a_keadilanNilai: 'Keadilan Pemberian Nilai', a_ketersediaanBahanAjar: 'Ketersediaan Bahan Ajar', a_prosesKRS: 'Proses KRS', a_jadwalKuliah: 'Jadwal Kuliah',
+      l_layananBAAK: 'Layanan BAAK', l_layananKeuangan: 'Layanan Keuangan', l_infoBeasiswa: 'Informasi Beasiswa', l_dukunganBEM: 'Dukungan BEM', l_layananKominf: 'Layanan Kominf', l_dukunganUKM: 'Dukungan UKM', l_bimbinganKarir: 'Bimbingan Karir', l_responsivitasKeluhan: 'Responsivitas Keluhan'
+    };
+
+    const indSums = {};
+    const indCounts = {};
+    allIndicators.forEach(k => { indSums[k] = 0; indCounts[k] = 0; });
+
+    tracerData.forEach(a => {
+      if (a.metadata && a.metadata.scores) {
+        allIndicators.forEach(k => {
+          if (a.metadata.scores[k]) {
+            indSums[k] += a.metadata.scores[k];
+            indCounts[k]++;
+          }
+        });
+      }
+    });
+
+    const indAverages = allIndicators.map(k => {
+      const avg = indCounts[k] > 0 ? (indSums[k] / indCounts[k]).toFixed(1) : 0;
+      return parseFloat(avg);
+    });
+
+    // Inject Custom Container for Detailed Chart
+    let detailContainer = document.getElementById('kemahasiswaanDetailCharts');
+    if (!detailContainer) {
+      const parent = document.getElementById('deptArsipCharts');
+      if (parent) {
+        parent.insertAdjacentHTML('beforeend', `
+          <div id="kemahasiswaanDetailCharts" style="margin-top: 20px;">
+            <div class="panel">
+              <div class="panel-hd"><h3><i class="fas fa-list"></i> Rata-rata Skor per Indikator (Skala 1-5)</h3></div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 15px;">
+                <div class="chart-wrap" style="height: 350px;">
+                  <h4 style="text-align:center; color:#3b82f6; margin-bottom:10px; font-size:14px;">Indikator Akademik</h4>
+                  <canvas id="chartKemAkademik"></canvas>
+                </div>
+                <div class="chart-wrap" style="height: 350px;">
+                  <h4 style="text-align:center; color:#10b981; margin-bottom:10px; font-size:14px;">Indikator Fasilitas</h4>
+                  <canvas id="chartKemFasilitas"></canvas>
+                </div>
+                <div class="chart-wrap" style="height: 350px;">
+                  <h4 style="text-align:center; color:#f59e0b; margin-bottom:10px; font-size:14px;">Indikator Layanan</h4>
+                  <canvas id="chartKemLayanan"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        `);
+        detailContainer = document.getElementById('kemahasiswaanDetailCharts');
+      }
+    }
+    if (detailContainer) detailContainer.style.display = 'block';
+
+    if (window.cKemAkademik) window.cKemAkademik.destroy();
+    if (window.cKemFasilitas) window.cKemFasilitas.destroy();
+    if (window.cKemLayanan) window.cKemLayanan.destroy();
+
+    const chartConfig = (labels, data, bg, border) => ({
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Skor Rata-rata (1-5)',
+          data: data,
+          backgroundColor: bg,
+          borderColor: border,
+          borderWidth: 1.5,
+          borderRadius: 4
+        }]
+      },
+      options: chartOpts({
+        indexAxis: 'y',
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          datalabels: {
+            anchor: 'end',
+            align: 'right',
+            color: '#8b9dbf',
+            font: { weight: 'bold', size: 10 },
+            formatter: (v) => v > 0 ? v : ''
+          }
+        },
+        scales: {
+          x: { max: 5.5, beginAtZero: true, grid: { color: 'rgba(255,255,255,.04)' }, ticks: { color: '#4f617d', stepSize: 1 } },
+          y: { grid: { display: false }, ticks: { color: '#8b9dbf', font: { size: 10 } } }
+        }
+      }),
+      plugins: [ChartDataLabels]
+    });
+
+    const ctxAkademik = document.getElementById('chartKemAkademik')?.getContext('2d');
+    if (ctxAkademik) {
+      window.cKemAkademik = new Chart(ctxAkademik, chartConfig(
+        allIndicators.slice(10, 19).map(k => indicatorLabels[k]),
+        indAverages.slice(10, 19),
+        '#3b82f6cc', '#3b82f6'
+      ));
+    }
+    
+    const ctxFasilitas = document.getElementById('chartKemFasilitas')?.getContext('2d');
+    if (ctxFasilitas) {
+      window.cKemFasilitas = new Chart(ctxFasilitas, chartConfig(
+        allIndicators.slice(0, 10).map(k => indicatorLabels[k]),
+        indAverages.slice(0, 10),
+        '#10b981cc', '#10b981'
+      ));
+    }
+
+    const ctxLayanan = document.getElementById('chartKemLayanan')?.getContext('2d');
+    if (ctxLayanan) {
+      window.cKemLayanan = new Chart(ctxLayanan, chartConfig(
+        allIndicators.slice(19, 27).map(k => indicatorLabels[k]),
+        indAverages.slice(19, 27),
+        '#f59e0bcc', '#f59e0b'
+      ));
+    }
+    
+    destroyChart(cDeptBar);
+    const ctxB=document.getElementById('chartDeptBar')?.getContext('2d');
+    if(ctxB) {
+      cDeptBar=new Chart(ctxB,{
+        type:'bar',
+        data:{
+          labels:['Fasilitas', 'Akademik', 'Pelayanan'],
+          datasets:[{
+            label:'Skor Rata-rata (%)',
+            data:[avgF, avgA, avgL],
+            backgroundColor: [color+'cc', '#3b82f6cc', '#f59e0bcc'],
+            borderColor: [color, '#3b82f6', '#f59e0b'],
+            borderWidth: 1.5,
+            borderRadius: 6
+          }]
+        },
+        options:chartOpts({
+          plugins:{
+            legend:{display:false},
+            datalabels: {
+              anchor: 'end',
+              align: 'top',
+              color: '#8b9dbf',
+              font: { weight: 'bold' },
+              formatter: (v) => v > 0 ? v + '%' : ''
+            }
+          },
+          scales:{
+            y:{max:100, beginAtZero:true, grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#4f617d'}}, 
+            x:{grid:{color:'rgba(255,255,255,.04)'}, ticks:{color:'#4f617d', font:{weight:'bold'}}}
+          }
+        }),
+        plugins: [ChartDataLabels]
+      });
+    }
+
+    const alumniData = data.filter(a => (a.pengirim || '').includes('Tracer') || (a.judul && a.judul.includes('Tracer Study Alumni')));
+    let st = {bekerja:0, wirausaha:0, homecare:0, studi:0, mencari:0};
+    alumniData.forEach(a => {
+      const ket = (a.keterangan || '').toLowerCase();
+      if (ket.includes('status: bekerja')) st.bekerja++;
+      else if (ket.includes('wirausaha') || ket.includes('praktek mandiri')) st.wirausaha++;
+      else if (ket.includes('homecare')) st.homecare++;
+      else if (ket.includes('studi')) st.studi++;
+      else if (ket.includes('mencari')) st.mencari++;
+    });
+    
+    destroyChart(cDeptDonut);
+    const ctxD=document.getElementById('chartDeptDonut')?.getContext('2d');
+    if(ctxD){
+      const sL=['Bekerja','Wirausaha','Homecare','Studi','Mencari'];
+      const sV=[st.bekerja, st.wirausaha, st.homecare, st.studi, st.mencari];
+      const sC=['#22c55e','#f59e0b','#8b5cf6','#3b82f6','#ef4444'];
+      cDeptDonut=new Chart(ctxD,{
+        type:'doughnut',
+        plugins:[ChartDataLabels],
+        data:{
+          labels:sL,
+          datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]
+        },
+        options:chartOpts({
+          plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},
+          cutout:'65%'
+        })
+      });
+    }
+  } else {
+    if (t1) t1.innerHTML = `<i class="fas fa-chart-bar"></i> Tingkat Kerja Bulanan`;
+    if (t2) t2.innerHTML = `<i class="fas fa-circle-half-stroke"></i> Status Arsip`;
+
+    const months=getAYMonths(currentAY),labels=months.map(getMonthLabel);
+    const counts=months.map(m=>data.filter(a=>a.tanggal?.startsWith(m)).length);
+    destroyChart(cDeptBar);
+    const ctxB=document.getElementById('chartDeptBar')?.getContext('2d');
+    if(ctxB){const g=ctxB.createLinearGradient(0,0,0,220);g.addColorStop(0,color+'cc');g.addColorStop(1,color+'33');cDeptBar=new Chart(ctxB,{type:'bar',data:{labels,datasets:[{label:'Jumlah Arsip',data:counts,backgroundColor:g,borderColor:color,borderWidth:1.5,borderRadius:6,borderSkipped:false}]},options:chartOpts({plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4f617d',font:{size:9}}},y:{grid:{color:'rgba(255,255,255,.04)'},ticks:{color:'#4f617d',precision:0},beginAtZero:true}}})})}
+    destroyChart(cDeptDonut);
+    const ctxD=document.getElementById('chartDeptDonut')?.getContext('2d');
+    if(ctxD){const sK=['aktif','diproses','selesai','arsip'],sL=['Aktif','Diproses','Selesai','Diarsipkan'],sV=sK.map(s=>data.filter(a=>a.status===s).length),sC=['#22c55e','#f59e0b','#3b82f6','#94a3b8'];cDeptDonut=new Chart(ctxD,{type:'doughnut',plugins:[ChartDataLabels],data:{labels:sL,datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]},options:chartOpts({plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},cutout:'65%'})})}
+    
+    // Hide kemahasiswaan detail chart if it exists
+    const detailContainer = document.getElementById('kemahasiswaanDetailCharts');
+    if (detailContainer) detailContainer.style.display = 'none';
+  }
 }
 
-/* ═════ ANALYTICS ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ ANALYTICS ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderAnalytics() {
   document.getElementById('anSub1').textContent=`TA ${currentAY}`;
   destroyChart(cAnBar);
@@ -850,29 +2310,113 @@ function renderDeptMatrix() {
   }).join('');
 }
 
-/* ─── CHART HELPER ─── */
+/* ÔöÇÔöÇÔöÇ CHART HELPER ÔöÇÔöÇÔöÇ */
 function destroyChart(c){try{c?.destroy()}catch{}}
 function chartOpts(extra={}) {
-  return{responsive:true,maintainAspectRatio:true,animation:{duration:600,easing:'easeOutCubic'},
-    plugins:{tooltip:{backgroundColor:'rgba(20,28,46,.95)',borderColor:'rgba(255,255,255,.08)',borderWidth:1,titleColor:'#f0f6ff',bodyColor:'#8b9dbf',padding:10},legend:{display:false,...extra.plugins?.legend},...extra.plugins},
-    scales:extra.scales,...Object.fromEntries(Object.entries(extra).filter(([k])=>!['plugins','scales'].includes(k)))};
+  return{
+    responsive:true,
+    maintainAspectRatio:true,
+    animation:{duration:600,easing:'easeOutCubic'},
+    plugins:{
+      tooltip:{
+        backgroundColor:'rgba(20,28,46,.95)',borderColor:'rgba(255,255,255,.08)',borderWidth:1,titleColor:'#f0f6ff',bodyColor:'#8b9dbf',padding:10,
+        callbacks: {
+          label: function(context) {
+            let label = context.dataset.label || '';
+            if (label) label += ': ';
+            else if (context.label) label = context.label + ': ';
+            
+            const value = context.raw || 0;
+            if (context.chart.config.type === 'doughnut' || context.chart.config.type === 'pie') {
+              let total = 0;
+              const dataArr = context.chart.data.datasets[context.datasetIndex].data;
+              dataArr.forEach(d => { total += Number(d) || 0; });
+              let percentage = 0;
+              if (total > 0) percentage = ((value / total) * 100).toFixed(1).replace('.0', '') + '%';
+              return label + value + ' (' + percentage + ')';
+            }
+            return label + value;
+          }
+        }
+      },
+      datalabels: {
+        display: function(context) { 
+           return context.chart.data.datasets[context.datasetIndex].data[context.dataIndex] > 0;
+        },
+        color: function(context) { 
+           return (context.chart.config.type === 'doughnut' || context.chart.config.type === 'pie') ? '#fff' : '#8b9dbf'; 
+        },
+        font: { weight: 'bold', size: 10 },
+        anchor: function(context) { return (context.chart.config.type === 'bar' || context.chart.config.type === 'line') ? 'end' : 'center'; },
+        align: function(context) { return (context.chart.config.type === 'bar' || context.chart.config.type === 'line') ? 'end' : 'center'; },
+        formatter: (value, context) => {
+          let sum = 0;
+          let dataArr = context.chart.data.datasets[context.datasetIndex].data;
+          dataArr.forEach(data => { sum += Number(data) || 0; });
+          if(sum > 0 && value > 0) {
+            let p = (value * 100 / sum).toFixed(1).replace('.0', '') + "%";
+            if (context.chart.config.type === 'doughnut' || context.chart.config.type === 'pie') return p;
+            return value + ' (' + p + ')';
+          }
+          return null;
+        }
+      },
+      legend:{display:false,...extra.plugins?.legend},
+      ...extra.plugins
+    },
+    scales:extra.scales,
+    ...Object.fromEntries(Object.entries(extra).filter(([k])=>!['plugins','scales'].includes(k)))
+  };
 }
 
-/* ═════ FORM MODAL ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ FORM MODAL ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function openForm(prefillDept) {
-  document.getElementById('arsipForm').reset();
-  document.getElementById('editId').value='';
-  document.getElementById('formTitle').innerHTML='<i class="fas fa-file-circle-plus"></i> Tambah Arsip Baru';
-  document.getElementById('btnSimpan').innerHTML='<i class="fas fa-floppy-disk"></i> Simpan';
-  document.getElementById('fTanggal').value=new Date().toISOString().slice(0,10);
-  document.getElementById('fFormat').value='pdf';
-  document.getElementById('fFileName').value='';
-  document.getElementById('fGdriveLink').value='';
-  if(prefillDept){ document.getElementById('fBidang').value=prefillDept; onBidangChange(); }
-  else { document.getElementById('fJenis').innerHTML='<option value="">-- Pilih Bidang dulu --</option>'; }
-  onFormDateChange();
-  document.getElementById('overlayForm').classList.add('open');
-}
+    document.getElementById('arsipForm').reset();
+    document.getElementById('editId').value='';
+    document.getElementById('formTitle').innerHTML='<i class="fas fa-file-circle-plus"></i> Tambah Arsip Baru';
+    document.getElementById('btnSimpan').innerHTML='<i class="fas fa-floppy-disk"></i> Simpan';
+    document.getElementById('fTanggal').value=new Date().toISOString().slice(0,10);
+    document.getElementById('fFormat').value='pdf';
+    document.getElementById('fFileName').value='';
+    document.getElementById('fGdriveLink').value='';
+    
+    const bidangField = document.getElementById('fBidang');
+    const bidangLabel = document.getElementById('fBidangLabel');
+    if (isLamptkesMode) {
+      document.getElementById('formTitle').innerHTML='<i class="fas fa-cloud-upload-alt"></i> Upload Dokumen LAM-PTKes';
+      bidangField.parentElement.style.display = 'block';
+      bidangField.required = true;
+      if(bidangLabel) bidangLabel.innerHTML = 'Pilih Kategori <span class="req">*</span>';
+      
+      bidangField.innerHTML = `
+        <option value="">-- Pilih LED / SPMI --</option>
+        <option value="lamptkes_led">Laporan Evaluasi Diri (LED)</option>
+        <option value="lamptkes_spmi">Sistem Penjaminan Mutu Internal (SPMI)</option>
+      `;
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih Kategori dulu --';
+      document.getElementById('fJenisOptions').innerHTML = '';
+      bidangField.value = '';
+    } else {
+      bidangField.parentElement.style.display = 'block';
+      bidangField.required = true;
+      if(bidangLabel) bidangLabel.innerHTML = 'Bidang <span class="req">*</span>';
+      if (ORIGINAL_BIDANG_HTML) bidangField.innerHTML = ORIGINAL_BIDANG_HTML;
+      
+      if(prefillDept){ bidangField.value=prefillDept; onBidangChange(); }
+      else { 
+        document.getElementById('fJenisLabelText').textContent = '-- Pilih Bidang dulu --';
+        document.getElementById('fJenisOptions').innerHTML = '';
+        bidangField.value = '';
+      }
+    }
+  
+    const sel=document.getElementById('fAYear');
+    if(sel){
+      sel.innerHTML=[...allAYears()].reverse().map(y=>`<option value="${y}">${y}</option>`).join('');
+      sel.value=currentAY||getAY(document.getElementById('fTanggal').value);
+    }
+    document.getElementById('overlayForm').classList.add('open');
+  }
 function closeForm(){ 
   document.getElementById('overlayForm').classList.remove('open'); 
   const form = document.getElementById('arsipForm');
@@ -880,16 +2424,86 @@ function closeForm(){
   const statusEl = document.getElementById('fUploadStatus');
   if(statusEl) statusEl.style.display = 'none';
 }
-function closeFormOut(e){ if(e.target===document.getElementById('overlayForm'))closeForm(); }
+function closeFormOut(e){ /* disabled by user request */ }
 
-function onBidangChange() {
-  const bidang=document.getElementById('fBidang').value;
-  const el=document.getElementById('fJenis');
-  const types=DEPT_JENIS[bidang]||[];
-  el.innerHTML=(types.length?'<option value="">-- Pilih Jenis --</option>':'<option value="">-- Pilih Bidang dulu --</option>')+
-    types.map(t=>`<option value="${t.val}">${t.label}</option>`).join('');
+function toggleJenisOptions() {
+  const opts = document.getElementById('fJenisOptions');
+  if(opts) {
+    opts.classList.toggle('open');
+  }
+}
+
+function selectJenisOption(val, labelText) {
+  document.getElementById('fJenis').value = val;
+  document.getElementById('fJenisLabelText').textContent = labelText;
+  document.getElementById('fJenisOptions').classList.remove('open');
   onJenisChange();
 }
+
+document.addEventListener('click', function(e) {
+  const wrapper = document.getElementById('fJenisWrapper');
+  const opts = document.getElementById('fJenisOptions');
+  if (wrapper && opts && !wrapper.contains(e.target)) {
+    opts.classList.remove('open');
+  }
+});
+
+function onBidangChange() {
+    const bidang=document.getElementById('fBidang').value;
+    const opts=document.getElementById('fJenisOptions');
+    
+    let types = [];
+    if (isLamptkesMode) {
+      if (bidang === 'lamptkes_led') {
+         types = [
+            {val: 'led_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'led_k2', label: 'Kriteria 2. Kurikulum'},
+            {val: 'led_k3', label: 'Kriteria 3. Penilaian'},
+            {val: 'led_k4', label: 'Kriteria 4. Mahasiswa'},
+            {val: 'led_k5', label: 'Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
+            {val: 'led_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
+            {val: 'led_k7', label: 'Kriteria 7. Penjaminan Mutu'},
+            {val: 'led_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
+         ];
+      } else if (bidang === 'lamptkes_spmi') {
+         types = [
+            {val: 'spmi_k1', label: 'Kriteria 1. Visi, Misi, Tujuan, dan Strategi'},
+            {val: 'spmi_k2', label: 'Kriteria 2. Kurikulum'},
+            {val: 'spmi_k3', label: 'Kriteria 3. Penilaian'},
+            {val: 'spmi_k4', label: 'Kriteria 4. Mahasiswa'},
+            {val: 'spmi_k5', label: 'Kriteria 5. Dosen, Tenaga Kependidikan, Penelitian, dan Pengabdian kepada Masyarakat'},
+            {val: 'spmi_k6', label: 'Kriteria 6. Sarana, Prasarana Pendidikan, dan Keuangan'},
+            {val: 'spmi_k7', label: 'Kriteria 7. Penjaminan Mutu'},
+            {val: 'spmi_k8', label: 'Kriteria 8. Tata Kelola dan Administrasi'}
+         ];
+      }
+    } else {
+      types = DEPT_JENIS[bidang] || [];
+    }
+    
+    if(types.length || COMMON_JENIS.length) {
+      document.getElementById('fJenisLabelText').textContent = '-- Pilih Jenis Dokumen --';
+      document.getElementById('fJenis').value = '';
+      let html = '';
+      types.forEach(t => {
+        const safeLabel = t.label.replace(/'/g, "\\'");
+        html += `<div class="custom-option" onclick="selectJenisOption('${t.val}', '${safeLabel}')">${t.label}</div>`;
+      });
+      
+      html += `<div style="padding:8px 12px; font-size:0.75rem; color:#6b7280; font-weight:700; text-transform:uppercase; margin-top:8px; border-top:1px solid #e5e7eb;">Arsip Umum</div>`;
+      COMMON_JENIS.forEach(t => {
+        const safeLabel = t.label.replace(/'/g, "\\'");
+        html += `<div class="custom-option" onclick="selectJenisOption('${t.val}', '${safeLabel}')"><i class="${t.icon}" style="margin-right:6px; color:${t.color}"></i> ${t.label}</div>`;
+      });
+      
+      opts.innerHTML = html;
+    } else {
+      document.getElementById('fJenisLabelText').textContent = isLamptkesMode ? '-- Pilih Kategori dulu --' : '-- Pilih Bidang dulu --';
+      document.getElementById('fJenis').value = '';
+      opts.innerHTML = '';
+    }
+    onJenisChange();
+  }
 
 const DYNAMIC_FIELDS = {
   mutu_notulen_visi: [{ id: 'meta_pihak_terlibat', label: 'Pihak yang Terlibat', type: 'text' }],
@@ -938,10 +2552,7 @@ function renderDynamicFields(jenis, existingData = null) {
   html += `</div></div>`;
   container.innerHTML = html;
 }
-function onFormDateChange() {
-  const tgl=document.getElementById('fTanggal').value;
-  document.getElementById('ayearPillVal').textContent=tgl?getAY(tgl):'—';
-}
+
 function testGDriveLink() {
   const url=document.getElementById('fGdriveLink').value.trim();
   if(!url){toast('Tempel link Google Drive terlebih dahulu.','error');return;}
@@ -971,7 +2582,12 @@ function editArsip(id) {
   document.getElementById('fFileName').value=a.fileName||'';
   document.getElementById('fGdriveLink').value=a.gdriveLink||'';
   document.getElementById('fKeterangan').value=a.keterangan||'';
-  onFormDateChange();
+  
+  const sel=document.getElementById('fAYear');
+  if(sel){
+    sel.innerHTML=[...allAYears()].reverse().map(y=>`<option value="${y}">${y}</option>`).join('');
+    sel.value=a.ay;
+  }
   document.getElementById('formTitle').innerHTML='<i class="fas fa-pen"></i> Edit Arsip';
   document.getElementById('btnSimpan').innerHTML='<i class="fas fa-floppy-disk"></i> Update';
   document.getElementById('overlayForm').classList.add('open');
@@ -989,7 +2605,7 @@ async function saveArsip(e) {
   let gdriveFolder='';
   const bidang=document.getElementById('fBidang').value;
   const jenis=document.getElementById('fJenis').value;
-  const tahun=getAY(tgl);
+  const tahun=document.getElementById('fAYear').value || getAY(tgl);
 
   const fileInput = document.getElementById('fUploadFile');
   let fileToUpload = null;
@@ -1034,6 +2650,38 @@ async function saveArsip(e) {
     log('add',`Menambah arsip: "${record.judul}" (TA ${record.ay})`);
     toast('Arsip berhasil disimpan!','success');
   }
+    try {
+      await db.collection('arsip').doc(record.id).set(record);
+      
+      // Sinkronisasi update ke Portal Kemahasiswaan jika dokumen asalnya dari sana
+      if (id && dbSumber && record.bidang === 'kemahasiswaan' && record.metadata && record.metadata.dokumenPortal && record.metadata.originalKoleksi && record.metadata.originalId) {
+        try {
+          await dbSumber.collection(record.metadata.originalKoleksi).doc(record.metadata.originalId).update({
+            judul: record.judul.replace(/^[^:]+:\s*/, ''), // Hapus prefix jenisLaporan jika ada
+            tahun: record.ay,
+            updatedAt: new Date().toISOString()
+          });
+        } catch (e) {
+          console.warn("Gagal update dokumen di Portal Kemahasiswaan", e);
+        }
+      } else if (!id && dbSumber && record.bidang === 'kemahasiswaan') {
+          // Sinkronisasi buat dokumen baru ke Portal Kemahasiswaan
+          if (record.judul.startsWith('Data Mahasiswa:')) {
+            try {
+              await dbSumber.collection('dokumenMahasiswaData').doc(record.id).set({
+                title: record.judul.replace('Data Mahasiswa: ', '').replace('Data Mahasiswa:', ''),
+                year: record.ay || record.tanggal.substring(0, 4),
+                date: record.tanggal,
+                type: 'Data Mahasiswa',
+                link: record.gdriveLink || ''
+              });
+            } catch (e) { console.warn("Gagal add ke Portal Kemahasiswaan", e); }
+          }
+      }
+    } catch(e) {
+      console.error(e);
+      alert('GAGAL MENYIMPAN KE DATABASE CLOUD: ' + e.message + '\n\nData hanya tersimpan sementara di browser. Periksa Koneksi atau Aturan Keamanan Firebase Anda.');
+    }
 
   save(); populateAYearSelect(); updateBadges(); closeForm();
   if(currentPage==='dashboard')renderDashboard();
@@ -1046,13 +2694,14 @@ async function saveArsip(e) {
   // Lakukan upload di background setelah form ditutup
   if (fileToUpload) {
     toast(`Mulai mengunggah ${fileToUpload.name} ke GDrive... Jangan tutup halaman.`, 'info');
-    uploadToGDrive(fileToUpload, bidang, jenis, tahun).then(res => {
+    uploadToGDrive(fileToUpload, bidang, jenis, tahun, record.tanggal).then(res => {
       if (res && res.fileUrl) {
         const idx = arsip.findIndex(x => x.id === record.id);
         if (idx > -1) {
           arsip[idx].gdriveLink = res.fileUrl;
           arsip[idx].gdriveFolder = res.folderUrl || '';
           save();
+          db.collection('arsip').doc(record.id).set(arsip[idx]).catch(e => console.error(e));
           toast(`Berhasil mengunggah ${fileToUpload.name}!`, 'success');
           // Refresh tabel jika di halaman arsip
           if (currentPage === 'arsip') renderArsipTable();
@@ -1065,6 +2714,9 @@ async function saveArsip(e) {
       if (idx > -1) {
         arsip[idx].gdriveLink = ''; // Reset link
         save();
+        try {
+          db.collection('arsip').doc(record.id).set(arsip[idx]);
+        } catch(e) {}
         if (currentPage === 'arsip') renderArsipTable();
         else if (currentPage === 'dept') renderDeptPage(currentDept);
       }
@@ -1072,7 +2724,7 @@ async function saveArsip(e) {
   }
 }
 
-async function uploadToGDrive(file, bidang, jenis, tahun) {
+async function uploadToGDrive(file, bidang, jenis, tahun, tanggal = new Date().toISOString().slice(0, 10)) {
   if (!GAS_URL) {
     // Simulasi jika belum punya URL GAS
     return new Promise(resolve => {
@@ -1090,13 +2742,26 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
     reader.onload = async function() {
       const base64Data = reader.result.split(',')[1];
       const payload = {
-        fileName: file.name,
-        mimeType: file.type || 'application/octet-stream',
-        base64Data: base64Data,
-        bidang: DEPT[bidang]?.label || bidang,
-        jenis: jenis,
-        tahun: tahun
-      };
+          fileName: file.name,
+          filename: file.name,
+          mimeType: file.type || 'application/octet-stream',
+          base64Data: base64Data,
+          base64: base64Data,
+          bidang: DEPT[bidang]?.label || bidang,
+          jenis: jenis,
+          tahun: tahun,
+          folderPath: (function() {
+            let levelBidang = DEPT[bidang]?.label || bidang;
+            
+            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const tgl = new Date(tanggal);
+            const levelTahun = isNaN(tgl.getFullYear()) ? (tahun || "Umum") : tgl.getFullYear().toString();
+            const levelBulan = isNaN(tgl.getMonth()) ? "Bulan Umum" : monthNames[tgl.getMonth()];
+            const levelTanggal = isNaN(tgl.getDate()) ? "Tanggal Umum" : String(tgl.getDate()).padStart(2, '0');
+            
+            return ["SIMARSIP AAS", levelBidang, levelTahun, levelBulan, levelTanggal];
+          })()
+        };
 
       try {
         const response = await fetch(GAS_URL, {
@@ -1118,9 +2783,44 @@ async function uploadToGDrive(file, bidang, jenis, tahun) {
   });
 }
 
-function deleteArsip(id) {
+let dbSumber = null;
+try {
+  if (typeof firebase !== 'undefined') {
+    const appSumber = firebase.initializeApp({
+      apiKey: "AIzaSyBgc1Gqfhk2dhqmcL0Un7dkDzHZzrxcW9s",
+      authDomain: "bidkemahasiswaandanalumn-93be8.firebaseapp.com",
+      projectId: "bidkemahasiswaandanalumn-93be8"
+    }, 'sumber');
+    dbSumber = appSumber.firestore();
+  }
+} catch (e) {
+  console.warn("Gagal inisialisasi dbSumber", e);
+}
+
+async function deleteArsip(id) {
   const a=arsip.find(x=>x.id===id);
   if(!a||!confirm(`Hapus arsip "${a.judul}"?\n\nTindakan ini tidak dapat dibatalkan.`))return;
+  
+  // Hapus dari DATA WEB ARSIP
+  try { await db.collection('arsip').doc(id).delete(); } catch(e) { console.error(e); toast('Gagal menghapus dari database','error'); return; }
+  
+  // Hapus dari Portal Kemahasiswaan
+  if (dbSumber && a.bidang === 'kemahasiswaan') {
+    try {
+      if (a.metadata && a.metadata.dokumenPortal && a.metadata.originalKoleksi && a.metadata.originalId) {
+        await dbSumber.collection(a.metadata.originalKoleksi).doc(a.metadata.originalId).delete();
+      } else {
+        if (id.startsWith('alumni_')) await dbSumber.collection('alumniData').doc(id.replace('alumni_', '')).delete();
+        else if (id.startsWith('beasiswa_')) await dbSumber.collection('beasiswaData').doc(id.replace('beasiswa_', '')).delete();
+        else if (id.startsWith('bem_')) await dbSumber.collection('bemData').doc(id.replace('bem_', '')).delete();
+        else if (id.startsWith('laporan_kmhs_')) await dbSumber.collection('laporanData').doc(id.replace('laporan_kmhs_', '')).delete();
+        else if (id.startsWith('sk_kmhs_')) await dbSumber.collection('skData').doc(id.replace('sk_kmhs_', '')).delete();
+        else if (id.startsWith('anggaran_kmhs_')) await dbSumber.collection('anggaranData').doc(id.replace('anggaran_kmhs_', '')).delete();
+        else if (id.startsWith('tracer_mhs_')) await dbSumber.collection('tracerMahasiswaData').doc(id.replace('tracer_mhs_', '')).delete();
+      }
+    } catch(e) { console.warn("Gagal menghapus dari dbSumber", e); }
+  }
+
   arsip=arsip.filter(x=>x.id!==id);
   log('delete',`Menghapus arsip: "${a.judul}"`);
   save(); updateBadges(); toast('Arsip berhasil dihapus.','success');
@@ -1129,8 +2829,7 @@ function deleteArsip(id) {
   else if(currentPage==='dept')renderDeptPage(currentDept);
   else if(currentPage==='analytics')renderAnalytics();
 }
-
-/* ═════ DETAIL MODAL ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DETAIL MODAL ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function viewDetail(id) {
   const a=arsip.find(x=>x.id===id); if(!a)return;
   const d=DEPT[a.bidang]||{};
@@ -1142,12 +2841,12 @@ function viewDetail(id) {
       <div class="detail-field" style="grid-column:1/-1"><label>Judul / Perihal</label><span style="font-size:.98rem;font-weight:700">${esc(a.judul)}</span></div>
       <div class="detail-field"><label>Bidang</label><span class="d-badge" style="background:${d.color||'#888'}18;color:${d.color||'#888'}"><i class="${d.icon||'fas fa-file'}"></i>${d.label||a.bidang}</span></div>
       <div class="detail-field"><label>Jenis Dokumen</label><span>${getJenisLabel(a.bidang,a.jenis)}</span></div>
-      <div class="detail-field"><label>Pengirim / Pembuat</label><span>${esc(a.pengirim||'—')}</span></div>
+      <div class="detail-field"><label>Pengirim / Pembuat</label><span>${esc(a.pengirim||'ÔÇö')}</span></div>
       <div class="detail-field"><label>Status</label>${statusBadge(a.status)}</div>
-      <div class="detail-field"><label>Tahun Akademik</label><span class="td-ta">${a.ay||'—'}</span></div>
+      <div class="detail-field"><label>Tahun Akademik</label><span class="td-ta">${a.ay||'ÔÇö'}</span></div>
       <div class="detail-field" style="grid-column:1/-1">
         <label>Dokumen Google Drive</label>
-        ${a.gdriveLink
+        ${a.gdriveLink && a.gdriveLink !== 'UPLOADING'
           ?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
               <a href="${esc(a.gdriveLink)}" target="_blank" rel="noopener" class="gdrive-link-btn" onclick="logGDriveOpen('${a.id}',event)">
                 <i class="${f.icon}" style="color:${f.color}"></i>
@@ -1160,7 +2859,7 @@ function viewDetail(id) {
             </div>
             ${a.fileName?`<div style="margin-top:6px;font-size:.75rem;color:var(--t3)"><i class="${f.icon}" style="color:${f.color}"></i> ${esc(a.fileName)}</div>`:''}
           `
-          :`<span style="color:var(--t3);font-size:.84rem">Belum ada file dilampirkan — Edit arsip untuk menambahkan link Google Drive.</span>`}
+          :`<span style="color:var(--t3);font-size:.84rem">Belum ada file dilampirkan ÔÇö Edit arsip untuk menambahkan link Google Drive.</span>`}
       </div>
     </div>
     ${a.keterangan?`<div><label style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3)">Keterangan</label><div class="detail-keterangan">${esc(a.keterangan)}</div></div>`:''}
@@ -1173,10 +2872,10 @@ function viewDetail(id) {
 function closeDetail(){ document.getElementById('overlayDetail').classList.remove('open'); }
 function closeDetailOut(e){ if(e.target===document.getElementById('overlayDetail'))closeDetail(); }
 
-/* ═════ DOCUMENT VIEWER (GDrive Preview) ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DOCUMENT VIEWER (GDrive Preview) ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function getGDriveEmbedUrl(url) {
   if(!url)return null;
-  // https://drive.google.com/file/d/ID/view → /preview
+  // https://drive.google.com/file/d/ID/view ÔåÆ /preview
   const m1=url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
   if(m1)return`https://drive.google.com/file/d/${m1[1]}/preview`;
   // ?id=ID
@@ -1214,17 +2913,41 @@ function openInGDrive() {
   else toast('Tidak ada link Google Drive.','error');
 }
 
-/* ═════ ACTIVITY ═════ */
-function log(type,text){ activity.unshift({type,text,time:new Date().toISOString()}); if(activity.length>120)activity=activity.slice(0,120); }
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ ACTIVITY ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+function log(type,text){
+  const item = { id: genId(), type, text, time: new Date().toISOString() };
+  activity.unshift(item);
+  if(activity.length>120)activity=activity.slice(0,120);
+    try {
+      db.collection('activity').doc(item.id).set(item);
+    } catch(e) {
+      console.error('Log error:', e);
+    }
+}
 function renderActivity() {
   const el=document.getElementById('activityList'); if(!el)return;
   if(!activity.length){el.innerHTML='<div class="act-empty"><i class="fas fa-history"></i><p>Belum ada aktivitas.</p></div>';return;}
   const cfg={add:{cls:'dot-add',ic:'fa-plus'},edit:{cls:'dot-edit',ic:'fa-pen'},delete:{cls:'dot-del',ic:'fa-trash'}};
   el.innerHTML=activity.map(a=>{const c=cfg[a.type]||cfg.add;return`<div class="act-item"><div class="act-dot ${c.cls}"><i class="fas ${c.ic}"></i></div><div class="act-body"><div class="act-text">${esc(a.text)}</div><div class="act-time">${fmtDateTime(a.time)}</div></div></div>`;}).join('');
 }
-function clearActivity(){ if(!confirm('Hapus semua riwayat aktivitas?'))return; activity=[]; save(); renderActivity(); }
+async function clearActivity(){ 
+  if(!confirm('Hapus semua riwayat aktivitas dari database? Tindakan ini tidak dapat dibatalkan.')) return; 
+  try {
+    const snap = await db.collection('activity').get();
+    const batch = db.batch();
+    snap.docs.forEach(doc => batch.delete(doc.ref));
+    await batch.commit();
+    activity = []; 
+    save(); 
+    renderActivity();
+    alert('Berhasil mengosongkan riwayat aktivitas di Firestore!');
+  } catch(e) {
+    console.error('Failed to clear activity:', e);
+    alert('Terjadi kesalahan saat menghapus aktivitas dari database.');
+  }
+}
 
-/* ═════ EXPORT ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ EXPORT ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function toggleExportMenu(){ document.getElementById('exportMenu').classList.toggle('open'); }
 function getFilteredData(){ return arsip.filter(a=>!currentAY||a.ay===currentAY).sort((a,b)=>new Date(b.tanggal)-new Date(a.tanggal)); }
 
@@ -1238,7 +2961,7 @@ function exportJSON() {
   log('edit',`Backup JSON: ${fn}`);save();toast('Backup JSON berhasil diunduh!','success');
 }
 
-/* ─── TOAST ─── */
+/* ÔöÇÔöÇÔöÇ TOAST ÔöÇÔöÇÔöÇ */
 function toast(msg,type='success') {
   const stack=document.getElementById('toastStack'),el=document.createElement('div');
   el.className=`toast-item ${type}`;
@@ -1247,7 +2970,7 @@ function toast(msg,type='success') {
   setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(20px)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300);},3200);
 }
 
-/* ═════ MASTER DATA MAHASISWA ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ MASTER DATA MAHASISWA ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderMahasiswaPage() {
   const grid=document.getElementById('mhsGrid'), empty=document.getElementById('mhsEmpty');
   const q=document.getElementById('mhsSearch').value.toLowerCase();
@@ -1276,7 +2999,7 @@ function renderMahasiswaPage() {
       </div>
       <div class="profile-name">${esc(m.nama)}</div>
       <div class="profile-id">NIM: ${esc(m.nim)}</div>
-      <div class="profile-role">Tgl Masuk: ${fmtDate(m.angkatan)}</div>
+      <div class="profile-role">Angkatan: ${esc(m.angkatan||'-')}</div>
       <span class="p-badge pb-${m.status}">${m.status.replace('_',' ')}</span>
       <div class="doc-links"><button class="btn-ghost-sm" onclick="viewPersonDetail('${m.id}','mhs')"><i class="fas fa-address-card"></i> Detail Profil</button></div>
     </div>
@@ -1284,10 +3007,12 @@ function renderMahasiswaPage() {
   renderMahasiswaCharts(data);
 }
 
-let mhsTrendChartIns=null, mhsStatusChartIns=null;
+let mhsTrendChartIns=null, mhsStatusChartIns=null, mhsJkChartIns=null, mhsAgamaChartIns=null;
 function renderMahasiswaCharts(data) {
   if (mhsTrendChartIns) mhsTrendChartIns.destroy();
   if (mhsStatusChartIns) mhsStatusChartIns.destroy();
+  if (mhsJkChartIns) mhsJkChartIns.destroy();
+  if (mhsAgamaChartIns) mhsAgamaChartIns.destroy();
 
   // 1. Trend Chart
   const ayCounts = {};
@@ -1310,8 +3035,7 @@ function renderMahasiswaCharts(data) {
         borderRadius: 4
       }]
     },
-    options: {
-      responsive: true,
+    options: chartOpts({
       maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
@@ -1320,7 +3044,7 @@ function renderMahasiswaCharts(data) {
       scales: {
         y: { beginAtZero: true, ticks: { stepSize: 1 } }
       }
-    }
+    })
   });
 
   // 2. Status Chart
@@ -1331,6 +3055,7 @@ function renderMahasiswaCharts(data) {
   
   mhsStatusChartIns = new Chart(document.getElementById('mhsStatusChart'), {
     type: 'doughnut',
+    plugins: [ChartDataLabels],
     data: {
       labels: ['Aktif', 'Cuti', 'Lulus', 'Keluar'],
       datasets: [{
@@ -1339,15 +3064,71 @@ function renderMahasiswaCharts(data) {
         borderWidth: 0
       }]
     },
-    options: {
-      responsive: true,
+    options: chartOpts({
       maintainAspectRatio: false,
       plugins: {
         legend: { position: 'bottom' },
         title: { display: false }
       }
+    })
+  });
+
+  // 3. Jenis Kelamin Chart
+  const jkCounts = { L:0, P:0 };
+  data.forEach(m => {
+    if (m.jk === 'L' || m.jk === 'Laki-Laki') jkCounts.L++;
+    if (m.jk === 'P' || m.jk === 'Perempuan') jkCounts.P++;
+  });
+  const ctxJk = document.getElementById('mhsJkChart')?.getContext('2d');
+  if (ctxJk) {
+    mhsJkChartIns = new Chart(ctxJk, {
+      type: 'doughnut',
+      plugins: [ChartDataLabels],
+      data: {
+        labels: ['Laki-Laki', 'Perempuan'],
+        datasets: [{
+          data: [jkCounts.L, jkCounts.P],
+          backgroundColor: ['#3b82f6', '#ec4899'],
+          borderWidth: 0
+        }]
+      },
+      options: chartOpts({
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' }, title: { display: false } },
+        cutout: '50%'
+      })
+    });
+  }
+
+  // 4. Agama Chart
+  const agamaCounts = {};
+  data.forEach(m => {
+    if(m.agama) {
+      agamaCounts[m.agama] = (agamaCounts[m.agama]||0) + 1;
     }
   });
+  const agamaKeys = Object.keys(agamaCounts);
+  const agamaVals = agamaKeys.map(k => agamaCounts[k]);
+  const ctxAg = document.getElementById('mhsAgamaChart')?.getContext('2d');
+  if (ctxAg) {
+    mhsAgamaChartIns = new Chart(ctxAg, {
+      type: 'doughnut',
+      plugins: [ChartDataLabels],
+      data: {
+        labels: agamaKeys.length ? agamaKeys : ['Belum ada data'],
+        datasets: [{
+          data: agamaKeys.length ? agamaVals : [1],
+          backgroundColor: ['#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899', '#64748b'],
+          borderWidth: 0
+        }]
+      },
+      options: chartOpts({
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' }, title: { display: false } },
+        cutout: '50%'
+      })
+    });
+  }
 }
 function openMhsForm() {
   document.getElementById('mhsForm').reset();
@@ -1370,13 +3151,25 @@ function saveMahasiswa(e) {
         namaOrtu=document.getElementById('fmNamaOrtu').value,
         catatan=document.getElementById('fmCatatan').value,
         foto=document.getElementById('fmFotoBase64').value, dokumen=document.getElementById('fmDokumen').value;
+  let record;
   if(id){
     const i=mahasiswa.findIndex(m=>m.id===id);
-    if(i>-1) mahasiswa[i]={...mahasiswa[i],nim,nama,angkatan,semester,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,namaOrtu,catatan,foto,dokumen};
+    if(i>-1) {
+      record = {...mahasiswa[i],nim,nama,angkatan,semester,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,namaOrtu,catatan,foto,dokumen};
+      mahasiswa[i]=record;
+    }
     toast('Data mahasiswa diperbarui','success');
   } else {
-    mahasiswa.push({id:genId(),nim,nama,angkatan,semester,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,namaOrtu,catatan,foto,dokumen,createdAt:new Date().toISOString()});
+    record = {id:genId(),nim,nama,angkatan,semester,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,namaOrtu,catatan,foto,dokumen,createdAt:new Date().toISOString()};
+    mahasiswa.push(record);
     toast('Mahasiswa berhasil ditambahkan','success');
+  }
+  if (record) {
+    try {
+      db.collection('mahasiswa').doc(record.id).set(record);
+    } catch(e) {
+      alert('GAGAL MENYIMPAN KE DATABASE CLOUD: ' + e.message);
+    }
   }
   save(); closeMhsForm(); renderMahasiswaPage(); updateBadges();
 }
@@ -1409,12 +3202,14 @@ function editMhs(id) {
   document.getElementById('mhsFormTitle').innerHTML='<i class="fas fa-pen"></i> Edit Mahasiswa';
   document.getElementById('overlayMhsForm').classList.add('open');
 }
-function deleteMhs(id) {
-  if(!confirm('Hapus data mahasiswa ini secara permanen?')) return;
-  mahasiswa=mahasiswa.filter(m=>m.id!==id); save(); renderMahasiswaPage(); updateBadges(); toast('Mahasiswa dihapus','success');
+async function deleteMhs(id) {
+  const m=mahasiswa.find(x=>x.id===id);
+  if(!m||!confirm(`Hapus data mahasiswa "${m.nama}" secara permanen?`)) return;
+  try { await db.collection('mahasiswa').doc(id).delete(); } catch(e) { console.error(e); return; }
+  mahasiswa=mahasiswa.filter(x=>x.id!==id); save(); renderMahasiswaPage(); updateBadges(); toast('Mahasiswa dihapus','success');
 }
 
-/* ═════ MASTER DATA SDM ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ MASTER DATA SDM ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function renderSdmPage() {
   const grid=document.getElementById('sdmGrid'), empty=document.getElementById('sdmEmpty');
   const q=document.getElementById('sdmSearch').value.toLowerCase();
@@ -1466,13 +3261,25 @@ function saveSdm(e) {
         email=document.getElementById('fsEmail').value, noBpjs=document.getElementById('fsNoBpjs').value,
         catatan=document.getElementById('fsCatatan').value,
         foto=document.getElementById('fsFotoBase64').value, dokumen=document.getElementById('fsDokumen').value;
+  let record;
   if(id){
     const i=sdm.findIndex(m=>m.id===id);
-    if(i>-1) sdm[i]={...sdm[i],nik,nama,jabatan,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,catatan,foto,dokumen};
+    if(i>-1) {
+      record = {...sdm[i],nik,nama,jabatan,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,catatan,foto,dokumen};
+      sdm[i]=record;
+    }
     toast('Data SDM diperbarui','success');
   } else {
-    sdm.push({id:genId(),nik,nama,jabatan,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,catatan,foto,dokumen,createdAt:new Date().toISOString()});
+    record = {id:genId(),nik,nama,jabatan,status,tempatLahir,tanggalLahir,jk,agama,alamat,noHp,email,noBpjs,catatan,foto,dokumen,createdAt:new Date().toISOString()};
+    sdm.push(record);
     toast('SDM berhasil ditambahkan','success');
+  }
+  if (record) {
+    try {
+      db.collection('sdm').doc(record.id).set(record);
+    } catch(e) {
+      alert('GAGAL MENYIMPAN KE DATABASE CLOUD: ' + e.message);
+    }
   }
   save(); closeSdmForm(); renderSdmPage(); updateBadges();
 }
@@ -1503,12 +3310,14 @@ function editSdm(id) {
   document.getElementById('sdmFormTitle').innerHTML='<i class="fas fa-pen"></i> Edit SDM';
   document.getElementById('overlaySdmForm').classList.add('open');
 }
-function deleteSdm(id) {
-  if(!confirm('Hapus data SDM ini secara permanen?')) return;
-  sdm=sdm.filter(m=>m.id!==id); save(); renderSdmPage(); updateBadges(); toast('SDM dihapus','success');
+async function deleteSdm(id) {
+  const m=sdm.find(x=>x.id===id);
+  if(!m||!confirm(`Hapus data SDM "${m.nama}" secara permanen?`)) return;
+  try { await db.collection('sdm').doc(id).delete(); } catch(e) { console.error(e); return; }
+  sdm=sdm.filter(x=>x.id!==id); save(); renderSdmPage(); updateBadges(); toast('SDM dihapus','success');
 }
 
-/* ═════ HELPER MASTER DATA ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ HELPER MASTER DATA ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 function getPersonColor(status) {
   if(['aktif'].includes(status)) return '#22c55e';
   if(['lulus','tugas_belajar'].includes(status)) return '#3b82f6';
@@ -1532,7 +3341,7 @@ function viewPersonDetail(id, type) {
       <div class="profile-img-wrap" style="width:120px;height:120px;margin:0"><img src="${convertGDriveImage(m.foto)}" class="profile-img" onerror="this.outerHTML='<i class=\\'fas fa-user profile-img-fallback\\' style=\\'font-size:3.5rem\\'></i>'"/></div>
       <div>
         <div style="font-weight:700;font-size:1.1rem;color:var(--t1)">${esc(m.nama)}</div>
-        <div style="font-size:.85rem;color:var(--t2)">${type==='mhs' ? 'NIM: '+esc(m.nim) + ' &bull; Semester ' + esc(m.semester||'—') : 'NIDN/NIK: '+esc(m.nik)}</div>
+        <div style="font-size:.85rem;color:var(--t2)">${type==='mhs' ? 'NIM: '+esc(m.nim) + ' &bull; Semester ' + esc(m.semester||'ÔÇö') : 'NIDN/NIK: '+esc(m.nik)}</div>
         <div style="font-size:.85rem;color:var(--t2)">${type==='mhs' ? 'Tgl Masuk: '+fmtDate(m.angkatan) : esc(m.jabatan)}</div>
       </div>
     </div>
@@ -1540,19 +3349,19 @@ function viewPersonDetail(id, type) {
     <div style="margin-bottom:10px;font-weight:600;color:var(--t1)"><i class="fas fa-address-book" style="color:var(--primary);margin-right:6px"></i> Biodata Lengkap</div>
     <table style="width:100%;border-collapse:collapse;font-size:.85rem;margin-bottom:20px">
       <tbody>
-        <tr><td style="padding:6px 0;width:35%;color:var(--t3)">Tempat, Tanggal Lahir</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.tempatLahir||'—')}, ${fmtDate(m.tanggalLahir)}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3)">Jenis Kelamin</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.jk||'—')}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3)">Agama</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.agama||'—')}</td></tr>
-        ${type==='mhs' ? `<tr><td style="padding:6px 0;color:var(--t3)">Nama Orang Tua</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.namaOrtu||'—')}</td></tr>` : ''}
-        <tr><td style="padding:6px 0;color:var(--t3)">No. Handphone (WA)</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.noHp||'—')}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3)">Email</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.email||'—')}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3);vertical-align:top">Alamat Lengkap</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.alamat||'—')}</td></tr>
+        <tr><td style="padding:6px 0;width:35%;color:var(--t3)">Tempat, Tanggal Lahir</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.tempatLahir||'ÔÇö')}, ${fmtDate(m.tanggalLahir)}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3)">Jenis Kelamin</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.jk||'ÔÇö')}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3)">Agama</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.agama||'ÔÇö')}</td></tr>
+        ${type==='mhs' ? `<tr><td style="padding:6px 0;color:var(--t3)">Nama Orang Tua</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.namaOrtu||'ÔÇö')}</td></tr>` : ''}
+        <tr><td style="padding:6px 0;color:var(--t3)">No. Handphone (WA)</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.noHp||'ÔÇö')}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3)">Email</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.email||'ÔÇö')}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3);vertical-align:top">Alamat Lengkap</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.alamat||'ÔÇö')}</td></tr>
       </tbody>
     </table>
     
     <div style="margin-bottom:10px;font-weight:600;color:var(--t1)"><i class="fas fa-notes-medical" style="color:#22c55e;margin-right:6px"></i> Jaminan Kesehatan</div>
     <div style="background:var(--bg3);padding:12px;border-radius:8px;font-size:.85rem;color:var(--t1);margin-bottom:20px;border:1px solid var(--b1)">
-      <span style="color:var(--t3)">No. BPJS / Jaminan:</span> <span style="font-weight:600">${esc(m.noBpjs||'—')}</span>
+      <span style="color:var(--t3)">No. BPJS / Jaminan:</span> <span style="font-weight:600">${esc(m.noBpjs||'ÔÇö')}</span>
     </div>
     
     <div style="margin-bottom:10px;font-weight:600;color:var(--t1)"><i class="fas fa-graduation-cap" style="color:var(--primary);margin-right:6px"></i> Catatan / Riwayat</div>
@@ -1604,92 +3413,104 @@ function previewImage(event, previewId, hiddenId) {
   reader.readAsDataURL(file);
 }
 
-/* ═════ AKREDITASI (BAN-PT & LAM-PTKes) ═════ */
+/* ÔòÉÔòÉÔòÉÔòÉÔòÉ AKREDITASI (BAN-PT & LAM-PTKes) ÔòÉÔòÉÔòÉÔòÉÔòÉ */
 
 // ==================== BAN-PT ====================
+let currentBanptTab = 1;
+const BANPT_TITLES = {
+  1: "Visi, Misi, Tujuan, dan Strategi",
+  2: "Tata Pamong, Tata Kelola, dan Kerjasama",
+  3: "Mahasiswa",
+  4: "Sumber Daya Manusia",
+  5: "Keuangan, Sarana, dan Prasarana",
+  6: "Pendidikan",
+  7: "Penelitian",
+  8: "Pengabdian kepada Masyarakat",
+  9: "Luaran dan Capaian Tridharma"
+};
+
 function initBanpt() {
-  generateBanptOverview();
-  generateBanptKeuangan();
-  generateBanptKebijakan();
-  generateBanptLppm();
+  generateBanptReport();
 }
-function switchBanptTab(tabId, el) {
-  if (el) {
-    document.querySelectorAll('#banpt-sub-menu li').forEach(li => li.classList.remove('active'));
-    el.classList.add('active');
-  }
-  document.getElementById('page-banpt').querySelectorAll('.akr-tab-content').forEach(div => div.classList.add('hidden'));
-  document.getElementById('banpt_tab_' + tabId).classList.remove('hidden');
-}
-function generateBanptOverview() {
-  const tbody = document.querySelector('#tableBanptMaba tbody');
-  if(!tbody) return;
-  const stats = {};
-  mahasiswa.forEach(m => {
-    if(!stats[m.angkatan]) stats[m.angkatan] = { aktif:0, lulus:0, do:0, total:0 };
-    stats[m.angkatan].total++;
-    if(m.status === 'Aktif') stats[m.angkatan].aktif++;
-    else if(m.status === 'Lulus') stats[m.angkatan].lulus++;
-    else stats[m.angkatan].do++;
-  });
-  const years = Object.keys(stats).sort((a,b)=>b.localeCompare(a));
-  let html = '';
-  years.forEach(y => {
-    html += `<tr>
-      <td class="font-bold">${y}/${parseInt(y)+1}</td>
-      <td>${stats[y].total * 3}</td><td>${stats[y].total * 2}</td>
-      <td>${stats[y].total}</td><td>0</td>
-      <td><span class="badge bg-blue-100 text-blue-700">${stats[y].aktif}</span></td>
-    </tr>`;
-  });
-  if(years.length===0) html = '<tr><td colspan="6" class="text-center text-t3">Belum ada data pendaftar.</td></tr>';
-  tbody.innerHTML = html;
-  
-  if (window.chartBanptMabaInstance) window.chartBanptMabaInstance.destroy();
-  const ctx = document.getElementById('chartBanptMaba');
-  if (ctx && years.length>0) {
-    window.chartBanptMabaInstance = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: years.slice(0,5).reverse(),
-        datasets: [{ label:'Maba Aktif', data:years.slice(0,5).reverse().map(y=>stats[y].aktif), backgroundColor:'#3b82f6', borderRadius:4 }]
-      },
-      options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'top'}} }
-    });
-  }
-}
-function generateBanptKeuangan() {
-  const tbody = document.querySelector('#tableBanptKeuangan tbody');
-  if(!tbody) return;
-  const list = arsip.filter(a => a.bidang === 'keuangan');
-  tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Keuangan.</td></tr>' : list.map(a => {
-    const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Dokumen</a>` : '-';
-    return `<tr><td class="font-bold">${esc(a.judul)}</td><td>${esc(a.tahun || getAY(a.tanggal))}</td><td><span class="badge bg-blue-50 text-blue-600">${a.status}</span></td><td>${fileLink}</td></tr>`;
-  }).join('');
-}
-function generateBanptKebijakan() {
-  const tbody = document.querySelector('#tableBanptKebijakan tbody');
-  if(!tbody) return;
-  const list = arsip.filter(a => a.jenis === 'sk' || a.jenis === 'sop' || a.jenis === 'kebijakan');
-  tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Kebijakan.</td></tr>' : list.map(a => {
-    const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Lihat SK</a>` : '-';
-    return `<tr><td class="font-bold">${esc(a.nomor)}</td><td>${esc(a.judul)}</td><td>${formatDate(a.tanggal)}</td><td>${fileLink}</td></tr>`;
-  }).join('');
-}
-function generateBanptLppm() {
-  const tbody = document.querySelector('#tableBanptLppm tbody');
-  if(!tbody) return;
-  const list = arsip.filter(a => a.bidang === 'lppm');
-  tbody.innerHTML = list.length===0 ? '<tr><td colspan="4" class="text-center text-t3">Belum ada dokumen Penelitian & PkM.</td></tr>' : list.map(a => {
-    const fileLink = a.gdriveLink ? `<a href="${a.gdriveLink}" target="_blank" class="text-blue-600"><i class="fas fa-file-pdf"></i> Lihat File</a>` : '-';
-    return `<tr><td class="font-bold">${esc(a.judul)}</td><td>${esc(a.jenis.toUpperCase())}</td><td>${esc(a.tahun || getAY(a.tanggal))}</td><td>${fileLink}</td></tr>`;
-  }).join('');
-}
-function exportBanptExcel() { alert('Export BAN-PT sedang dalam pengembangan API.'); }
 
-// ==================== LAM-PTKes ====================
+function switchBanptTab(tabNum, element) {
+  document.querySelectorAll('#banpt-sub-menu li').forEach(li => li.classList.remove('active'));
+  if (element) element.classList.add('active');
+  currentBanptTab = parseInt(tabNum);
+  generateBanptReport();
+}
+
+function getBanptCriteriaForUpload(bidang, jenis) {
+    const j = (jenis || '').toLowerCase();
+    const b = (bidang || '');
+    if(j.includes('lulusan') || j.includes('ipk') || j.includes('publikasi') || j.includes('jurnal') || j.includes('ukom') || j.includes('tracer')) return 9;
+    if(j.includes('renstra') || j.includes('renop') || j.includes('vmts') || j.includes('visi')) return 1;
+    if(j.includes('spmi') || j.includes('sotk') || j.includes('mou') || j.includes('moa') || j.includes('audit')) return 2;
+    if(b === 'kemahasiswaan' || j.includes('mahasiswa') || j.includes('alumni')) return 3;
+    if(b === 'kepegawaian' || j.includes('dosen') || j.includes('tendik') || j.includes('ijazah') || j.includes('sk_')) return 4;
+    if(b === 'keuangan' || b === 'laboratorium' || j.includes('anggaran') || j.includes('sarana') || j.includes('inventaris')) return 5;
+    if(b === 'lppm' || j.includes('penelitian') || (j.includes('luaran') && !j.includes('pkm'))) return 7;
+    if(b === 'pengabdian' || j.includes('pkm') || j.includes('pengabdian')) return 8;
+    if(b === 'akademik' || b === 'sistem_pendidikan' || b === 'perpustakaan' || j.includes('kurikulum') || j.includes('rps') || j.includes('pembelajaran')) return 6;
+    if(b === 'umum' || b === 'penjaminan_mutu') return 2;
+    return 0;
+}
+
+function getLamptkesCriteriaForUpload(jenis) {
+    if(!jenis) return 0;
+    const match = jenis.match(/^k(\d)_/);
+    if(match) return parseInt(match[1]);
+    return 0;
+}
+
+function getBanptData(k) {
+  return arsip.filter(a => getBanptCriteriaForUpload(a.bidang, a.jenis) === k);
+}
+
+function generateBanptReport() {
+  const container = document.getElementById('banptReportContainer');
+  if(!container) return;
+
+  const list = getBanptData(currentBanptTab);
+
+  let html = "<div class='akr-tab-header'>";
+  html += "<h3>Kriteria " + currentBanptTab + ". " + BANPT_TITLES[currentBanptTab] + "</h3>";
+  html += "<p>Tabel rangkuman dokumen fisik yang diekstrak secara otomatis berdasarkan Bidang dan Jenis Dokumen.</p>";
+  html += "</div>";
+
+  if (list.length === 0) {
+    html += "<div class='akr-table-native-wrap' style='border:1px dashed var(--b2); border-radius:12px;'>";
+    html += "<div class='p-4 text-gray-500 text-center italic'>Belum ada dokumen yang terunggah/terdeteksi untuk Kriteria " + currentBanptTab + " ini.</div>";
+    html += "</div>";
+    container.innerHTML = html;
+    return;
+  }
+
+  html += "<div class='akr-table-native-wrap'>";
+  html += "<table class='tb-table'><thead><tr>";
+  html += "<th>Judul Dokumen</th><th>Jenis (Terdeteksi)</th><th>Tahun/Tanggal</th><th>Status</th><th>Aksi (GDrive)</th>";
+  html += "</tr></thead><tbody>";
+
+  list.forEach(a => {
+    let stat = "<span class='badge bg-green'>Aktif</span>";
+    if (a.isKadaluarsa) stat = "<span class='badge bg-red' style='animation:pulseRed 2s infinite;'>Kadaluarsa</span>";
+    else if (a.isPerluUpdate) stat = "<span class='badge bg-yellow'>Perlu Diperbarui</span>";
+
+    html += "<tr>";
+    html += `<td><strong>${a.judul}</strong><br><small class='text-gray-500'>ID: ${a.id.substring(0,8)}</small></td>`;
+    html += `<td><span class='badge' style='background:var(--p1);'>${getJenisLabel(a.bidang, a.jenis)}</span></td>`;
+    html += `<td>${a.tahun || a.tanggal || '-'}</td>`;
+    html += `<td>${stat}</td>`;
+    html += `<td><a href='${a.gdriveUrl}' target='_blank' class='tb-btn tb-btn-primary' style='padding:4px 8px; font-size:12px;'><i class='fas fa-folder-open'></i> Buka</a></td>`;
+    html += "</tr>";
+  });
+
+  html += "</tbody></table></div>";
+  container.innerHTML = html;
+}
+
 let currentLamptkesTab = 1;
-
+// ==================== LAM-PTKes ====================
 function initLamptkes() {
   generateLamptkesReport();
 }
@@ -1702,6 +3523,7 @@ function switchLamptkesTab(tabNum, element) {
 }
 
 function getKriteriaNumber(jenis) {
+  if (!jenis) return 0;
   if (jenis.startsWith('k1_')) return 1;
   if (jenis.startsWith('k2_')) return 2;
   if (jenis.startsWith('k3_')) return 3;
@@ -1711,26 +3533,33 @@ function getKriteriaNumber(jenis) {
   if (jenis.startsWith('k7_')) return 7;
   if (jenis.startsWith('k8_')) return 8;
   if (jenis.startsWith('k9_')) return 9;
+  if (jenis.startsWith('lkps_')) return 10;
   return 0;
 }
 
 const KRITERIA_TITLES = {
-  1: "Visi, Misi, Tujuan, dan Strategi",
-  2: "Kurikulum",
-  3: "Penilaian",
-  4: "Mahasiswa",
-  5: "Dosen, Tenaga Kependidikan, Penelitian, dan PkM",
-  6: "Sarana, Prasarana, dan Keuangan",
-  7: "Penjaminan Mutu",
-  8: "Tata Kelola dan Administrasi",
-  9: "Luaran dan Capaian Tridharma"
-};
+    1: "Visi, Misi, Tujuan dan Strategi",
+    2: "Tata Pamong, Tata Kelola dan Kerjasama",
+    3: "Mahasiswa",
+    4: "Sumber Daya Manusia",
+    5: "Keuangan, Sarana dan Prasarana",
+    6: "Pendidikan",
+    7: "Penelitian",
+    8: "Pengabdian kepada Masyarakat",
+    10: "Laporan Kinerja Program Studi (Bab II)",
+    11: "Laporan Evaluasi Diri (Semua Kriteria)",
+    12: "Dokumen SPMI (Per Bidang)"
+  };
 
 function generateLamptkesReport() {
   const container = document.getElementById('lamptkesReportContainer');
   if(!container) return;
 
-  let filtered = arsip.filter(a => getKriteriaNumber(a.jenis) === currentLamptkesTab);
+  let filtered = arsip.filter(a => {
+      if (currentLamptkesTab === 11) return (a.jenis && a.jenis.includes('_led')) || (a.jenis && a.jenis.startsWith('led_'));
+      if (currentLamptkesTab === 12) return (a.jenis && a.jenis.includes('_spmi')) || (a.jenis && a.jenis.startsWith('spmi_'));
+      return getKriteriaNumber(a.jenis) === currentLamptkesTab;
+    });
   
   let html = "<div class='akr-tab-content active'>";
   html += "<div class='akr-tab-header'>";
@@ -1757,14 +3586,10 @@ function generateLamptkesReport() {
     html += "<tr>";
     html += "<td>"+(index+1)+"</td>";
     html += "<td style='font-weight:600; color:var(--text-main)'>"+item.judul+"</td>";
-    html += "<td><span class='badge bg-blue-100 text-blue-800' style='font-size:0.75rem'>"+bidangLabel+"</span><br><div title=\""+jenisLabel.replace(/\"/g, '&quot;')+"\" style='max-width:250px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:0.75rem; color:var(--text-sub)'>"+jenisLabel+"</div></td>";
+    html += "<td><span class='badge bg-blue-100 text-blue-800' style='font-size:0.75rem'>"+bidangLabel+"</span><br><div title=\""+jenisLabel.replace(/\"/g, '&quot;')+"\" style='white-space:normal; line-height:1.3; word-break:normal; overflow-wrap:break-word; font-size:0.72rem; color:var(--text-sub)'>"+jenisLabel+"</div></td>";
     html += "<td>"+item.tanggal+"</td>";
     html += "<td>";
-    if (item.link) {
-      html += "<a href='"+item.link+"' target='_blank' class='btn-action btn-edit text-xs' style='text-decoration:none'><i class='fas fa-external-link-alt'></i> Lihat Dokumen</a>";
-    } else {
-      html += "<span class='text-red-500 text-xs'>-</span>";
-    }
+    html += fmtBadge(item);
     html += "</td>";
     html += "</tr>";
   });
@@ -1773,7 +3598,109 @@ function generateLamptkesReport() {
   container.innerHTML = html;
 }
 
-function exportLamptkesExcel() { alert('Export LAM-PTKes sedang dalam pengembangan API.'); }
+async function exportLamptkes(type) {
+  let data = arsip.filter(a => getKriteriaNumber(a.jenis) > 0);
+
+  if (data.length === 0) {
+    toast('Tidak ada dokumen LAM-PTKes untuk diekspor!', 'warning');
+    return;
+  }
+
+  data.sort((a, b) => getKriteriaNumber(a.jenis) - getKriteriaNumber(b.jenis));
+  const dateStr = new Date().toLocaleDateString('id-ID');
+  const fileName = "Borang_LAMPTKes_" + new Date().toISOString().slice(0,10);
+
+  const getLabel = (a) => getJenisLabel(a.bidang, a.jenis);
+  
+  if (type === 'excel') {
+    if (typeof XLSX === 'undefined') { toast('Library Excel belum dimuat!', 'error'); return; }
+    const excelData = data.map((a, index) => ({
+      'No': index + 1,
+      'Kriteria': (getKriteriaNumber(a.jenis) === 12) ? 'SPMI (Per Bidang)' : (getKriteriaNumber(a.jenis) === 11) ? 'LED (Semua Kriteria)' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II (LKPS)' : 'Kriteria ' + getKriteriaNumber(a.jenis),
+      'Tanggal': a.tanggal,
+      'Judul Dokumen': a.judul,
+      'Bidang Terkait': (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
+      'Deskripsi Dokumen': getLabel(a),
+      'Link GDrive': a.link || '-'
+    }));
+    const worksheet = XLSX.utils.json_to_sheet(excelData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'LAM-PTKes');
+    XLSX.writeFile(workbook, fileName + ".xlsx");
+    toast("Berhasil mengunduh Excel", 'success');
+  } 
+  else if (type === 'pdf') {
+    if (typeof window.jspdf === 'undefined') { toast('Library jsPDF belum dimuat', 'error'); return; }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'mm', 'a4'); 
+    
+    doc.setFontSize(14); doc.setFont('helvetica', 'bold');
+    doc.text("DOKUMEN PENDUKUNG BORANG LAM-PTKES & LKPS", 14, 20);
+    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+    doc.text("AKADEMI AKUPUNKTUR SURABAYA - Dicetak pada: " + dateStr, 14, 26);
+    
+    let tableData = data.map((a, i) => [
+      i+1,
+      (getKriteriaNumber(a.jenis) === 12) ? 'SPMI' : (getKriteriaNumber(a.jenis) === 11) ? 'LED' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II' : 'K' + getKriteriaNumber(a.jenis),
+      a.judul,
+      (DEPT[a.bidang]?.label || a.bidang).toUpperCase(),
+      getLabel(a),
+      a.link || '-'
+    ]);
+
+    doc.autoTable({
+      startY: 32,
+      head: [['No', 'Krit', 'Judul Arsip', 'Bidang', 'Deskripsi Dokumen / Tabel', 'Tautan GDrive']],
+      body: tableData,
+      theme: 'grid',
+      headStyles: { fillColor: [16, 185, 129] },
+      columnStyles: {
+        0: {cellWidth: 10},
+        1: {cellWidth: 15},
+        2: {cellWidth: 50},
+        3: {cellWidth: 35},
+        4: {cellWidth: 100},
+        5: {cellWidth: 60}
+      },
+      styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak' }
+    });
+    
+    doc.save(fileName + ".pdf");
+    toast("Berhasil mengunduh PDF", 'success');
+  }
+  else if (type === 'word') {
+    let html = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>";
+    html += "<head><meta charset='utf-8'><title>Export HTML to Word</title></head><body>";
+    html += "<h2>DOKUMEN PENDUKUNG BORANG LAM-PTKES & LKPS</h2>";
+    html += "<p>AKADEMI AKUPUNKTUR SURABAYA<br>Dicetak pada: " + dateStr + "</p>";
+    html += "<table border='1' style='border-collapse:collapse; width:100%; font-family:sans-serif; font-size:12px;'>";
+    html += "<tr style='background:#10b981; color:#fff;'><th>No</th><th>Kriteria</th><th>Judul Arsip</th><th>Bidang</th><th>Deskripsi Dokumen</th><th>Tautan GDrive</th></tr>";
+    
+    data.forEach((a, index) => {
+      let krit = (getKriteriaNumber(a.jenis) === 12) ? 'SPMI (Per Bidang)' : (getKriteriaNumber(a.jenis) === 11) ? 'LED (Semua Kriteria)' : (getKriteriaNumber(a.jenis) === 10) ? 'Bab II (LKPS)' : 'Kriteria ' + getKriteriaNumber(a.jenis);
+      html += "<tr>";
+      html += "<td style='padding:4px;'>" + (index + 1) + "</td>";
+      html += "<td style='padding:4px;'>" + krit + "</td>";
+      html += "<td style='padding:4px;'>" + a.judul + "</td>";
+      html += "<td style='padding:4px;'>" + (DEPT[a.bidang]?.label || a.bidang).toUpperCase() + "</td>";
+      html += "<td style='padding:4px;'>" + getLabel(a) + "</td>";
+      html += "<td style='padding:4px;'>" + (a.link ? `<a href="${a.link}">${a.link}</a>` : '-') + "</td>";
+      html += "</tr>";
+    });
+    html += "</table></body></html>";
+    
+    let blob = new Blob(['\xef\xbb\xbf', html], { type: 'application/msword' });
+    let url = URL.createObjectURL(blob);
+    let link = document.createElement('a');
+    link.href = url;
+    link.download = fileName + ".doc";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast("Berhasil mengunduh Word", 'success');
+  }
+}
 
 
 function exportToExcel() {
@@ -2202,647 +4129,166 @@ function exportExcel() { generateIntegratedReport('excel', true); }
 function exportPDF() { generateIntegratedReport('pdf', true); }
 function exportWord() { generateIntegratedReport('word', true); }
 
-/* ═══════════════════════════════════════════════════════════════
-   MODUL OPERASIONAL LABORATORIUM (SIMLAB AAS)
-   ═══════════════════════════════════════════════════════════════ */
 
-/* ─── PARSER FIRESTORE REST API ─── */
-function parseFirestoreValue(val) {
-  if (!val) return null;
-  if ('stringValue' in val) return val.stringValue;
-  if ('integerValue' in val) return parseInt(val.integerValue, 10);
-  if ('doubleValue' in val) return parseFloat(val.doubleValue);
-  if ('booleanValue' in val) return val.booleanValue;
-  if ('timestampValue' in val) return val.timestampValue;
-  if ('mapValue' in val) {
-    const res = {};
-    const f = val.mapValue.fields || {};
-    for (const k in f) res[k] = parseFirestoreValue(f[k]);
-    return res;
+
+
+
+
+
+
+function autoDetectFormat(input) {
+  if (!input.files || input.files.length === 0) return;
+  const fileName = input.files[0].name.toLowerCase();
+  const formatSelect = document.getElementById('fFormat');
+  if (fileName.endsWith('.xls') || fileName.endsWith('.xlsx') || fileName.endsWith('.csv')) {
+    formatSelect.value = 'excel';
+  } else if (fileName.endsWith('.doc') || fileName.endsWith('.docx')) {
+    formatSelect.value = 'word';
+  } else if (fileName.endsWith('.zip') || fileName.endsWith('.rar') || fileName.endsWith('.7z')) {
+    formatSelect.value = 'zip';
+  } else if (fileName.match(/\.(jpg|jpeg|png|gif|svg)$/)) {
+    formatSelect.value = 'img';
+  } else {
+    formatSelect.value = 'pdf';
   }
-  if ('arrayValue' in val) {
-    return (val.arrayValue.values || []).map(parseFirestoreValue);
-  }
-  if ('nullValue' in val) return null;
-  return null;
 }
 
-function parseFirestoreDoc(doc) {
-  if (!doc || !doc.fields) return null;
-  const item = {};
-  for (const k in doc.fields) {
-    item[k] = parseFirestoreValue(doc.fields[k]);
-  }
-  if (!item.id && doc.name) {
-    const parts = doc.name.split('/');
-    item.id = parts[parts.length - 1];
-  }
-  return item;
+function updateYearlyChart() {
+  const data=arsip.filter(a=>!currentAY||a.ay===currentAY);
+  initDashCharts(data);
 }
 
-/* ─── LIVE SYNCHRONIZATION WITH SIMLAB (FIRESTORE: arsip-aas) ─── */
-async function syncSimlabLive(silent = false) {
-  const icon = document.getElementById('syncSimlabIcon');
-  if (icon) icon.classList.add('fa-spin');
-  if (!silent) toast('Menghubungkan ke Cloud SIMLAB (arsip-aas)...', 'info');
 
-  try {
-    const url = 'https://firestore.googleapis.com/v1/projects/arsip-aas/databases/(default)/documents/arsip?pageSize=300';
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-    const data = await resp.json();
-    const remoteDocs = (data.documents || [])
-      .map(parseFirestoreDoc)
-      .filter(Boolean);
 
-    let syncedCount = 0;
-    remoteDocs.forEach(rem => {
-      if (rem.bidang === 'laboratorium') {
-        const idx = arsip.findIndex(a => a.id === rem.id);
-        const itemObj = {
-          id: rem.id,
-          nomor: rem.nomor || rem.id,
-          judul: rem.judul || 'Arsip Laboratorium',
-          bidang: 'laboratorium',
-          jenis: rem.jenis || 'aset_laboratorium',
-          format: rem.format || 'sistem',
-          tanggal: rem.tanggal || now(),
-          pengirim: rem.pengirim || 'SIMLAB AAS',
-          status: rem.status || 'aktif',
-          keterangan: rem.keterangan || '',
-          ay: rem.ay || getAY(rem.tanggal || now()),
-          fileName: rem.fileName || '',
-          gdriveLink: rem.gdriveLink || rem.url || '',
-          createdAt: rem.createdAt || new Date().toISOString(),
-          metadata: rem.metadata || {}
-        };
-        if (idx >= 0) {
-          arsip[idx] = { ...arsip[idx], ...itemObj };
-        } else {
-          arsip.unshift(itemObj);
+
+
+
+// ── FITUR LAPORAN KENDALA IT ─────────────────────────
+function openLaporanITModal() {
+    document.getElementById('modalLaporanIT').style.display = 'flex';
+    document.getElementById('laporKategori').value = 'Aplikasi / Software';
+    document.getElementById('laporDeskripsi').value = '';
+}
+
+async function submitLaporanIT() {
+    const kategori = document.getElementById('laporKategori').value;
+    const deskripsi = document.getElementById('laporDeskripsi').value.trim();
+    
+    if (!deskripsi) {
+        toast('Deskripsi kendala harus diisi!', 'error');
+        return;
+    }
+    
+    const btn = document.getElementById('btnSubmitLaporanIT');
+    const oriText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+    
+    try {
+        const user = auth.currentUser;
+        if (!user) throw new Error('Anda belum login.');
+        
+        let pelaporNama = user.displayName || '';
+        if (!pelaporNama && currentUserData && currentUserData.name) {
+            pelaporNama = currentUserData.name;
         }
-        syncedCount++;
-      }
-    });
 
-    save();
-    updateBadges();
-    populateAYearSelect();
-
-    if (currentPage.startsWith('lab-')) {
-      showPage(currentPage);
-    } else if (currentPage === 'dashboard') {
-      renderDashboard();
-    } else if (currentPage === 'arsip') {
-      renderArsipTable();
-    }
-
-    if (!silent) {
-      toast(`Sinkronisasi SIMLAB sukses! ${syncedCount} arsip laboratorium diperbarui.`, 'success');
-    }
-  } catch (err) {
-    console.warn('Sync SIMLAB notice:', err);
-    if (!silent) {
-      toast('Gagal sinkron dengan cloud SIMLAB: ' + err.message, 'error');
-    }
-  } finally {
-    if (icon) icon.classList.remove('fa-spin');
-  }
-}
-
-/* ─── 1. LAB DASHBOARD & CHARTS ─── */
-function renderLabDashboard() {
-  const labData = arsip.filter(a => a.bidang === 'laboratorium');
-
-  // KPI Calculations
-  const asetDocs = labData.filter(a => a.jenis === 'aset_laboratorium' || a.jenis === 'bhp_laboratorium');
-  const jadwalDocs = labData.filter(a => a.jenis === 'jadwal_praktikum' || a.jenis === 'peminjaman_lab');
-  const logbookDocs = labData.filter(a => a.jenis === 'logbook_laboratorium');
-  const perawatanDocs = labData.filter(a => a.jenis === 'perawatan_alat');
-  const rusakCount = asetDocs.filter(a => (a.keterangan || '').toLowerCase().includes('rusak') || (a.keterangan || '').toLowerCase().includes('cacat') || (a.keterangan || '').toLowerCase().includes('kalibrasi')).length;
-
-  // Realisasi Anggaran
-  const anggaranDocs = labData.filter(a => a.jenis === 'anggaran_laboratorium' || a.jenis === 'anggaran_rab');
-  let totalRealisasi = 0;
-  anggaranDocs.forEach(a => {
-    const numMatch = (a.keterangan || '').match(/Rp\s*([\d\.\,]+)/i);
-    if (numMatch) {
-      const val = parseInt(numMatch[1].replace(/\./g, ''), 10);
-      if (!isNaN(val)) totalRealisasi += val;
-    }
-  });
-
-  const elAset = document.getElementById('labStatAset');
-  if (elAset) elAset.textContent = asetDocs.length || 0;
-  const elJadwal = document.getElementById('labStatJadwal');
-  if (elJadwal) elJadwal.textContent = jadwalDocs.length || 0;
-  const elLogbook = document.getElementById('labStatLogbook');
-  if (elLogbook) elLogbook.textContent = logbookDocs.length || 0;
-  const elPerawatan = document.getElementById('labStatPerawatan');
-  if (elPerawatan) elPerawatan.textContent = (perawatanDocs.length + rusakCount) || 0;
-  const elAnggaran = document.getElementById('labStatAnggaran');
-  if (elAnggaran) {
-    elAnggaran.textContent = totalRealisasi > 0 
-      ? 'Rp ' + totalRealisasi.toLocaleString('id-ID')
-      : 'Rp 28.500.000';
-  }
-
-  // Render Charts
-  initLabCharts(labData);
-
-  // Render Recent Table (10 items)
-  const tbody = document.getElementById('labRecentBody');
-  if (tbody) {
-    const recent = [...labData].sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal)).slice(0, 10);
-    if (!recent.length) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--t3);padding:24px">Belum ada data laboratorium. Klik tombol <b>Tarik Cloud SIMLAB</b> di atas.</td></tr>';
-    } else {
-      tbody.innerHTML = recent.map((item, idx) => {
-        const jLbl = getJenisLabel(item.bidang, item.jenis);
-        return `<tr>
-          <td style="color:var(--t3);font-size:.75rem">${idx + 1}</td>
-          <td><span class="td-nomor">${esc(item.nomor)}</span></td>
-          <td><span class="td-judul" title="${esc(item.judul)}">${esc(item.judul)}</span></td>
-          <td><span class="d-badge" style="background:#0ea5e918;color:#0ea5e9"><i class="fas fa-tag"></i> ${jLbl}</span></td>
-          <td>${fmtDate(item.tanggal)}</td>
-          <td>${statusBadge(item.status)}</td>
-          <td style="font-size:.78rem;color:var(--t2);max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(item.keterangan || '—')}</td>
-        </tr>`;
-      }).join('');
-    }
-  }
-}
-
-function initLabCharts(labData) {
-  const months = getAYMonths(currentAY);
-  const labels = months.map(getMonthLabel);
-
-  // 1. Chart: Tren Jam Praktikum & Aktivitas Bulanan
-  destroyChart(cLabLine);
-  const ctxL = document.getElementById('chartLabLine')?.getContext('2d');
-  if (ctxL) {
-    const counts = months.map(m => labData.filter(a => (a.tanggal || '').startsWith(m)).length);
-    // Baseline simulated curve if empty to ensure wow factor aesthetic
-    const chartData = counts.some(c => c > 0) ? counts : [12, 18, 26, 32, 28, 35];
-    const g = ctxL.createLinearGradient(0, 0, 0, 220);
-    g.addColorStop(0, 'rgba(14, 165, 233, 0.38)');
-    g.addColorStop(1, 'rgba(14, 165, 233, 0.01)');
-    cLabLine = new Chart(ctxL, {
-      type: 'line',
-      data: {
-        labels: labels.length ? labels : ['Agu', 'Sep', 'Okt', 'Nov', 'Des', 'Jan'],
-        datasets: [{
-          label: 'Sesi Praktikum & Pemakaian Alat',
-          data: chartData,
-          borderColor: '#0ea5e9',
-          backgroundColor: g,
-          tension: 0.4,
-          pointBackgroundColor: '#0ea5e9',
-          pointBorderColor: '#ffffff',
-          pointBorderWidth: 2,
-          pointRadius: 5,
-          fill: true
-        }]
-      },
-      options: chartOpts({
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#64748b' } },
-          y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#64748b', precision: 0 }, beginAtZero: true }
+        const docRef = await db.collection('laporan_it').add({
+            pelaporId: user.uid,
+            pelaporNama: pelaporNama,
+            pelaporEmail: user.email,
+            kategori: kategori,
+            deskripsi: deskripsi,
+            status: 'Menunggu',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        // Sync ke Portal Utama (Arsip)
+        try {
+            await db.collection('arsip').doc(docRef.id).set({
+                id: docRef.id,
+                judul: `Laporan Kendala IT: ${kategori}`,
+                bidang: 'sistem_pendidikan',
+                jenis: 'laporan_it',
+                format: 'lainnya',
+                tanggal: new Date().toISOString().slice(0,10),
+                keterangan: `Pelapor: ${pelaporNama} | Deskripsi: ${deskripsi}`,
+                nomor: 'HLP-' + Math.floor(1000 + Math.random() * 9000),
+                pengirim: pelaporNama,
+                url: '',
+                fileName: '',
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'aktif'
+            });
+        } catch(e) {
+            console.error("Gagal sinkronisasi arsip:", e);
         }
-      })
-    });
-  }
-
-  // 2. Chart: Serapan Anggaran Lab per Pos Belanja
-  destroyChart(cLabAnggaran);
-  const ctxA = document.getElementById('chartLabAnggaran')?.getContext('2d');
-  if (ctxA) {
-    const categories = ['Bahan Habis Pakai', 'Pengadaan Alat Baru', 'Kalibrasi & Servis', 'Operasional'];
-    const pagu = [15, 25, 8, 12];
-    const realisasi = [12.5, 20.8, 6.5, 9.2];
-    cLabAnggaran = new Chart(ctxA, {
-      type: 'bar',
-      data: {
-        labels: categories,
-        datasets: [
-          {
-            label: 'Pagu Usulan (Juta Rp)',
-            data: pagu,
-            backgroundColor: 'rgba(14, 165, 233, 0.35)',
-            borderColor: '#0ea5e9',
-            borderWidth: 1.5,
-            borderRadius: 6
-          },
-          {
-            label: 'Realisasi Belanja (Juta Rp)',
-            data: realisasi,
-            backgroundColor: 'rgba(16, 185, 129, 0.85)',
-            borderColor: '#10b981',
-            borderWidth: 1.5,
-            borderRadius: 6
-          }
-        ]
-      },
-      options: chartOpts({
-        plugins: {
-          legend: { display: true, position: 'top', labels: { boxWidth: 12, font: { size: 10 } } }
-        },
-        scales: {
-          x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
-          y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#64748b', callback: v => 'Rp ' + v + ' jt' }, beginAtZero: true }
-        }
-      })
-    });
-  }
-
-  // 3. Chart: Kondisi Fisik Alat Lab
-  destroyChart(cLabKondisi);
-  const ctxK = document.getElementById('chartLabKondisi')?.getContext('2d');
-  if (ctxK) {
-    const invItems = labData.filter(a => a.jenis === 'aset_laboratorium' || a.jenis === 'bhp_laboratorium');
-    let baik = 0, cacat = 0, rusak = 0, kalibrasi = 0;
-    invItems.forEach(item => {
-      const text = (item.keterangan || '').toLowerCase();
-      if (text.includes('kalibrasi')) kalibrasi++;
-      else if (text.includes('rusak')) rusak++;
-      else if (text.includes('cacat') || text.includes('aus')) cacat++;
-      else baik++;
-    });
-    if (invItems.length === 0) { baik = 18; cacat = 3; rusak = 2; kalibrasi = 4; }
-    cLabKondisi = new Chart(ctxK, {
-      type: 'doughnut',
-      data: {
-        labels: ['Kondisi Baik', 'Cacat / Aus', 'Rusak', 'Dalam Kalibrasi'],
-        datasets: [{
-          data: [baik, cacat, rusak, kalibrasi],
-          backgroundColor: ['#10b981', '#f59e0b', '#ef4444', '#3b82f6'],
-          borderWidth: 3,
-          borderColor: '#ffffff'
-        }]
-      },
-      options: chartOpts({
-        plugins: {
-          legend: { position: 'bottom', labels: { color: '#475569', font: { size: 10 }, padding: 10 } }
-        },
-        cutout: '68%'
-      })
-    });
-  }
-
-  // 4. Chart: Distribusi Utilisasi Ruangan Lab
-  destroyChart(cLabRuang);
-  const ctxR = document.getElementById('chartLabRuang')?.getContext('2d');
-  if (ctxR) {
-    const rooms = ['Lab Akupunktur Dasar', 'Lab Akupunktur Lanjutan', 'Ruang Manekin', 'Lab Herbal', 'Lab Sterilisasi'];
-    const rCounts = rooms.map(r => {
-      const match = labData.filter(a => (a.keterangan || '').includes(r) || (a.judul || '').includes(r)).length;
-      return match;
-    });
-    const finalCounts = rCounts.some(c => c > 0) ? rCounts : [24, 18, 15, 9, 12];
-    cLabRuang = new Chart(ctxR, {
-      type: 'bar',
-      data: {
-        labels: ['Akup. Dasar', 'Akup. Lanjut', 'Manekin', 'Herbal', 'Sterilisasi'],
-        datasets: [{
-          label: 'Frekuensi Praktikum (Sesi)',
-          data: finalCounts,
-          backgroundColor: ['#6366f1', '#3b82f6', '#0ea5e9', '#14b8a6', '#8b5cf6'],
-          borderRadius: 6
-        }]
-      },
-      options: chartOpts({
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } },
-          y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { color: '#64748b', precision: 0 }, beginAtZero: true }
-        }
-      })
-    });
-  }
-
-  // 5. Chart: Komposisi Aset Tetap vs BHP
-  destroyChart(cLabKomposisi);
-  const ctxC = document.getElementById('chartLabKomposisi')?.getContext('2d');
-  if (ctxC) {
-    const tetapCount = labData.filter(a => a.jenis === 'aset_laboratorium').length || 15;
-    const bhpCount = labData.filter(a => a.jenis === 'bhp_laboratorium').length || 8;
-    cLabKomposisi = new Chart(ctxC, {
-      type: 'doughnut',
-      data: {
-        labels: ['Aset Tetap / Alat Medis', 'Bahan Habis Pakai (BHP)'],
-        datasets: [{
-          data: [tetapCount, bhpCount],
-          backgroundColor: ['#0ea5e9', '#f59e0b'],
-          borderWidth: 3,
-          borderColor: '#ffffff'
-        }]
-      },
-      options: chartOpts({
-        plugins: {
-          legend: { position: 'bottom', labels: { color: '#475569', font: { size: 10 }, padding: 10 } }
-        },
-        cutout: '65%'
-      })
-    });
-  }
-
-  // 6. Chart: Status Verifikasi Logbook Praktikum
-  destroyChart(cLabLogbook);
-  const ctxLog = document.getElementById('chartLabLogbook')?.getContext('2d');
-  if (ctxLog) {
-    const logs = labData.filter(a => a.jenis === 'logbook_laboratorium');
-    let verif = 0, pending = 0;
-    logs.forEach(l => {
-      if ((l.keterangan || '').toLowerCase().includes('terverifikasi') || l.status === 'selesai') verif++;
-      else pending++;
-    });
-    if (logs.length === 0) { verif = 28; pending = 6; }
-    cLabLogbook = new Chart(ctxLog, {
-      type: 'doughnut',
-      data: {
-        labels: ['Terverifikasi Dosen / Laboran', 'Menunggu Validasi'],
-        datasets: [{
-          data: [verif, pending],
-          backgroundColor: ['#10b981', '#f59e0b'],
-          borderWidth: 3,
-          borderColor: '#ffffff'
-        }]
-      },
-      options: chartOpts({
-        plugins: {
-          legend: { position: 'bottom', labels: { color: '#475569', font: { size: 10 }, padding: 10 } }
-        },
-        cutout: '65%'
-      })
-    });
-  }
-}
-
-/* ─── 2. LAB INVENTARIS TABLE ─── */
-function renderLabInventarisTable() {
-  const q = (document.getElementById('labInvSearch')?.value || '').toLowerCase();
-  const filterJenis = document.getElementById('labInvFilterJenis')?.value || '';
-  const filterKondisi = document.getElementById('labInvFilterKondisi')?.value || '';
-
-  let data = arsip.filter(a => a.bidang === 'laboratorium' && (a.jenis === 'aset_laboratorium' || a.jenis === 'bhp_laboratorium'));
-  if (filterJenis) data = data.filter(a => a.jenis === filterJenis);
-  if (filterKondisi) data = data.filter(a => (a.keterangan || '').toLowerCase().includes(filterKondisi.toLowerCase()));
-  if (q) {
-    data = data.filter(a => `${a.nomor} ${a.judul} ${a.keterangan} ${a.pengirim}`.toLowerCase().includes(q));
-  }
-
-  const tbody = document.getElementById('labInvBody');
-  const empty = document.getElementById('labInvEmpty');
-  const info = document.getElementById('labInvInfo');
-  if (!tbody) return;
-
-  if (!data.length) {
-    tbody.innerHTML = '';
-    empty?.classList.remove('hidden');
-    if (info) info.textContent = 'Tidak ada inventaris yang cocok.';
-    return;
-  }
-  empty?.classList.add('hidden');
-  if (info) info.textContent = `${data.length} alat & bahan laboratorium terdaftar.`;
-
-  tbody.innerHTML = data.map((item, i) => {
-    const isBhp = item.jenis === 'bhp_laboratorium';
-    const tagBg = isBhp ? '#f59e0b18' : '#0ea5e918';
-    const tagColor = isBhp ? '#f59e0b' : '#0ea5e9';
-    const tagLabel = isBhp ? 'BHP (Habis Pakai)' : 'Aset Tetap';
-
-    let condition = 'Kondisi Baik';
-    let condBadge = '<span class="s-badge s-aktif"><i class="fas fa-circle-check"></i> Baik</span>';
-    if ((item.keterangan || '').includes('Rusak')) {
-      condBadge = '<span class="s-badge" style="background:#fee2e2;color:#ef4444"><i class="fas fa-circle-xmark"></i> Rusak</span>';
-    } else if ((item.keterangan || '').includes('Cacat')) {
-      condBadge = '<span class="s-badge" style="background:#fef3c7;color:#d97706"><i class="fas fa-triangle-exclamation"></i> Cacat</span>';
-    } else if ((item.keterangan || '').includes('Kalibrasi')) {
-      condBadge = '<span class="s-badge" style="background:#e0f2fe;color:#0284c7"><i class="fas fa-wrench"></i> Dikalibrasi</span>';
+        
+        document.getElementById('modalLaporanIT').style.display = 'none';
+        toast('Laporan IT berhasil dikirim. Tim IT akan segera memprosesnya.', 'success');
+        
+    } catch(e) {
+        console.error(e);
+        toast('Gagal mengirim laporan: ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = oriText;
     }
-
-    return `<tr>
-      <td style="color:var(--t3);font-size:.75rem">${i + 1}</td>
-      <td><span class="td-nomor">${esc(item.nomor)}</span></td>
-      <td><span class="td-judul" style="font-weight:600">${esc(item.judul.replace('Inventaris Lab: ', ''))}</span></td>
-      <td><span class="d-badge" style="background:${tagBg};color:${tagColor}">${tagLabel}</span></td>
-      <td><span style="font-size:.8rem;color:var(--t2)">${esc(item.metadata?.lab || 'Lab Akupunktur')}</span></td>
-      <td>${condBadge}</td>
-      <td><b>${esc(item.metadata?.stock !== undefined ? item.metadata.stock : '1')}</b> ${esc(item.metadata?.satuan || 'Unit')}</td>
-      <td style="font-size:.78rem;color:var(--t3);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(item.keterangan || '—')}</td>
-    </tr>`;
-  }).join('');
 }
 
-/* ─── 3. LAB PERAWATAN TABLE ─── */
-function renderLabPerawatanTable() {
-  const q = (document.getElementById('labPerawatanSearch')?.value || '').toLowerCase();
-  const status = document.getElementById('labPerawatanFilterStatus')?.value || '';
 
-  let data = arsip.filter(a => a.bidang === 'laboratorium' && a.jenis === 'perawatan_alat');
-  if (status) data = data.filter(a => (a.keterangan || '').toLowerCase().includes(status.toLowerCase()));
-  if (q) data = data.filter(a => `${a.nomor} ${a.judul} ${a.keterangan}`.toLowerCase().includes(q));
-
-  const tbody = document.getElementById('labPerawatanBody');
-  const empty = document.getElementById('labPerawatanEmpty');
-  const info = document.getElementById('labPerawatanInfo');
-  if (!tbody) return;
-
-  if (!data.length) {
-    tbody.innerHTML = '';
-    empty?.classList.remove('hidden');
-    if (info) info.textContent = 'Belum ada log perawatan / kalibrasi alat.';
-    return;
-  }
-  empty?.classList.add('hidden');
-  if (info) info.textContent = `${data.length} riwayat perawatan & kalibrasi alat dicatat.`;
-
-  tbody.innerHTML = data.map((item, i) => `<tr>
-    <td style="color:var(--t3);font-size:.75rem">${i + 1}</td>
-    <td><span class="td-nomor">${esc(item.nomor)}</span></td>
-    <td><span class="td-judul" style="font-weight:600">${esc(item.judul.replace('Perawatan Alat: ', ''))}</span></td>
-    <td><span class="d-badge" style="background:#f59e0b18;color:#f59e0b"><i class="fas fa-screwdriver-wrench"></i> Kalibrasi & Servis</span></td>
-    <td>${fmtDate(item.tanggal)}</td>
-    <td>${esc(item.pengirim || 'Laboran AAS')}</td>
-    <td><span class="s-badge s-aktif"><i class="fas fa-check"></i> Laik Pakai</span></td>
-    <td style="font-size:.78rem;color:var(--t2)">${esc(item.keterangan || '—')}</td>
-  </tr>`).join('');
+// ── FITUR KINERJA BIDANG ─────────────────────────
+function openKinerjaModal() {
+    document.getElementById('modalKinerjaBidang').style.display = 'flex';
+    document.getElementById('kinerjaKategori').value = 'Tugas Rutin Harian';
+    document.getElementById('kinerjaDeskripsi').value = '';
 }
 
-/* ─── 4. LAB LOGBOOK TABLE ─── */
-function renderLabLogbookTable() {
-  const q = (document.getElementById('labLogbookSearch')?.value || '').toLowerCase();
-  const stat = document.getElementById('labLogbookFilterStatus')?.value || '';
+async function submitKinerjaBidang() {
+    const kategori = document.getElementById('kinerjaKategori').value;
+    const deskripsi = document.getElementById('kinerjaDeskripsi').value.trim();
+    const bidangId = currentDept; // From the current opened department view
+    const bidangName = document.getElementById('deptBannerName').innerText || currentDept;
+    
+    if (!deskripsi) {
+        toast('Deskripsi aktivitas harus diisi!', 'error');
+        return;
+    }
+    
+    const btn = document.getElementById('btnSubmitKinerja');
+    const oriText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+    
+    try {
+        const user = auth.currentUser;
+        if (!user) throw new Error('Anda belum login.');
+        
+        let pelaporNama = user.displayName || '';
+        if (!pelaporNama && currentUserData && currentUserData.name) {
+            pelaporNama = currentUserData.name;
+        }
 
-  let data = arsip.filter(a => a.bidang === 'laboratorium' && a.jenis === 'logbook_laboratorium');
-  if (stat) data = data.filter(a => (a.keterangan || '').toLowerCase().includes(stat.toLowerCase()));
-  if (q) data = data.filter(a => `${a.nomor} ${a.judul} ${a.keterangan} ${a.pengirim}`.toLowerCase().includes(q));
-
-  const tbody = document.getElementById('labLogbookBody');
-  const empty = document.getElementById('labLogbookEmpty');
-  const info = document.getElementById('labLogbookInfo');
-  if (!tbody) return;
-
-  if (!data.length) {
-    tbody.innerHTML = '';
-    empty?.classList.remove('hidden');
-    if (info) info.textContent = 'Belum ada entri logbook praktikum.';
-    return;
-  }
-  empty?.classList.add('hidden');
-  if (info) info.textContent = `${data.length} sesi logbook praktikum tercatat.`;
-
-  tbody.innerHTML = data.map((item, i) => {
-    const isVerified = (item.keterangan || '').toLowerCase().includes('terverifikasi');
-    const badge = isVerified 
-      ? '<span class="s-badge s-selesai"><i class="fas fa-check-double"></i> Terverifikasi</span>'
-      : '<span class="s-badge s-diproses"><i class="fas fa-hourglass-half"></i> Menunggu</span>';
-
-    return `<tr>
-      <td style="color:var(--t3);font-size:.75rem">${i + 1}</td>
-      <td>${fmtDate(item.tanggal)}</td>
-      <td><b>${esc(item.pengirim || 'Mahasiswa')}</b></td>
-      <td><span class="d-badge" style="background:#8b5cf618;color:#8b5cf6"><i class="fas fa-door-open"></i> ${esc(item.metadata?.lab || 'Lab Akupunktur')}</span></td>
-      <td>${esc(item.metadata?.startTime || '08:00')} - ${esc(item.metadata?.endTime || '10:00')}</td>
-      <td style="font-size:.8rem">${esc(item.judul.replace('Logbook Praktikum: ', ''))}</td>
-      <td>${badge}</td>
-      <td>${fmtBadge(item)}</td>
-    </tr>`;
-  }).join('');
+        await db.collection('kinerja_bidang').add({
+            userId: user.uid,
+            userName: pelaporNama,
+            bidangId: bidangId,
+            bidangName: bidangName,
+            kategori: kategori,
+            deskripsi: deskripsi,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        document.getElementById('modalKinerjaBidang').style.display = 'none';
+        toast('Laporan Kinerja berhasil disimpan!', 'success');
+        
+    } catch(e) {
+        console.error(e);
+        toast('Gagal menyimpan kinerja: ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = oriText;
+    }
 }
 
-/* ─── 5. LAB JADWAL TABLE ─── */
-function renderLabJadwalTable() {
-  const q = (document.getElementById('labJadwalSearch')?.value || '').toLowerCase();
-  const tipe = document.getElementById('labJadwalFilterTipe')?.value || '';
-
-  let data = arsip.filter(a => a.bidang === 'laboratorium' && (a.jenis === 'jadwal_praktikum' || a.jenis === 'peminjaman_lab'));
-  if (tipe) data = data.filter(a => a.jenis === tipe);
-  if (q) data = data.filter(a => `${a.nomor} ${a.judul} ${a.keterangan} ${a.pengirim}`.toLowerCase().includes(q));
-
-  const tbody = document.getElementById('labJadwalBody');
-  const empty = document.getElementById('labJadwalEmpty');
-  const info = document.getElementById('labJadwalInfo');
-  if (!tbody) return;
-
-  if (!data.length) {
-    tbody.innerHTML = '';
-    empty?.classList.remove('hidden');
-    if (info) info.textContent = 'Tidak ada jadwal atau peminjaman yang cocok.';
-    return;
-  }
-  empty?.classList.add('hidden');
-  if (info) info.textContent = `${data.length} agenda praktikum & peminjaman lab.`;
-
-  tbody.innerHTML = data.map((item, i) => {
-    const isBooking = item.jenis === 'peminjaman_lab';
-    const tagBg = isBooking ? '#f59e0b18' : '#6366f118';
-    const tagColor = isBooking ? '#f59e0b' : '#6366f1';
-    const tagLabel = isBooking ? 'Peminjaman Khusus' : 'Praktikum Reguler';
-
-    return `<tr>
-      <td style="color:var(--t3);font-size:.75rem">${i + 1}</td>
-      <td>${fmtDate(item.tanggal)}</td>
-      <td><span class="td-judul" style="font-weight:600">${esc(item.judul.replace('Jadwal Praktikum: ', '').replace('Peminjaman Lab: ', ''))}</span></td>
-      <td><b>${esc(item.pengirim || 'Dosen Pengampu')}</b></td>
-      <td><span class="d-badge" style="background:${tagBg};color:${tagColor}"><i class="fas fa-location-dot"></i> ${esc(item.metadata?.ruang || item.metadata?.lab || 'Lab AAS')}</span></td>
-      <td>${esc(item.metadata?.waktu || item.metadata?.time || 'Sesuai Jadwal')}</td>
-      <td><span class="td-ta">${esc(item.metadata?.semester || 'Semester Aktif')}</span></td>
-      <td>${statusBadge(item.status)}</td>
-    </tr>`;
-  }).join('');
-}
-
-/* ─── 6. LAB ANGGARAN TABLE ─── */
-function renderLabAnggaranTable() {
-  const q = (document.getElementById('labAnggaranSearch')?.value || '').toLowerCase();
-  let data = arsip.filter(a => a.bidang === 'laboratorium' && (a.jenis === 'anggaran_laboratorium' || a.jenis === 'anggaran_rab'));
-  if (q) data = data.filter(a => `${a.nomor} ${a.judul} ${a.keterangan}`.toLowerCase().includes(q));
-
-  const tbody = document.getElementById('labAnggaranBody');
-  const empty = document.getElementById('labAnggaranEmpty');
-  const info = document.getElementById('labAnggaranInfo');
-  if (!tbody) return;
-
-  if (!data.length) {
-    tbody.innerHTML = '';
-    empty?.classList.remove('hidden');
-    if (info) info.textContent = 'Belum ada data usulan RAB laboratorium.';
-    return;
-  }
-  empty?.classList.add('hidden');
-  if (info) info.textContent = `${data.length} berkas usulan RAB dan realisasi anggaran lab.`;
-
-  tbody.innerHTML = data.map((item, i) => `<tr>
-    <td style="color:var(--t3);font-size:.75rem">${i + 1}</td>
-    <td><span class="td-nomor">${esc(item.nomor)}</span></td>
-    <td><span class="td-judul" style="font-weight:600">${esc(item.judul.replace('RAB Lab: ', ''))}</span></td>
-    <td><span class="td-ta">${item.ay || '2025/2026'}</span></td>
-    <td><b>Rp 15.000.000</b></td>
-    <td><span style="color:#10b981;font-weight:700">Rp 12.850.000</span></td>
-    <td><span style="color:#0ea5e9;font-weight:600">Rp 2.150.000</span></td>
-    <td>${statusBadge(item.status)}</td>
-  </tr>`).join('');
-}
-
-/* ─── 7. LAB DOKUMEN & SOP TABLE ─── */
-function renderLabDokumenTable() {
-  const q = (document.getElementById('labDokumenSearch')?.value || '').toLowerCase();
-  let data = arsip.filter(a => a.bidang === 'laboratorium' && a.jenis === 'dokumen_laboratorium');
-  if (q) data = data.filter(a => `${a.nomor} ${a.judul} ${a.keterangan}`.toLowerCase().includes(q));
-
-  const tbody = document.getElementById('labDokumenBody');
-  const empty = document.getElementById('labDokumenEmpty');
-  const info = document.getElementById('labDokumenInfo');
-  if (!tbody) return;
-
-  if (!data.length) {
-    tbody.innerHTML = '';
-    empty?.classList.remove('hidden');
-    if (info) info.textContent = 'Belum ada SOP atau SK laboratorium.';
-    return;
-  }
-  empty?.classList.add('hidden');
-  if (info) info.textContent = `${data.length} dokumen SOP, SK, dan regulasi lab.`;
-
-  tbody.innerHTML = data.map((item, i) => `<tr>
-    <td style="color:var(--t3);font-size:.75rem">${i + 1}</td>
-    <td><span class="td-nomor">${esc(item.nomor)}</span></td>
-    <td><span class="td-judul" style="font-weight:600">${esc(item.judul.replace('Dokumen Lab: ', ''))}</span></td>
-    <td><span class="d-badge" style="background:#3b82f618;color:#3b82f6"><i class="fas fa-file-shield"></i> SOP Laboratorium</span></td>
-    <td>${fmtDate(item.tanggal)}</td>
-    <td>${statusBadge(item.status)}</td>
-    <td>${fmtBadge(item)}</td>
-  </tr>`).join('');
-}
-
-/* ─── 8. LAB LPJ TABLE ─── */
-function renderLabLpjTable() {
-  let data = arsip.filter(a => a.bidang === 'laboratorium' && (a.jenis === 'lpj_laboratorium' || a.jenis === 'laporan_laboratorium'));
-
-  const tbody = document.getElementById('labLpjBody');
-  const empty = document.getElementById('labLpjEmpty');
-  const info = document.getElementById('labLpjInfo');
-  if (!tbody) return;
-
-  if (!data.length) {
-    tbody.innerHTML = '';
-    empty?.classList.remove('hidden');
-    if (info) info.textContent = 'Belum ada LPJ tahunan laboratorium.';
-    return;
-  }
-  empty?.classList.add('hidden');
-  if (info) info.textContent = `${data.length} berkas LPJ tahunan laboratorium AAS.`;
-
-  tbody.innerHTML = data.map((item, i) => `<tr>
-    <td style="color:var(--t3);font-size:.75rem">${i + 1}</td>
-    <td><span class="td-ta">${item.ay || '2025/2026'}</span></td>
-    <td><span class="td-judul" style="font-weight:600">${esc(item.judul.replace('Laporan LPJ: ', ''))}</span></td>
-    <td>${fmtDate(item.tanggal)}</td>
-    <td>${esc(item.pengirim || 'Kepala Laboratorium AAS')}</td>
-    <td><span class="s-badge s-selesai"><i class="fas fa-stamp"></i> Disahkan</span></td>
-    <td>${fmtBadge(item)}</td>
-  </tr>`).join('');
-}
 
