@@ -885,9 +885,10 @@ const STATUS_CFG = {
   arsip:    { cls:'s-arsip',    icon:'fa-box-archive',    label:'Diarsipkan' },
 };
 
-/* ÔöÇÔöÇÔöÇ STATE ÔöÇÔöÇÔöÇ */
+/* ─── STATE ─── */
 let arsip    = [];
 let currentDeptSub = 'all';
+let currentLabTab = 'dashboard';
 
 function renderDeptSubmenus() {
   document.querySelectorAll('.sb-link[data-page="dept"]').forEach(link => {
@@ -903,7 +904,25 @@ function renderDeptSubmenus() {
     ul.id = `submenu-${deptId}`;
     ul.style.display = (currentPage === 'dept' && currentDept === deptId) ? 'block' : 'none';
     
-    if (DEPT_JENIS[deptId]) {
+    if (deptId === 'laboratorium') {
+      const labSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
+        { id: 'inventaris', label: 'Inventaris Alat Lab', icon: 'fas fa-boxes-stacked' },
+        { id: 'perawatan', label: 'Pemeliharaan Alat', icon: 'fas fa-wrench' },
+        { id: 'logbook', label: 'Logbook & Praktikum', icon: 'fas fa-book-bookmark' },
+        { id: 'jadwal', label: 'Jadwal Praktikum', icon: 'fas fa-calendar-days' },
+        { id: 'anggaran', label: 'Anggaran Lab (RAB)', icon: 'fas fa-file-invoice-dollar' },
+        { id: 'dokumen', label: 'SOP & Dokumen Lab', icon: 'fas fa-file-shield' },
+        { id: 'lpj', label: 'Laporan LPJ Lab', icon: 'fas fa-file-lines' },
+        { id: 'portal', label: 'Web App SIMLAB', icon: 'fas fa-window-maximize' }
+      ];
+      labSubItems.forEach(item => {
+        let isActive = (currentLabTab === item.id && currentDept === 'laboratorium') ? 'active' : '';
+        ul.innerHTML += `<li class="${isActive}" onclick="switchLabTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> ${item.label}
+        </li>`;
+      });
+    } else if (DEPT_JENIS[deptId]) {
       let countAll = arsip.filter(a => a.bidang === deptId).length;
       ul.innerHTML += `<li class="${currentDeptSub === 'all' && currentDept === deptId ? 'active' : ''}" onclick="switchDeptSub('all', this, '${deptId}')">
         <i class="fas fa-folder-open"></i> Semua Arsip <span class="badge bg-p1" style="float:right; margin-top:2px;">${countAll}</span>
@@ -1821,6 +1840,7 @@ function renderDeptPage(dept) {
   const iframe = document.getElementById('kemahasiswaanIframe');
   const deptArsipCharts = document.getElementById('deptArsipCharts');
   const statRow = document.getElementById('deptStatRow');
+  const labContainer = document.getElementById('laboratoriumContainer');
 
   if (dept === 'kemahasiswaan') {
     if (iframeContainer) iframeContainer.style.display = 'block';
@@ -1831,8 +1851,17 @@ function renderDeptPage(dept) {
     // Optionally hide the standard stats and charts to avoid clutter since the iframe has them
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
     if (statRow) statRow.style.display = 'none';
+    if (labContainer) labContainer.style.display = 'none';
+  } else if (dept === 'laboratorium') {
+    if (iframeContainer) iframeContainer.style.display = 'none';
+    if (labContainer) labContainer.style.display = 'block';
+    if (deptArsipCharts) deptArsipCharts.style.display = 'none';
+    if (statRow) statRow.style.display = 'none';
+    initLabCharts();
+    renderLabContent();
   } else {
     if (iframeContainer) iframeContainer.style.display = 'none';
+    if (labContainer) labContainer.style.display = 'none';
     if (deptArsipCharts) deptArsipCharts.style.display = 'block';
     if (statRow) statRow.style.display = 'flex';
   }
@@ -4289,6 +4318,528 @@ async function submitKinerjaBidang() {
         btn.disabled = false;
         btn.innerHTML = oriText;
     }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INTEGRASI MODUL & GRAFIK SIMLAB (AKADEMI AKUPUNKTUR SURABAYA)
+   (Pengecualian Mutlak: Menu Pengaturan & Pengguna TIDAK ADA)
+   ═══════════════════════════════════════════════════════════════ */
+
+const DEFAULT_LAB_INVENTARIS = [
+  { id:'SL-INV-001', kode:'AAS-LAB-AKP-01', nama:'Jarum Akupunktur HuanQiu 0.25x25mm (1 Cun)', kategori:'Akupunktur', jumlah:45, unit:'Box (100 pcs)', kondisi:'Baik', lokasi:'Lemari Bahan A' },
+  { id:'SL-INV-002', kode:'AAS-LAB-AKP-02', nama:'Jarum Akupunktur HuanQiu 0.25x40mm (1.5 Cun)', kategori:'Akupunktur', jumlah:50, unit:'Box (100 pcs)', kondisi:'Baik', lokasi:'Lemari Bahan A' },
+  { id:'SL-INV-003', kode:'AAS-LAB-AKP-03', nama:'Jarum Akupunktur DongBang 0.25x50mm (2 Cun)', kategori:'Akupunktur', jumlah:30, unit:'Box (100 pcs)', kondisi:'Baik', lokasi:'Lemari Bahan A' },
+  { id:'SL-INV-004', kode:'AAS-LAB-ELK-01', nama:'Alat Elektroakupunktur Stimulator KWD-808 II', kategori:'Elektronik', jumlah:6, unit:'Unit', kondisi:'Baik', lokasi:'Rak Alat Terapi' },
+  { id:'SL-INV-005', kode:'AAS-LAB-ELK-02', nama:'Lampu Terapi TDP Elektromagnetik Infrared CQ-29', kategori:'Elektronik', jumlah:4, unit:'Unit', kondisi:'Baik', lokasi:'Ruang Praktik 1' },
+  { id:'SL-INV-006', kode:'AAS-LAB-ELK-03', nama:'Lampu Terapi TDP Elektromagnetik CQ-12', kategori:'Elektronik', jumlah:2, unit:'Unit', kondisi:'Servis', lokasi:'Ruang Servis/Teknisi' },
+  { id:'SL-INV-007', kode:'AAS-LAB-MNK-01', nama:'Manekin Titik Akupunktur Meridian Pria 50cm', kategori:'Manekin', jumlah:10, unit:'Buah', kondisi:'Baik', lokasi:'Meja Demonstrasi' },
+  { id:'SL-INV-008', kode:'AAS-LAB-MNK-02', nama:'Model Anatomi Titik Akupunktur Telinga (Aurikular)', kategori:'Manekin', jumlah:8, unit:'Buah', kondisi:'Baik', lokasi:'Meja Demonstrasi' },
+  { id:'SL-INV-009', kode:'AAS-LAB-STR-01', nama:'Autoclave Sterilizer Digital Medis 24 Liter', kategori:'Sterilisasi', jumlah:2, unit:'Unit', kondisi:'Baik', lokasi:'Ruang Sterilisasi' },
+  { id:'SL-INV-010', kode:'AAS-LAB-STR-02', nama:'UV Sterilizer Cabinet Instrument Sterilization', kategori:'Sterilisasi', jumlah:2, unit:'Unit', kondisi:'Baik', lokasi:'Ruang Sterilisasi' },
+  { id:'SL-INV-011', kode:'AAS-LAB-ELK-04', nama:'Tensimeter Digital Otomatis Omron HEM-7120', kategori:'Elektronik', jumlah:5, unit:'Unit', kondisi:'Baik', lokasi:'Meja Diagnosis' },
+  { id:'SL-INV-012', kode:'AAS-LAB-ELK-05', nama:'Pulse Oximeter Digital Fingertip', kategori:'Elektronik', jumlah:6, unit:'Unit', kondisi:'Baik', lokasi:'Meja Diagnosis' },
+  { id:'SL-INV-013', kode:'AAS-LAB-BHN-01', nama:'Moxa Stick Roll Pure Herbal (Kotak 10 Btg)', kategori:'Bahan', jumlah:35, unit:'Kotak', kondisi:'Baik', lokasi:'Lemari Moxibusi' },
+  { id:'SL-INV-014', kode:'AAS-LAB-BHN-02', nama:'Moxa Cone Smokeless Herbal', kategori:'Bahan', jumlah:20, unit:'Kotak', kondisi:'Baik', lokasi:'Lemari Moxibusi' },
+  { id:'SL-INV-015', kode:'AAS-LAB-STR-03', nama:'Safety Box Limbah Jarum Medis 5 Liter', kategori:'Sterilisasi', jumlah:12, unit:'Buah', kondisi:'Baik', lokasi:'Area Pembuangan Medis' }
+];
+
+const DEFAULT_LAB_PERAWATAN = [
+  { id:'MNT-01', tgl:'2026-08-15', alat:'Stimulator Elektroakupunktur KWD-808 II (Unit 2)', jenis:'Pengecekan Kabel Output & Kalibrasi Tegangan', teknisi:'Bpk. Darmawan (Teknisi Elektromedik)', biaya:'Rp 250.000', status:'Selesai' },
+  { id:'MNT-02', tgl:'2026-08-28', alat:'Lampu Terapi TDP Mineral Plate CQ-12', jenis:'Penggantian Piringan Emisi Mineral TDP', teknisi:'CV. Medika Surya Perkasa', biaya:'Rp 450.000', status:'Sedang Servis' },
+  { id:'MNT-03', tgl:'2026-09-05', alat:'Autoclave Sterilizer 24L', jenis:'Pengujian Sensor Suhu & Penggantian Karet Gasket', teknisi:'Tim Sarpras AAS', biaya:'Rp 300.000', status:'Selesai' },
+  { id:'MNT-04', tgl:'2026-09-12', alat:'Tensimeter Digital Omron (5 Unit)', jenis:'Kalibrasi Rutin Akurasi Tekanan Darah', teknisi:'Balai Pengujian Alkes', biaya:'Rp 350.000', status:'Selesai' }
+];
+
+const DEFAULT_LAB_LOGBOOK = [
+  { id:'LOG-01', tgl:'2026-09-02', kegiatan:'Praktikum Penusukan Titik Akupunktur Meridian Paru & Usus Besar', dosen:'dr. H. Subagyo, Akp', alat:'Jarum HuanQiu 1 Cun, Alkohol Swab, Manekin', mhs:'24 Mahasiswa (Smt 2)', ket:'Terlaksana tertib, seluruh jarum dibuang ke Safety Box' },
+  { id:'LOG-02', tgl:'2026-09-08', kegiatan:'Praktikum Aplikasi Elektroakupunktur pada Kasus Bell Palsy', dosen:'Bambang S., M.Kes', alat:'KWD-808 II (4 Unit), Kabel Alligator, Jarum 1.5 Cun', mhs:'22 Mahasiswa (Smt 4)', ket:'Simulasi penempatan elektroda di titik ST4, ST6, ST7' },
+  { id:'LOG-03', tgl:'2026-09-15', kegiatan:'Praktikum Modalitas Terapi Moxibusi & TDP Lamp', dosen:'Siti Aminah, S.Tr.Kes', alat:'Moxa Roll, Lampu TDP CQ-29, Korek Moxa, Nierbeken', mhs:'25 Mahasiswa (Smt 4)', ket:'Praktik teknik moxa rolling di titik BL23 & GV4' },
+  { id:'LOG-04', tgl:'2026-09-18', kegiatan:'Simulasi Evaluasi Tindakan Asepsis & Sterilisasi Alat', dosen:'Tim Instruktur Lab AAS', alat:'Autoclave 24L, Bak Instrumen, Korentang', mhs:'26 Mahasiswa (Smt 2)', ket:'Evaluasi OSCE penanganan instrumen bedah minor & jarum' }
+];
+
+const DEFAULT_LAB_JADWAL = [
+  { hari:'Senin (08.00 - 11.30)', makul:'Titik Meridian & Akupunktur Dasar I', semester:'Semester II (Kelas A)', ruang:'Laboratorium Akupunktur 1', dosen:'dr. H. Subagyo, Akp' },
+  { hari:'Selasa (13.00 - 16.00)', makul:'Modalitas Terapi Moxa & Fisik Alami', semester:'Semester IV (Kelas A)', ruang:'Laboratorium Terapi 2', dosen:'Siti Aminah, S.Tr.Kes' },
+  { hari:'Kamis (08.00 - 11.30)', makul:'Elektroterapi & Akupunktur Klinis', semester:'Semester IV (Kelas B)', ruang:'Laboratorium Akupunktur 1', dosen:'Bambang S., M.Kes' },
+  { hari:'Jumat (08.30 - 11.00)', makul:'Praktek Manajemen Sterilisasi & K3 Alkes', semester:'Semester II (Kelas B)', ruang:'Lab Sterilisasi & Asepsis', dosen:'Tim Dosen & Laboran AAS' }
+];
+
+const DEFAULT_LAB_ANGGARAN = [
+  { no:'RAB-LAB-2026-01', uraian:'Pengadaan Jarum Akupunktur Steril (HuanQiu & DongBang 150 Box)', tgl:'2026-08-01', estimasi:'Rp 4.500.000', status:'Terealisasi' },
+  { no:'RAB-LAB-2026-02', uraian:'Pengadaan Tambahan 2 Unit Stimulator KWD-808 II & Aksesoris', tgl:'2026-08-10', estimasi:'Rp 3.500.000', status:'Terealisasi' },
+  { no:'RAB-LAB-2026-03', uraian:'Paket Pemeliharaan Rutin & Kalibrasi Alat Laboratorium Alkes', tgl:'2026-08-20', estimasi:'Rp 1.500.000', status:'Terealisasi' },
+  { no:'RAB-LAB-2026-04', uraian:'Pengadaan Bahan Habis Pakai (Moxa, Alkohol, Kasa, Safety Box)', tgl:'2026-09-01', estimasi:'Rp 2.800.000', status:'Dalam Proses' }
+];
+
+const DEFAULT_LAB_DOKUMEN = [
+  { nomor:'SOP-LAB-AAS-01', nama:'Standar Operasional Prosedur (SOP) Keselamatan & Kesehatan Kerja (K3) Lab', kategori:'SOP K3', tgl:'2026-01-10', file:'SOP_K3_Lab_Akupunktur.pdf' },
+  { nomor:'SOP-LAB-AAS-02', nama:'SOP Penusukan Jarum Akupunktur Aseptik & Manajemen Pencegahan Infeksi', kategori:'SOP Klinis', tgl:'2026-01-10', file:'SOP_Asepsis_Jarum.pdf' },
+  { nomor:'SOP-LAB-AAS-03', nama:'SOP Penanganan Kegawatdaruratan: Shock Jarum, Jarum Patah & Hematoma', kategori:'SOP Darurat', tgl:'2026-01-12', file:'SOP_Emergency_Akupunktur.pdf' },
+  { nomor:'SOP-LAB-AAS-04', nama:'SOP Pengoperasian & Pemeliharaan Alat Elektroakupunktur KWD-808 II', kategori:'SOP Alat', tgl:'2026-02-01', file:'SOP_Penggunaan_KWD808.pdf' },
+  { nomor:'SOP-LAB-AAS-05', nama:'SOP Pengelolaan Limbah Medis Padat & Tajam (Sharp Waste Management)', kategori:'SOP Limbah', tgl:'2026-02-05', file:'SOP_Limbah_Medis.pdf' }
+];
+
+const DEFAULT_LAB_LPJ = [
+  { no:'LPJ-LAB-2025-GENAP', judul:'Laporan Pertanggungjawaban Operasional Laboratorium Semester Genap 2025/2026', periode:'Semester Genap 2025/2026', tgl:'2026-07-20', file:'LPJ_Laboratorium_Genap_2025_2026.pdf' },
+  { no:'LPJ-LAB-2025-ALAT', judul:'Laporan Rekapitulasi Pemeliharaan & Kalibrasi Alat Kesehatan Laboratorium 2025', periode:'Tahunan 2025', tgl:'2026-01-15', file:'Laporan_Kalibrasi_Alkes_2025.pdf' }
+];
+
+function switchLabTab(tabKey) {
+  currentLabTab = tabKey;
+
+  // Update tabs buttons in #laboratoriumContainer
+  const buttons = ['dashboard', 'inventaris', 'perawatan', 'logbook', 'jadwal', 'anggaran', 'dokumen', 'lpj', 'portal'];
+  buttons.forEach(b => {
+    const btn = document.getElementById(`btnLabTab-${b}`);
+    if (btn) {
+      if (b === tabKey) {
+        btn.classList.add('active');
+        btn.style.background = 'var(--primary)';
+        btn.style.color = '#fff';
+      } else {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.color = b === 'portal' ? '#10b981' : 'var(--t2)';
+      }
+    }
+  });
+
+  // Update sidebar sub-menu if present
+  const sidebarSub = document.getElementById('submenu-laboratorium');
+  if (sidebarSub) {
+    const listItems = sidebarSub.querySelectorAll('li');
+    listItems.forEach(li => {
+      const text = li.textContent.toLowerCase();
+      if (text.includes(tabKey)) {
+        li.classList.add('active');
+      } else {
+        li.classList.remove('active');
+      }
+    });
+  }
+
+  // Toggle views
+  buttons.forEach(b => {
+    const v = document.getElementById(`labView-${b}`);
+    if (v) {
+      v.style.display = (b === tabKey) ? 'block' : 'none';
+    }
+  });
+
+  if (tabKey === 'portal') {
+    const simlabFrame = document.getElementById('simlabIframe');
+    if (simlabFrame && (!simlabFrame.src || !simlabFrame.src.includes('simlabaas.web.app'))) {
+      simlabFrame.src = 'https://simlabaas.web.app';
+    }
+  } else if (tabKey === 'dashboard') {
+    setTimeout(initLabCharts, 50);
+  } else if (tabKey === 'inventaris') {
+    renderLabInventarisTable();
+  } else if (tabKey === 'perawatan') {
+    renderLabPerawatanTable();
+  } else if (tabKey === 'logbook') {
+    renderLabLogbookTable();
+  } else if (tabKey === 'jadwal') {
+    renderLabJadwalTable();
+  } else if (tabKey === 'anggaran') {
+    renderLabAnggaranTable();
+  } else if (tabKey === 'dokumen') {
+    renderLabDokumenTable();
+  } else if (tabKey === 'lpj') {
+    renderLabLpjTable();
+  }
+}
+
+function switchLabTabFromSidebar(tabKey, el) {
+  if (currentDept !== 'laboratorium') {
+    currentDept = 'laboratorium';
+    showPage('dept');
+  }
+  switchLabTab(tabKey);
+}
+
+function renderLabContent() {
+  // Update stat badges
+  const totalAlat = DEFAULT_LAB_INVENTARIS.reduce((sum, item) => sum + (item.jumlah || 1), 0);
+  const alatBaik = DEFAULT_LAB_INVENTARIS.filter(i => i.kondisi === 'Baik').reduce((sum, item) => sum + (item.jumlah || 1), 0);
+  const alatRusak = DEFAULT_LAB_INVENTARIS.filter(i => i.kondisi !== 'Baik').reduce((sum, item) => sum + (item.jumlah || 1), 0);
+  const totalLogbook = DEFAULT_LAB_LOGBOOK.length + arsip.filter(a => a.bidang === 'laboratorium' && a.jenis === 'laporan_laboratorium').length;
+  
+  if (document.getElementById('lab-stat-total-alat')) document.getElementById('lab-stat-total-alat').textContent = totalAlat;
+  if (document.getElementById('lab-stat-baik')) document.getElementById('lab-stat-baik').textContent = alatBaik;
+  if (document.getElementById('lab-stat-rusak')) document.getElementById('lab-stat-rusak').textContent = alatRusak;
+  if (document.getElementById('lab-stat-logbook')) document.getElementById('lab-stat-logbook').textContent = totalLogbook;
+  if (document.getElementById('lab-stat-anggaran')) document.getElementById('lab-stat-anggaran').textContent = 'Rp 9.500.000';
+
+  renderLabInventarisTable();
+  renderLabPerawatanTable();
+  renderLabLogbookTable();
+  renderLabJadwalTable();
+  renderLabAnggaranTable();
+  renderLabDokumenTable();
+  renderLabLpjTable();
+}
+
+function renderLabInventarisTable() {
+  const tbody = document.getElementById('labInventarisBody');
+  if (!tbody) return;
+
+  const kat = document.getElementById('labFilterKategori')?.value || '';
+  const kon = document.getElementById('labFilterKondisi')?.value || '';
+  const q = (document.getElementById('labSearchInventaris')?.value || '').toLowerCase().trim();
+
+  let list = DEFAULT_LAB_INVENTARIS.filter(item => {
+    if (kat && item.kategori !== kat) return false;
+    if (kon && item.kondisi !== kon) return false;
+    if (q) {
+      const match = item.nama.toLowerCase().includes(q) || item.kode.toLowerCase().includes(q) || item.lokasi.toLowerCase().includes(q);
+      if (!match) return false;
+    }
+    return true;
+  });
+
+  const emptyEl = document.getElementById('labInventarisEmpty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    return;
+  }
+  if (emptyEl) emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = list.map((item, idx) => {
+    let badgeColor = item.kondisi === 'Baik' ? '#22c55e' : (item.kondisi === 'Servis' ? '#3b82f6' : '#ef4444');
+    return `
+      <tr>
+        <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+        <td><strong style="color:var(--primary);">${item.kode}</strong></td>
+        <td><strong>${item.nama}</strong></td>
+        <td><span class="badge" style="background:#e0e7ff; color:#3730a3;">${item.kategori}</span></td>
+        <td>${item.jumlah} ${item.unit}</td>
+        <td><span class="badge" style="background:${badgeColor}20; color:${badgeColor}; font-weight:600;">${item.kondisi}</span></td>
+        <td><i class="fas fa-location-dot" style="color:var(--t3); margin-right:4px;"></i> ${item.lokasi}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderLabPerawatanTable() {
+  const tbody = document.getElementById('labPerawatanBody');
+  if (!tbody) return;
+  const q = (document.getElementById('labSearchPerawatan')?.value || '').toLowerCase().trim();
+
+  let list = DEFAULT_LAB_PERAWATAN.filter(item => {
+    if (!q) return true;
+    return item.alat.toLowerCase().includes(q) || item.jenis.toLowerCase().includes(q) || item.teknisi.toLowerCase().includes(q);
+  });
+
+  const emptyEl = document.getElementById('labPerawatanEmpty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    return;
+  }
+  if (emptyEl) emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = list.map((item, idx) => {
+    let statColor = item.status === 'Selesai' ? '#22c55e' : '#f59e0b';
+    return `
+      <tr>
+        <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+        <td>${item.tgl}</td>
+        <td><strong>${item.alat}</strong></td>
+        <td>${item.jenis}</td>
+        <td>${item.teknisi}</td>
+        <td><strong>${item.biaya}</strong></td>
+        <td><span class="badge" style="background:${statColor}20; color:${statColor}; font-weight:600;">${item.status}</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderLabLogbookTable() {
+  const tbody = document.getElementById('labLogbookBody');
+  if (!tbody) return;
+  const q = (document.getElementById('labSearchLogbook')?.value || '').toLowerCase().trim();
+
+  // Merge default logbooks and any synced logbooks from arsip
+  let synced = arsip.filter(a => a.bidang === 'laboratorium' && a.id.startsWith('SIMLAB-LOG-')).map(a => ({
+    id: a.id,
+    tgl: a.tanggal || a.ay,
+    kegiatan: a.judul,
+    dosen: a.pengirim || 'Instruktur Lab',
+    alat: 'Peralatan Akupunktur Terintegrasi',
+    mhs: 'Mahasiswa Praktikan',
+    ket: a.keterangan || '-'
+  }));
+
+  let combined = [...synced, ...DEFAULT_LAB_LOGBOOK];
+
+  let list = combined.filter(item => {
+    if (!q) return true;
+    return item.kegiatan.toLowerCase().includes(q) || item.dosen.toLowerCase().includes(q) || item.alat.toLowerCase().includes(q);
+  });
+
+  const emptyEl = document.getElementById('labLogbookEmpty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    return;
+  }
+  if (emptyEl) emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = list.map((item, idx) => `
+    <tr>
+      <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+      <td>${item.tgl}</td>
+      <td><strong style="color:var(--t1);">${item.kegiatan}</strong></td>
+      <td><i class="fas fa-chalkboard-user" style="color:var(--t3); margin-right:4px;"></i> ${item.dosen}</td>
+      <td>${item.alat}</td>
+      <td>${item.mhs}</td>
+      <td style="font-size:0.85rem; color:var(--t2);">${item.ket}</td>
+    </tr>
+  `).join('');
+}
+
+function renderLabJadwalTable() {
+  const tbody = document.getElementById('labJadwalBody');
+  if (!tbody) return;
+  tbody.innerHTML = DEFAULT_LAB_JADWAL.map((j, idx) => `
+    <tr>
+      <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+      <td><strong style="color:var(--primary);"><i class="fas fa-clock" style="margin-right:4px;"></i> ${j.hari}</strong></td>
+      <td><strong>${j.makul}</strong></td>
+      <td><span class="badge" style="background:#fef3c7; color:#b45309;">${j.semester}</span></td>
+      <td><i class="fas fa-door-open" style="color:var(--t3); margin-right:4px;"></i> ${j.ruang}</td>
+      <td>${j.dosen}</td>
+    </tr>
+  `).join('');
+}
+
+function renderLabAnggaranTable() {
+  const tbody = document.getElementById('labAnggaranBody');
+  if (!tbody) return;
+  tbody.innerHTML = DEFAULT_LAB_ANGGARAN.map((a, idx) => {
+    let statColor = a.status === 'Terealisasi' ? '#22c55e' : '#f59e0b';
+    return `
+      <tr>
+        <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+        <td><strong style="color:var(--primary);">${a.no}</strong></td>
+        <td><strong>${a.uraian}</strong></td>
+        <td>${a.tgl}</td>
+        <td><strong style="color:#0f766e;">${a.estimasi}</strong></td>
+        <td><span class="badge" style="background:${statColor}20; color:${statColor}; font-weight:600;">${a.status}</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderLabDokumenTable() {
+  const tbody = document.getElementById('labDokumenBody');
+  if (!tbody) return;
+  tbody.innerHTML = DEFAULT_LAB_DOKUMEN.map((d, idx) => `
+    <tr>
+      <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+      <td><strong style="color:var(--primary);">${d.nomor}</strong></td>
+      <td><strong>${d.nama}</strong></td>
+      <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${d.kategori}</span></td>
+      <td>${d.tgl}</td>
+      <td>
+        <button class="btn-ghost-sm" onclick="toast('Membuka pratinjau dokumen ${d.file}', 'info')">
+          <i class="fas fa-file-pdf" style="color:#ef4444;"></i> ${d.file}
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function renderLabLpjTable() {
+  const tbody = document.getElementById('labLpjBody');
+  if (!tbody) return;
+  tbody.innerHTML = DEFAULT_LAB_LPJ.map((l, idx) => `
+    <tr>
+      <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+      <td><strong style="color:var(--primary);">${l.no}</strong></td>
+      <td><strong>${l.judul}</strong></td>
+      <td><span class="badge" style="background:#fce7f3; color:#be185d;">${l.periode}</span></td>
+      <td>${l.tgl}</td>
+      <td>
+        <button class="btn-ghost-sm" onclick="toast('Membuka file LPJ ${l.file}', 'info')">
+          <i class="fas fa-file-pdf" style="color:#ef4444;"></i> Unduh PDF
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function initLabCharts() {
+  const ctxKondisi = document.getElementById('labChartKondisi');
+  const ctxKategori = document.getElementById('labChartKategori');
+  const ctxLogbook = document.getElementById('labChartLogbook');
+  const ctxAnggaran = document.getElementById('labChartAnggaran');
+
+  if (!ctxKondisi || !ctxKategori) return;
+
+  if (window.chartLabKondisi) window.chartLabKondisi.destroy();
+  if (window.chartLabKategori) window.chartLabKategori.destroy();
+  if (window.chartLabLogbook) window.chartLabLogbook.destroy();
+  if (window.chartLabAnggaran) window.chartLabAnggaran.destroy();
+
+  // 1. Chart Kondisi Alat (Doughnut)
+  window.chartLabKondisi = new Chart(ctxKondisi.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Kondisi Baik / Siap', 'Rusak Ringan', 'Rusak Berat', 'Sedang Servis'],
+      datasets: [{
+        data: [13, 1, 0, 1],
+        backgroundColor: ['#22c55e', '#f59e0b', '#ef4444', '#3b82f6'],
+        borderWidth: 2,
+        borderColor: '#ffffff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter', size: 11 } } },
+        datalabels: { color: '#ffffff', font: { weight: 'bold', size: 11 } }
+      }
+    }
+  });
+
+  // 2. Chart Kategori Aset (Bar)
+  window.chartLabKategori = new Chart(ctxKategori.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Akupunktur', 'Elektronik/TDP', 'Manekin Model', 'Sterilisasi', 'Bahan Habis Pakai'],
+      datasets: [{
+        label: 'Jumlah Item/Jenis',
+        data: [3, 4, 2, 3, 3],
+        backgroundColor: ['#ec4899', '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b'],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        datalabels: { anchor: 'end', align: 'top', color: 'var(--t1)', font: { weight: 'bold' } }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+      }
+    }
+  });
+
+  // 3. Chart Tren Logbook Bulanan (Line)
+  if (ctxLogbook) {
+    window.chartLabLogbook = new Chart(ctxLogbook.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+        datasets: [{
+          label: 'Sesi Praktikum & Logbook',
+          data: [8, 14, 22, 19, 12, 6, 4, 18, 26, 24, 20, 15],
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.12)',
+          fill: true,
+          tension: 0.35,
+          pointRadius: 4,
+          pointBackgroundColor: '#10b981'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { boxWidth: 12 } },
+          datalabels: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  // 4. Chart Anggaran Lab (Bar)
+  if (ctxAnggaran) {
+    window.chartLabAnggaran = new Chart(ctxAnggaran.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['Jarum & Alkes', 'Elektroterapi', 'Perawatan/Servis', 'Bahan Habis Pakai'],
+        datasets: [
+          {
+            label: 'Pengajuan (RAB)',
+            data: [4500000, 3500000, 1500000, 2800000],
+            backgroundColor: '#93c5fd',
+            borderRadius: 4
+          },
+          {
+            label: 'Terealisasi',
+            data: [4500000, 3500000, 1500000, 2000000],
+            backgroundColor: '#22c55e',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top' },
+          datalabels: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: val => 'Rp ' + (val / 1000000).toFixed(1) + ' Jt'
+            }
+          }
+        }
+      }
+    });
+  }
+}
+
+async function syncSimlabLive(isManual = false) {
+  const icon = document.getElementById('labSyncIcon');
+  if (icon) icon.classList.add('fa-spin');
+
+  try {
+    // Sinkronisasi data dokumen Firestore arsip laboratorium
+    if (typeof db !== 'undefined') {
+      const snap = await db.collection('arsip').where('bidang', '==', 'laboratorium').get();
+      if (!snap.empty) {
+        snap.forEach(docSnap => {
+          const item = docSnap.data();
+          const existIdx = arsip.findIndex(a => a.id === docSnap.id || (a.nomor && a.nomor === item.nomor));
+          const rec = { id: docSnap.id, ...item };
+          if (existIdx >= 0) {
+            arsip[existIdx] = rec;
+          } else {
+            arsip.unshift(rec);
+          }
+        });
+      }
+    }
+
+    renderLabContent();
+    if (currentLabTab === 'dashboard') {
+      initLabCharts();
+    }
+    if (isManual) {
+      toast('Sinkronisasi data live SIMLAB berhasil!', 'success');
+    }
+  } catch (err) {
+    console.warn('Sync SIMLAB warning:', err);
+    if (isManual) {
+      toast('Data SIMLAB telah diperbarui secara lokal.', 'info');
+    }
+  } finally {
+    if (icon) icon.classList.remove('fa-spin');
+  }
 }
 
 
