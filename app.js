@@ -5502,30 +5502,68 @@ function switchSaranaTabFromSidebar(tabKey, el) {
   switchSaranaTab(tabKey);
 }
 
+let currentSaranaAY = '';
+
+function onSaranaFilterTahunAkademikChange(val) {
+  currentSaranaAY = val;
+  renderSaranaContent();
+  if (currentSaranaTab === 'dashboard') {
+    initSaranaCharts();
+  }
+  if (typeof toast === 'function') {
+    toast(`Filter Tahun Akademik Sarpras: ${val || 'Semua TA'}`, 'info');
+  }
+}
+
+function filterSaranaByAY(data) {
+  if (!data || !Array.isArray(data)) return [];
+  if (!currentSaranaAY || currentSaranaAY === 'Semua') return data;
+  const yr = (currentSaranaAY.match(/\d{4}/) || [''])[0];
+  return data.filter(item => {
+    if (item.tahunAkademik) {
+      if (item.tahunAkademik === currentSaranaAY || item.tahunAkademik.includes(currentSaranaAY) || currentSaranaAY.includes(item.tahunAkademik)) return true;
+      if (yr && item.tahunAkademik.includes(yr)) return true;
+    }
+    if (yr) {
+      const d = item.tanggal || item.tgl || item.tglPengadaan || item.tglPinjam || item.tglServis || item.ay || item.noPinjam || item.noRAB || item.nomor || item.kode || '';
+      if (String(d).includes(yr)) return true;
+    }
+    return false;
+  });
+}
+
 function renderSaranaContent() {
   const syncedInv = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-INVENTARIS-') || (a.metadata && a.metadata.module === 'inventaris')));
-  const combinedInv = syncedInv.length > 0 ? syncedInv.map(a => ({
+  let combinedInv = syncedInv.length > 0 ? syncedInv.map(a => ({
     kode: a.nomor || a.id,
     nama: a.judul,
     kategori: a.keterangan.includes('Kategori: ') ? a.keterangan.split('Kategori: ')[1].split('•')[0].trim() : 'Sarana & Prasarana',
     kondisi: a.keterangan.includes('Kondisi: ') ? a.keterangan.split('Kondisi: ')[1].split('•')[0].trim() : 'Baik',
+    tanggal: a.tanggal || a.ay || '2026',
     jumlah: 1
   })) : DEFAULT_SARANA_INVENTARIS;
+
+  combinedInv = filterSaranaByAY(combinedInv);
 
   const totalAset = combinedInv.reduce((sum, item) => sum + (Number(item.jumlah) || 1), 0);
   const baikCount = combinedInv.filter(i => (i.kondisi || '').toLowerCase().includes('baik')).reduce((sum, item) => sum + (Number(item.jumlah) || 1), 0);
   const rusakCount = combinedInv.filter(i => (i.kondisi || '').toLowerCase().includes('rusak')).reduce((sum, item) => sum + (Number(item.jumlah) || 1), 0);
 
-  const syncedPinjam = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-PEMINJAMAN-') || (a.metadata && a.metadata.module === 'peminjaman')));
-  const totalPinjam = DEFAULT_SARANA_PEMINJAMAN.length + syncedPinjam.length;
+  const syncedPinjam = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-PEMINJAMAN-') || (a.metadata && a.metadata.module === 'peminjaman'))).map(a => ({
+    ...a,
+    tglPinjam: a.tanggal || '2026'
+  }));
+  const combinedPinjam = filterSaranaByAY([...syncedPinjam, ...DEFAULT_SARANA_PEMINJAMAN]);
+  const totalPinjam = combinedPinjam.length;
 
-  const syncedRab = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-ANGGARAN-') || a.rab_amount || a.isAnggaran));
-  let totalRealisasi = DEFAULT_SARANA_ANGGARAN.filter(a => a.status === 'Terealisasi').reduce((sum, item) => sum + item.totalNum, 0);
-  syncedRab.forEach(a => {
-    if (a.rab_status === 'Terealisasi' || a.status === 'selesai') {
-      totalRealisasi += (Number(a.rab_amount) || 0);
-    }
-  });
+  const syncedRab = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-ANGGARAN-') || a.rab_amount || a.isAnggaran)).map(a => ({
+    ...a,
+    status: a.rab_status || (a.status === 'selesai' ? 'Terealisasi' : 'Direncanakan'),
+    totalNum: Number(a.rab_amount) || 0,
+    tanggal: a.tanggal || '2026'
+  }));
+  const combinedRab = filterSaranaByAY([...syncedRab, ...DEFAULT_SARANA_ANGGARAN]);
+  const totalRealisasi = combinedRab.filter(a => a.status === 'Terealisasi').reduce((sum, item) => sum + (item.totalNum || 0), 0);
 
   if (document.getElementById('sarana-stat-total-aset')) document.getElementById('sarana-stat-total-aset').textContent = totalAset;
   if (document.getElementById('sarana-stat-baik')) document.getElementById('sarana-stat-baik').textContent = baikCount;
@@ -5563,7 +5601,7 @@ function renderSaranaInventarisTable() {
     harga: a.keterangan.includes('Nilai: ') ? a.keterangan.split('Nilai: ')[1].split('•')[0].trim() : '-'
   }));
 
-  const combined = [...synced, ...DEFAULT_SARANA_INVENTARIS];
+  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_INVENTARIS]);
 
   const list = combined.filter(item => {
     if (kat && !item.kategori.toLowerCase().includes(kat.toLowerCase())) return false;
@@ -5618,7 +5656,7 @@ function renderSaranaPeminjamanTable() {
     status: a.status === 'selesai' ? 'Dikembalikan' : 'Dipinjam'
   }));
 
-  const combined = [...synced, ...DEFAULT_SARANA_PEMINJAMAN];
+  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_PEMINJAMAN]);
 
   const list = combined.filter(item => {
     if (stat && item.status !== stat) return false;
@@ -5672,7 +5710,7 @@ function renderSaranaAnggaranTable() {
     status: a.rab_status || (a.status === 'selesai' ? 'Terealisasi' : 'Direncanakan')
   }));
 
-  const combined = [...synced, ...DEFAULT_SARANA_ANGGARAN];
+  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_ANGGARAN]);
 
   const list = combined.filter(item => {
     if (stat && item.status !== stat) return false;
@@ -5724,7 +5762,7 @@ function renderSaranaSopTable() {
     status: 'Berlaku'
   }));
 
-  const combined = [...synced, ...DEFAULT_SARANA_SOP];
+  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_SOP]);
 
   const list = combined.filter(item => {
     if (!q) return true;
@@ -5768,7 +5806,7 @@ function renderSaranaPengawasanTable() {
     rekomendasi: a.keterangan.includes('Rekomendasi: ') ? a.keterangan.split('Rekomendasi: ')[1].split('•')[0].trim() : 'Pemeliharaan rutin'
   }));
 
-  const combined = [...synced, ...DEFAULT_SARANA_PENGAWASAN];
+  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_PENGAWASAN]);
 
   const list = combined.filter(item => {
     if (!q) return true;
@@ -5813,7 +5851,7 @@ function renderSaranaPemeliharaanTable() {
     status: a.status === 'selesai' ? 'Selesai' : 'Diproses'
   }));
 
-  const combined = [...synced, ...DEFAULT_SARANA_PEMELIHARAAN];
+  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_PEMELIHARAAN]);
 
   const list = combined.filter(item => {
     if (!q) return true;
@@ -5861,7 +5899,7 @@ function renderSaranaLaporanTable() {
     ket: a.keterangan || '-'
   }));
 
-  const combined = [...synced, ...DEFAULT_SARANA_LAPORAN];
+  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_LAPORAN]);
 
   const list = combined.filter(item => {
     if (!q) return true;

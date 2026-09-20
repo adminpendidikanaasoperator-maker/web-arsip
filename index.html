@@ -1491,7 +1491,18 @@
           <i class="fas fa-window-maximize"></i> Web App SIMSPRAS
         </button>
 
-        <div style="margin-left:auto; display:flex; gap:8px;">
+        <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+          <div style="display:flex; align-items:center; gap:6px; background:var(--bg3); border:1px solid var(--b2); border-radius:6px; padding:3px 10px;">
+            <label style="font-size:0.8rem; font-weight:700; color:var(--primary); margin:0; display:flex; align-items:center; gap:4px;"><i class="fas fa-calendar-alt"></i> TA:</label>
+            <select id="saranaFilterTahunAkademik" onchange="onSaranaFilterTahunAkademikChange(this.value)" style="background:transparent; border:none; color:var(--t1); font-size:0.8rem; font-weight:600; outline:none; cursor:pointer;">
+              <option value="">Semua TA</option>
+              <option value="2026/2027 Ganjil">2026/2027 Ganjil</option>
+              <option value="2026/2027 Genap">2026/2027 Genap</option>
+              <option value="2025/2026 Ganjil">2025/2026 Ganjil</option>
+              <option value="2025/2026 Genap">2025/2026 Genap</option>
+              <option value="2024/2025">2024/2025</option>
+            </select>
+          </div>
           <button type="button" class="btn-ghost-sm" onclick="syncSarprasFromSumber()" style="background:var(--bg3); border:1px solid var(--b2); color:var(--primary); font-weight:600; border-radius:6px;" title="Sinkronkan data live dari Firestore sim-sarpras-ef3a4">
             <i class="fas fa-rotate" id="saranaSyncIcon"></i> Sinkron Data Live
           </button>
