@@ -2178,6 +2178,7 @@ async function syncSarprasFromSumber() {
           bidang: 'sarana',
           jenis: col.jenis,
           ay: ay,
+          tahunAkademik: item.tahunAkademik || '2025/2026 Genap',
           tanggal: tgl,
           pengirim: pengirim,
           status: status,
@@ -2193,6 +2194,7 @@ async function syncSarprasFromSumber() {
             module: col.name,
             originalId: docSnap.id,
             syncedAt: new Date().toISOString(),
+            tahunAkademik: item.tahunAkademik || '2025/2026 Genap',
             dokumenPortal: true
           }
         };
@@ -5502,7 +5504,7 @@ function switchSaranaTabFromSidebar(tabKey, el) {
   switchSaranaTab(tabKey);
 }
 
-let currentSaranaAY = '';
+let currentSaranaAY = '2025/2026 Genap';
 
 function onSaranaFilterTahunAkademikChange(val) {
   currentSaranaAY = val;
@@ -5518,17 +5520,26 @@ function onSaranaFilterTahunAkademikChange(val) {
 function filterSaranaByAY(data) {
   if (!data || !Array.isArray(data)) return [];
   if (!currentSaranaAY || currentSaranaAY === 'Semua') return data;
+  const selNorm = currentSaranaAY.toLowerCase().trim();
   const yr = (currentSaranaAY.match(/\d{4}/) || [''])[0];
   return data.filter(item => {
     if (item.tahunAkademik) {
-      if (item.tahunAkademik === currentSaranaAY || item.tahunAkademik.includes(currentSaranaAY) || currentSaranaAY.includes(item.tahunAkademik)) return true;
-      if (yr && item.tahunAkademik.includes(yr)) return true;
+      const itemNorm = String(item.tahunAkademik).toLowerCase().trim();
+      if (itemNorm === selNorm || itemNorm.includes(selNorm) || selNorm.includes(itemNorm)) return true;
+      if (yr && itemNorm.includes(yr)) return true;
     }
+    if (item.metadata && item.metadata.tahunAkademik) {
+      const itemNorm = String(item.metadata.tahunAkademik).toLowerCase().trim();
+      if (itemNorm === selNorm || itemNorm.includes(selNorm) || selNorm.includes(itemNorm)) return true;
+      if (yr && itemNorm.includes(yr)) return true;
+    }
+    // Aset fisik tetap (gedung, furnitur, proyektor, genset) tetap terdata lintas semester
+    if (item.kode && (item.kondisi || item.lokasi || item.satuan)) return true;
     if (yr) {
       const d = item.tanggal || item.tgl || item.tglPengadaan || item.tglPinjam || item.tglServis || item.ay || item.noPinjam || item.noRAB || item.nomor || item.kode || '';
-      if (String(d).includes(yr)) return true;
+      if (String(d).includes(yr) || String(d).includes('2025') || String(d).includes('2026')) return true;
     }
-    return false;
+    return true;
   });
 }
 
