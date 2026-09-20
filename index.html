@@ -1023,6 +1023,29 @@
         <p id="deptBannerSub">Manajemen arsip</p>
       </div>
     </div>
+
+    <!-- ════════════ SARANA PRASARANA (SIMSPRAS) INTEGRATION BANNER ════════════ -->
+    <div id="saranaSyncBanner" style="display:none; background:linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(14, 165, 233, 0.02) 100%); border:1px solid rgba(14, 165, 233, 0.25); border-radius:var(--r2); padding:14px 18px; margin-top:16px; margin-bottom:16px; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; box-shadow:var(--sh1);">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:40px; height:40px; border-radius:10px; background:rgba(14, 165, 233, 0.15); color:#0ea5e9; display:flex; align-items:center; justify-content:center; font-size:1.15rem; flex-shrink:0;">
+          <i class="fas fa-tools"></i>
+        </div>
+        <div>
+          <div style="font-weight:700; color:var(--t1); font-size:0.95rem; display:flex; align-items:center; gap:8px;">
+            Integrasi Portal Sarana &amp; Prasarana (SIMSPRAS)
+            <span class="badge" style="background:rgba(14,165,233,0.15); color:#0ea5e9; border:1px solid rgba(14,165,233,0.3); font-size:10px; padding:2px 8px; border-radius:12px; font-weight:600;">Live Sync</span>
+          </div>
+          <div style="font-size:0.8rem; color:var(--t2); margin-top:2px;">
+            Terhubung ke database SIMSPRAS AAS (Inventaris, Rencana Anggaran/RAB, SOP, Pengawasan Fisik, Servis, Peminjaman, &amp; Laporan Kegiatan).
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+        <button type="button" onclick="syncSarprasFromSumber()" id="btnSyncSarpras" class="btn btn-sm" style="background:#0ea5e9; color:#fff; font-size:0.82rem; padding:8px 16px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:7px; font-weight:600; box-shadow:0 2px 8px rgba(14,165,233,0.3);">
+          <i class="fas fa-sync-alt" id="iconSyncSarpras"></i> Sinkronkan Data Sarpras
+        </button>
+      </div>
+    </div>
           <!-- DASHBOARD ANGGARAN (RAB) PER BIDANG -->
       <div style="margin-top: 20px; margin-bottom: 20px; display: none;" id="dept-dashboard-anggaran-section">
         <h2 style="color: var(--p1); font-size: 1.15rem; margin-bottom: 10px;"><i class="fas fa-money-check-alt" style="margin-right:8px;"></i> Monitor Rencana Anggaran Biaya (RAB)</h2>

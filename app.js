@@ -1874,6 +1874,11 @@ function renderDeptPage(dept) {
     }
   }
 
+  const saranaBanner = document.getElementById('saranaSyncBanner');
+  if (saranaBanner) {
+    saranaBanner.style.display = (dept === 'sarana') ? 'flex' : 'none';
+  }
+
   document.getElementById('deptTableTitle').textContent=`Daftar Arsip ${d.label}`;
   document.getElementById('deptSearch').value='';
   populateFilterJenis(dept,'deptFilterJenis');
@@ -1989,6 +1994,209 @@ async function syncKemahasiswaanFromSumber() {
     if (btn) {
       btn.disabled = false;
       btn.innerHTML = '<i class="fas fa-sync-alt"></i> Sinkronkan Data Kemahasiswaan';
+    }
+  }
+}
+
+let dbSarprasSumber = null;
+async function syncSarprasFromSumber() {
+  const btn = document.getElementById('btnSyncSarpras');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyinkronkan...';
+  }
+  if (typeof toast === 'function') {
+    toast('Mulai sinkronisasi data dari portal SIMSPRAS...', 'info');
+  }
+
+  try {
+    if (!dbSarprasSumber && typeof firebase !== 'undefined') {
+      let appSarpras;
+      if (!firebase.apps.find(a => a.name === "sarprasSumber")) {
+        appSarpras = firebase.initializeApp({
+          apiKey: "AIzaSyATNPIY3Iv5tmx9MKh7N6cz-czK0oC8SfY",
+          authDomain: "sim-sarpras-ef3a4.firebaseapp.com",
+          projectId: "sim-sarpras-ef3a4"
+        }, 'sarprasSumber');
+      } else {
+        appSarpras = firebase.app("sarprasSumber");
+      }
+      dbSarprasSumber = appSarpras.firestore();
+    }
+
+    if (!dbSarprasSumber) {
+      throw new Error("Gagal menginisialisasi koneksi Firestore SIMSPRAS.");
+    }
+
+    let totalSynced = 0;
+    const collections = [
+      { name: 'inventaris', key: 'INVENTARIS', jenis: 'k6_1' },
+      { name: 'anggaran', key: 'ANGGARAN', jenis: 'umum_rab' },
+      { name: 'sop', key: 'SOP', jenis: 'umum_sk' },
+      { name: 'pengawasan', key: 'PENGAWASAN', jenis: 'k6_1' },
+      { name: 'pemeliharaan', key: 'PEMELIHARAAN', jenis: 'k6_1' },
+      { name: 'peminjaman', key: 'PEMINJAMAN', jenis: 'k6_1' },
+      { name: 'laporan', key: 'LAPORAN', jenis: 'umum_laporan' },
+      { name: 'berita_acara', key: 'BA', jenis: 'k6_14' }
+    ];
+
+    for (const col of collections) {
+      const snap = await dbSarprasSumber.collection(col.name).get();
+      for (const docSnap of snap.docs) {
+        const item = docSnap.data();
+        const portalId = `SIMSPRAS-${col.key}-${docSnap.id}`;
+        
+        let judul = item.nama || item.namaBarang || item.judul || 'Dokumen Sarpras';
+        let ket = [];
+        let tgl = item.tanggal || (item.createdAt ? item.createdAt.slice(0, 10) : new Date().toISOString().slice(0, 10));
+        let pengirim = item.petugas || item.pelapor || item.pj || 'Sistem SIMSPRAS (Sarana & Prasarana AAS)';
+        let nomor = item.kode || item.nomor || item.noBA || portalId;
+        let status = 'aktif';
+        let rab_amount = 0;
+        let rab_status = '';
+
+        if (col.name === 'inventaris') {
+          judul = `Inventaris: ${item.namaBarang || item.nama || 'Aset'}`;
+          if (item.kode) { ket.push(`Kode: ${item.kode}`); nomor = item.kode; }
+          if (item.kategori) ket.push(`Kategori: ${item.kategori}`);
+          if (item.merk) ket.push(`Merk: ${item.merk}`);
+          if (item.lokasi) ket.push(`Lokasi: ${item.lokasi}`);
+          if (item.kondisi) ket.push(`Kondisi: ${item.kondisi}`);
+          if (item.jumlah) ket.push(`Jumlah: ${item.jumlah} ${item.satuan || 'unit'}`);
+          if (item.harga) ket.push(`Nilai: Rp ${(Number(String(item.harga).replace(/[^0-9]/g, '')) || 0).toLocaleString('id-ID')}`);
+          tgl = item.tglPengadaan || item.tglMasuk || item.tanggal || tgl;
+          status = (item.kondisi === 'Rusak Berat' ? 'diproses' : 'aktif');
+        } else if (col.name === 'anggaran') {
+          judul = `RAB Sarpras: ${item.kegiatan || item.uraian || item.nama || 'Pengajuan Anggaran'}`;
+          if (item.nomor) nomor = item.nomor;
+          if (item.kategori) ket.push(`Kategori: ${item.kategori}`);
+          rab_amount = (Number(item.volume) || 1) * (Number(String(item.harga).replace(/[^0-9]/g, '')) || 0);
+          rab_status = item.status || 'Direncanakan';
+          ket.push(`Total: Rp ${rab_amount.toLocaleString('id-ID')}`);
+          if (item.status) ket.push(`Status: ${item.status}`);
+          if (item.keterangan) ket.push(`Ket: ${item.keterangan}`);
+          tgl = item.tanggal || item.tglPengajuan || tgl;
+          pengirim = item.pengusul || pengirim;
+          status = (item.status === 'Terealisasi' || item.status === 'Disetujui') ? 'selesai' : (item.status === 'Ditolak' ? 'batal' : 'aktif');
+        } else if (col.name === 'sop') {
+          judul = `SOP: ${item.judul || item.nama}`;
+          if (item.nomor) { ket.push(`Nomor: ${item.nomor}`); nomor = item.nomor; }
+          if (item.kategori) ket.push(`Kategori: ${item.kategori}`);
+          if (item.revisi) ket.push(`Revisi: ${item.revisi}`);
+          tgl = item.tglBerlaku || item.tanggal || tgl;
+          pengirim = item.penyusun || pengirim;
+        } else if (col.name === 'pengawasan') {
+          judul = `Pengawasan Sarpras: ${item.fasilitas || item.barang || item.ruang || 'Fasilitas'}`;
+          if (item.kode) nomor = item.kode;
+          if (item.petugas) ket.push(`Petugas: ${item.petugas}`);
+          if (item.kondisi) ket.push(`Kondisi: ${item.kondisi}`);
+          if (item.hasil) ket.push(`Hasil: ${item.hasil}`);
+          if (item.rekomendasi) ket.push(`Rekomendasi: ${item.rekomendasi}`);
+          tgl = item.tanggal || item.tglInspeksi || tgl;
+          status = (item.status === 'Selesai' || item.status === 'Tindak Lanjut') ? 'selesai' : 'aktif';
+        } else if (col.name === 'peminjaman') {
+          judul = `Peminjaman Sarpras: ${item.namaBarang || item.barang || 'Aset'}`;
+          if (item.kode) nomor = item.kode;
+          if (item.peminjam) ket.push(`Peminjam: ${item.peminjam} (${item.unit || item.nim || '-'})`);
+          if (item.tglPinjam) ket.push(`Tgl Pinjam: ${item.tglPinjam}`);
+          if (item.tglKembali) ket.push(`Batas Kembali: ${item.tglKembali}`);
+          if (item.status) ket.push(`Status: ${item.status}`);
+          tgl = item.tglPinjam || item.tanggal || tgl;
+          pengirim = item.peminjam || pengirim;
+          status = (item.status === 'Kembali' || item.status === 'Selesai') ? 'selesai' : 'aktif';
+        } else if (col.name === 'pemeliharaan') {
+          judul = `Pemeliharaan/Servis: ${item.namaBarang || item.barang || 'Aset'}`;
+          if (item.kode) nomor = item.kode;
+          if (item.teknisi) ket.push(`Teknisi: ${item.teknisi}`);
+          if (item.jenisServis) ket.push(`Jenis: ${item.jenisServis}`);
+          if (item.biaya) ket.push(`Biaya: Rp ${(Number(item.biaya)||0).toLocaleString('id-ID')}`);
+          if (item.status) ket.push(`Status: ${item.status}`);
+          tgl = item.tglServis || item.tanggal || tgl;
+          pengirim = item.teknisi || pengirim;
+          status = (item.status === 'Selesai' || item.status === 'Baik') ? 'selesai' : 'aktif';
+        } else if (col.name === 'laporan') {
+          judul = `Laporan Sarpras: ${item.judul || item.kegiatan || 'Laporan'}`;
+          if (item.nomor) nomor = item.nomor;
+          if (item.kategori) ket.push(`Kategori: ${item.kategori}`);
+          if (item.periode) ket.push(`Periode: ${item.periode}`);
+          tgl = item.tglLaporan || item.tanggal || tgl;
+          pengirim = item.pelapor || pengirim;
+          status = 'selesai';
+        } else if (col.name === 'berita_acara') {
+          judul = `Berita Acara: ${item.nomor || item.judul || item.jenisBA || 'Berita Acara Sarpras'}`;
+          if (item.nomor) nomor = item.nomor;
+          if (item.jenisBA) ket.push(`Jenis: ${item.jenisBA}`);
+          if (item.pihak1) ket.push(`Pihak I: ${item.pihak1}`);
+          if (item.pihak2) ket.push(`Pihak II: ${item.pihak2}`);
+          tgl = item.tanggal || tgl;
+          status = 'selesai';
+        }
+
+        const ay = (tgl ? String(tgl).slice(0, 4) : new Date().getFullYear().toString());
+
+        const record = {
+          id: portalId,
+          nomor: nomor,
+          judul: judul,
+          bidang: 'sarana',
+          jenis: col.jenis,
+          ay: ay,
+          tanggal: tgl,
+          pengirim: pengirim,
+          status: status,
+          format: item.fileUrl ? 'pdf' : (item.link ? 'link' : 'sistem'),
+          keterangan: ket.length > 0 ? ket.join(' • ') : (item.deskripsi || item.keterangan || '-'),
+          fileName: item.fileName || `${col.name}_${docSnap.id}`,
+          url: item.fileUrl || item.link || '',
+          gdriveLink: item.fileUrl || item.link || '',
+          createdAt: item.createdAt || new Date().toISOString(),
+          ...(col.name === 'anggaran' && { rab_amount, rab_status }),
+          metadata: {
+            source: 'SIMSPRAS',
+            module: col.name,
+            originalId: docSnap.id,
+            syncedAt: new Date().toISOString(),
+            dokumenPortal: true
+          }
+        };
+
+        const existingIdx = arsip.findIndex(x => x.id === portalId);
+        if (existingIdx > -1) {
+          arsip[existingIdx] = record;
+        } else {
+          arsip.unshift(record);
+        }
+
+        if (typeof db !== 'undefined') {
+          await db.collection('arsip').doc(portalId).set(record, { merge: true });
+        }
+        totalSynced++;
+      }
+    }
+
+    if (typeof save === 'function') save();
+    if (typeof updateBadges === 'function') updateBadges();
+    renderDeptTable();
+
+    if (typeof toast === 'function') {
+      if (totalSynced > 0) {
+        toast(`Sinkronisasi SIMSPRAS sukses! ${totalSynced} arsip diperbarui di SIMARSIP.`, 'success');
+      } else {
+        toast('Koneksi SIMSPRAS terhubung. Belum ada data baru di portal SIMSPRAS.', 'info');
+      }
+    }
+    
+    // Refresh tampilan tabel jika sedang berada di bidang sarana
+    renderDeptPage('sarana');
+  } catch (err) {
+    console.error("Gagal sinkronkan sarpras:", err);
+    if (typeof toast === 'function') {
+      toast('Gagal sinkronkan SIMSPRAS: ' + err.message, 'error');
+    }
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-sync-alt" id="iconSyncSarpras"></i> Sinkronkan Data Sarpras';
     }
   }
 }
