@@ -1078,23 +1078,65 @@
       </div>
     </div>
 
-    <div id="kemahasiswaanSyncBar" style="display:none; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(2,132,199,0.1), rgba(15,23,42,0.6)); border:1px solid var(--b1); border-radius:var(--r3); padding:10px 16px; margin-bottom:14px;">
-      <div style="display:flex; align-items:center; gap:10px;">
-        <span style="display:inline-flex; width:10px; height:10px; border-radius:50%; background:#10b981; box-shadow:0 0 8px #10b981;"></span>
-        <span style="font-size:0.85rem; font-weight:600; color:var(--t1);">Portal Kemahasiswaan & Alumni Terintegrasi</span>
-      </div>
-      <div style="display:flex; gap:8px;">
-        <button onclick="syncKemahasiswaanFromSumber()" id="btnSyncKemahasiswaan" class="btn btn-sm" style="background:#0284c7; color:#fff; font-size:0.8rem; padding:6px 12px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
-          <i class="fas fa-sync-alt"></i> Sinkronkan Data Kemahasiswaan
+    <!-- ════════════ KEMAHASISWAAN & ALUMNI INTEGRATED MODULES ════════════ -->
+    <div id="kemahasiswaanContainer" style="display:none; margin-bottom: 20px;">
+      
+      <!-- Navigasi Tab Modul Kemahasiswaan & Alumni -->
+      <div style="background:var(--card); border:1px solid var(--b1); border-radius:var(--r2); padding:12px 16px; margin-bottom:14px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; box-shadow:var(--sh2);">
+        <div style="font-weight:700; color:#f59e0b; font-size:0.92rem; margin-right:8px; display:flex; align-items:center; gap:8px;">
+          <i class="fas fa-user-graduate" style="color:#f59e0b;"></i> Kemahasiswaan & Alumni:
+        </div>
+        
+        <button type="button" class="btn-ghost-sm active" id="btnKmhsTab-arsip" onclick="switchKmhsTab('arsip')" style="border-radius:20px; padding:6px 15px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+          <i class="fas fa-folder-open"></i> Cari Dokumen & Arsip
         </button>
-        <a href="https://bidkemahasiswaandanalumn-93be8.web.app" target="_blank" class="btn btn-sm" style="background:var(--bg3); color:var(--t1); font-size:0.8rem; padding:6px 12px; border-radius:6px; border:1px solid var(--b1); text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-          <i class="fas fa-external-link-alt"></i> Buka Portal Penuh
-        </a>
-      </div>
-    </div>
 
-    <div id="kemahasiswaanIframeContainer" style="display:none; width: 100%; height: 800px; border: 1px solid var(--b1); border-radius: var(--r3); overflow: hidden; margin-bottom: 20px; background: var(--bg2);">
-      <iframe id="kemahasiswaanIframe" src="" width="100%" height="100%" style="border: none;"></iframe>
+        <button type="button" class="btn-ghost-sm" id="btnKmhsTab-dashboard" onclick="switchKmhsTab('dashboard')" style="border-radius:20px; padding:6px 15px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+          <i class="fas fa-chart-pie"></i> Dashboard & Grafik
+        </button>
+
+        <button type="button" class="btn-ghost-sm" id="btnKmhsTab-mahasiswa" onclick="switchKmhsTab('mahasiswa')" style="border-radius:20px; padding:6px 15px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">
+          <i class="fas fa-users"></i> Data Induk Mahasiswa
+        </button>
+
+        <div style="margin-left:auto; display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" onclick="syncKemahasiswaanFromSumber()" id="btnSyncKemahasiswaan" class="btn btn-sm" style="background:#0284c7; color:#fff; font-size:0.8rem; padding:6px 14px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px; font-weight:600;">
+            <i class="fas fa-sync-alt"></i> Sinkronkan Data
+          </button>
+          <a href="https://bidkemahasiswaandanalumn-93be8.web.app" target="_blank" class="btn btn-sm" style="background:var(--bg3); color:var(--t1); font-size:0.8rem; padding:6px 12px; border-radius:6px; border:1px solid var(--b1); text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+            <i class="fas fa-external-link-alt"></i> Buka Portal Utuh
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Filter Chips Kategori Dokumen (Aktif di tab Arsip) -->
+      <div id="kmhsQuickChips" style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; align-items:center; background:rgba(245, 158, 11, 0.04); border:1px solid rgba(245, 158, 11, 0.18); border-radius:var(--r2); padding:10px 14px;">
+        <span style="font-size:0.75rem; font-weight:700; color:#b45309; text-transform:uppercase; margin-right:4px;">
+          <i class="fas fa-filter"></i> Filter Cepat:
+        </span>
+        <button type="button" class="kmhs-chip active" onclick="filterKmhsChip('', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--primary); color:#fff; cursor:pointer; font-weight:600;">Semua Dokumen</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Dokumen SK', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">📄 SK Kemahasiswaan</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Laporan SOP', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">📑 SOP Layanan</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Beasiswa', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">🎓 Beasiswa</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Penerima Beasiswa', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">🏆 Penerima Beasiswa</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Alumni & Tracer Study', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">🎓 Alumni & Tracer</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Prestasi Mahasiswa', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">🥇 Prestasi Mahasiswa</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Kegiatan UKM', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">⚽ Kegiatan UKM</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Organisasi & BEM', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">👥 Organisasi & BEM</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Uji Kompetensi', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">🩺 Uji Kompetensi</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Bimbingan Konseling & Disiplin', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">🛡️ Konseling & Disiplin</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Rencana Anggaran', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">💰 Rencana Anggaran</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Laporan Tahunan', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">📊 Laporan Kinerja</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Survey Pengguna Lulusan', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">⭐ Survey Pengguna</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Evaluasi Mitra PKL', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">🏥 Evaluasi Mitra PKL</button>
+        <button type="button" class="kmhs-chip" onclick="filterKmhsChip('Pengaduan & Kritik Saran', this)" style="padding:4px 10px; font-size:0.75rem; border-radius:15px; border:1px solid var(--b2); background:var(--bg3); color:var(--t2); cursor:pointer;">💬 Kritik & Saran</button>
+      </div>
+
+      <!-- Iframe Container untuk Tab Dashboard -->
+      <div id="kemahasiswaanIframeContainer" style="display:none; width: 100%; height: 820px; border: 1px solid var(--b1); border-radius: var(--r3); overflow: hidden; margin-bottom: 20px; background: var(--bg2); box-shadow: var(--sh2);">
+        <iframe id="kemahasiswaanIframe" src="" width="100%" height="100%" style="border: none;"></iframe>
+      </div>
+
     </div>
 
     <!-- ════════════ LABORATORIUM (SIMLAB) INTEGRATED MODULES ════════════ -->
@@ -1606,7 +1648,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=1017" defer></script>
+<script src="app.js?v=1018" defer></script>
 
 <!-- Notification Sounds -->
 

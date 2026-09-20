@@ -287,6 +287,8 @@ const DEPT_JENIS = {
     { "val": "Uji Kompetensi", "label": "Uji Kompetensi" },
     { "val": "Laporan SOP", "label": "Laporan SOP" },
     { "val": "Laporan Kebijakan", "label": "Laporan Kebijakan" },
+    { "val": "Survey Pengguna Lulusan", "label": "Survey Pengguna Lulusan" },
+    { "val": "Evaluasi Mitra PKL", "label": "Evaluasi Mitra PKL" },
     { "val": "Pengaduan & Kritik Saran", "label": "Pengaduan & Kritik Saran" }
   ]
 }
@@ -1836,30 +1838,24 @@ function renderDeptPage(dept) {
   const mhsCharts = document.getElementById('mhsChartContainer');
   if(mhsCharts) mhsCharts.style.display = 'none'; // Obsolete
 
+  const kmhsContainer = document.getElementById('kemahasiswaanContainer');
   const iframeContainer = document.getElementById('kemahasiswaanIframeContainer');
-  const iframe = document.getElementById('kemahasiswaanIframe');
-  const syncBar = document.getElementById('kemahasiswaanSyncBar');
   const deptArsipCharts = document.getElementById('deptArsipCharts');
   const statRow = document.getElementById('deptStatRow');
   const labContainer = document.getElementById('laboratoriumContainer');
 
   if (dept === 'kemahasiswaan') {
-    if (syncBar) syncBar.style.display = 'flex';
-    if (iframeContainer) iframeContainer.style.display = 'block';
-    
-    // Gunakan URL hosting Firebase produksi atau localhost jika dalam development
-    const targetUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-      ? 'http://localhost:5173/embed/dashboard'
-      : 'https://bidkemahasiswaandanalumn-93be8.web.app/embed/dashboard';
-
-    if (iframe && (!iframe.src || (!iframe.src.includes('bidkemahasiswaandanalumn') && !iframe.src.includes('localhost:5173')))) {
-      iframe.src = targetUrl;
-    }
-    // Sembunyikan chart standar agar tampilan rapi karena iframe telah menyediakannya
-    if (deptArsipCharts) deptArsipCharts.style.display = 'none';
-    if (statRow) statRow.style.display = 'none';
+    if (kmhsContainer) kmhsContainer.style.display = 'block';
     if (labContainer) labContainer.style.display = 'none';
+    if (deptArsipCharts) deptArsipCharts.style.display = 'none';
+    if (statRow) statRow.style.display = 'flex';
+    switchKmhsTab('arsip');
+    const deptSearchInput = document.getElementById('deptSearch');
+    if (deptSearchInput) {
+      deptSearchInput.placeholder = 'Cari SK, beasiswa, nama mahasiswa, ormawa, dokumen...';
+    }
   } else if (dept === 'laboratorium') {
+    if (kmhsContainer) kmhsContainer.style.display = 'none';
     if (iframeContainer) iframeContainer.style.display = 'none';
     if (labContainer) labContainer.style.display = 'block';
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
@@ -1867,11 +1863,15 @@ function renderDeptPage(dept) {
     initLabCharts();
     renderLabContent();
   } else {
-    if (syncBar) syncBar.style.display = 'none';
+    if (kmhsContainer) kmhsContainer.style.display = 'none';
     if (iframeContainer) iframeContainer.style.display = 'none';
     if (labContainer) labContainer.style.display = 'none';
     if (deptArsipCharts) deptArsipCharts.style.display = 'block';
     if (statRow) statRow.style.display = 'flex';
+    const deptSearchInput = document.getElementById('deptSearch');
+    if (deptSearchInput) {
+      deptSearchInput.placeholder = 'Cari arsip bidang ini...';
+    }
   }
 
   document.getElementById('deptTableTitle').textContent=`Daftar Arsip ${d.label}`;
@@ -1924,7 +1924,9 @@ async function syncKemahasiswaanFromSumber() {
       { name: 'laporanData', prefix: 'laporan_kmhs', jenis: 'Laporan Tahunan', getTitle: d => `Laporan: ${d.title || d.judul || 'Laporan'} (${d.year || d.tahun || '-'})` },
       { name: 'skData', prefix: 'sk_kmhs', jenis: 'Dokumen SK', getTitle: d => `SK Kemahasiswaan: ${d.title || d.judul || 'SK'} (${d.number || d.nomor || '-'})` },
       { name: 'sopData', prefix: 'sop_kmhs', jenis: 'Laporan SOP', getTitle: d => `SOP: ${d.title || d.judul || 'SOP Layanan Mahasiswa'}` },
-      { name: 'kebijakanData', prefix: 'kebijakan_kmhs', jenis: 'Laporan Kebijakan', getTitle: d => `Kebijakan: ${d.title || d.judul || 'Kebijakan'}` }
+      { name: 'kebijakanData', prefix: 'kebijakan_kmhs', jenis: 'Laporan Kebijakan', getTitle: d => `Kebijakan: ${d.title || d.judul || 'Kebijakan'}` },
+      { name: 'surveyPenggunaData', prefix: 'survey_pengguna', jenis: 'Survey Pengguna Lulusan', getTitle: d => `Survey Pengguna Lulusan: ${d.alumniName || d.namaAlumni || 'Alumni'} di ${d.companyName || d.namaInstansi || 'Instansi'}` },
+      { name: 'surveyMitraData', prefix: 'evaluasi_mitra', jenis: 'Evaluasi Mitra PKL', getTitle: d => `Evaluasi Mitra PKL: Mahasiswa di ${d.namaInstansi || 'Wahana'} (${d.namaPembimbing || 'Preseptor'})` }
     ];
 
     for (const col of collections) {
@@ -2024,6 +2026,28 @@ function filterByJenis(jenis) {
   const dMhs = document.getElementById('deptMhsContainer');
   const dSdm = document.getElementById('deptSdmContainer');
 
+  if (currentDept === 'kemahasiswaan') {
+    if (jenis === 'data_mahasiswa') {
+      switchKmhsTab('mahasiswa');
+    } else {
+      switchKmhsTab('arsip');
+      const chips = document.querySelectorAll('.kmhs-chip');
+      chips.forEach(c => {
+        if ((jenis === '' && c.textContent.includes('Semua')) || (jenis !== '' && c.textContent.includes(jenis))) {
+          c.classList.add('active');
+          c.style.background = 'var(--primary)';
+          c.style.color = '#fff';
+        } else {
+          c.classList.remove('active');
+          c.style.background = 'var(--bg3)';
+          c.style.color = 'var(--t2)';
+        }
+      });
+      renderDeptTable();
+    }
+    return;
+  }
+
   if(jenis === 'data_mahasiswa') {
     if(arsipC) arsipC.style.display = 'none';
     if(mhsC) mhsC.style.display = 'grid';
@@ -2037,13 +2061,9 @@ function filterByJenis(jenis) {
     if(dMhs) dMhs.style.display = 'none';
     if(dSdm) { dSdm.style.display = 'block'; renderSdmPage(); }
   } else {
-    const iframeC = document.getElementById('kemahasiswaanIframeContainer');
-    if(iframeC && currentDept === 'kemahasiswaan') {
-      iframeC.style.display = (jenis === '') ? 'block' : 'none';
-    }
-    if(arsipC) arsipC.style.display = (currentDept === 'kemahasiswaan' && jenis === '') ? 'none' : 'block';
-    if(mhsC) mhsC.style.display = (currentDept === 'kemahasiswaan' && (jenis === '' || jenis === 'data_mahasiswa')) ? 'grid' : 'none';
-    if(tC) tC.style.display = (currentDept === 'kemahasiswaan' && jenis === '') ? 'none' : 'block';
+    if(arsipC) arsipC.style.display = 'block';
+    if(mhsC) mhsC.style.display = 'none';
+    if(tC) tC.style.display = 'block';
     if(dMhs) dMhs.style.display = 'none';
     if(dSdm) dSdm.style.display = 'none';
     renderDeptTable();
@@ -4502,6 +4522,90 @@ const DEFAULT_LAB_LPJ = [
   { no:'LPJ-LAB-2025-GENAP', judul:'Laporan Pertanggungjawaban Operasional Laboratorium Semester Genap 2025/2026', periode:'Semester Genap 2025/2026', tgl:'2026-07-20', file:'LPJ_Laboratorium_Genap_2025_2026.pdf' },
   { no:'LPJ-LAB-2025-ALAT', judul:'Laporan Rekapitulasi Pemeliharaan & Kalibrasi Alat Kesehatan Laboratorium 2025', periode:'Tahunan 2025', tgl:'2026-01-15', file:'Laporan_Kalibrasi_Alkes_2025.pdf' }
 ];
+
+let currentKmhsTab = 'arsip';
+
+function switchKmhsTab(tabKey) {
+  currentKmhsTab = tabKey;
+
+  const buttons = ['arsip', 'dashboard', 'mahasiswa'];
+  buttons.forEach(b => {
+    const btn = document.getElementById(`btnKmhsTab-${b}`);
+    if (btn) {
+      if (b === tabKey) {
+        btn.classList.add('active');
+        btn.style.background = 'var(--primary)';
+        btn.style.color = '#fff';
+      } else {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--t2)';
+      }
+    }
+  });
+
+  const iframeC = document.getElementById('kemahasiswaanIframeContainer');
+  const tC = document.getElementById('deptTableContainer');
+  const mhsC = document.getElementById('deptMhsContainer');
+  const chipsC = document.getElementById('kmhsQuickChips');
+
+  if (tabKey === 'arsip') {
+    if (iframeC) iframeC.style.display = 'none';
+    if (mhsC) mhsC.style.display = 'none';
+    if (tC) tC.style.display = 'block';
+    if (chipsC) chipsC.style.display = 'flex';
+    renderDeptTable();
+  } else if (tabKey === 'dashboard') {
+    if (tC) tC.style.display = 'none';
+    if (mhsC) mhsC.style.display = 'none';
+    if (chipsC) chipsC.style.display = 'none';
+    if (iframeC) {
+      iframeC.style.display = 'block';
+      const iframe = document.getElementById('kemahasiswaanIframe');
+      const targetUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:5173/embed/dashboard'
+        : 'https://bidkemahasiswaandanalumn-93be8.web.app/embed/dashboard';
+      if (iframe && (!iframe.src || (!iframe.src.includes('bidkemahasiswaandanalumn') && !iframe.src.includes('localhost:5173')))) {
+        iframe.src = targetUrl;
+      }
+    }
+  } else if (tabKey === 'mahasiswa') {
+    if (iframeC) iframeC.style.display = 'none';
+    if (tC) tC.style.display = 'none';
+    if (chipsC) chipsC.style.display = 'none';
+    if (mhsC) {
+      mhsC.style.display = 'block';
+      renderMahasiswaPage();
+    }
+  }
+}
+
+function filterKmhsChip(jenisVal, btnEl) {
+  const chips = document.querySelectorAll('.kmhs-chip');
+  chips.forEach(c => {
+    c.classList.remove('active');
+    c.style.background = 'var(--bg3)';
+    c.style.color = 'var(--t2)';
+    c.style.borderColor = 'var(--b2)';
+  });
+  if (btnEl) {
+    btnEl.classList.add('active');
+    btnEl.style.background = 'var(--primary)';
+    btnEl.style.color = '#fff';
+    btnEl.style.borderColor = 'var(--primary)';
+  }
+
+  const select = document.getElementById('deptFilterJenis');
+  if (select) {
+    select.value = jenisVal;
+  }
+
+  if (currentKmhsTab !== 'arsip') {
+    switchKmhsTab('arsip');
+  } else {
+    renderDeptTable();
+  }
+}
 
 function switchLabTab(tabKey) {
   currentLabTab = tabKey;
