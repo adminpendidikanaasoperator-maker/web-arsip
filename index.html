@@ -1506,6 +1506,9 @@
           <button type="button" class="btn-ghost-sm" onclick="syncSarprasFromSumber()" style="background:var(--bg3); border:1px solid var(--b2); color:var(--primary); font-weight:600; border-radius:6px;" title="Sinkronkan data live dari Firestore sim-sarpras-ef3a4">
             <i class="fas fa-rotate" id="saranaSyncIcon"></i> Sinkron Data Live
           </button>
+          <button type="button" class="btn-ghost-sm" onclick="clearAllSaranaData()" style="background:var(--bg3); border:1px solid #ef444440; color:#ef4444; font-weight:600; border-radius:6px;" title="Kosongkan seluruh data sarana prasarana">
+            <i class="fas fa-trash-can"></i> Kosongkan Data Sarpras
+          </button>
         </div>
       </div>
 
@@ -1604,6 +1607,7 @@
                 <th>Kondisi</th>
                 <th>Lokasi / Ruang</th>
                 <th>Nilai Perolehan</th>
+                <th style="width:50px; text-align:center;">Aksi</th>
               </tr>
             </thead>
             <tbody id="saranaInventarisBody"></tbody>
@@ -1643,6 +1647,7 @@
                 <th>Tgl Pinjam</th>
                 <th>Batas Kembali</th>
                 <th>Status</th>
+                <th style="width:50px; text-align:center;">Aksi</th>
               </tr>
             </thead>
             <tbody id="saranaPeminjamanBody"></tbody>
@@ -1683,6 +1688,7 @@
                 <th>Harga Satuan</th>
                 <th>Total Biaya (Rp)</th>
                 <th>Status</th>
+                <th style="width:50px; text-align:center;">Aksi</th>
               </tr>
             </thead>
             <tbody id="saranaAnggaranBody"></tbody>
@@ -1713,6 +1719,7 @@
                 <th>Revisi</th>
                 <th>Tanggal Berlaku</th>
                 <th>Status</th>
+                <th style="width:50px; text-align:center;">Aksi</th>
               </tr>
             </thead>
             <tbody id="saranaSopBody"></tbody>
@@ -1743,6 +1750,7 @@
                 <th>Kondisi Fisik</th>
                 <th>Hasil Temuan</th>
                 <th>Rekomendasi Tindak Lanjut</th>
+                <th style="width:50px; text-align:center;">Aksi</th>
               </tr>
             </thead>
             <tbody id="saranaPengawasanBody"></tbody>
@@ -1774,6 +1782,7 @@
                 <th>Biaya (Rp)</th>
                 <th>Tanggal Servis</th>
                 <th>Status</th>
+                <th style="width:50px; text-align:center;">Aksi</th>
               </tr>
             </thead>
             <tbody id="saranaPemeliharaanBody"></tbody>
@@ -1804,6 +1813,7 @@
                 <th>Tanggal</th>
                 <th>Pihak Terkait</th>
                 <th>Keterangan</th>
+                <th style="width:50px; text-align:center;">Aksi</th>
               </tr>
             </thead>
             <tbody id="saranaLaporanBody"></tbody>
@@ -2025,7 +2035,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=1018" defer></script>
+<script src="app.js?v=1020" defer></script>
 
 <!-- Notification Sounds -->
 

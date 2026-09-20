@@ -3296,6 +3296,37 @@ async function deleteArsip(id) {
     } catch(e) { console.warn("Gagal menghapus dari dbSumber", e); }
   }
 
+  // Hapus dari Portal Sarana Prasarana (SIMSPRAS)
+  if (a.bidang === 'sarana') {
+    try {
+      if (!dbSarprasSumber && typeof firebase !== 'undefined') {
+        let appSarpras = firebase.apps.find(app => app.name === "sarprasSumber") || firebase.initializeApp({
+          apiKey: "AIzaSyATNPIY3Iv5tmx9MKh7N6cz-czK0oC8SfY",
+          authDomain: "sim-sarpras-ef3a4.firebaseapp.com",
+          projectId: "sim-sarpras-ef3a4"
+        }, 'sarprasSumber');
+        dbSarprasSumber = appSarpras.firestore();
+      }
+      if (dbSarprasSumber) {
+        let colName = (a.metadata && a.metadata.module) || '';
+        let origId = (a.metadata && a.metadata.originalId) || '';
+        if (!colName || !origId) {
+          if (id.startsWith('SIMSPRAS-INVENTARIS-')) { colName = 'inventaris'; origId = id.replace('SIMSPRAS-INVENTARIS-', ''); }
+          else if (id.startsWith('SIMSPRAS-PEMINJAMAN-')) { colName = 'peminjaman'; origId = id.replace('SIMSPRAS-PEMINJAMAN-', ''); }
+          else if (id.startsWith('SIMSPRAS-ANGGARAN-')) { colName = 'anggaran'; origId = id.replace('SIMSPRAS-ANGGARAN-', ''); }
+          else if (id.startsWith('SIMSPRAS-SOP-')) { colName = 'sop'; origId = id.replace('SIMSPRAS-SOP-', ''); }
+          else if (id.startsWith('SIMSPRAS-PENGAWASAN-')) { colName = 'pengawasan'; origId = id.replace('SIMSPRAS-PENGAWASAN-', ''); }
+          else if (id.startsWith('SIMSPRAS-PEMELIHARAAN-')) { colName = 'pemeliharaan'; origId = id.replace('SIMSPRAS-PEMELIHARAAN-', ''); }
+          else if (id.startsWith('SIMSPRAS-LAPORAN-')) { colName = 'laporan'; origId = id.replace('SIMSPRAS-LAPORAN-', ''); }
+          else if (id.startsWith('SIMSPRAS-BA-')) { colName = 'berita_acara'; origId = id.replace('SIMSPRAS-BA-', ''); }
+        }
+        if (colName && origId) {
+          await dbSarprasSumber.collection(colName).doc(origId).delete();
+        }
+      }
+    } catch(e) { console.warn("Gagal menghapus dari dbSarprasSumber", e); }
+  }
+
   arsip=arsip.filter(x=>x.id!==id);
   log('delete',`Menghapus arsip: "${a.judul}"`);
   save(); updateBadges(); toast('Arsip berhasil dihapus.','success');
@@ -5377,64 +5408,13 @@ async function syncSimlabLive(isManual = false) {
    Akademi Akupunktur Surabaya
    ══════════════════════════════════════════════════════════════ */
 
-const DEFAULT_SARANA_INVENTARIS = [
-  { id:'SP-INV-001', kode:'AAS-GDB-01', nama:'Gedung Utama Perkuliahan Kampus AAS (2 Lantai)', kategori:'Gedung & Fasilitas', merk:'Permanen Beton', lokasi:'Kampus AAS Surabaya', kondisi:'Baik', jumlah:1, satuan:'Unit', harga:'Rp 2.850.000.000' },
-  { id:'SP-INV-002', kode:'AAS-GDB-02', nama:'Gedung Aula & Ruang Pertemuan Serbaguna AAS', kategori:'Gedung & Fasilitas', merk:'Permanen Beton', lokasi:'Lantai 2 Kampus AAS', kondisi:'Baik', jumlah:1, satuan:'Unit', harga:'Rp 1.450.000.000' },
-  { id:'SP-INV-003', kode:'AAS-MBL-01', nama:'Meja Kuliah Lipat Mahasiswa Chitose', kategori:'Mebel & Furnitur', merk:'Chitose Yamato', lokasi:'Ruang Kelas Teori A & B', kondisi:'Baik', jumlah:60, satuan:'Unit', harga:'Rp 450.000' },
-  { id:'SP-INV-004', kode:'AAS-MBL-02', nama:'Meja Dosen Kayu Jati Minimalis & Kursi Ergonomis', kategori:'Mebel & Furnitur', merk:'Olympic Grand', lokasi:'Ruang Dosen & Kantor', kondisi:'Baik', jumlah:12, satuan:'Set', harga:'Rp 1.850.000' },
-  { id:'SP-INV-005', kode:'AAS-MBL-04', nama:'Podium Pidato Jati & Mimbar Upacara Resmi AAS', kategori:'Mebel & Furnitur', merk:'Jepara Custom Wood', lokasi:'Aula & Auditorium', kondisi:'Baik', jumlah:2, satuan:'Unit', harga:'Rp 3.500.000' },
-  { id:'SP-INV-006', kode:'AAS-MBL-05', nama:'Meja Rapat Konferensi Pimpinan Oval 12 Kursi', kategori:'Mebel & Furnitur', merk:'Olympic Executive', lokasi:'Ruang Rapat Pimpinan', kondisi:'Baik', jumlah:1, satuan:'Set', harga:'Rp 6.800.000' },
-  { id:'SP-INV-007', kode:'AAS-ELK-01', nama:'LCD Proyektor Multimedia Epson EB-X500 3600 Lumens', kategori:'Elektronik & Audio', merk:'Epson', lokasi:'Ruang Kelas A & B', kondisi:'Baik', jumlah:4, satuan:'Unit', harga:'Rp 6.200.000' },
-  { id:'SP-INV-008', kode:'AAS-ELK-02', nama:'AC Split Daikin Inverter 2 PK R32', kategori:'Elektronik & Audio', merk:'Daikin', lokasi:'Ruang Kuliah & Kantor', kondisi:'Baik', jumlah:10, satuan:'Unit', harga:'Rp 7.800.000' },
-  { id:'SP-INV-009', kode:'AAS-ELK-03', nama:'Sound System Portabel Wireless Meeting + 2 Mic UHF', kategori:'Elektronik & Audio', merk:'Baretone 15 Inch', lokasi:'Auditorium & Ruang Rapat', kondisi:'Baik', jumlah:3, satuan:'Unit', harga:'Rp 3.500.000' },
-  { id:'SP-INV-010', kode:'AAS-ELK-04', nama:'PC All-In-One HP Core i5 16GB RAM (Administrasi)', kategori:'Elektronik & Audio', merk:'HP Pavilion', lokasi:'Ruang BAAK & Sarpras', kondisi:'Baik', jumlah:6, satuan:'Unit', harga:'Rp 9.500.000' },
-  { id:'SP-INV-011', kode:'AAS-UTL-01', nama:'Genset Silent Perkins 20 kVA Diesel Generator', kategori:'Gedung & Fasilitas', merk:'Perkins Stamford', lokasi:'Rumah Daya Cadangan', kondisi:'Baik', jumlah:1, satuan:'Unit', harga:'Rp 95.000.000' },
-  { id:'SP-INV-012', kode:'AAS-UTL-02', nama:'Tabung Pemadam Api APAR Powder 6kg Dry Chemical', kategori:'Gedung & Fasilitas', merk:'Yamato Guard', lokasi:'Koridor Gedung & Selasar', kondisi:'Baik', jumlah:8, satuan:'Tabung', harga:'Rp 450.000' },
-  { id:'SP-INV-013', kode:'AAS-ELK-05', nama:'AC Split Panasonic 1.5 PK Standard (Ruang Rapat)', kategori:'Elektronik & Audio', merk:'Panasonic', lokasi:'Ruang Rapat Pimpinan', kondisi:'Rusak Ringan', jumlah:1, satuan:'Unit', harga:'Rp 4.500.000' }
-];
-
-const DEFAULT_SARANA_PEMINJAMAN = [
-  { id:'PINJAM-SP-001', noPinjam:'PJM-2026-001', namaPeminjam:'dr. H. Subagyo, Akp', unit:'Dosen Pengampu', barang:'LCD Proyektor Epson EB-X500 & Pointer Laser', tglPinjam:'2026-09-15', tglKembali:'2026-09-15', status:'Dikembalikan', catatan:'Digunakan untuk Kuliah Pakar Meridian Akupunktur' },
-  { id:'PINJAM-SP-002', noPinjam:'PJM-2026-002', namaPeminjam:'BEM Akademi Akupunktur Surabaya', unit:'Organisasi Mahasiswa', barang:'Sound System Portabel Wireless + 2 Mic UHF', tglPinjam:'2026-09-18', tglKembali:'2026-09-19', status:'Dikembalikan', catatan:'Acara Sambutan Mahasiswa Baru & Pengenalan Kampus' },
-  { id:'PINJAM-SP-003', noPinjam:'PJM-2026-003', namaPeminjam:'Siti Aminah, S.Tr.Kes', unit:'Laboran / Instruktur', barang:'Kamera Dokumentasi Praktik & Tripod Stand', tglPinjam:'2026-09-20', tglKembali:'2026-09-22', status:'Dipinjam', catatan:'Perekaman modul video pembelajaran praktikum klinik' },
-  { id:'PINJAM-SP-004', noPinjam:'PJM-2026-004', namaPeminjam:'Bambang S., M.Kes', unit:'Panitia Uji Kompetensi', barang:'Meja Lipat Tambahan (15 Unit) & Roll Kabel', tglPinjam:'2026-09-21', tglKembali:'2026-09-23', status:'Dipinjam', catatan:'Persiapan Simulasi Try-Out CBT & OSCE Kampus' }
-];
-
-const DEFAULT_SARANA_ANGGARAN = [
-  { id:'RAB-SP-001', noRAB:'RAB-SARPRAS-2026-01', uraian:'Peremajaan & Servis Cuci Rutin 11 Unit AC Kampus', kategori:'Pemeliharaan', volume:'11 Unit', harga:'Rp 150.000', total:'Rp 1.650.000', totalNum:1650000, status:'Terealisasi' },
-  { id:'RAB-SP-002', noRAB:'RAB-SARPRAS-2026-02', uraian:'Pengadaan 2 Unit Proyektor EPSON EB-X500 Kelas', kategori:'Pengadaan Aset', volume:'2 Unit', harga:'Rp 6.200.000', total:'Rp 12.400.000', totalNum:12400000, status:'Terealisasi' },
-  { id:'RAB-SP-003', noRAB:'RAB-SARPRAS-2026-03', uraian:'Penggantian Filter Oli & Solar Rutin Genset Perkins 20 kVA', kategori:'Pemeliharaan', volume:'1 Paket', harga:'Rp 1.850.000', total:'Rp 1.850.000', totalNum:1850000, status:'Terealisasi' },
-  { id:'RAB-SP-004', noRAB:'RAB-SARPRAS-2026-04', uraian:'Pengecatan & Perbaikan Kanopi Area Parkir Dosen', kategori:'Fasilitas Gedung', volume:'1 Lokasi', harga:'Rp 4.500.000', total:'Rp 4.500.000', totalNum:4500000, status:'Disetujui' },
-  { id:'RAB-SP-005', noRAB:'RAB-SARPRAS-2026-05', uraian:'Pengadaan Kursi Mahasiswa Chitose 30 Unit', kategori:'Pengadaan Aset', volume:'30 Unit', harga:'Rp 450.000', total:'Rp 13.500.000', totalNum:13500000, status:'Direncanakan' }
-];
-
-const DEFAULT_SARANA_SOP = [
-  { id:'SOP-SP-001', nomor:'SOP/SARPRAS/AAS/01', judul:'Standar Operasional Prosedur (SOP) Pengadaan & Penerimaan Aset Kampus', kategori:'Pengadaan', revisi:'Rev. 02', tgl:'2026-01-10', status:'Berlaku' },
-  { id:'SOP-SP-002', nomor:'SOP/SARPRAS/AAS/02', judul:'SOP Peminjaman, Pemakaian & Pengembalian Sarana Prasarana Fasilitas', kategori:'Peminjaman', revisi:'Rev. 01', tgl:'2026-01-10', status:'Berlaku' },
-  { id:'SOP-SP-003', nomor:'SOP/SARPRAS/AAS/03', judul:'SOP Pemeliharaan, Perawatan Preventif & Servis Berkala Aset Fasilitas', kategori:'Pemeliharaan', revisi:'Rev. 02', tgl:'2026-01-15', status:'Berlaku' },
-  { id:'SOP-SP-004', nomor:'SOP/SARPRAS/AAS/04', judul:'SOP Pengawasan, Pemeriksaan Kelaikan & Evaluasi Keselamatan Gedung', kategori:'Pengawasan', revisi:'Rev. 01', tgl:'2026-02-01', status:'Berlaku' },
-  { id:'SOP-SP-005', nomor:'SOP/SARPRAS/AAS/05', judul:'SOP Penghapusan, Pemusnahan & Mutasi Barang Aset Rusak Berat', kategori:'Penghapusan', revisi:'Rev. 01', tgl:'2026-02-15', status:'Berlaku' }
-];
-
-const DEFAULT_SARANA_PENGAWASAN = [
-  { id:'WAS-SP-001', kode:'INSP-2026-01', fasilitas:'Ruang Kuliah Teori Lantai 1 & 2', petugas:'Tim Pengawas Sarpras', kondisi:'Baik & Laik Pakai', hasil:'Pencahayaan, ventilasi AC, dan proyektor berfungsi optimal.', rekomendasi:'Jadwalkan pembersihan filter AC rutin bulanan.' },
-  { id:'WAS-SP-002', kode:'INSP-2026-02', fasilitas:'Genset Cadangan Perkins 20 kVA', petugas:'Bpk. Sukirman (Teknisi Listrik)', kondisi:'Baik & Siap Operasi', hasil:'Otomatisasi ATS berjalan lancar saat simulasi pemadaman.', rekomendasi:'Cek volume solar mingguan tetap minimal 80%.' },
-  { id:'WAS-SP-003', kode:'INSP-2026-03', fasilitas:'Tabung APAR Seluruh Lantai Gedung', petugas:'Koordinator K3 Kampus', kondisi:'Standar Aman', hasil:'8 Tabung terisi penuh, segel utuh, jarum indikator di area hijau.', rekomendasi:'Tetap pasang kartu inspeksi bulanan di tiap tabung.' },
-  { id:'WAS-SP-004', kode:'INSP-2026-04', fasilitas:'Instalasi Pompa & Tandon Air Bersih', petugas:'Tim Sarpras AAS', kondisi:'Baik', hasil:'Distribusi air lancar ke seluruh wastafel dan toilet kampus.', rekomendasi:'Kuras tandon 4 bulan sekali.' }
-];
-
-const DEFAULT_SARANA_PEMELIHARAAN = [
-  { id:'MNT-SP-001', kode:'SRV-2026-01', namaBarang:'AC Daikin Ruang Dosen & Lab', teknisi:'CV. Mandiri Sejuk Bersama', jenisServis:'Pembersihan Evaporator & Pengisian Refrigerant Freon', biaya:'Rp 750.000', tglServis:'2026-08-20', status:'Selesai' },
-  { id:'MNT-SP-002', kode:'SRV-2026-02', namaBarang:'Genset Perkins 20 kVA', teknisi:'Bpk. Sukirman (Teknisi Mesin)', jenisServis:'Ganti Oli Mesin Meditran SX & Filter Bahan Bakar', biaya:'Rp 1.850.000', tglServis:'2026-08-28', status:'Selesai' },
-  { id:'MNT-SP-003', kode:'SRV-2026-03', namaBarang:'Jaringan Kelistrikan Ruang Kelas B', teknisi:'Instalatir PLN Bersertifikat', jenisServis:'Perbaikan Jalur MCB & Stopkontak Praktik', biaya:'Rp 450.000', tglServis:'2026-09-08', status:'Selesai' },
-  { id:'MNT-SP-004', kode:'SRV-2026-04', namaBarang:'AC Panasonic 1.5 PK Ruang Rapat', teknisi:'CV. Mandiri Sejuk Bersama', jenisServis:'Pengecekan Kompresor & Perbaikan Kebocoran Pipa', biaya:'Rp 600.000', tglServis:'2026-09-18', status:'Diproses' }
-];
-
-const DEFAULT_SARANA_LAPORAN = [
-  { id:'LAP-SP-001', nomor:'012/LAP-SARPRAS/AAS/VIII/2026', judul:'Laporan Inventarisasi dan Kelaikan Sarana Prasarana Semester Ganjil 2025/2026', jenis:'Laporan Semester', tanggal:'2026-08-30', pihak:'Kepala Bidang Sarpras & Direktur AAS', ket:'Dokumen rekapitulasi 120 item aset kampus dengan status kelaikan 96.5%.' },
-  { id:'LAP-SP-002', nomor:'015/BA-PENGADAAN/AAS/IX/2026', judul:'Berita Acara Penerimaan & Pemeriksaan 2 Unit LCD Proyektor Epson EB-X500', jenis:'Berita Acara', tanggal:'2026-09-05', pihak:'Panitia Pengadaan & Vendor PT. Surya Teknologi', ket:'Barang diterima dalam kondisi 100% baru, segel utuh, dan lulus uji fungsi.' },
-  { id:'LAP-SP-003', nomor:'018/BA-SERVIS/AAS/IX/2026', judul:'Berita Acara Penyelesaian Servis Berkala Genset Perkins 20 kVA', jenis:'Berita Acara', tanggal:'2026-09-10', pihak:'Teknisi Mesin & Koordinator Sarpras AAS', ket:'Penggantian oli, filter oli, filter solar tuntas; output tegangan 380/220V stabil.' }
-];
+const DEFAULT_SARANA_INVENTARIS = [];
+const DEFAULT_SARANA_PEMINJAMAN = [];
+const DEFAULT_SARANA_ANGGARAN = [];
+const DEFAULT_SARANA_SOP = [];
+const DEFAULT_SARANA_PENGAWASAN = [];
+const DEFAULT_SARANA_PEMELIHARAAN = [];
+const DEFAULT_SARANA_LAPORAN = [];
 
 function switchSaranaTab(tabKey) {
   currentSaranaTab = tabKey;
@@ -5553,14 +5533,15 @@ function filterSaranaByAY(data) {
 
 function renderSaranaContent() {
   const syncedInv = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-INVENTARIS-') || (a.metadata && a.metadata.module === 'inventaris')));
-  let combinedInv = syncedInv.length > 0 ? syncedInv.map(a => ({
+  let combinedInv = syncedInv.map(a => ({
+    id: a.id,
     kode: a.nomor || a.id,
     nama: a.judul,
     kategori: a.keterangan.includes('Kategori: ') ? a.keterangan.split('Kategori: ')[1].split('•')[0].trim() : 'Sarana & Prasarana',
     kondisi: a.keterangan.includes('Kondisi: ') ? a.keterangan.split('Kondisi: ')[1].split('•')[0].trim() : 'Baik',
     tanggal: a.tanggal || a.ay || '2026',
     jumlah: 1
-  })) : DEFAULT_SARANA_INVENTARIS;
+  }));
 
   combinedInv = filterSaranaByAY(combinedInv);
 
@@ -5572,7 +5553,7 @@ function renderSaranaContent() {
     ...a,
     tglPinjam: a.tanggal || '2026'
   }));
-  const combinedPinjam = filterSaranaByAY([...syncedPinjam, ...DEFAULT_SARANA_PEMINJAMAN]);
+  const combinedPinjam = filterSaranaByAY(syncedPinjam);
   const totalPinjam = combinedPinjam.length;
 
   const syncedRab = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-ANGGARAN-') || a.rab_amount || a.isAnggaran)).map(a => ({
@@ -5581,7 +5562,7 @@ function renderSaranaContent() {
     totalNum: Number(a.rab_amount) || 0,
     tanggal: a.tanggal || '2026'
   }));
-  const combinedRab = filterSaranaByAY([...syncedRab, ...DEFAULT_SARANA_ANGGARAN]);
+  const combinedRab = filterSaranaByAY(syncedRab);
   const totalRealisasi = combinedRab.filter(a => a.status === 'Terealisasi').reduce((sum, item) => sum + (item.totalNum || 0), 0);
 
   if (document.getElementById('sarana-stat-total-aset')) document.getElementById('sarana-stat-total-aset').textContent = totalAset;
@@ -5607,7 +5588,6 @@ function renderSaranaInventarisTable() {
   const kon = document.getElementById('saranaFilterKondisi')?.value || '';
   const q = (document.getElementById('saranaSearchInventaris')?.value || '').toLowerCase().trim();
 
-  // Combine synced from arsip with defaults
   const synced = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-INVENTARIS-') || (a.metadata && a.metadata.module === 'inventaris'))).map(a => ({
     id: a.id,
     kode: a.nomor || a.id,
@@ -5620,7 +5600,7 @@ function renderSaranaInventarisTable() {
     harga: a.keterangan.includes('Nilai: ') ? a.keterangan.split('Nilai: ')[1].split('•')[0].trim() : '-'
   }));
 
-  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_INVENTARIS]);
+  const combined = filterSaranaByAY(synced);
 
   const list = combined.filter(item => {
     if (kat && !item.kategori.toLowerCase().includes(kat.toLowerCase())) return false;
@@ -5652,6 +5632,9 @@ function renderSaranaInventarisTable() {
         <td><span class="badge" style="background:${badgeColor}20; color:${badgeColor}; font-weight:600;">${item.kondisi}</span></td>
         <td><i class="fas fa-location-dot" style="color:var(--t3); margin-right:4px;"></i> ${item.lokasi}</td>
         <td style="font-weight:600; color:var(--t1);">${item.harga || '-'}</td>
+        <td style="text-align:center;">
+          <button class="act-btn del" onclick="deleteSaranaItemFromSimarsip('${item.id}')" title="Hapus Data"><i class="fas fa-trash"></i></button>
+        </td>
       </tr>
     `;
   }).join('');
@@ -5675,7 +5658,7 @@ function renderSaranaPeminjamanTable() {
     status: a.status === 'selesai' ? 'Dikembalikan' : 'Dipinjam'
   }));
 
-  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_PEMINJAMAN]);
+  const combined = filterSaranaByAY(synced);
 
   const list = combined.filter(item => {
     if (stat && item.status !== stat) return false;
@@ -5706,6 +5689,9 @@ function renderSaranaPeminjamanTable() {
         <td>${item.tglPinjam}</td>
         <td>${item.tglKembali}</td>
         <td><span class="badge" style="background:${statColor}20; color:${statColor}; font-weight:600;">${item.status}</span></td>
+        <td style="text-align:center;">
+          <button class="act-btn del" onclick="deleteSaranaItemFromSimarsip('${item.id}')" title="Hapus Data"><i class="fas fa-trash"></i></button>
+        </td>
       </tr>
     `;
   }).join('');
@@ -5729,7 +5715,7 @@ function renderSaranaAnggaranTable() {
     status: a.rab_status || (a.status === 'selesai' ? 'Terealisasi' : 'Direncanakan')
   }));
 
-  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_ANGGARAN]);
+  const combined = filterSaranaByAY(synced);
 
   const list = combined.filter(item => {
     if (stat && item.status !== stat) return false;
@@ -5760,6 +5746,9 @@ function renderSaranaAnggaranTable() {
         <td>${item.harga}</td>
         <td><strong style="color:#0f766e;">${item.total}</strong></td>
         <td><span class="badge" style="background:${statColor}20; color:${statColor}; font-weight:600;">${item.status}</span></td>
+        <td style="text-align:center;">
+          <button class="act-btn del" onclick="deleteSaranaItemFromSimarsip('${item.id}')" title="Hapus Data"><i class="fas fa-trash"></i></button>
+        </td>
       </tr>
     `;
   }).join('');
@@ -5781,7 +5770,7 @@ function renderSaranaSopTable() {
     status: 'Berlaku'
   }));
 
-  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_SOP]);
+  const combined = filterSaranaByAY(synced);
 
   const list = combined.filter(item => {
     if (!q) return true;
@@ -5805,6 +5794,9 @@ function renderSaranaSopTable() {
       <td>${item.revisi}</td>
       <td>${item.tgl}</td>
       <td><span class="badge" style="background:#22c55e20; color:#22c55e; font-weight:600;">${item.status}</span></td>
+      <td style="text-align:center;">
+        <button class="act-btn del" onclick="deleteSaranaItemFromSimarsip('${item.id}')" title="Hapus Data"><i class="fas fa-trash"></i></button>
+      </td>
     </tr>
   `).join('');
 }
@@ -5825,7 +5817,7 @@ function renderSaranaPengawasanTable() {
     rekomendasi: a.keterangan.includes('Rekomendasi: ') ? a.keterangan.split('Rekomendasi: ')[1].split('•')[0].trim() : 'Pemeliharaan rutin'
   }));
 
-  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_PENGAWASAN]);
+  const combined = filterSaranaByAY(synced);
 
   const list = combined.filter(item => {
     if (!q) return true;
@@ -5849,6 +5841,9 @@ function renderSaranaPengawasanTable() {
       <td><span class="badge" style="background:#22c55e20; color:#22c55e; font-weight:600;">${item.kondisi}</span></td>
       <td>${item.hasil}</td>
       <td style="color:var(--primary); font-weight:500;">${item.rekomendasi}</td>
+      <td style="text-align:center;">
+        <button class="act-btn del" onclick="deleteSaranaItemFromSimarsip('${item.id}')" title="Hapus Data"><i class="fas fa-trash"></i></button>
+      </td>
     </tr>
   `).join('');
 }
@@ -5870,7 +5865,7 @@ function renderSaranaPemeliharaanTable() {
     status: a.status === 'selesai' ? 'Selesai' : 'Diproses'
   }));
 
-  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_PEMELIHARAAN]);
+  const combined = filterSaranaByAY(synced);
 
   const list = combined.filter(item => {
     if (!q) return true;
@@ -5897,6 +5892,9 @@ function renderSaranaPemeliharaanTable() {
         <td><strong>${item.biaya}</strong></td>
         <td>${item.tglServis}</td>
         <td><span class="badge" style="background:${statColor}20; color:${statColor}; font-weight:600;">${item.status}</span></td>
+        <td style="text-align:center;">
+          <button class="act-btn del" onclick="deleteSaranaItemFromSimarsip('${item.id}')" title="Hapus Data"><i class="fas fa-trash"></i></button>
+        </td>
       </tr>
     `;
   }).join('');
@@ -5918,7 +5916,7 @@ function renderSaranaLaporanTable() {
     ket: a.keterangan || '-'
   }));
 
-  const combined = filterSaranaByAY([...synced, ...DEFAULT_SARANA_LAPORAN]);
+  const combined = filterSaranaByAY(synced);
 
   const list = combined.filter(item => {
     if (!q) return true;
@@ -5942,6 +5940,9 @@ function renderSaranaLaporanTable() {
       <td>${item.tanggal}</td>
       <td>${item.pihak}</td>
       <td style="font-size:0.85rem; color:var(--t2);">${item.ket}</td>
+      <td style="text-align:center;">
+        <button class="act-btn del" onclick="deleteSaranaItemFromSimarsip('${item.id}')" title="Hapus Data"><i class="fas fa-trash"></i></button>
+      </td>
     </tr>
   `).join('');
 }
@@ -5959,13 +5960,24 @@ function initSaranaCharts() {
   if (window.chartSaranaTren) window.chartSaranaTren.destroy();
   if (window.chartSaranaAnggaran) window.chartSaranaAnggaran.destroy();
 
+  const syncedInv = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-INVENTARIS-') || (a.metadata && a.metadata.module === 'inventaris')));
+  const filteredInv = filterSaranaByAY(syncedInv.map(a => ({
+    kondisi: a.keterangan.includes('Kondisi: ') ? a.keterangan.split('Kondisi: ')[1].split('•')[0].trim() : 'Baik',
+    kategori: a.keterangan.includes('Kategori: ') ? a.keterangan.split('Kategori: ')[1].split('•')[0].trim() : 'Sarana & Prasarana'
+  })));
+
+  const baik = filteredInv.filter(i => (i.kondisi || '').toLowerCase().includes('baik') && !(i.kondisi || '').toLowerCase().includes('cukup')).length;
+  const cukup = filteredInv.filter(i => (i.kondisi || '').toLowerCase().includes('cukup')).length;
+  const ringan = filteredInv.filter(i => (i.kondisi || '').toLowerCase().includes('ringan')).length;
+  const berat = filteredInv.filter(i => (i.kondisi || '').toLowerCase().includes('berat')).length;
+
   // 1. Chart Kondisi Aset (Doughnut)
   window.chartSaranaKondisi = new Chart(ctxKondisi.getContext('2d'), {
     type: 'doughnut',
     data: {
       labels: ['Kondisi Baik / Siap', 'Cukup Baik', 'Rusak Ringan', 'Rusak Berat'],
       datasets: [{
-        data: [12, 1, 1, 0],
+        data: [baik, cukup, ringan, berat],
         backgroundColor: ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444'],
         borderWidth: 2,
         borderColor: '#ffffff'
@@ -5982,14 +5994,22 @@ function initSaranaCharts() {
   });
 
   // 2. Chart Distribusi Kategori Sarpras (Bar)
+  const katCounts = {};
+  filteredInv.forEach(i => {
+    const k = i.kategori || 'Lainnya';
+    katCounts[k] = (katCounts[k] || 0) + 1;
+  });
+  const katLabels = Object.keys(katCounts).length ? Object.keys(katCounts) : ['Gedung & Fasilitas', 'Mebel & Furnitur', 'Elektronik & Audio', 'Utilitas & K3'];
+  const katValues = Object.keys(katCounts).length ? Object.values(katCounts) : [0, 0, 0, 0];
+
   window.chartSaranaKategori = new Chart(ctxKategori.getContext('2d'), {
     type: 'bar',
     data: {
-      labels: ['Gedung & Bangunan', 'Mebel & Furnitur', 'Elektronik & Audio', 'Utilitas & K3', 'Perlengkapan Umum'],
+      labels: katLabels,
       datasets: [{
         label: 'Jumlah Item / Aset',
-        data: [2, 73, 23, 9, 6],
-        backgroundColor: ['#0ea5e9', '#6366f1', '#8b5cf6', '#10b981', '#f59e0b'],
+        data: katValues,
+        backgroundColor: ['#0ea5e9', '#6366f1', '#8b5cf6', '#10b981', '#f59e0b', '#ec4899'],
         borderRadius: 6
       }]
     },
@@ -6008,6 +6028,18 @@ function initSaranaCharts() {
 
   // 3. Chart Tren Peminjaman & Pemeliharaan Bulanan (Line)
   if (ctxTren) {
+    const pinjamMonthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    const maintMonthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    arsip.filter(a => a.bidang === 'sarana').forEach(a => {
+      if (a.tanggal) {
+        const m = parseInt(a.tanggal.split('-')[1], 10) - 1;
+        if (m >= 0 && m < 12) {
+          if (a.id.startsWith('SIMSPRAS-PEMINJAMAN-')) pinjamMonthly[m]++;
+          if (a.id.startsWith('SIMSPRAS-PEMELIHARAAN-')) maintMonthly[m]++;
+        }
+      }
+    });
+
     window.chartSaranaTren = new Chart(ctxTren.getContext('2d'), {
       type: 'line',
       data: {
@@ -6015,7 +6047,7 @@ function initSaranaCharts() {
         datasets: [
           {
             label: 'Sirkulasi Peminjaman',
-            data: [6, 12, 18, 15, 10, 4, 3, 14, 21, 25, 19, 11],
+            data: pinjamMonthly,
             borderColor: '#6366f1',
             backgroundColor: 'rgba(99, 102, 241, 0.12)',
             fill: true,
@@ -6025,7 +6057,7 @@ function initSaranaCharts() {
           },
           {
             label: 'Kegiatan Servis/Pemeliharaan',
-            data: [2, 3, 4, 2, 5, 2, 1, 4, 5, 3, 4, 2],
+            data: maintMonthly,
             borderColor: '#10b981',
             backgroundColor: 'rgba(16, 185, 129, 0.12)',
             fill: true,
@@ -6051,20 +6083,30 @@ function initSaranaCharts() {
 
   // 4. Chart Anggaran Sarpras (Bar: Pengajuan vs Realisasi)
   if (ctxAnggaran) {
+    const syncedRab = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-ANGGARAN-') || a.isAnggaran || (a.metadata && a.metadata.module === 'anggaran'))).map(a => ({
+      uraian: a.judul.replace('RAB Sarpras: ', ''),
+      total: Number(a.rab_amount) || 0,
+      status: a.rab_status || (a.status === 'selesai' ? 'Terealisasi' : 'Direncanakan')
+    }));
+
+    const rabLabels = syncedRab.slice(0, 5).map(r => r.uraian.slice(0, 18));
+    const rabPengajuan = syncedRab.slice(0, 5).map(r => r.total);
+    const rabRealisasi = syncedRab.slice(0, 5).map(r => r.status === 'Terealisasi' ? r.total : 0);
+
     window.chartSaranaAnggaran = new Chart(ctxAnggaran.getContext('2d'), {
       type: 'bar',
       data: {
-        labels: ['Servis AC Kampus', 'Proyektor EPSON', 'Servis Genset 20kVA', 'Kanopi Parkir', 'Kursi Chitose'],
+        labels: rabLabels.length ? rabLabels : ['Belum Ada Data'],
         datasets: [
           {
             label: 'Pengajuan (RAB)',
-            data: [1650000, 12400000, 1850000, 4500000, 13500000],
+            data: rabPengajuan.length ? rabPengajuan : [0],
             backgroundColor: '#93c5fd',
             borderRadius: 4
           },
           {
             label: 'Terealisasi',
-            data: [1650000, 12400000, 1850000, 0, 0],
+            data: rabRealisasi.length ? rabRealisasi : [0],
             backgroundColor: '#10b981',
             borderRadius: 4
           }
@@ -6088,6 +6130,143 @@ function initSaranaCharts() {
       }
     });
   }
+}
+
+// ══════════════════════════════════════════════════════════════
+// SARPRAS DELETE & CLEANUP HELPERS (POINT 1, 2, 3)
+// ══════════════════════════════════════════════════════════════
+
+async function deleteSaranaItemFromSimarsip(id) {
+  if (!id) return;
+  const a = arsip.find(x => x.id === id || (x.metadata && x.metadata.originalId === id) || x.nomor === id);
+  const targetId = a ? a.id : id;
+  const title = a ? a.judul : id;
+
+  if (!confirm(`Hapus data Sarpras "${title}"?\n\nTindakan ini akan menghapus data dari SIMARSIP dan Portal SIMSPRAS secara permanen.`)) {
+    return;
+  }
+
+  // 1. Delete from SIMARSIP Firestore (arsip-aas)
+  try {
+    if (typeof db !== 'undefined' && db) {
+      await db.collection('arsip').doc(targetId).delete();
+    }
+  } catch (e) {
+    console.warn("Gagal menghapus dari Firestore arsip-aas:", e);
+  }
+
+  // 2. Delete from SIMSPRAS Firestore (sim-sarpras-ef3a4)
+  try {
+    if (!dbSarprasSumber && typeof firebase !== 'undefined') {
+      let appSarpras = firebase.apps.find(app => app.name === "sarprasSumber") || firebase.initializeApp({
+        apiKey: "AIzaSyATNPIY3Iv5tmx9MKh7N6cz-czK0oC8SfY",
+        authDomain: "sim-sarpras-ef3a4.firebaseapp.com",
+        projectId: "sim-sarpras-ef3a4"
+      }, 'sarprasSumber');
+      dbSarprasSumber = appSarpras.firestore();
+    }
+
+    if (dbSarprasSumber) {
+      let colName = (a && a.metadata && a.metadata.module) || '';
+      let origId = (a && a.metadata && a.metadata.originalId) || '';
+      if (!colName || !origId) {
+        if (targetId.startsWith('SIMSPRAS-INVENTARIS-')) { colName = 'inventaris'; origId = targetId.replace('SIMSPRAS-INVENTARIS-', ''); }
+        else if (targetId.startsWith('SIMSPRAS-PEMINJAMAN-')) { colName = 'peminjaman'; origId = targetId.replace('SIMSPRAS-PEMINJAMAN-', ''); }
+        else if (targetId.startsWith('SIMSPRAS-ANGGARAN-')) { colName = 'anggaran'; origId = targetId.replace('SIMSPRAS-ANGGARAN-', ''); }
+        else if (targetId.startsWith('SIMSPRAS-SOP-')) { colName = 'sop'; origId = targetId.replace('SIMSPRAS-SOP-', ''); }
+        else if (targetId.startsWith('SIMSPRAS-PENGAWASAN-')) { colName = 'pengawasan'; origId = targetId.replace('SIMSPRAS-PENGAWASAN-', ''); }
+        else if (targetId.startsWith('SIMSPRAS-PEMELIHARAAN-')) { colName = 'pemeliharaan'; origId = targetId.replace('SIMSPRAS-PEMELIHARAAN-', ''); }
+        else if (targetId.startsWith('SIMSPRAS-LAPORAN-')) { colName = 'laporan'; origId = targetId.replace('SIMSPRAS-LAPORAN-', ''); }
+        else if (targetId.startsWith('SIMSPRAS-BA-')) { colName = 'berita_acara'; origId = targetId.replace('SIMSPRAS-BA-', ''); }
+        else {
+          const tabColMap = {
+            'inventaris': 'inventaris',
+            'peminjaman': 'peminjaman',
+            'anggaran': 'anggaran',
+            'sop': 'sop',
+            'pengawasan': 'pengawasan',
+            'pemeliharaan': 'pemeliharaan',
+            'laporan': 'laporan'
+          };
+          colName = tabColMap[currentSaranaTab] || 'inventaris';
+          origId = targetId;
+        }
+      }
+      if (colName && origId) {
+        await dbSarprasSumber.collection(colName).doc(origId).delete();
+      }
+    }
+  } catch (e) {
+    console.warn("Gagal menghapus dari dbSarprasSumber:", e);
+  }
+
+  // 3. Remove from local arsip state
+  arsip = arsip.filter(x => x.id !== targetId && x.id !== id && (!a || x.id !== a.id));
+
+  if (typeof save === 'function') save();
+  if (typeof updateBadges === 'function') updateBadges();
+  renderSaranaContent();
+  if (currentSaranaTab === 'dashboard') initSaranaCharts();
+  if (typeof toast === 'function') toast(`Data sarpras "${title}" berhasil dihapus.`, 'success');
+}
+
+async function clearAllSaranaData() {
+  if (!confirm("PERINGATAN: Apakah Anda yakin ingin MENGOSONGKAN SELURUH DATA Sarana & Prasarana?\n\nSemua inventaris, peminjaman, anggaran, SOP, pengawasan, pemeliharaan, dan laporan Sarpras akan dihapus secara permanen.")) {
+    return;
+  }
+  const code = prompt("Ketik 'KOSONGKAN' untuk mengonfirmasi pengosongan seluruh data Sarpras:");
+  if (code !== 'KOSONGKAN') {
+    if (typeof toast === 'function') toast('Pengosongan data dibatalkan.', 'info');
+    return;
+  }
+
+  if (typeof toast === 'function') toast('Sedang mengosongkan seluruh data Sarana & Prasarana...', 'info');
+
+  // 1. Delete all sarana records from SIMARSIP Firestore (arsip-aas)
+  try {
+    if (typeof db !== 'undefined' && db) {
+      const saranaDocs = arsip.filter(a => a.bidang === 'sarana');
+      const batchPromises = saranaDocs.map(a => db.collection('arsip').doc(a.id).delete().catch(err => console.warn(err)));
+      await Promise.all(batchPromises);
+    }
+  } catch (e) {
+    console.warn("Gagal menghapus batch sarana dari arsip-aas:", e);
+  }
+
+  // 2. Delete all records from SIMSPRAS Firestore (sim-sarpras-ef3a4)
+  try {
+    if (!dbSarprasSumber && typeof firebase !== 'undefined') {
+      let appSarpras = firebase.apps.find(app => app.name === "sarprasSumber") || firebase.initializeApp({
+        apiKey: "AIzaSyATNPIY3Iv5tmx9MKh7N6cz-czK0oC8SfY",
+        authDomain: "sim-sarpras-ef3a4.firebaseapp.com",
+        projectId: "sim-sarpras-ef3a4"
+      }, 'sarprasSumber');
+      dbSarprasSumber = appSarpras.firestore();
+    }
+
+    if (dbSarprasSumber) {
+      const cols = ['inventaris', 'peminjaman', 'anggaran', 'sop', 'pengawasan', 'pemeliharaan', 'laporan', 'berita_acara'];
+      for (const colName of cols) {
+        try {
+          const snap = await dbSarprasSumber.collection(colName).get();
+          const delPromises = snap.docs.map(d => d.ref.delete().catch(err => console.warn(err)));
+          await Promise.all(delPromises);
+        } catch (err) {
+          console.warn(`Gagal mengosongkan koleksi ${colName}:`, err);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Gagal mengosongkan dbSarprasSumber:", e);
+  }
+
+  // 3. Clear local state
+  arsip = arsip.filter(a => a.bidang !== 'sarana');
+  if (typeof save === 'function') save();
+  if (typeof updateBadges === 'function') updateBadges();
+  renderSaranaContent();
+  if (currentSaranaTab === 'dashboard') initSaranaCharts();
+  if (typeof toast === 'function') toast('Seluruh data Sarana & Prasarana berhasil dikosongkan!', 'success');
 }
 
 
