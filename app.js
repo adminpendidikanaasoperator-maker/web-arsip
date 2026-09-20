@@ -891,6 +891,7 @@ const STATUS_CFG = {
 let arsip    = [];
 let currentDeptSub = 'all';
 let currentLabTab = 'dashboard';
+let currentSaranaTab = 'dashboard';
 
 function renderDeptSubmenus() {
   document.querySelectorAll('.sb-link[data-page="dept"]').forEach(link => {
@@ -921,6 +922,24 @@ function renderDeptSubmenus() {
       labSubItems.forEach(item => {
         let isActive = (currentLabTab === item.id && currentDept === 'laboratorium') ? 'active' : '';
         ul.innerHTML += `<li class="${isActive}" onclick="switchLabTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> ${item.label}
+        </li>`;
+      });
+    } else if (deptId === 'sarana') {
+      const saranaSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
+        { id: 'inventaris', label: 'Inventarisasi Aset', icon: 'fas fa-boxes-stacked' },
+        { id: 'peminjaman', label: 'Peminjaman Sarpras', icon: 'fas fa-hand-holding' },
+        { id: 'anggaran', label: 'Anggaran Sarpras (RAB)', icon: 'fas fa-file-invoice-dollar' },
+        { id: 'sop', label: 'SOP Sarana Prasarana', icon: 'fas fa-file-shield' },
+        { id: 'pengawasan', label: 'Pengawasan & Evaluasi', icon: 'fas fa-clipboard-check' },
+        { id: 'pemeliharaan', label: 'Pemeliharaan & Servis', icon: 'fas fa-wrench' },
+        { id: 'laporan', label: 'Laporan & Berita Acara', icon: 'fas fa-file-lines' },
+        { id: 'portal', label: 'Web App SIMSPRAS', icon: 'fas fa-window-maximize' }
+      ];
+      saranaSubItems.forEach(item => {
+        let isActive = (currentSaranaTab === item.id && currentDept === 'sarana') ? 'active' : '';
+        ul.innerHTML += `<li class="${isActive}" onclick="switchSaranaTabFromSidebar('${item.id}', this)">
           <i class="${item.icon}"></i> ${item.label}
         </li>`;
       });
@@ -1843,12 +1862,16 @@ function renderDeptPage(dept) {
   const deptArsipCharts = document.getElementById('deptArsipCharts');
   const statRow = document.getElementById('deptStatRow');
   const labContainer = document.getElementById('laboratoriumContainer');
+  const saranaContainer = document.getElementById('saranaContainer');
+  const deptTableContainer = document.getElementById('deptTableContainer');
 
   if (dept === 'kemahasiswaan') {
     if (kmhsContainer) kmhsContainer.style.display = 'block';
     if (labContainer) labContainer.style.display = 'none';
+    if (saranaContainer) saranaContainer.style.display = 'none';
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
     if (statRow) statRow.style.display = 'flex';
+    if (deptTableContainer) deptTableContainer.style.display = 'block';
     switchKmhsTab('arsip');
     const deptSearchInput = document.getElementById('deptSearch');
     if (deptSearchInput) {
@@ -1858,16 +1881,30 @@ function renderDeptPage(dept) {
     if (kmhsContainer) kmhsContainer.style.display = 'none';
     if (iframeContainer) iframeContainer.style.display = 'none';
     if (labContainer) labContainer.style.display = 'block';
+    if (saranaContainer) saranaContainer.style.display = 'none';
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
     if (statRow) statRow.style.display = 'none';
+    if (deptTableContainer) deptTableContainer.style.display = 'none';
     initLabCharts();
     renderLabContent();
+  } else if (dept === 'sarana') {
+    if (kmhsContainer) kmhsContainer.style.display = 'none';
+    if (iframeContainer) iframeContainer.style.display = 'none';
+    if (labContainer) labContainer.style.display = 'none';
+    if (saranaContainer) saranaContainer.style.display = 'block';
+    if (deptArsipCharts) deptArsipCharts.style.display = 'none';
+    if (statRow) statRow.style.display = 'none';
+    if (deptTableContainer) deptTableContainer.style.display = 'none';
+    switchSaranaTab(currentSaranaTab || 'dashboard');
+    renderSaranaContent();
   } else {
     if (kmhsContainer) kmhsContainer.style.display = 'none';
     if (iframeContainer) iframeContainer.style.display = 'none';
     if (labContainer) labContainer.style.display = 'none';
+    if (saranaContainer) saranaContainer.style.display = 'none';
     if (deptArsipCharts) deptArsipCharts.style.display = 'block';
     if (statRow) statRow.style.display = 'flex';
+    if (deptTableContainer) deptTableContainer.style.display = 'block';
     const deptSearchInput = document.getElementById('deptSearch');
     if (deptSearchInput) {
       deptSearchInput.placeholder = 'Cari arsip bidang ini...';
@@ -1876,7 +1913,7 @@ function renderDeptPage(dept) {
 
   const saranaBanner = document.getElementById('saranaSyncBanner');
   if (saranaBanner) {
-    saranaBanner.style.display = (dept === 'sarana') ? 'flex' : 'none';
+    saranaBanner.style.display = 'none';
   }
 
   document.getElementById('deptTableTitle').textContent=`Daftar Arsip ${d.label}`;
@@ -2282,10 +2319,62 @@ function initSidebarSubMenus() {
   Object.keys(DEPT).forEach(k => {
     const navLink = document.getElementById(`nav-${k}`);
     if (!navLink) return;
+    
+    const existing = document.getElementById(`dept-${k}-sub-menu`);
+    if (existing) existing.remove();
+
     const ul = document.createElement('ul');
     ul.className = 'sb-sub-menu';
     ul.id = `dept-${k}-sub-menu`;
     ul.style.display = 'none';
+
+    if (k === 'laboratorium') {
+      const labSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
+        { id: 'inventaris', label: 'Inventaris Alat Lab', icon: 'fas fa-boxes-stacked' },
+        { id: 'perawatan', label: 'Pemeliharaan Alat', icon: 'fas fa-wrench' },
+        { id: 'logbook', label: 'Logbook & Praktikum', icon: 'fas fa-book-bookmark' },
+        { id: 'jadwal', label: 'Jadwal Praktikum', icon: 'fas fa-calendar-days' },
+        { id: 'anggaran', label: 'Anggaran Lab (RAB)', icon: 'fas fa-file-invoice-dollar' },
+        { id: 'dokumen', label: 'SOP & Dokumen Lab', icon: 'fas fa-file-shield' },
+        { id: 'lpj', label: 'Laporan LPJ Lab', icon: 'fas fa-file-lines' },
+        { id: 'portal', label: 'Web App SIMLAB', icon: 'fas fa-window-maximize' }
+      ];
+      let html = '';
+      labSubItems.forEach(item => {
+        let isActive = (currentLabTab === item.id) ? 'active' : '';
+        html += `<li class="${isActive}" onclick="switchLabTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
+        </li>`;
+      });
+      ul.innerHTML = html;
+      navLink.after(ul);
+      return;
+    }
+
+    if (k === 'sarana') {
+      const saranaSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
+        { id: 'inventaris', label: 'Inventarisasi Aset', icon: 'fas fa-boxes-stacked' },
+        { id: 'peminjaman', label: 'Peminjaman Sarpras', icon: 'fas fa-hand-holding' },
+        { id: 'anggaran', label: 'Anggaran Sarpras (RAB)', icon: 'fas fa-file-invoice-dollar' },
+        { id: 'sop', label: 'SOP Sarana Prasarana', icon: 'fas fa-file-shield' },
+        { id: 'pengawasan', label: 'Pengawasan & Evaluasi', icon: 'fas fa-clipboard-check' },
+        { id: 'pemeliharaan', label: 'Pemeliharaan & Servis', icon: 'fas fa-wrench' },
+        { id: 'laporan', label: 'Laporan & Berita Acara', icon: 'fas fa-file-lines' },
+        { id: 'portal', label: 'Web App SIMSPRAS', icon: 'fas fa-window-maximize' }
+      ];
+      let html = '';
+      saranaSubItems.forEach(item => {
+        let isActive = (currentSaranaTab === item.id) ? 'active' : '';
+        html += `<li class="${isActive}" onclick="switchSaranaTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
+        </li>`;
+      });
+      ul.innerHTML = html;
+      navLink.after(ul);
+      return;
+    }
 
     let html = `<li class="active" onclick="filterByJenisFromSidebar('', '${k}', this)"><i class="fas fa-layer-group"></i> Semua Jenis</li>`;
     
@@ -5270,6 +5359,677 @@ async function syncSimlabLive(isManual = false) {
     }
   } finally {
     if (icon) icon.classList.remove('fa-spin');
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BIDANG SARANA DAN PRASARANA (SIMSPRAS) INTEGRATED MODULES
+   Akademi Akupunktur Surabaya
+   ══════════════════════════════════════════════════════════════ */
+
+const DEFAULT_SARANA_INVENTARIS = [
+  { id:'SP-INV-001', kode:'AAS-GDB-01', nama:'Gedung Utama Kampus AAS (Lantai 1 & 2)', kategori:'Gedung & Fasilitas', merk:'Permanen Beton', lokasi:'Kampus AAS Surabaya', kondisi:'Baik', jumlah:1, satuan:'Unit', harga:'Rp 2.850.000.000' },
+  { id:'SP-INV-002', kode:'AAS-GDB-02', nama:'Gedung Klinik Akupunktur & Praktik Terpadu', kategori:'Gedung & Fasilitas', merk:'Permanen Beton', lokasi:'Area Klinik Kampus', kondisi:'Baik', jumlah:1, satuan:'Unit', harga:'Rp 1.450.000.000' },
+  { id:'SP-INV-003', kode:'AAS-MBL-01', nama:'Meja Kuliah Lipat Mahasiswa Chitose', kategori:'Mebel & Furnitur', merk:'Chitose Yamato', lokasi:'Ruang Kelas Teori A & B', kondisi:'Baik', jumlah:60, satuan:'Unit', harga:'Rp 450.000' },
+  { id:'SP-INV-004', kode:'AAS-MBL-02', nama:'Meja Dosen Kayu Jati Minimalis & Kursi Ergonomis', kategori:'Mebel & Furnitur', merk:'Olympic Grand', lokasi:'Ruang Dosen & Rapat', kondisi:'Baik', jumlah:12, satuan:'Set', harga:'Rp 1.850.000' },
+  { id:'SP-INV-005', kode:'AAS-MED-01', nama:'Bed Pasien / Meja Periksa Praktik Akupunktur Hidrolik', kategori:'Medis & Akupunktur', merk:'Paramount Medika', lokasi:'Laboratorium Akupunktur Dasar', kondisi:'Baik', jumlah:14, satuan:'Unit', harga:'Rp 3.200.000' },
+  { id:'SP-INV-006', kode:'AAS-MED-02', nama:'Lampu Terapi TDP Elektromagnetik Infrared CQ-29', kategori:'Medis & Akupunktur', merk:'Gou-Gong Original', lokasi:'Laboratorium Biomedis', kondisi:'Baik', jumlah:8, satuan:'Unit', harga:'Rp 1.450.000' },
+  { id:'SP-INV-007', kode:'AAS-ELK-01', nama:'LCD Proyektor Multimedia Epson EB-X500 3600 Lumens', kategori:'Elektronik & Audio', merk:'Epson', lokasi:'Ruang Kelas 1 & 2', kondisi:'Baik', jumlah:4, satuan:'Unit', harga:'Rp 6.200.000' },
+  { id:'SP-INV-008', kode:'AAS-ELK-02', nama:'AC Split Daikin Inverter 2 PK R32', kategori:'Elektronik & Audio', merk:'Daikin', lokasi:'Ruang Kuliah & Lab', kondisi:'Baik', jumlah:10, satuan:'Unit', harga:'Rp 7.800.000' },
+  { id:'SP-INV-009', kode:'AAS-ELK-03', nama:'Sound System Portabel Wireless Meeting + 2 Mic UHF', kategori:'Elektronik & Audio', merk:'Baretone 15 Inch', lokasi:'Auditorium & Lab Praktik', kondisi:'Baik', jumlah:3, satuan:'Unit', harga:'Rp 3.500.000' },
+  { id:'SP-INV-010', kode:'AAS-ELK-04', nama:'PC All-In-One HP Core i5 16GB RAM (Administrasi)', kategori:'Elektronik & Audio', merk:'HP Pavilion', lokasi:'Ruang BAAK & Sarpras', kondisi:'Baik', jumlah:6, satuan:'Unit', harga:'Rp 9.500.000' },
+  { id:'SP-INV-011', kode:'AAS-UTL-01', nama:'Genset Silent Perkins 20 kVA Diesel Generator', kategori:'Gedung & Fasilitas', merk:'Perkins Stamford', lokasi:'Rumah Daya Cadangan', kondisi:'Baik', jumlah:1, satuan:'Unit', harga:'Rp 95.000.000' },
+  { id:'SP-INV-012', kode:'AAS-UTL-02', nama:'Tabung Pemadam Api APAR Powder 6kg Dry Chemical', kategori:'Gedung & Fasilitas', merk:'Yamato Guard', lokasi:'Koridor & Depan Lab', kondisi:'Baik', jumlah:8, satuan:'Tabung', harga:'Rp 450.000' },
+  { id:'SP-INV-013', kode:'AAS-ELK-05', nama:'AC Split Panasonic 1.5 PK Standard (Ruang Rapat)', kategori:'Elektronik & Audio', merk:'Panasonic', lokasi:'Ruang Rapat Pimpinan', kondisi:'Rusak Ringan', jumlah:1, satuan:'Unit', harga:'Rp 4.500.000' }
+];
+
+const DEFAULT_SARANA_PEMINJAMAN = [
+  { id:'PINJAM-SP-001', noPinjam:'PJM-2026-001', namaPeminjam:'dr. H. Subagyo, Akp', unit:'Dosen Pengampu', barang:'LCD Proyektor Epson EB-X500 & Pointer Laser', tglPinjam:'2026-09-15', tglKembali:'2026-09-15', status:'Dikembalikan', catatan:'Digunakan untuk Kuliah Pakar Meridian Akupunktur' },
+  { id:'PINJAM-SP-002', noPinjam:'PJM-2026-002', namaPeminjam:'BEM Akademi Akupunktur Surabaya', unit:'Organisasi Mahasiswa', barang:'Sound System Portabel Wireless + 2 Mic UHF', tglPinjam:'2026-09-18', tglKembali:'2026-09-19', status:'Dikembalikan', catatan:'Acara Sambutan Mahasiswa Baru & Pengenalan Kampus' },
+  { id:'PINJAM-SP-003', noPinjam:'PJM-2026-003', namaPeminjam:'Siti Aminah, S.Tr.Kes', unit:'Laboran / Instruktur', barang:'Kamera Dokumentasi Praktik & Tripod Stand', tglPinjam:'2026-09-20', tglKembali:'2026-09-22', status:'Dipinjam', catatan:'Perekaman modul video pembelajaran praktikum klinik' },
+  { id:'PINJAM-SP-004', noPinjam:'PJM-2026-004', namaPeminjam:'Bambang S., M.Kes', unit:'Panitia Uji Kompetensi', barang:'Meja Lipat Tambahan (15 Unit) & Roll Kabel', tglPinjam:'2026-09-21', tglKembali:'2026-09-23', status:'Dipinjam', catatan:'Persiapan Simulasi Try-Out CBT & OSCE Kampus' }
+];
+
+const DEFAULT_SARANA_ANGGARAN = [
+  { id:'RAB-SP-001', noRAB:'RAB-SARPRAS-2026-01', uraian:'Peremajaan & Servis Cuci Rutin 11 Unit AC Kampus', kategori:'Pemeliharaan', volume:'11 Unit', harga:'Rp 150.000', total:'Rp 1.650.000', totalNum:1650000, status:'Terealisasi' },
+  { id:'RAB-SP-002', noRAB:'RAB-SARPRAS-2026-02', uraian:'Pengadaan 2 Unit Proyektor EPSON EB-X500 Kelas', kategori:'Pengadaan Aset', volume:'2 Unit', harga:'Rp 6.200.000', total:'Rp 12.400.000', totalNum:12400000, status:'Terealisasi' },
+  { id:'RAB-SP-003', noRAB:'RAB-SARPRAS-2026-03', uraian:'Penggantian Filter Oli & Solar Rutin Genset Perkins 20 kVA', kategori:'Pemeliharaan', volume:'1 Paket', harga:'Rp 1.850.000', total:'Rp 1.850.000', totalNum:1850000, status:'Terealisasi' },
+  { id:'RAB-SP-004', noRAB:'RAB-SARPRAS-2026-04', uraian:'Pengecatan & Perbaikan Kanopi Area Parkir Dosen', kategori:'Fasilitas Gedung', volume:'1 Lokasi', harga:'Rp 4.500.000', total:'Rp 4.500.000', totalNum:4500000, status:'Disetujui' },
+  { id:'RAB-SP-005', noRAB:'RAB-SARPRAS-2026-05', uraian:'Pengadaan Kursi Mahasiswa Chitose 30 Unit', kategori:'Pengadaan Aset', volume:'30 Unit', harga:'Rp 450.000', total:'Rp 13.500.000', totalNum:13500000, status:'Direncanakan' }
+];
+
+const DEFAULT_SARANA_SOP = [
+  { id:'SOP-SP-001', nomor:'SOP/SARPRAS/AAS/01', judul:'Standar Operasional Prosedur (SOP) Pengadaan & Penerimaan Aset Kampus', kategori:'Pengadaan', revisi:'Rev. 02', tgl:'2026-01-10', status:'Berlaku' },
+  { id:'SOP-SP-002', nomor:'SOP/SARPRAS/AAS/02', judul:'SOP Peminjaman, Pemakaian & Pengembalian Sarana Prasarana Fasilitas', kategori:'Peminjaman', revisi:'Rev. 01', tgl:'2026-01-10', status:'Berlaku' },
+  { id:'SOP-SP-003', nomor:'SOP/SARPRAS/AAS/03', judul:'SOP Pemeliharaan, Perawatan Preventif & Servis Berkala Aset Fasilitas', kategori:'Pemeliharaan', revisi:'Rev. 02', tgl:'2026-01-15', status:'Berlaku' },
+  { id:'SOP-SP-004', nomor:'SOP/SARPRAS/AAS/04', judul:'SOP Pengawasan, Pemeriksaan Kelaikan & Evaluasi Keselamatan Gedung', kategori:'Pengawasan', revisi:'Rev. 01', tgl:'2026-02-01', status:'Berlaku' },
+  { id:'SOP-SP-005', nomor:'SOP/SARPRAS/AAS/05', judul:'SOP Penghapusan, Pemusnahan & Mutasi Barang Aset Rusak Berat', kategori:'Penghapusan', revisi:'Rev. 01', tgl:'2026-02-15', status:'Berlaku' }
+];
+
+const DEFAULT_SARANA_PENGAWASAN = [
+  { id:'WAS-SP-001', kode:'INSP-2026-01', fasilitas:'Ruang Kuliah Teori Lantai 1 & 2', petugas:'Tim Pengawas Sarpras', kondisi:'Baik & Laik Pakai', hasil:'Pencahayaan, ventilasi AC, dan proyektor berfungsi optimal.', rekomendasi:'Jadwalkan pembersihan filter AC rutin bulanan.' },
+  { id:'WAS-SP-002', kode:'INSP-2026-02', fasilitas:'Genset Cadangan Perkins 20 kVA', petugas:'Bpk. Sukirman (Teknisi Listrik)', kondisi:'Baik & Siap Operasi', hasil:'Otomatisasi ATS berjalan lancar saat simulasi pemadaman.', rekomendasi:'Cek volume solar mingguan tetap minimal 80%.' },
+  { id:'WAS-SP-003', kode:'INSP-2026-03', fasilitas:'Tabung APAR Seluruh Lantai Gedung', petugas:'Koordinator K3 Kampus', kondisi:'Standar Aman', hasil:'8 Tabung terisi penuh, segel utuh, jarum indikator di area hijau.', rekomendasi:'Tetap pasang kartu inspeksi bulanan di tiap tabung.' },
+  { id:'WAS-SP-004', kode:'INSP-2026-04', fasilitas:'Instalasi Pompa & Tandon Air Bersih', petugas:'Tim Sarpras AAS', kondisi:'Baik', hasil:'Distribusi air lancar ke seluruh wastafel dan toilet kampus.', rekomendasi:'Kuras tandon 4 bulan sekali.' }
+];
+
+const DEFAULT_SARANA_PEMELIHARAAN = [
+  { id:'MNT-SP-001', kode:'SRV-2026-01', namaBarang:'AC Daikin Ruang Dosen & Lab', teknisi:'CV. Mandiri Sejuk Bersama', jenisServis:'Pembersihan Evaporator & Pengisian Refrigerant Freon', biaya:'Rp 750.000', tglServis:'2026-08-20', status:'Selesai' },
+  { id:'MNT-SP-002', kode:'SRV-2026-02', namaBarang:'Genset Perkins 20 kVA', teknisi:'Bpk. Sukirman (Teknisi Mesin)', jenisServis:'Ganti Oli Mesin Meditran SX & Filter Bahan Bakar', biaya:'Rp 1.850.000', tglServis:'2026-08-28', status:'Selesai' },
+  { id:'MNT-SP-003', kode:'SRV-2026-03', namaBarang:'Jaringan Kelistrikan Ruang Kelas B', teknisi:'Instalatir PLN Bersertifikat', jenisServis:'Perbaikan Jalur MCB & Stopkontak Praktik', biaya:'Rp 450.000', tglServis:'2026-09-08', status:'Selesai' },
+  { id:'MNT-SP-004', kode:'SRV-2026-04', namaBarang:'AC Panasonic 1.5 PK Ruang Rapat', teknisi:'CV. Mandiri Sejuk Bersama', jenisServis:'Pengecekan Kompresor & Perbaikan Kebocoran Pipa', biaya:'Rp 600.000', tglServis:'2026-09-18', status:'Diproses' }
+];
+
+const DEFAULT_SARANA_LAPORAN = [
+  { id:'LAP-SP-001', nomor:'012/LAP-SARPRAS/AAS/VIII/2026', judul:'Laporan Inventarisasi dan Kelaikan Sarana Prasarana Semester Ganjil 2025/2026', jenis:'Laporan Semester', tanggal:'2026-08-30', pihak:'Kepala Bidang Sarpras & Direktur AAS', ket:'Dokumen rekapitulasi 120 item aset kampus dengan status kelaikan 96.5%.' },
+  { id:'LAP-SP-002', nomor:'015/BA-PENGADAAN/AAS/IX/2026', judul:'Berita Acara Penerimaan & Pemeriksaan 2 Unit LCD Proyektor Epson EB-X500', jenis:'Berita Acara', tanggal:'2026-09-05', pihak:'Panitia Pengadaan & Vendor PT. Surya Teknologi', ket:'Barang diterima dalam kondisi 100% baru, segel utuh, dan lulus uji fungsi.' },
+  { id:'LAP-SP-003', nomor:'018/BA-SERVIS/AAS/IX/2026', judul:'Berita Acara Penyelesaian Servis Berkala Genset Perkins 20 kVA', jenis:'Berita Acara', tanggal:'2026-09-10', pihak:'Teknisi Mesin & Koordinator Sarpras AAS', ket:'Penggantian oli, filter oli, filter solar tuntas; output tegangan 380/220V stabil.' }
+];
+
+function switchSaranaTab(tabKey) {
+  currentSaranaTab = tabKey;
+
+  // Update tabs buttons in #saranaContainer
+  const buttons = ['dashboard', 'inventaris', 'peminjaman', 'anggaran', 'sop', 'pengawasan', 'pemeliharaan', 'laporan', 'portal'];
+  buttons.forEach(b => {
+    const btn = document.getElementById(`btnSaranaTab-${b}`);
+    if (btn) {
+      if (b === tabKey) {
+        btn.classList.add('active');
+        btn.style.background = 'var(--primary)';
+        btn.style.color = '#fff';
+      } else {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.color = b === 'portal' ? '#0ea5e9' : 'var(--t2)';
+      }
+    }
+  });
+
+  // Update sidebar sub-menu if present
+  const sidebarSub = document.getElementById('dept-sarana-sub-menu') || document.getElementById('submenu-sarana');
+  if (sidebarSub) {
+    const listItems = sidebarSub.querySelectorAll('li');
+    listItems.forEach(li => {
+      const onclickAttr = li.getAttribute('onclick') || '';
+      if (onclickAttr.includes(`'${tabKey}'`)) {
+        li.classList.add('active');
+      } else {
+        li.classList.remove('active');
+      }
+    });
+  }
+
+  // Toggle views
+  buttons.forEach(b => {
+    const v = document.getElementById(`saranaView-${b}`);
+    if (v) {
+      v.style.display = (b === tabKey) ? 'block' : 'none';
+    }
+  });
+
+  if (tabKey === 'portal') {
+    const simsprasFrame = document.getElementById('simsprasIframe');
+    if (simsprasFrame && (!simsprasFrame.src || !simsprasFrame.src.includes('sarpras.akademiakupunktursurabaya.web.id'))) {
+      simsprasFrame.src = 'https://sarpras.akademiakupunktursurabaya.web.id';
+    }
+  } else if (tabKey === 'dashboard') {
+    setTimeout(initSaranaCharts, 50);
+  } else if (tabKey === 'inventaris') {
+    renderSaranaInventarisTable();
+  } else if (tabKey === 'peminjaman') {
+    renderSaranaPeminjamanTable();
+  } else if (tabKey === 'anggaran') {
+    renderSaranaAnggaranTable();
+  } else if (tabKey === 'sop') {
+    renderSaranaSopTable();
+  } else if (tabKey === 'pengawasan') {
+    renderSaranaPengawasanTable();
+  } else if (tabKey === 'pemeliharaan') {
+    renderSaranaPemeliharaanTable();
+  } else if (tabKey === 'laporan') {
+    renderSaranaLaporanTable();
+  }
+}
+
+function switchSaranaTabFromSidebar(tabKey, el) {
+  if (currentDept !== 'sarana') {
+    const link = document.getElementById('nav-sarana');
+    if (link) setActiveNav(link);
+    currentDept = 'sarana';
+    showPage('dept');
+  }
+  switchSaranaTab(tabKey);
+}
+
+function renderSaranaContent() {
+  const syncedInv = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-INVENTARIS-') || (a.metadata && a.metadata.module === 'inventaris')));
+  const combinedInv = syncedInv.length > 0 ? syncedInv.map(a => ({
+    kode: a.nomor || a.id,
+    nama: a.judul,
+    kategori: a.keterangan.includes('Kategori: ') ? a.keterangan.split('Kategori: ')[1].split('•')[0].trim() : 'Sarana & Prasarana',
+    kondisi: a.keterangan.includes('Kondisi: ') ? a.keterangan.split('Kondisi: ')[1].split('•')[0].trim() : 'Baik',
+    jumlah: 1
+  })) : DEFAULT_SARANA_INVENTARIS;
+
+  const totalAset = combinedInv.reduce((sum, item) => sum + (Number(item.jumlah) || 1), 0);
+  const baikCount = combinedInv.filter(i => (i.kondisi || '').toLowerCase().includes('baik')).reduce((sum, item) => sum + (Number(item.jumlah) || 1), 0);
+  const rusakCount = combinedInv.filter(i => (i.kondisi || '').toLowerCase().includes('rusak')).reduce((sum, item) => sum + (Number(item.jumlah) || 1), 0);
+
+  const syncedPinjam = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-PEMINJAMAN-') || (a.metadata && a.metadata.module === 'peminjaman')));
+  const totalPinjam = DEFAULT_SARANA_PEMINJAMAN.length + syncedPinjam.length;
+
+  const syncedRab = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-ANGGARAN-') || a.rab_amount || a.isAnggaran));
+  let totalRealisasi = DEFAULT_SARANA_ANGGARAN.filter(a => a.status === 'Terealisasi').reduce((sum, item) => sum + item.totalNum, 0);
+  syncedRab.forEach(a => {
+    if (a.rab_status === 'Terealisasi' || a.status === 'selesai') {
+      totalRealisasi += (Number(a.rab_amount) || 0);
+    }
+  });
+
+  if (document.getElementById('sarana-stat-total-aset')) document.getElementById('sarana-stat-total-aset').textContent = totalAset;
+  if (document.getElementById('sarana-stat-baik')) document.getElementById('sarana-stat-baik').textContent = baikCount;
+  if (document.getElementById('sarana-stat-rusak')) document.getElementById('sarana-stat-rusak').textContent = rusakCount;
+  if (document.getElementById('sarana-stat-pinjam')) document.getElementById('sarana-stat-pinjam').textContent = totalPinjam;
+  if (document.getElementById('sarana-stat-anggaran')) document.getElementById('sarana-stat-anggaran').textContent = 'Rp ' + totalRealisasi.toLocaleString('id-ID');
+
+  renderSaranaInventarisTable();
+  renderSaranaPeminjamanTable();
+  renderSaranaAnggaranTable();
+  renderSaranaSopTable();
+  renderSaranaPengawasanTable();
+  renderSaranaPemeliharaanTable();
+  renderSaranaLaporanTable();
+}
+
+function renderSaranaInventarisTable() {
+  const tbody = document.getElementById('saranaInventarisBody');
+  if (!tbody) return;
+
+  const kat = document.getElementById('saranaFilterKategori')?.value || '';
+  const kon = document.getElementById('saranaFilterKondisi')?.value || '';
+  const q = (document.getElementById('saranaSearchInventaris')?.value || '').toLowerCase().trim();
+
+  // Combine synced from arsip with defaults
+  const synced = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-INVENTARIS-') || (a.metadata && a.metadata.module === 'inventaris'))).map(a => ({
+    id: a.id,
+    kode: a.nomor || a.id,
+    nama: a.judul,
+    kategori: a.keterangan.includes('Kategori: ') ? a.keterangan.split('Kategori: ')[1].split('•')[0].trim() : 'Sarana & Prasarana',
+    kondisi: a.keterangan.includes('Kondisi: ') ? a.keterangan.split('Kondisi: ')[1].split('•')[0].trim() : 'Baik',
+    jumlah: 1,
+    satuan: 'Unit',
+    lokasi: a.keterangan.includes('Lokasi: ') ? a.keterangan.split('Lokasi: ')[1].split('•')[0].trim() : 'Kampus AAS',
+    harga: a.keterangan.includes('Nilai: ') ? a.keterangan.split('Nilai: ')[1].split('•')[0].trim() : '-'
+  }));
+
+  const combined = [...synced, ...DEFAULT_SARANA_INVENTARIS];
+
+  const list = combined.filter(item => {
+    if (kat && !item.kategori.toLowerCase().includes(kat.toLowerCase())) return false;
+    if (kon && !item.kondisi.toLowerCase().includes(kon.toLowerCase())) return false;
+    if (q) {
+      const match = (item.nama||'').toLowerCase().includes(q) || (item.kode||'').toLowerCase().includes(q) || (item.lokasi||'').toLowerCase().includes(q) || (item.kategori||'').toLowerCase().includes(q);
+      if (!match) return false;
+    }
+    return true;
+  });
+
+  const emptyEl = document.getElementById('saranaInventarisEmpty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    return;
+  }
+  if (emptyEl) emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = list.map((item, idx) => {
+    let badgeColor = item.kondisi === 'Baik' ? '#22c55e' : (item.kondisi === 'Cukup Baik' ? '#3b82f6' : '#f59e0b');
+    return `
+      <tr>
+        <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+        <td><strong style="color:var(--primary); font-family:monospace;">${item.kode}</strong></td>
+        <td><strong>${item.nama}</strong></td>
+        <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${item.kategori}</span></td>
+        <td>${item.jumlah} ${item.satuan || 'Unit'}</td>
+        <td><span class="badge" style="background:${badgeColor}20; color:${badgeColor}; font-weight:600;">${item.kondisi}</span></td>
+        <td><i class="fas fa-location-dot" style="color:var(--t3); margin-right:4px;"></i> ${item.lokasi}</td>
+        <td style="font-weight:600; color:var(--t1);">${item.harga || '-'}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderSaranaPeminjamanTable() {
+  const tbody = document.getElementById('saranaPeminjamanBody');
+  if (!tbody) return;
+
+  const stat = document.getElementById('saranaFilterPinjamStatus')?.value || '';
+  const q = (document.getElementById('saranaSearchPeminjaman')?.value || '').toLowerCase().trim();
+
+  const synced = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-PEMINJAMAN-') || (a.metadata && a.metadata.module === 'peminjaman'))).map(a => ({
+    id: a.id,
+    noPinjam: a.nomor || a.id,
+    namaPeminjam: a.pengirim || 'Civitas AAS',
+    unit: a.keterangan.includes('Peminjam: ') ? a.keterangan.split('Peminjam: ')[1].split('•')[0].trim() : 'Umum',
+    barang: a.judul,
+    tglPinjam: a.tanggal || '-',
+    tglKembali: a.keterangan.includes('Batas Kembali: ') ? a.keterangan.split('Batas Kembali: ')[1].split('•')[0].trim() : '-',
+    status: a.status === 'selesai' ? 'Dikembalikan' : 'Dipinjam'
+  }));
+
+  const combined = [...synced, ...DEFAULT_SARANA_PEMINJAMAN];
+
+  const list = combined.filter(item => {
+    if (stat && item.status !== stat) return false;
+    if (q) {
+      const match = (item.namaPeminjam||'').toLowerCase().includes(q) || (item.barang||'').toLowerCase().includes(q) || (item.noPinjam||'').toLowerCase().includes(q) || (item.unit||'').toLowerCase().includes(q);
+      if (!match) return false;
+    }
+    return true;
+  });
+
+  const emptyEl = document.getElementById('saranaPeminjamanEmpty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    return;
+  }
+  if (emptyEl) emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = list.map((item, idx) => {
+    let statColor = item.status === 'Dikembalikan' ? '#22c55e' : (item.status === 'Dipinjam' ? '#6366f1' : '#ef4444');
+    return `
+      <tr>
+        <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+        <td><strong style="color:var(--primary); font-family:monospace;">${item.noPinjam}</strong></td>
+        <td><strong>${item.namaPeminjam}</strong></td>
+        <td><span class="badge" style="background:var(--bg3); color:var(--t2);">${item.unit}</span></td>
+        <td>${item.barang}</td>
+        <td>${item.tglPinjam}</td>
+        <td>${item.tglKembali}</td>
+        <td><span class="badge" style="background:${statColor}20; color:${statColor}; font-weight:600;">${item.status}</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderSaranaAnggaranTable() {
+  const tbody = document.getElementById('saranaAnggaranBody');
+  if (!tbody) return;
+
+  const stat = document.getElementById('saranaFilterAnggaranStatus')?.value || '';
+  const q = (document.getElementById('saranaSearchAnggaran')?.value || '').toLowerCase().trim();
+
+  const synced = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-ANGGARAN-') || a.isAnggaran || (a.metadata && a.metadata.module === 'anggaran'))).map(a => ({
+    id: a.id,
+    noRAB: a.nomor || a.id,
+    uraian: a.judul,
+    kategori: a.keterangan.includes('Kategori: ') ? a.keterangan.split('Kategori: ')[1].split('•')[0].trim() : 'Sarpras',
+    volume: '1 Paket',
+    harga: 'Rp ' + (Number(a.rab_amount)||0).toLocaleString('id-ID'),
+    total: 'Rp ' + (Number(a.rab_amount)||0).toLocaleString('id-ID'),
+    status: a.rab_status || (a.status === 'selesai' ? 'Terealisasi' : 'Direncanakan')
+  }));
+
+  const combined = [...synced, ...DEFAULT_SARANA_ANGGARAN];
+
+  const list = combined.filter(item => {
+    if (stat && item.status !== stat) return false;
+    if (q) {
+      const match = (item.uraian||'').toLowerCase().includes(q) || (item.noRAB||'').toLowerCase().includes(q) || (item.kategori||'').toLowerCase().includes(q);
+      if (!match) return false;
+    }
+    return true;
+  });
+
+  const emptyEl = document.getElementById('saranaAnggaranEmpty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    return;
+  }
+  if (emptyEl) emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = list.map((item, idx) => {
+    let statColor = item.status === 'Terealisasi' ? '#22c55e' : (item.status === 'Disetujui' ? '#0ea5e9' : '#f59e0b');
+    return `
+      <tr>
+        <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+        <td><strong style="color:var(--primary); font-family:monospace;">${item.noRAB}</strong></td>
+        <td><strong>${item.uraian}</strong></td>
+        <td><span class="badge" style="background:#fef3c7; color:#b45309;">${item.kategori}</span></td>
+        <td>${item.volume}</td>
+        <td>${item.harga}</td>
+        <td><strong style="color:#0f766e;">${item.total}</strong></td>
+        <td><span class="badge" style="background:${statColor}20; color:${statColor}; font-weight:600;">${item.status}</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderSaranaSopTable() {
+  const tbody = document.getElementById('saranaSopBody');
+  if (!tbody) return;
+
+  const q = (document.getElementById('saranaSearchSop')?.value || '').toLowerCase().trim();
+
+  const synced = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-SOP-') || (a.metadata && a.metadata.module === 'sop'))).map(a => ({
+    id: a.id,
+    nomor: a.nomor || a.id,
+    judul: a.judul,
+    kategori: a.keterangan.includes('Kategori: ') ? a.keterangan.split('Kategori: ')[1].split('•')[0].trim() : 'SOP Sarpras',
+    revisi: 'Rev. 01',
+    tgl: a.tanggal || '-',
+    status: 'Berlaku'
+  }));
+
+  const combined = [...synced, ...DEFAULT_SARANA_SOP];
+
+  const list = combined.filter(item => {
+    if (!q) return true;
+    return (item.judul||'').toLowerCase().includes(q) || (item.nomor||'').toLowerCase().includes(q) || (item.kategori||'').toLowerCase().includes(q);
+  });
+
+  const emptyEl = document.getElementById('saranaSopEmpty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    return;
+  }
+  if (emptyEl) emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = list.map((item, idx) => `
+    <tr>
+      <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+      <td><strong style="color:var(--primary); font-family:monospace;">${item.nomor}</strong></td>
+      <td><strong>${item.judul}</strong></td>
+      <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${item.kategori}</span></td>
+      <td>${item.revisi}</td>
+      <td>${item.tgl}</td>
+      <td><span class="badge" style="background:#22c55e20; color:#22c55e; font-weight:600;">${item.status}</span></td>
+    </tr>
+  `).join('');
+}
+
+function renderSaranaPengawasanTable() {
+  const tbody = document.getElementById('saranaPengawasanBody');
+  if (!tbody) return;
+
+  const q = (document.getElementById('saranaSearchPengawasan')?.value || '').toLowerCase().trim();
+
+  const synced = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-PENGAWASAN-') || (a.metadata && a.metadata.module === 'pengawasan'))).map(a => ({
+    id: a.id,
+    kode: a.nomor || a.id,
+    fasilitas: a.judul,
+    petugas: a.pengirim || 'Tim Pengawas',
+    kondisi: a.keterangan.includes('Kondisi: ') ? a.keterangan.split('Kondisi: ')[1].split('•')[0].trim() : 'Baik',
+    hasil: a.keterangan.includes('Hasil: ') ? a.keterangan.split('Hasil: ')[1].split('•')[0].trim() : 'Inspeksi berkala',
+    rekomendasi: a.keterangan.includes('Rekomendasi: ') ? a.keterangan.split('Rekomendasi: ')[1].split('•')[0].trim() : 'Pemeliharaan rutin'
+  }));
+
+  const combined = [...synced, ...DEFAULT_SARANA_PENGAWASAN];
+
+  const list = combined.filter(item => {
+    if (!q) return true;
+    return (item.fasilitas||'').toLowerCase().includes(q) || (item.petugas||'').toLowerCase().includes(q) || (item.kode||'').toLowerCase().includes(q);
+  });
+
+  const emptyEl = document.getElementById('saranaPengawasanEmpty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    return;
+  }
+  if (emptyEl) emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = list.map((item, idx) => `
+    <tr>
+      <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+      <td><strong style="color:var(--primary); font-family:monospace;">${item.kode}</strong></td>
+      <td><strong>${item.fasilitas}</strong></td>
+      <td><i class="fas fa-user-check" style="color:var(--t3); margin-right:4px;"></i> ${item.petugas}</td>
+      <td><span class="badge" style="background:#22c55e20; color:#22c55e; font-weight:600;">${item.kondisi}</span></td>
+      <td>${item.hasil}</td>
+      <td style="color:var(--primary); font-weight:500;">${item.rekomendasi}</td>
+    </tr>
+  `).join('');
+}
+
+function renderSaranaPemeliharaanTable() {
+  const tbody = document.getElementById('saranaPemeliharaanBody');
+  if (!tbody) return;
+
+  const q = (document.getElementById('saranaSearchPemeliharaan')?.value || '').toLowerCase().trim();
+
+  const synced = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-PEMELIHARAAN-') || (a.metadata && a.metadata.module === 'pemeliharaan'))).map(a => ({
+    id: a.id,
+    kode: a.nomor || a.id,
+    namaBarang: a.judul,
+    teknisi: a.pengirim || 'Teknisi Kampus',
+    jenisServis: a.keterangan.includes('Jenis: ') ? a.keterangan.split('Jenis: ')[1].split('•')[0].trim() : 'Servis Berkala',
+    biaya: a.keterangan.includes('Biaya: ') ? a.keterangan.split('Biaya: ')[1].split('•')[0].trim() : 'Rp 0',
+    tglServis: a.tanggal || '-',
+    status: a.status === 'selesai' ? 'Selesai' : 'Diproses'
+  }));
+
+  const combined = [...synced, ...DEFAULT_SARANA_PEMELIHARAAN];
+
+  const list = combined.filter(item => {
+    if (!q) return true;
+    return (item.namaBarang||'').toLowerCase().includes(q) || (item.teknisi||'').toLowerCase().includes(q) || (item.kode||'').toLowerCase().includes(q);
+  });
+
+  const emptyEl = document.getElementById('saranaPemeliharaanEmpty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    return;
+  }
+  if (emptyEl) emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = list.map((item, idx) => {
+    let statColor = item.status === 'Selesai' ? '#22c55e' : '#f59e0b';
+    return `
+      <tr>
+        <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+        <td><strong style="color:var(--primary); font-family:monospace;">${item.kode}</strong></td>
+        <td><strong>${item.namaBarang}</strong></td>
+        <td>${item.teknisi}</td>
+        <td>${item.jenisServis}</td>
+        <td><strong>${item.biaya}</strong></td>
+        <td>${item.tglServis}</td>
+        <td><span class="badge" style="background:${statColor}20; color:${statColor}; font-weight:600;">${item.status}</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderSaranaLaporanTable() {
+  const tbody = document.getElementById('saranaLaporanBody');
+  if (!tbody) return;
+
+  const q = (document.getElementById('saranaSearchLaporan')?.value || '').toLowerCase().trim();
+
+  const synced = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-LAPORAN-') || a.id.startsWith('SIMSPRAS-BA-') || (a.metadata && (a.metadata.module === 'laporan' || a.metadata.module === 'berita_acara')))).map(a => ({
+    id: a.id,
+    nomor: a.nomor || a.id,
+    judul: a.judul,
+    jenis: a.id.includes('BA') ? 'Berita Acara' : 'Laporan Sarpras',
+    tanggal: a.tanggal || '-',
+    pihak: a.pengirim || 'Bidang Sarpras',
+    ket: a.keterangan || '-'
+  }));
+
+  const combined = [...synced, ...DEFAULT_SARANA_LAPORAN];
+
+  const list = combined.filter(item => {
+    if (!q) return true;
+    return (item.judul||'').toLowerCase().includes(q) || (item.nomor||'').toLowerCase().includes(q) || (item.jenis||'').toLowerCase().includes(q);
+  });
+
+  const emptyEl = document.getElementById('saranaLaporanEmpty');
+  if (list.length === 0) {
+    tbody.innerHTML = '';
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    return;
+  }
+  if (emptyEl) emptyEl.classList.add('hidden');
+
+  tbody.innerHTML = list.map((item, idx) => `
+    <tr>
+      <td style="color:var(--t3); text-align:center;">${idx + 1}</td>
+      <td><strong style="color:var(--primary); font-family:monospace;">${item.nomor}</strong></td>
+      <td><strong>${item.judul}</strong></td>
+      <td><span class="badge" style="background:#fce7f3; color:#be185d;">${item.jenis}</span></td>
+      <td>${item.tanggal}</td>
+      <td>${item.pihak}</td>
+      <td style="font-size:0.85rem; color:var(--t2);">${item.ket}</td>
+    </tr>
+  `).join('');
+}
+
+function initSaranaCharts() {
+  const ctxKondisi = document.getElementById('saranaChartKondisi');
+  const ctxKategori = document.getElementById('saranaChartKategori');
+  const ctxTren = document.getElementById('saranaChartTren');
+  const ctxAnggaran = document.getElementById('saranaChartAnggaran');
+
+  if (!ctxKondisi || !ctxKategori) return;
+
+  if (window.chartSaranaKondisi) window.chartSaranaKondisi.destroy();
+  if (window.chartSaranaKategori) window.chartSaranaKategori.destroy();
+  if (window.chartSaranaTren) window.chartSaranaTren.destroy();
+  if (window.chartSaranaAnggaran) window.chartSaranaAnggaran.destroy();
+
+  // 1. Chart Kondisi Aset (Doughnut)
+  window.chartSaranaKondisi = new Chart(ctxKondisi.getContext('2d'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Kondisi Baik / Siap', 'Cukup Baik', 'Rusak Ringan', 'Rusak Berat'],
+      datasets: [{
+        data: [12, 1, 1, 0],
+        backgroundColor: ['#22c55e', '#3b82f6', '#f59e0b', '#ef4444'],
+        borderWidth: 2,
+        borderColor: '#ffffff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter', size: 11 } } },
+        datalabels: { color: '#ffffff', font: { weight: 'bold', size: 11 } }
+      }
+    }
+  });
+
+  // 2. Chart Distribusi Kategori Sarpras (Bar)
+  window.chartSaranaKategori = new Chart(ctxKategori.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Medis & Lab', 'Elektronik & Audio', 'Mebel & Kursi', 'Gedung & Utilitas', 'Alat Kantor'],
+      datasets: [{
+        label: 'Jumlah Item / Aset',
+        data: [22, 23, 72, 11, 8],
+        backgroundColor: ['#0ea5e9', '#6366f1', '#8b5cf6', '#10b981', '#f59e0b'],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        datalabels: { anchor: 'end', align: 'top', color: 'var(--t1)', font: { weight: 'bold' } }
+      },
+      scales: {
+        y: { beginAtZero: true }
+      }
+    }
+  });
+
+  // 3. Chart Tren Peminjaman & Pemeliharaan Bulanan (Line)
+  if (ctxTren) {
+    window.chartSaranaTren = new Chart(ctxTren.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+        datasets: [
+          {
+            label: 'Sirkulasi Peminjaman',
+            data: [6, 12, 18, 15, 10, 4, 3, 14, 21, 25, 19, 11],
+            borderColor: '#6366f1',
+            backgroundColor: 'rgba(99, 102, 241, 0.12)',
+            fill: true,
+            tension: 0.35,
+            pointRadius: 4,
+            pointBackgroundColor: '#6366f1'
+          },
+          {
+            label: 'Kegiatan Servis/Pemeliharaan',
+            data: [2, 3, 4, 2, 5, 2, 1, 4, 5, 3, 4, 2],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.12)',
+            fill: true,
+            tension: 0.35,
+            pointRadius: 4,
+            pointBackgroundColor: '#10b981'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top', labels: { boxWidth: 12 } },
+          datalabels: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  // 4. Chart Anggaran Sarpras (Bar: Pengajuan vs Realisasi)
+  if (ctxAnggaran) {
+    window.chartSaranaAnggaran = new Chart(ctxAnggaran.getContext('2d'), {
+      type: 'bar',
+      data: {
+        labels: ['Servis AC Kampus', 'Proyektor EPSON', 'Servis Genset 20kVA', 'Kanopi Parkir', 'Kursi Chitose'],
+        datasets: [
+          {
+            label: 'Pengajuan (RAB)',
+            data: [1650000, 12400000, 1850000, 4500000, 13500000],
+            backgroundColor: '#93c5fd',
+            borderRadius: 4
+          },
+          {
+            label: 'Terealisasi',
+            data: [1650000, 12400000, 1850000, 0, 0],
+            backgroundColor: '#10b981',
+            borderRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top' },
+          datalabels: { display: false }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              callback: val => 'Rp ' + (val / 1000000).toFixed(1) + ' Jt'
+            }
+          }
+        }
+      }
+    });
   }
 }
 
