@@ -1838,17 +1838,24 @@ function renderDeptPage(dept) {
 
   const iframeContainer = document.getElementById('kemahasiswaanIframeContainer');
   const iframe = document.getElementById('kemahasiswaanIframe');
+  const syncBar = document.getElementById('kemahasiswaanSyncBar');
   const deptArsipCharts = document.getElementById('deptArsipCharts');
   const statRow = document.getElementById('deptStatRow');
   const labContainer = document.getElementById('laboratoriumContainer');
 
   if (dept === 'kemahasiswaan') {
+    if (syncBar) syncBar.style.display = 'flex';
     if (iframeContainer) iframeContainer.style.display = 'block';
-    if (iframe && !iframe.src.includes('adminpendidikanaas-operator.workers.dev')) {
-      // Set the production URL for the embed dashboard
-      iframe.src = 'https://bid-kemahasiswaan-dan-alumni.adminpendidikanaas-operator.workers.dev/embed/dashboard';
+    
+    // Gunakan URL hosting Firebase produksi atau localhost jika dalam development
+    const targetUrl = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+      ? 'http://localhost:5173/embed/dashboard'
+      : 'https://bidkemahasiswaandanalumn-93be8.web.app/embed/dashboard';
+
+    if (iframe && (!iframe.src || (!iframe.src.includes('bidkemahasiswaandanalumn') && !iframe.src.includes('localhost:5173')))) {
+      iframe.src = targetUrl;
     }
-    // Optionally hide the standard stats and charts to avoid clutter since the iframe has them
+    // Sembunyikan chart standar agar tampilan rapi karena iframe telah menyediakannya
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
     if (statRow) statRow.style.display = 'none';
     if (labContainer) labContainer.style.display = 'none';
@@ -1860,6 +1867,7 @@ function renderDeptPage(dept) {
     initLabCharts();
     renderLabContent();
   } else {
+    if (syncBar) syncBar.style.display = 'none';
     if (iframeContainer) iframeContainer.style.display = 'none';
     if (labContainer) labContainer.style.display = 'none';
     if (deptArsipCharts) deptArsipCharts.style.display = 'block';
@@ -1870,6 +1878,117 @@ function renderDeptPage(dept) {
   document.getElementById('deptSearch').value='';
   populateFilterJenis(dept,'deptFilterJenis');
   renderDeptTable();
+}
+
+async function syncKemahasiswaanFromSumber() {
+  const btn = document.getElementById('btnSyncKemahasiswaan');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyinkronkan...';
+  }
+  toast('Mulai sinkronisasi data Kemahasiswaan & Alumni...', 'info');
+
+  if (!dbSumber) {
+    try {
+      if (typeof firebase !== 'undefined') {
+        const appSumber = firebase.initializeApp({
+          apiKey: "AIzaSyBgc1Gqfhk2dhqmcL0Un7dkDzHZzrxcW9s",
+          authDomain: "bidkemahasiswaandanalumn-93be8.firebaseapp.com",
+          projectId: "bidkemahasiswaandanalumn-93be8"
+        }, 'sumber');
+        dbSumber = appSumber.firestore();
+      }
+    } catch(e) {
+      console.warn("Inisialisasi dbSumber gagal", e);
+    }
+  }
+
+  if (!dbSumber) {
+    toast('Gagal terhubung ke database sumber Kemahasiswaan.', 'error');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-sync-alt"></i> Sinkronkan Data Kemahasiswaan'; }
+    return;
+  }
+
+  try {
+    let totalSynced = 0;
+    const collections = [
+      { name: 'alumniData', prefix: 'alumni', jenis: 'Alumni & Tracer Study', getTitle: d => `Tracer Study Alumni: ${d.name || 'Alumni'} (${d.year || '-'}) - ${d.status || 'Bekerja'}` },
+      { name: 'beasiswaData', prefix: 'beasiswa', jenis: 'Beasiswa', getTitle: d => `Program Beasiswa: ${d.name || d.nama || 'Beasiswa'} (${d.provider || 'AAS'})` },
+      { name: 'penerimaBeasiswaData', prefix: 'penerima_beasiswa', jenis: 'Penerima Beasiswa', getTitle: d => `Penerima Beasiswa: ${d.nama || '-'} (${d.nim || '-'}) - ${d.jenisBeasiswa || 'Beasiswa'}` },
+      { name: 'prestasiData', prefix: 'prestasi', jenis: 'Prestasi Mahasiswa', getTitle: d => `Prestasi Mahasiswa: ${d.capaian || 'Juara'} ${d.kegiatan || ''} - ${d.nama || ''}` },
+      { name: 'ukmData', prefix: 'ukm', jenis: 'Kegiatan UKM', getTitle: d => `Kegiatan UKM: ${d.namaKegiatan || 'Kegiatan'} [${d.namaUkm || 'UKM'}]` },
+      { name: 'bemData', prefix: 'bem', jenis: 'Organisasi & BEM', getTitle: d => `Program BEM: ${d.nama || d.title || 'Kegiatan'}` },
+      { name: 'konselingData', prefix: 'konseling', jenis: 'Bimbingan Konseling & Disiplin', getTitle: d => `Konseling: [${d.kategori || 'Bimbingan'}] ${d.nama || '-'}` },
+      { name: 'ujiKompetensiData', prefix: 'ukom', jenis: 'Uji Kompetensi', getTitle: d => `Laporan UKOM: ${d.jenisUjian || 'UKOM'} Periode ${d.periode || '-'} (${d.tahun || '-'})` },
+      { name: 'anggaranData', prefix: 'anggaran_kmhs', jenis: 'Rencana Anggaran', getTitle: d => `Anggaran Kemahasiswaan: ${d.name || d.nama || 'Program'}` },
+      { name: 'laporanData', prefix: 'laporan_kmhs', jenis: 'Laporan Tahunan', getTitle: d => `Laporan: ${d.title || d.judul || 'Laporan'} (${d.year || d.tahun || '-'})` },
+      { name: 'skData', prefix: 'sk_kmhs', jenis: 'Dokumen SK', getTitle: d => `SK Kemahasiswaan: ${d.title || d.judul || 'SK'} (${d.number || d.nomor || '-'})` },
+      { name: 'sopData', prefix: 'sop_kmhs', jenis: 'Laporan SOP', getTitle: d => `SOP: ${d.title || d.judul || 'SOP Layanan Mahasiswa'}` },
+      { name: 'kebijakanData', prefix: 'kebijakan_kmhs', jenis: 'Laporan Kebijakan', getTitle: d => `Kebijakan: ${d.title || d.judul || 'Kebijakan'}` }
+    ];
+
+    for (const col of collections) {
+      const snap = await dbSumber.collection(col.name).get();
+      for (const docSnap of snap.docs) {
+        const d = docSnap.data();
+        const id = `${col.prefix}_${docSnap.id}`;
+        const record = {
+          id: id,
+          nomor: d.nomor || d.number || d.nim || '-',
+          judul: col.getTitle(d),
+          tanggal: d.tanggal || d.date || (d.createdAt ? d.createdAt.slice(0, 10) : new Date().toISOString().slice(0, 10)),
+          ay: String(d.tahun || d.year || d.angkatan || new Date().getFullYear()),
+          jenis: col.jenis,
+          bidang: 'kemahasiswaan',
+          pengirim: d.pengirim || d.nama || 'Portal Kemahasiswaan & Alumni',
+          status: 'selesai',
+          format: 'dokumen',
+          gdriveLink: d.linkDokumen || d.linkSertifikat || d.linkBukti || d.link || d.doc || '',
+          keterangan: d.keterangan || d.catatan || d.deskripsi || `Disinkronkan dari ${col.name}`,
+          metadata: {
+            originalKoleksi: col.name,
+            originalId: docSnap.id,
+            syncedAt: new Date().toISOString(),
+            dokumenPortal: true
+          }
+        };
+
+        const existingIdx = arsip.findIndex(x => x.id === id);
+        if (existingIdx > -1) {
+          arsip[existingIdx] = record;
+        } else {
+          arsip.unshift(record);
+        }
+        await db.collection('arsip').doc(id).set(record, { merge: true });
+        totalSynced++;
+      }
+    }
+
+    // Sinkronisasi data mahasiswa
+    try {
+      const mhsSnap = await dbSumber.collection('mahasiswa').get();
+      for (const mDoc of mhsSnap.docs) {
+        const mData = mDoc.data();
+        await db.collection('mahasiswa').doc(mDoc.id).set(mData, { merge: true });
+        const existingMhsIdx = mahasiswa.findIndex(x => x.id === mDoc.id);
+        if (existingMhsIdx > -1) mahasiswa[existingMhsIdx] = { id: mDoc.id, ...mData };
+        else mahasiswa.push({ id: mDoc.id, ...mData });
+      }
+    } catch(e) { console.warn("Sinkron data mahasiswa:", e); }
+
+    save();
+    updateBadges();
+    renderDeptTable();
+    toast(`Sinkronisasi berhasil! ${totalSynced} arsip Kemahasiswaan terupdate di SIMARSIP.`, 'success');
+  } catch(err) {
+    console.error("Gagal sinkron:", err);
+    toast('Gagal sinkronisasi data: ' + err.message, 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-sync-alt"></i> Sinkronkan Data Kemahasiswaan';
+    }
+  }
 }
 
 
