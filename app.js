@@ -2081,6 +2081,14 @@ async function syncSarprasFromSumber() {
       const snap = await dbSarprasSumber.collection(col.name).get();
       for (const docSnap of snap.docs) {
         const item = docSnap.data();
+        // Pemisahan tegas: jangan sinkronkan data laboratorium/medis ke portal sarpras
+        const itemCat = String(item.kategori || '').toLowerCase();
+        const itemNama = String(item.nama || item.namaBarang || item.judul || '').toLowerCase();
+        const itemLok = String(item.lokasi || '').toLowerCase();
+        if (itemCat.includes('medis') || itemCat.includes('laboratorium') || itemNama.includes('jarum') || itemNama.includes('phantom') || itemLok.includes('laboratorium')) {
+          continue;
+        }
+
         const portalId = `SIMSPRAS-${col.key}-${docSnap.id}`;
         
         let judul = item.nama || item.namaBarang || item.judul || 'Dokumen Sarpras';
@@ -5370,18 +5378,18 @@ async function syncSimlabLive(isManual = false) {
    ══════════════════════════════════════════════════════════════ */
 
 const DEFAULT_SARANA_INVENTARIS = [
-  { id:'SP-INV-001', kode:'AAS-GDB-01', nama:'Gedung Utama Kampus AAS (Lantai 1 & 2)', kategori:'Gedung & Fasilitas', merk:'Permanen Beton', lokasi:'Kampus AAS Surabaya', kondisi:'Baik', jumlah:1, satuan:'Unit', harga:'Rp 2.850.000.000' },
-  { id:'SP-INV-002', kode:'AAS-GDB-02', nama:'Gedung Klinik Akupunktur & Praktik Terpadu', kategori:'Gedung & Fasilitas', merk:'Permanen Beton', lokasi:'Area Klinik Kampus', kondisi:'Baik', jumlah:1, satuan:'Unit', harga:'Rp 1.450.000.000' },
+  { id:'SP-INV-001', kode:'AAS-GDB-01', nama:'Gedung Utama Perkuliahan Kampus AAS (2 Lantai)', kategori:'Gedung & Fasilitas', merk:'Permanen Beton', lokasi:'Kampus AAS Surabaya', kondisi:'Baik', jumlah:1, satuan:'Unit', harga:'Rp 2.850.000.000' },
+  { id:'SP-INV-002', kode:'AAS-GDB-02', nama:'Gedung Aula & Ruang Pertemuan Serbaguna AAS', kategori:'Gedung & Fasilitas', merk:'Permanen Beton', lokasi:'Lantai 2 Kampus AAS', kondisi:'Baik', jumlah:1, satuan:'Unit', harga:'Rp 1.450.000.000' },
   { id:'SP-INV-003', kode:'AAS-MBL-01', nama:'Meja Kuliah Lipat Mahasiswa Chitose', kategori:'Mebel & Furnitur', merk:'Chitose Yamato', lokasi:'Ruang Kelas Teori A & B', kondisi:'Baik', jumlah:60, satuan:'Unit', harga:'Rp 450.000' },
-  { id:'SP-INV-004', kode:'AAS-MBL-02', nama:'Meja Dosen Kayu Jati Minimalis & Kursi Ergonomis', kategori:'Mebel & Furnitur', merk:'Olympic Grand', lokasi:'Ruang Dosen & Rapat', kondisi:'Baik', jumlah:12, satuan:'Set', harga:'Rp 1.850.000' },
-  { id:'SP-INV-005', kode:'AAS-MED-01', nama:'Bed Pasien / Meja Periksa Praktik Akupunktur Hidrolik', kategori:'Medis & Akupunktur', merk:'Paramount Medika', lokasi:'Laboratorium Akupunktur Dasar', kondisi:'Baik', jumlah:14, satuan:'Unit', harga:'Rp 3.200.000' },
-  { id:'SP-INV-006', kode:'AAS-MED-02', nama:'Lampu Terapi TDP Elektromagnetik Infrared CQ-29', kategori:'Medis & Akupunktur', merk:'Gou-Gong Original', lokasi:'Laboratorium Biomedis', kondisi:'Baik', jumlah:8, satuan:'Unit', harga:'Rp 1.450.000' },
-  { id:'SP-INV-007', kode:'AAS-ELK-01', nama:'LCD Proyektor Multimedia Epson EB-X500 3600 Lumens', kategori:'Elektronik & Audio', merk:'Epson', lokasi:'Ruang Kelas 1 & 2', kondisi:'Baik', jumlah:4, satuan:'Unit', harga:'Rp 6.200.000' },
-  { id:'SP-INV-008', kode:'AAS-ELK-02', nama:'AC Split Daikin Inverter 2 PK R32', kategori:'Elektronik & Audio', merk:'Daikin', lokasi:'Ruang Kuliah & Lab', kondisi:'Baik', jumlah:10, satuan:'Unit', harga:'Rp 7.800.000' },
-  { id:'SP-INV-009', kode:'AAS-ELK-03', nama:'Sound System Portabel Wireless Meeting + 2 Mic UHF', kategori:'Elektronik & Audio', merk:'Baretone 15 Inch', lokasi:'Auditorium & Lab Praktik', kondisi:'Baik', jumlah:3, satuan:'Unit', harga:'Rp 3.500.000' },
+  { id:'SP-INV-004', kode:'AAS-MBL-02', nama:'Meja Dosen Kayu Jati Minimalis & Kursi Ergonomis', kategori:'Mebel & Furnitur', merk:'Olympic Grand', lokasi:'Ruang Dosen & Kantor', kondisi:'Baik', jumlah:12, satuan:'Set', harga:'Rp 1.850.000' },
+  { id:'SP-INV-005', kode:'AAS-MBL-04', nama:'Podium Pidato Jati & Mimbar Upacara Resmi AAS', kategori:'Mebel & Furnitur', merk:'Jepara Custom Wood', lokasi:'Aula & Auditorium', kondisi:'Baik', jumlah:2, satuan:'Unit', harga:'Rp 3.500.000' },
+  { id:'SP-INV-006', kode:'AAS-MBL-05', nama:'Meja Rapat Konferensi Pimpinan Oval 12 Kursi', kategori:'Mebel & Furnitur', merk:'Olympic Executive', lokasi:'Ruang Rapat Pimpinan', kondisi:'Baik', jumlah:1, satuan:'Set', harga:'Rp 6.800.000' },
+  { id:'SP-INV-007', kode:'AAS-ELK-01', nama:'LCD Proyektor Multimedia Epson EB-X500 3600 Lumens', kategori:'Elektronik & Audio', merk:'Epson', lokasi:'Ruang Kelas A & B', kondisi:'Baik', jumlah:4, satuan:'Unit', harga:'Rp 6.200.000' },
+  { id:'SP-INV-008', kode:'AAS-ELK-02', nama:'AC Split Daikin Inverter 2 PK R32', kategori:'Elektronik & Audio', merk:'Daikin', lokasi:'Ruang Kuliah & Kantor', kondisi:'Baik', jumlah:10, satuan:'Unit', harga:'Rp 7.800.000' },
+  { id:'SP-INV-009', kode:'AAS-ELK-03', nama:'Sound System Portabel Wireless Meeting + 2 Mic UHF', kategori:'Elektronik & Audio', merk:'Baretone 15 Inch', lokasi:'Auditorium & Ruang Rapat', kondisi:'Baik', jumlah:3, satuan:'Unit', harga:'Rp 3.500.000' },
   { id:'SP-INV-010', kode:'AAS-ELK-04', nama:'PC All-In-One HP Core i5 16GB RAM (Administrasi)', kategori:'Elektronik & Audio', merk:'HP Pavilion', lokasi:'Ruang BAAK & Sarpras', kondisi:'Baik', jumlah:6, satuan:'Unit', harga:'Rp 9.500.000' },
   { id:'SP-INV-011', kode:'AAS-UTL-01', nama:'Genset Silent Perkins 20 kVA Diesel Generator', kategori:'Gedung & Fasilitas', merk:'Perkins Stamford', lokasi:'Rumah Daya Cadangan', kondisi:'Baik', jumlah:1, satuan:'Unit', harga:'Rp 95.000.000' },
-  { id:'SP-INV-012', kode:'AAS-UTL-02', nama:'Tabung Pemadam Api APAR Powder 6kg Dry Chemical', kategori:'Gedung & Fasilitas', merk:'Yamato Guard', lokasi:'Koridor & Depan Lab', kondisi:'Baik', jumlah:8, satuan:'Tabung', harga:'Rp 450.000' },
+  { id:'SP-INV-012', kode:'AAS-UTL-02', nama:'Tabung Pemadam Api APAR Powder 6kg Dry Chemical', kategori:'Gedung & Fasilitas', merk:'Yamato Guard', lokasi:'Koridor Gedung & Selasar', kondisi:'Baik', jumlah:8, satuan:'Tabung', harga:'Rp 450.000' },
   { id:'SP-INV-013', kode:'AAS-ELK-05', nama:'AC Split Panasonic 1.5 PK Standard (Ruang Rapat)', kategori:'Elektronik & Audio', merk:'Panasonic', lokasi:'Ruang Rapat Pimpinan', kondisi:'Rusak Ringan', jumlah:1, satuan:'Unit', harga:'Rp 4.500.000' }
 ];
 
@@ -5977,10 +5985,10 @@ function initSaranaCharts() {
   window.chartSaranaKategori = new Chart(ctxKategori.getContext('2d'), {
     type: 'bar',
     data: {
-      labels: ['Medis & Lab', 'Elektronik & Audio', 'Mebel & Kursi', 'Gedung & Utilitas', 'Alat Kantor'],
+      labels: ['Gedung & Bangunan', 'Mebel & Furnitur', 'Elektronik & Audio', 'Utilitas & K3', 'Perlengkapan Umum'],
       datasets: [{
         label: 'Jumlah Item / Aset',
-        data: [22, 23, 72, 11, 8],
+        data: [2, 73, 23, 9, 6],
         backgroundColor: ['#0ea5e9', '#6366f1', '#8b5cf6', '#10b981', '#f59e0b'],
         borderRadius: 6
       }]
