@@ -6400,18 +6400,17 @@ const defaultPengabdianData = {
   dokumen: []
 };
 
+// Hapus secara permanen cache data dummy lama dari local storage browser
+try {
+  localStorage.removeItem('simarsip_pengabdian_data');
+  localStorage.removeItem('simarsip_pengabdian_store_v1');
+} catch(e) {}
+
 let pengabdianData = (function() {
   try {
-    const saved = localStorage.getItem('simarsip_pengabdian_data');
+    const saved = localStorage.getItem('simarsip_pengabdian_store_v2');
     if (saved) {
       const parsed = JSON.parse(saved);
-      // Auto-purge data dummy lama jika masih tersimpan di local storage
-      const hasDummyProposals = parsed.proposals && parsed.proposals.some(p => p.id === "PKM-2026-001" || p.id === "PKM-2026-002" || (p.title && p.title.includes("Kenjeran")));
-      const hasDummyPatients = parsed.patients && parsed.patients.some(pt => pt.id === "REG-2026-001" || pt.id === "PTS-001");
-      if (hasDummyProposals || hasDummyPatients) {
-        localStorage.removeItem('simarsip_pengabdian_data');
-        return { proposals: [], patients: [], outputs: [], reviews: [], dokumen: [] };
-      }
       if (parsed && typeof parsed === 'object') {
         return {
           proposals: Array.isArray(parsed.proposals) ? parsed.proposals : [],
@@ -6428,12 +6427,12 @@ let pengabdianData = (function() {
 
 // Bersihkan arsip lokal dari record dummy SIMPKM lama pada startup
 if (typeof arsip !== 'undefined' && Array.isArray(arsip)) {
-  arsip = arsip.filter(a => !a.id || (!a.id.startsWith('SIMPKM-PKM-2026-') && !a.id.startsWith('SIMPKM-PKM-2025-')));
+  arsip = arsip.filter(a => !a.id || (!a.id.startsWith('SIMPKM-') && !a.id.startsWith('PKM-')));
 }
 
 function savePengabdianData() {
   try {
-    localStorage.setItem('simarsip_pengabdian_data', JSON.stringify(pengabdianData));
+    localStorage.setItem('simarsip_pengabdian_store_v2', JSON.stringify(pengabdianData));
   } catch(e) { console.warn("Save pengabdianData error", e); }
 }
 
@@ -6581,26 +6580,53 @@ function renderPengabdianContent() {
       vasCount++;
     }
   });
-  const avgReduction = vasCount > 0 ? (totalVasReduction / vasCount).toFixed(1) : "0.0";
+  const avgReduction = vasCount > 0 ? (totalVasReduction / vasCount).toFixed(1) : "0";
 
-  const totalAnggaran = proposals.reduce((acc, p) => acc + (Number(p.budget) || 0), 0);
+  let proposalsWithMhs = 0;
+  let totalMhsInvolved = 0;
+  proposals.forEach(p => {
+    if (Array.isArray(p.members_student) && p.members_student.length > 0) {
+      proposalsWithMhs++;
+      totalMhsInvolved += p.members_student.length;
+    }
+  });
+  const mhsPct = totalPkm > 0 ? Math.round((proposalsWithMhs / totalPkm) * 100) : 0;
 
   const statTotalEl = document.getElementById('pkm-stat-total');
+  const statTotalSub = document.getElementById('pkm-stat-total-sub');
   const statPasienEl = document.getElementById('pkm-stat-pasien');
+  const statPasienSub = document.getElementById('pkm-stat-pasien-sub');
   const statVasEl = document.getElementById('pkm-stat-vas');
+  const statVasSub = document.getElementById('pkm-stat-vas-sub');
+  const statMhsEl = document.getElementById('pkm-stat-mhs');
+  const statMhsSub = document.getElementById('pkm-stat-mhs-sub');
   const statAnggaranEl = document.getElementById('pkm-stat-anggaran');
 
   if (statTotalEl) statTotalEl.textContent = totalPkm;
+  if (statTotalSub) statTotalSub.innerHTML = totalPkm > 0 ? ('<i class="fas fa-check-circle" style="color:#10b981;"></i> ' + totalPkm + ' Usulan Terdaftar') : '<i class="fas fa-info-circle" style="color:#64748b;"></i> Belum ada usulan terdaftar';
+
   if (statPasienEl) statPasienEl.textContent = totalPasien;
-  if (statVasEl) statVasEl.textContent = vasCount > 0 ? `-${avgReduction} Poin` : '0.0 Poin';
-  if (statAnggaranEl) statAnggaranEl.textContent = 'Rp ' + totalAnggaran.toLocaleString('id-ID');
+  if (statPasienSub) statPasienSub.innerHTML = totalPasien > 0 ? ('<i class="fas fa-user-check" style="color:#0284c7;"></i> ' + totalPasien + ' Terapi Akupunktur Klinis') : '<i class="fas fa-info-circle" style="color:#64748b;"></i> Belum ada pasien baksos';
+
+  if (statVasEl) statVasEl.textContent = vasCount > 0 ? ('-' + avgReduction + ' Poin') : '0 Poin';
+  if (statVasSub) statVasSub.innerHTML = vasCount > 0 ? '<i class="fas fa-arrow-down" style="color:#10b981;"></i> Reduksi Nyeri Lapangan' : '<i class="fas fa-info-circle" style="color:#64748b;"></i> Belum ada evaluasi klinis';
+
+  if (statMhsEl) statMhsEl.textContent = mhsPct + '%';
+  if (statMhsSub) statMhsSub.innerHTML = mhsPct > 0 ? ('<i class="fas fa-graduation-cap" style="color:#10b981;"></i> ' + totalMhsInvolved + ' Mahasiswa Terlibat') : '<i class="fas fa-info-circle" style="color:#64748b;"></i> Belum ada data keterlibatan';
+
+  if (statAnggaranEl) {
+    const totalAnggaran = proposals.reduce((acc, p) => acc + (Number(p.budget) || 0), 0);
+    statAnggaranEl.textContent = 'Rp ' + totalAnggaran.toLocaleString('id-ID');
+  }
 
   // Badge in sidebar
   const badgePengabdian = document.getElementById('badge-pengabdian');
   if (badgePengabdian) {
-    const arsipCount = arsip.filter(a => a.bidang === 'pengabdian' && (!currentAY || a.ay === currentAY)).length;
-    badgePengabdian.textContent = Math.max(arsipCount, totalPkm);
+    badgePengabdian.textContent = totalPkm;
   }
+
+  // Render Dynamic Tridharma PkM Milestone Stepper
+  renderPengabdianMilestoneStepper();
 
   // Active tab renderer
   if (currentPengabdianTab === 'dashboard') initPengabdianCharts();
@@ -6610,6 +6636,194 @@ function renderPengabdianContent() {
   else if (currentPengabdianTab === 'luaran') renderPengabdianLuaranTable();
   else if (currentPengabdianTab === 'borang') renderPengabdianBorangTable();
   else if (currentPengabdianTab === 'dokumen') renderPengabdianDokumenTable();
+}
+
+function renderPengabdianMilestoneStepper() {
+  const container = document.getElementById('pkmMilestoneStepperContainer');
+  const badge = document.getElementById('pkmMilestoneActiveBadge');
+  if (!container) return;
+
+  const filtered = getFilteredPengabdianData();
+  const proposals = filtered.proposals || [];
+  const patients = filtered.patients || [];
+  const outputs = filtered.outputs || [];
+
+  const steps = [
+    {
+      num: 1,
+      name: "1. Call for Proposal",
+      time: "Jan - Feb 2026",
+      tab: "usulan",
+      desc: "Penerimaan Usulan & Pengunggahan Proposal PkM Dosen"
+    },
+    {
+      num: 2,
+      name: "2. Desk Evaluation",
+      time: "Februari 2026",
+      tab: "reviewer",
+      desc: "Penilaian Substansi, Kelayakan Etik & Rekomendasi Reviewer"
+    },
+    {
+      num: 3,
+      name: "3. Aksi Baksos & Terapi",
+      time: "Maret - Mei 2026",
+      tab: "baksos",
+      desc: "Pelaksanaan Pengmas Lapangan & Rekam Pasien Akupunktur"
+    },
+    {
+      num: 4,
+      name: "4. Monev Kemajuan 70%",
+      time: "Juni 2026",
+      tab: "borang",
+      desc: "Monitoring Evaluasi Lapangan, Penurunan VAS & Logbook"
+    },
+    {
+      num: 5,
+      name: "5. Laporan & SPJ PkM",
+      time: "Juli 2026",
+      tab: "dokumen",
+      desc: "Penyusunan Laporan Akhir, SPJ Dana & Berita Acara"
+    },
+    {
+      num: 6,
+      name: "6. Publikasi & HKI Cipta",
+      time: "Agustus 2026",
+      tab: "luaran",
+      desc: "Diseminasi Jurnal Ilmiah SINTA & Sertifikat Hak Cipta"
+    }
+  ];
+
+  let activeStep = 1;
+  let isManual = false;
+  let manualOverride = null;
+  try {
+    manualOverride = localStorage.getItem('simarsip_pkm_active_milestone');
+  } catch(e) {}
+
+  if (manualOverride && !isNaN(parseInt(manualOverride, 10)) && parseInt(manualOverride, 10) >= 1 && parseInt(manualOverride, 10) <= 6) {
+    activeStep = parseInt(manualOverride, 10);
+    isManual = true;
+  } else {
+    // Otomatis tentukan berdasarkan data riil sistem
+    if (proposals.length === 0) {
+      activeStep = 1;
+    } else {
+      const hasPendingReview = proposals.some(p => !p.status || p.status === 'Draft' || p.status === 'Menunggu Review');
+      const hasApproved = proposals.some(p => p.status === 'Disetujui' || p.status === 'Berjalan');
+      const hasCompleted = proposals.some(p => p.status === 'Selesai');
+
+      if (hasPendingReview && !hasApproved && patients.length === 0) {
+        activeStep = 2;
+      } else if (patients.length > 0 || hasApproved) {
+        if (outputs.length > 0) {
+          activeStep = 6;
+        } else if (hasCompleted) {
+          activeStep = 5;
+        } else if (patients.length >= 10) {
+          activeStep = 4;
+        } else {
+          activeStep = 3;
+        }
+      } else {
+        activeStep = 1;
+      }
+    }
+  }
+
+  // Update Tampilan Badge
+  if (badge) {
+    const activeObj = steps.find(s => s.num === activeStep) || steps[0];
+    if (proposals.length === 0 && !isManual) {
+      badge.style.background = '#fef3c7';
+      badge.style.color = '#b45309';
+      badge.innerHTML = `<i class="fas fa-bullhorn"></i> Fase Aktif: ${activeObj.name} (Data Masih Kosong / Menunggu Usulan)`;
+    } else {
+      badge.style.background = '#dcfce7';
+      badge.style.color = '#15803d';
+      badge.innerHTML = `<i class="fas fa-play-circle"></i> Fase Aktif: ${activeObj.name}${isManual ? ' [Set Manual]' : ''}`;
+    }
+  }
+
+  // Render Stepper Cards
+  container.innerHTML = steps.map(s => {
+    let borderStyle = 'border:1px solid var(--b1); opacity:0.85; background:var(--card);';
+    let iconOrNum = `<div style="width:24px; height:24px; border-radius:50%; background:var(--bg3); color:var(--t2); font-weight:700; font-size:11px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:6px;">${s.num}</div>`;
+    let subBadge = `<div style="font-size:0.7rem; color:var(--t3); margin-top:4px;">Akan Datang</div>`;
+
+    if (proposals.length === 0 && !isManual) {
+      if (s.num === activeStep) {
+        borderStyle = 'border:2px solid #eab308; background:rgba(234, 179, 8, 0.08); box-shadow:0 0 10px rgba(234,179,8,0.2);';
+        iconOrNum = `<div style="width:24px; height:24px; border-radius:50%; background:#eab308; color:#000; font-weight:700; font-size:11px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:6px;"><i class="fas fa-play" style="font-size:9px;"></i></div>`;
+        subBadge = `<div style="font-size:0.7rem; color:#b45309; font-weight:700; margin-top:4px;"><i class="fas fa-arrow-circle-right"></i> Tahap Aktif</div>`;
+      }
+    } else {
+      if (s.num < activeStep) {
+        borderStyle = 'border:1px solid #10b98160; background:rgba(16, 185, 129, 0.05);';
+        iconOrNum = `<div style="width:24px; height:24px; border-radius:50%; background:#10b981; color:#fff; font-weight:700; font-size:11px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:6px;"><i class="fas fa-check" style="font-size:10px;"></i></div>`;
+        subBadge = `<div style="font-size:0.7rem; color:#10b981; font-weight:700; margin-top:4px;"><i class="fas fa-check-circle"></i> Selesai</div>`;
+      } else if (s.num === activeStep) {
+        borderStyle = 'border:2px solid #eab308; background:rgba(234, 179, 8, 0.08); box-shadow:0 0 10px rgba(234,179,8,0.2);';
+        iconOrNum = `<div style="width:24px; height:24px; border-radius:50%; background:#eab308; color:#000; font-weight:700; font-size:11px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:6px;"><i class="fas fa-play" style="font-size:9px;"></i></div>`;
+        subBadge = `<div style="font-size:0.7rem; color:#b45309; font-weight:700; margin-top:4px;"><i class="fas fa-arrow-circle-right"></i> Berjalan</div>`;
+      }
+    }
+
+    return `
+      <div onclick="clickPengabdianMilestoneStep(${s.num}, '${s.tab}')" style="padding:10px 8px; border-radius:8px; cursor:pointer; transition:transform 0.15s ease, box-shadow 0.15s ease; ${borderStyle}" onmouseenter="this.style.transform='translateY(-2px)'" onmouseleave="this.style.transform='none'" title="Klik untuk membuka modul ${s.desc}">
+        ${iconOrNum}
+        <div style="color:var(--t1); font-weight:700; font-size:0.8rem; line-height:1.3;">${s.name}</div>
+        <div style="font-size:0.72rem; color:var(--t3); margin-top:3px;">${s.time}</div>
+        ${subBadge}
+      </div>
+    `;
+  }).join('');
+}
+
+function clickPengabdianMilestoneStep(stepNum, tabName) {
+  switchPengabdianTab(tabName);
+}
+
+function promptSetPengabdianMilestone() {
+  let current = localStorage.getItem('simarsip_pkm_active_milestone') || 'auto';
+  const choice = prompt(
+    "KONTROL TAHAPAN SIKLUS TRIDHARMA PKM T.A. 2025/2026:\\n\\n" +
+    "Ketik nomor tahapan (1-6) untuk mengatur fase aktif secara manual, atau ketik 'auto' agar otomatis mengikuti data riil:\\n\\n" +
+    "1 = Call for Proposal (Jan - Feb 2026)\\n" +
+    "2 = Desk Evaluation & Reviewer (Feb 2026)\\n" +
+    "3 = Aksi Baksos & Terapi Lapangan (Mar - Mei 2026)\\n" +
+    "4 = Monev Kemajuan 70% & Borang (Jun 2026)\\n" +
+    "5 = Laporan Akhir & SPJ PkM (Jul 2026)\\n" +
+    "6 = Publikasi Jurnal & HKI Cipta (Agu 2026)\\n" +
+    "auto = Otomatis Berdasarkan Status Data\\n\\n" +
+    "Pengaturan saat ini: " + current,
+    current
+  );
+
+  if (choice === null) return;
+  const trimmed = choice.trim().toLowerCase();
+  if (trimmed === 'auto') {
+    localStorage.removeItem('simarsip_pkm_active_milestone');
+    alert("Tahapan siklus PkM disetel OTOMATIS mengikuti data riil sistem.");
+  } else {
+    const num = parseInt(trimmed, 10);
+    if (!isNaN(num) && num >= 1 && num <= 6) {
+      localStorage.setItem('simarsip_pkm_active_milestone', num);
+      alert(`Tahapan siklus PkM berhasil diatur manual ke TAHAP ${num}.`);
+    } else {
+      alert("Input tidak valid! Harap masukkan angka 1 sampai 6 atau 'auto'.");
+      return;
+    }
+  }
+  renderPengabdianMilestoneStepper();
+}
+
+function setPengabdianMilestoneStep(stepNum) {
+  if (stepNum === 'auto' || !stepNum) {
+    localStorage.removeItem('simarsip_pkm_active_milestone');
+  } else {
+    localStorage.setItem('simarsip_pkm_active_milestone', stepNum);
+  }
+  renderPengabdianMilestoneStepper();
 }
 
 function initPengabdianCharts() {
@@ -7371,6 +7585,8 @@ async function clearAllPengabdianData() {
   // 2. Bersihkan local storage
   try {
     localStorage.removeItem('simarsip_pengabdian_data');
+    localStorage.removeItem('simarsip_pengabdian_store_v1');
+    localStorage.removeItem('simarsip_pengabdian_store_v2');
     savePengabdianData();
   } catch(e) { console.warn("Hapus localStorage error:", e); }
 
@@ -7419,14 +7635,13 @@ async function clearAllPengabdianData() {
   }
 }
 
-async function syncPengabdianFromSumber() {
+async function syncPengabdianFromSumber(silent = false) {
   const btn = document.getElementById('btnSyncPengabdian');
-  const icon = document.getElementById('pengabdianSyncIcon') || document.getElementById('sbPengabdianSyncIcon');
-  if (btn) {
+  if (btn && !silent) {
     btn.disabled = true;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyinkronkan...';
   }
-  if (typeof toast === 'function') {
+  if (!silent && typeof toast === 'function') {
     toast('Menyinkronkan data live dari Firebase Cloud SIM-PKM AAS...', 'info');
   }
 
@@ -7452,7 +7667,7 @@ async function syncPengabdianFromSumber() {
           syncedData = snap.data();
         }
       } catch (err) {
-        console.warn("Koneksi Firestore SIM-PKM pending (menggunakan dataset lokal tersimpan):", err);
+        console.warn("Koneksi Firestore SIM-PKM:", err);
       }
     }
 
@@ -7515,18 +7730,23 @@ async function syncPengabdianFromSumber() {
     if (typeof updateBadges === 'function') updateBadges();
     renderPengabdianContent();
 
-    if (typeof toast === 'function') {
+    if (!silent && typeof toast === 'function') {
       toast('Sinkronisasi selesai! ' + countUpsert + ' data PkM tersinkron ke SIMARSIP.', 'success');
     }
   } catch(e) {
     console.error("Gagal sinkron PkM:", e);
-    if (typeof toast === 'function') {
+    if (!silent && typeof toast === 'function') {
       toast('Sinkronisasi selesai: ' + e.message, 'info');
     }
   } finally {
-    if (btn) {
+    if (btn && !silent) {
       btn.disabled = false;
       btn.innerHTML = '<i class="fas fa-rotate" id="pengabdianSyncIcon"></i> Sinkron Data Live';
     }
   }
 }
+
+// Auto-sync diam-diam saat web dimuat
+setTimeout(() => {
+  try { syncPengabdianFromSumber(true); } catch(e) {}
+}, 1200);

@@ -1941,35 +1941,16 @@
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
             <div style="display:flex; align-items:center; gap:8px;">
               <i class="fas fa-route" style="color:#eab308; font-size:1.1rem;"></i>
-              <strong style="color:var(--t1);">Roadmap &amp; Milestone Pelaksanaan PkM TA 2025/2026</strong>
+              <strong style="color:var(--t1);">Siklus &amp; Jadwal Pelaksanaan Tridharma Pengmas T.A. 2025/2026</strong>
+              <small style="color:var(--t3); font-size:0.75rem;">&bull; <span style="color:#0d9488; font-weight:600;"><i class="fas fa-hand-pointer"></i> Klik tahapan untuk membuka modul terkait</span></small>
             </div>
-            <span class="badge" style="background:#eab308; color:#000; font-weight:700;">Status: Siklus Berjalan (Tahap Baksos &amp; Monev)</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="badge" id="pkmMilestoneActiveBadge" style="background:#fef3c7; color:#b45309; font-weight:700;"><i class="fas fa-bullhorn"></i> Fase Aktif: Penerimaan Usulan</span>
+              <button class="btn-ghost-sm" onclick="promptSetPengabdianMilestone()" style="font-size:0.75rem; padding:3px 8px; border:1px solid var(--b2); border-radius:5px; cursor:pointer;" title="Atur fase milestone pelaksanaan (Manual / Otomatis)"><i class="fas fa-sliders-h"></i> Set Tahap</button>
+            </div>
           </div>
-          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; text-align:center;">
-            <div style="padding:10px 8px; border-radius:8px; background:var(--card); border:1px solid #10b98140;">
-              <div style="color:#10b981; font-weight:700; font-size:0.8rem;"><i class="fas fa-check-circle"></i> Tahap 1</div>
-              <div style="font-size:0.75rem; color:var(--t2); margin-top:2px;">Sosialisasi &amp; Panduan</div>
-            </div>
-            <div style="padding:10px 8px; border-radius:8px; background:var(--card); border:1px solid #10b98140;">
-              <div style="color:#10b981; font-weight:700; font-size:0.8rem;"><i class="fas fa-check-circle"></i> Tahap 2</div>
-              <div style="font-size:0.75rem; color:var(--t2); margin-top:2px;">Seleksi Usulan Proposal</div>
-            </div>
-            <div style="padding:10px 8px; border-radius:8px; background:var(--card); border:1px solid #10b98140;">
-              <div style="color:#10b981; font-weight:700; font-size:0.8rem;"><i class="fas fa-check-circle"></i> Tahap 3</div>
-              <div style="font-size:0.75rem; color:var(--t2); margin-top:2px;">Kontrak &amp; Pencairan Dana</div>
-            </div>
-            <div style="padding:10px 8px; border-radius:8px; background:var(--card); border:2px solid #eab308; box-shadow:0 0 10px rgba(234,179,8,0.2);">
-              <div style="color:#eab308; font-weight:800; font-size:0.8rem;"><i class="fas fa-spinner fa-spin"></i> Tahap 4 (Aktif)</div>
-              <div style="font-size:0.75rem; color:var(--t1); font-weight:600; margin-top:2px;">Baksos &amp; Pelayanan Klinis</div>
-            </div>
-            <div style="padding:10px 8px; border-radius:8px; background:var(--card); border:1px solid var(--b1); opacity:0.8;">
-              <div style="color:var(--t3); font-weight:700; font-size:0.8rem;"><i class="fas fa-clock"></i> Tahap 5</div>
-              <div style="font-size:0.75rem; color:var(--t3); margin-top:2px;">Monev &amp; Evaluasi VAS</div>
-            </div>
-            <div style="padding:10px 8px; border-radius:8px; background:var(--card); border:1px solid var(--b1); opacity:0.8;">
-              <div style="color:var(--t3); font-weight:700; font-size:0.8rem;"><i class="fas fa-clock"></i> Tahap 6</div>
-              <div style="font-size:0.75rem; color:var(--t3); margin-top:2px;">Diseminasi, Jurnal &amp; HKI</div>
-            </div>
+          <div id="pkmMilestoneStepperContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; text-align:center;">
+            <!-- Rendered dynamically by renderPengabdianMilestoneStepper() -->
           </div>
         </div>
 
