@@ -892,6 +892,8 @@ let arsip    = [];
 let currentDeptSub = 'all';
 let currentLabTab = 'dashboard';
 let currentSaranaTab = 'dashboard';
+let currentPengabdianTab = 'dashboard';
+let currentPengabdianAY = '2025/2026 Genap';
 
 function renderDeptSubmenus() {
   document.querySelectorAll('.sb-link[data-page="dept"]').forEach(link => {
@@ -943,6 +945,27 @@ function renderDeptSubmenus() {
           <i class="${item.icon}"></i> ${item.label}
         </li>`;
       });
+    } else if (deptId === 'pengabdian') {
+      const pkmSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
+        { id: 'usulan', label: 'Usulan Proposal PkM', icon: 'fas fa-file-signature' },
+        { id: 'baksos', label: 'Logbook & Pasien Baksos', icon: 'fas fa-stethoscope' },
+        { id: 'reviewer', label: 'Reviewer Desk', icon: 'fas fa-clipboard-check' },
+        { id: 'luaran', label: 'Katalog Luaran & HKI', icon: 'fas fa-award' },
+        { id: 'borang', label: 'Borang LAM-PTKes (7 & 8)', icon: 'fas fa-table' },
+        { id: 'dokumen', label: 'Dokumen & SK PkM', icon: 'fas fa-file-contract' },
+        { id: 'portal', label: 'Web App SIM-PKM', icon: 'fas fa-window-maximize' }
+      ];
+      pkmSubItems.forEach(item => {
+        let isActive = (currentPengabdianTab === item.id && currentDept === 'pengabdian') ? 'active' : '';
+        ul.innerHTML += `<li class="${isActive}" onclick="switchPengabdianTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> ${item.label}
+        </li>`;
+      });
+      ul.innerHTML += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
+      ul.innerHTML += `<li onclick="syncPengabdianFromSumber()" style="color:#22c55e; font-weight:600;">
+        <i class="fas fa-rotate" id="sbPengabdianSyncIcon"></i> <span style="flex:1;">Sinkron Data Live PkM</span>
+      </li>`;
     } else if (DEPT_JENIS[deptId]) {
       let countAll = arsip.filter(a => a.bidang === deptId).length;
       ul.innerHTML += `<li class="${currentDeptSub === 'all' && currentDept === deptId ? 'active' : ''}" onclick="switchDeptSub('all', this, '${deptId}')">
@@ -1852,7 +1875,9 @@ function renderDeptPage(dept) {
   ].map(c=>`<div class="stat-card" style="--c:${c.c}"><div class="sc-icon"><i class="fas fa-${c.ic}"></i></div><div class="sc-label">${c.lb}</div><div class="sc-val">${c.val}</div></div>`).join('');
 
   document.getElementById('deptChartSub').textContent=`TA ${currentAY}`;
-  initDeptCharts(dept,all,d.color);
+  if (dept !== 'laboratorium' && dept !== 'sarana' && dept !== 'pengabdian') {
+    initDeptCharts(dept,all,d.color);
+  }
 
   const mhsCharts = document.getElementById('mhsChartContainer');
   if(mhsCharts) mhsCharts.style.display = 'none'; // Obsolete
@@ -1910,6 +1935,10 @@ function renderDeptPage(dept) {
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
     if (statRow) statRow.style.display = 'none';
     if (deptTableContainer) deptTableContainer.style.display = 'none';
+    const dMhs = document.getElementById('deptMhsContainer');
+    if (dMhs) dMhs.style.display = 'none';
+    const dSdm = document.getElementById('deptSdmContainer');
+    if (dSdm) dSdm.style.display = 'none';
     switchPengabdianTab(currentPengabdianTab || 'dashboard');
     renderPengabdianContent();
   } else {
@@ -2319,6 +2348,46 @@ function filterByJenis(jenis) {
     return;
   }
 
+  if (currentDept === 'pengabdian') {
+    if (arsipC) arsipC.style.display = 'none';
+    if (mhsC) mhsC.style.display = 'none';
+    if (tC) tC.style.display = 'none';
+    if (dMhs) dMhs.style.display = 'none';
+    if (dSdm) dSdm.style.display = 'none';
+    const pkmC = document.getElementById('pengabdianContainer');
+    if (pkmC) pkmC.style.display = 'block';
+    const sRow = document.getElementById('deptStatRow');
+    if (sRow) sRow.style.display = 'none';
+    switchPengabdianTab(currentPengabdianTab || 'dashboard');
+    return;
+  }
+
+  if (currentDept === 'laboratorium') {
+    if (arsipC) arsipC.style.display = 'none';
+    if (mhsC) mhsC.style.display = 'none';
+    if (tC) tC.style.display = 'none';
+    if (dMhs) dMhs.style.display = 'none';
+    if (dSdm) dSdm.style.display = 'none';
+    const labC = document.getElementById('laboratoriumContainer');
+    if (labC) labC.style.display = 'block';
+    const sRow = document.getElementById('deptStatRow');
+    if (sRow) sRow.style.display = 'none';
+    return;
+  }
+
+  if (currentDept === 'sarana') {
+    if (arsipC) arsipC.style.display = 'none';
+    if (mhsC) mhsC.style.display = 'none';
+    if (tC) tC.style.display = 'none';
+    if (dMhs) dMhs.style.display = 'none';
+    if (dSdm) dSdm.style.display = 'none';
+    const saranaC = document.getElementById('saranaContainer');
+    if (saranaC) saranaC.style.display = 'block';
+    const sRow = document.getElementById('deptStatRow');
+    if (sRow) sRow.style.display = 'none';
+    return;
+  }
+
   if(jenis === 'data_mahasiswa') {
     if(arsipC) arsipC.style.display = 'none';
     if(mhsC) mhsC.style.display = 'grid';
@@ -2397,6 +2466,33 @@ function initSidebarSubMenus() {
           <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
         </li>`;
       });
+      ul.innerHTML = html;
+      navLink.after(ul);
+      return;
+    }
+
+    if (k === 'pengabdian') {
+      const pengabdianSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
+        { id: 'usulan', label: 'Usulan Proposal PkM', icon: 'fas fa-file-signature' },
+        { id: 'baksos', label: 'Logbook & Pasien Baksos', icon: 'fas fa-stethoscope' },
+        { id: 'reviewer', label: 'Reviewer Desk', icon: 'fas fa-clipboard-check' },
+        { id: 'luaran', label: 'Katalog Luaran & HKI', icon: 'fas fa-award' },
+        { id: 'borang', label: 'Borang LAM-PTKes (7 & 8)', icon: 'fas fa-table' },
+        { id: 'dokumen', label: 'Dokumen & SK PkM', icon: 'fas fa-file-contract' },
+        { id: 'portal', label: 'Web App SIM-PKM', icon: 'fas fa-window-maximize' }
+      ];
+      let html = '';
+      pengabdianSubItems.forEach(item => {
+        let isActive = (currentPengabdianTab === item.id) ? 'active' : '';
+        html += `<li class="${isActive}" onclick="switchPengabdianTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
+        </li>`;
+      });
+      html += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
+      html += `<li onclick="syncPengabdianFromSumber()" style="color:#22c55e; font-weight:600;">
+        <i class="fas fa-rotate" id="sbPengabdianSyncIcon"></i> <span style="flex:1; min-width:0; line-height:1.4;">Sinkron Data Live PkM</span>
+      </li>`;
       ul.innerHTML = html;
       navLink.after(ul);
       return;
@@ -6288,8 +6384,6 @@ async function clearAllSaranaData() {
 // ==========================================================================
 // MODUL INTEGRASI PENGABDIAN MASYARAKAT (SIM-PKM AAS)
 // ==========================================================================
-let currentPengabdianTab = 'dashboard';
-let currentPengabdianAY = '2025/2026 Genap';
 let currentBorangSubTab = '71';
 let dbPkmSumber = null;
 let chartPkmSkemaInstance = null;
@@ -6627,6 +6721,25 @@ function savePengabdianData() {
 function switchPengabdianTab(tabKey) {
   currentPengabdianTab = tabKey;
 
+  const pkmContainer = document.getElementById('pengabdianContainer');
+  if (pkmContainer) pkmContainer.style.display = 'block';
+  const deptArsipCharts = document.getElementById('deptArsipCharts');
+  if (deptArsipCharts) deptArsipCharts.style.display = 'none';
+  const statRow = document.getElementById('deptStatRow');
+  if (statRow) statRow.style.display = 'none';
+  const deptTableContainer = document.getElementById('deptTableContainer');
+  if (deptTableContainer) deptTableContainer.style.display = 'none';
+  const mhsCharts = document.getElementById('mhsChartContainer');
+  if (mhsCharts) mhsCharts.style.display = 'none';
+  const dMhs = document.getElementById('deptMhsContainer');
+  if (dMhs) dMhs.style.display = 'none';
+  const dSdm = document.getElementById('deptSdmContainer');
+  if (dSdm) dSdm.style.display = 'none';
+  const labContainer = document.getElementById('laboratoriumContainer');
+  if (labContainer) labContainer.style.display = 'none';
+  const saranaContainer = document.getElementById('saranaContainer');
+  if (saranaContainer) saranaContainer.style.display = 'none';
+
   // Update tabs buttons in #pengabdianNavTabs
   const buttons = ['dashboard', 'usulan', 'baksos', 'reviewer', 'luaran', 'borang', 'dokumen', 'portal'];
   buttons.forEach(b => {
@@ -6645,12 +6758,12 @@ function switchPengabdianTab(tabKey) {
   });
 
   // Update sidebar sub-menu
-  const sidebarSub = document.getElementById('dept-pengabdian-sub-menu');
+  const sidebarSub = document.getElementById('dept-pengabdian-sub-menu') || document.getElementById('submenu-pengabdian');
   if (sidebarSub) {
     const listItems = sidebarSub.querySelectorAll('li');
     listItems.forEach(li => {
-      const text = (li.textContent || '').toLowerCase();
-      if (text.includes(tabKey) || (tabKey === 'baksos' && text.includes('logbook')) || (tabKey === 'borang' && text.includes('lam-ptkes')) || (tabKey === 'portal' && text.includes('portal'))) {
+      const onclickAttr = li.getAttribute('onclick') || '';
+      if (onclickAttr.includes(`'${tabKey}'`)) {
         li.classList.add('active');
       } else {
         li.classList.remove('active');
@@ -6689,7 +6802,7 @@ function switchPengabdianTab(tabKey) {
 }
 
 function switchPengabdianTabFromSidebar(tabKey, el) {
-  if (currentDept !== 'pengabdian') {
+  if (currentPage !== 'dept' || currentDept !== 'pengabdian') {
     const link = document.getElementById('nav-pengabdian');
     if (link && typeof setActiveNav === 'function') setActiveNav(link);
     currentDept = 'pengabdian';
