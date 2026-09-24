@@ -8089,8 +8089,8 @@ function switchKetenagaanTab(tabKey) {
     renderKetenagaanSdmTable();
   } else if (currentKetenagaanTab === 'portal') {
     const iframe = document.getElementById('ketenagaanIframe');
-    if (iframe && (!iframe.src || !iframe.src.includes('bidang-ketenagaan.web.app'))) {
-      iframe.src = 'https://bidang-ketenagaan.web.app';
+    if (iframe && (!iframe.src || (!iframe.src.includes('bidang-ketenagaan.web.app') && !iframe.src.includes('workers.dev')))) {
+      iframe.src = 'https://bidang-ketenagaan.adminpendidikanaas-operator.workers.dev';
     }
   }
 }
@@ -8115,6 +8115,7 @@ function renderKetenagaanContent() {
 function reloadKetenagaanFrame() {
   const iframe = document.getElementById('ketenagaanIframe');
   if (iframe) {
-    iframe.src = 'https://bidang-ketenagaan.web.app';
+    iframe.src = iframe.src || 'https://bidang-ketenagaan.adminpendidikanaas-operator.workers.dev';
+    try { iframe.contentWindow?.location.reload(); } catch(e) { iframe.src = iframe.src; }
   }
 }
