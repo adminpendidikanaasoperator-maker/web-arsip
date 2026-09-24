@@ -168,8 +168,8 @@
       <li onclick="switchPengabdianTabFromSidebar('borang', this)"><i class="fas fa-table" style="color:#f59e0b;"></i> <span style="flex:1;">Borang LAM-PTKes (7 &amp; 8)</span></li>
       <li onclick="switchPengabdianTabFromSidebar('dokumen', this)"><i class="fas fa-file-contract" style="color:#06b6d4;"></i> <span style="flex:1;">Dokumen &amp; SK PkM</span></li>
       <li onclick="switchPengabdianTabFromSidebar('portal', this)" style="color:#eab308; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App PkM Utuh</span></li>
-      <hr style="border-color: rgba(255,255,255,0.08); margin: 4px 10px;">
       <li onclick="syncPengabdianFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbPengabdianSyncIcon"></i> <span style="flex:1;">Sinkron Data Live PkM</span></li>
+      <li onclick="clearAllPengabdianData()" style="color:#ef4444; font-weight:600;"><i class="fas fa-trash-can"></i> <span style="flex:1;">Hapus Data Dummy (Reset 0)</span></li>
     </ul>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_kelembagaan" id="nav-admin_kelembagaan"><i class="fas fa-sitemap" style="color:#84cc16"></i><span>Administrasi dan Kelembagaan</span><em id="badge-admin_kelembagaan">0</em></a>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_umum" id="nav-admin_umum"><i class="fas fa-building" style="color:#22c55e"></i><span>Administrasi Umum</span><em id="badge-admin_umum">0</em></a>
@@ -1901,6 +1901,9 @@
           <button type="button" class="btn-ghost-sm" onclick="syncPengabdianFromSumber()" id="btnSyncPengabdian" style="background:var(--bg3); border:1px solid #eab30860; color:#eab308; font-weight:600; border-radius:6px;" title="Sinkronkan data live dari Firebase Cloud SIM-PKM AAS">
             <i class="fas fa-rotate" id="pengabdianSyncIcon"></i> Sinkron Data Live
           </button>
+          <button type="button" class="btn-ghost-sm" onclick="clearAllPengabdianData()" id="btnClearPengabdian" style="background:var(--bg3); border:1px solid #ef444460; color:#ef4444; font-weight:600; border-radius:6px;" title="Hapus semua data dummy dan sinkronkan grafik ke 0">
+            <i class="fas fa-trash-can"></i> Hapus Data Dummy
+          </button>
           <a href="https://bidang-pengabdian-masyarakat.web.app" target="_blank" rel="noopener" class="btn-ghost-sm" style="background:var(--bg3); border:1px solid var(--b2); color:var(--primary); font-weight:600; border-radius:6px; text-decoration:none;" title="Buka aplikasi web utuh di tab baru">
             <i class="fas fa-up-right-from-square"></i> Buka Portal
           </a>
@@ -2416,7 +2419,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=1025" defer></script>
+<script src="app.js?v=1028" defer></script>
 
 <!-- Notification Sounds -->
 

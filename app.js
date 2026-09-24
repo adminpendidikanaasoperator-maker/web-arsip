@@ -6391,314 +6391,13 @@ let chartPkmTCMInstance = null;
 let chartPkmVASInstance = null;
 let chartPkmLuaranInstance = null;
 
-// Dataset Standar Realistis SIM-PKM AAS Prodi D-III Akupunktur
+// Dataset Standar Bersih SIM-PKM AAS Prodi D-III Akupunktur (Default Kosong / Real Data Only)
 const defaultPengabdianData = {
-  proposals: [
-    {
-      id: "PKM-2026-001",
-      title: "Pemberdayaan Posyandu Lansia Kenjeran Melalui Terapi Akupunktur Mandiri & Terarah Nyeri Sendi (Bi Syndrome)",
-      scheme: "PkM Kemitraan Wilayah Binaan",
-      leader: "drg. Hendra Santoso, M.Kes, Akp.",
-      leader_id: "USR-D01",
-      nidn: "0712058001",
-      partner: "Posyandu Lansia Kenjeran, Surabaya",
-      budget: 12500000,
-      status: "Berjalan",
-      reviewer_score: 88,
-      tahunAkademik: "2025/2026 Genap",
-      members_lecturer: ["drg. Hendra Santoso, M.Kes, Akp.", "Ahmad Fauzi, S.Tr.Kes, M.Biomed."],
-      members_student: ["Siti Rahmawati (AAS-23-014)", "Budi Wicaksono (AAS-23-021)", "Anisa Putri (AAS-23-009)"],
-      target_outputs: "Artikel Jurnal SINTA 2 & Hak Cipta Modul Lansia",
-      date: "2026-02-14"
-    },
-    {
-      id: "PKM-2026-002",
-      title: "Hilirisasi Terapi Akupunktur Komplementer Pasca-Stroke di Wilayah Binaan Puskesmas Ampel",
-      scheme: "PkM Kemitraan Wilayah Binaan",
-      leader: "Dewi Sartika, S.Kep., Akp.",
-      leader_id: "USR-D05",
-      nidn: "0715068905",
-      partner: "Keluarga Pasien Stroke RW 05 Pegirian, Ampel",
-      budget: 15000000,
-      status: "Berjalan",
-      reviewer_score: 92,
-      tahunAkademik: "2025/2026 Genap",
-      members_lecturer: ["Dewi Sartika, S.Kep., Akp.", "Yuni Astuti, S.Tr.Akp."],
-      members_student: ["Rizal Kurniawan (AAS-23-018)", "Dimas Prasetyo (AAS-23-030)"],
-      target_outputs: "Publikasi Media Massa Nasional & Leaflet Edukasi Geriatri",
-      date: "2026-02-20"
-    },
-    {
-      id: "PKM-2026-003",
-      title: "Penerapan Akupunktur Titik Neiguan (PC6) & Yintang Mengatasi Insomnia & Stagnasi Qi Pekerja Industri Rungkut",
-      scheme: "PkM Reguler Internal AAS",
-      leader: "Ahmad Fauzi, S.Tr.Kes, M.Biomed.",
-      leader_id: "USR-D02",
-      nidn: "0723088502",
-      partner: "Komunitas Pekerja Industri SIER Rungkut",
-      budget: 10000000,
-      status: "Berjalan",
-      reviewer_score: 85,
-      tahunAkademik: "2025/2026 Genap",
-      members_lecturer: ["Ahmad Fauzi, S.Tr.Kes, M.Biomed."],
-      members_student: ["Nurul Hidayati (AAS-23-005)", "Eko Purnomo (AAS-23-027)"],
-      target_outputs: "Prosiding Seminar Nasional Kesehatan Vokasi",
-      date: "2026-03-01"
-    },
-    {
-      id: "PKM-2025-004",
-      title: "Bakti Sosial Akupunktur & Edukasi Titik Zusanli (ST36) Promotif Preventif Lansia Karang Taruna Tambaksari",
-      scheme: "PkM Tanggap Bencana & Baksos",
-      leader: "Sri Wahyuni, M.Tr.Keb., Akp.",
-      leader_id: "USR-D03",
-      nidn: "0718048803",
-      partner: "Balai RW 03 Kelurahan Tambaksari",
-      budget: 8500000,
-      status: "Selesai",
-      reviewer_score: 90,
-      tahunAkademik: "2025/2026 Ganjil",
-      members_lecturer: ["Sri Wahyuni, M.Tr.Keb., Akp.", "drg. Hendra Santoso, M.Kes, Akp."],
-      members_student: ["Indah Permata (AAS-22-011)", "Farhan Maulana (AAS-22-019)"],
-      target_outputs: "Laporan Kinerja & Publikasi Video Edukasi YouTube AAS",
-      date: "2025-10-18"
-    },
-    {
-      id: "PKM-2025-005",
-      title: "Pelatihan Akupresur Mandiri Meredakan Emesis Gravidarum pada Kelompok Ibu Hamil Wilayah Wonokromo",
-      scheme: "PkM Pengembangan Produk Herbal & Akupunktur",
-      leader: "Sri Wahyuni, M.Tr.Keb., Akp.",
-      leader_id: "USR-D03",
-      nidn: "0718048803",
-      partner: "Puskesmas Pembantu Jagir, Wonokromo",
-      budget: 11000000,
-      status: "Selesai",
-      reviewer_score: 94,
-      tahunAkademik: "2024/2025 Genap",
-      members_lecturer: ["Sri Wahyuni, M.Tr.Keb., Akp."],
-      members_student: ["Rina Wardani (AAS-22-003)", "Dina Safitri (AAS-22-015)"],
-      target_outputs: "Buku Panduan Saku Akupresur Ibu Hamil Terdaftar HKI",
-      date: "2025-04-12"
-    }
-  ],
-  patients: [
-    {
-      id: "REG-2026-001",
-      pkm_id: "PKM-2026-001",
-      pkm_title: "Pemberdayaan Posyandu Lansia Kenjeran",
-      date: "2026-02-15",
-      name: "Ibu Sulastri",
-      age: 64,
-      gender: "Perempuan",
-      complaint: "Nyeri kedua lutut (OA Genu) memberat saat berjalan dan berdiri lama",
-      tcm_diagnosis: "Bi Syndrome Dingin Lembab Meridian Lambung & Limpa",
-      points: "ST36, SP6, ST35, GB34, SP9",
-      vas_pre: 8,
-      vas_post: 2,
-      therapist: "drg. Hendra Santoso & Siti Rahmawati (Mhs)",
-      tahunAkademik: "2025/2026 Genap"
-    },
-    {
-      id: "REG-2026-002",
-      pkm_id: "PKM-2026-001",
-      pkm_title: "Pemberdayaan Posyandu Lansia Kenjeran",
-      date: "2026-02-15",
-      name: "Bapak Bambang Sutrisno",
-      age: 68,
-      gender: "Laki-laki",
-      complaint: "Linu pinggang bawah menjalar ke bokong (Low Back Pain kronis)",
-      tcm_diagnosis: "Bi Syndrome Defisiensi Yang Ginjal dengan Stagnasi Qi",
-      points: "BL23, BL40, GB34, KI3, Ashi",
-      vas_pre: 7,
-      vas_post: 3,
-      therapist: "Budi Wicaksono (Mhs) supervisi drg. Hendra",
-      tahunAkademik: "2025/2026 Genap"
-    },
-    {
-      id: "REG-2026-003",
-      pkm_id: "PKM-2026-002",
-      pkm_title: "Hilirisasi Terapi Akupunktur Pasca-Stroke",
-      date: "2026-02-22",
-      name: "Bapak H. Mansur",
-      age: 59,
-      gender: "Laki-laki",
-      complaint: "Kelemahan anggota gerak kanan pasca stroke iskemik 6 bulan lalu",
-      tcm_diagnosis: "Angin-Dahak Menyumbat Meridian Taiyang & Yangming",
-      points: "LI4, LI11, ST36, GB34, LR3, EX-HN1",
-      vas_pre: 8,
-      vas_post: 3,
-      therapist: "Dewi Sartika, S.Kep., Akp. & Rizal Kurniawan",
-      tahunAkademik: "2025/2026 Genap"
-    },
-    {
-      id: "REG-2026-004",
-      pkm_id: "PKM-2026-003",
-      pkm_title: "Akupunktur Mengatasi Insomnia Industri SIER",
-      date: "2026-03-05",
-      name: "Ibu Ratna Dewi",
-      age: 41,
-      gender: "Perempuan",
-      complaint: "Insomnia menahun, dada begah dan sering sakit kepala tegang",
-      tcm_diagnosis: "Stagnasi Qi Hati Menyerang Jantung & Mengganggu Shen",
-      points: "HT7, PC6, LR3, GV20, SP6, Yintang",
-      vas_pre: 7,
-      vas_post: 2,
-      therapist: "Ahmad Fauzi, M.Biomed. & Nurul Hidayati",
-      tahunAkademik: "2025/2026 Genap"
-    },
-    {
-      id: "REG-2026-005",
-      pkm_id: "PKM-2026-001",
-      pkm_title: "Pemberdayaan Posyandu Lansia Kenjeran",
-      date: "2026-02-15",
-      name: "Ibu Hj. Aminah",
-      age: 71,
-      gender: "Perempuan",
-      complaint: "Kaku leher pundak kencang dan pusing berputar saat bangun tidur",
-      tcm_diagnosis: "Hiperaktivitas Yang Hati dengan Defisiensi Yin Ginjal",
-      points: "GB20, GV14, LR3, KI3, LI4",
-      vas_pre: 9,
-      vas_post: 3,
-      therapist: "drg. Hendra Santoso & Anisa Putri",
-      tahunAkademik: "2025/2026 Genap"
-    },
-    {
-      id: "REG-2025-006",
-      pkm_id: "PKM-2025-004",
-      pkm_title: "Baksos Promotif Preventif Tambaksari",
-      date: "2025-10-18",
-      name: "Bapak Sugeng Prayitno",
-      age: 62,
-      gender: "Laki-laki",
-      complaint: "Pegilinu sendi lutut dan bahu kanan kaku digerakkan",
-      tcm_diagnosis: "Bi Syndrome Angin-Dingin Meridian Usus Besar & Usus Kecil",
-      points: "LI15, SI9, ST36, GB34, LI4",
-      vas_pre: 8,
-      vas_post: 3,
-      therapist: "Sri Wahyuni, Akp. & Indah Permata",
-      tahunAkademik: "2025/2026 Ganjil"
-    }
-  ],
-  outputs: [
-    {
-      kategori: "Jurnal",
-      judul: "Efektivitas Stimulasi Titik Zusanli (ST36) dan Sanyinjiao (SP6) terhadap Skala Nyeri Sendi Pasien Geriatri",
-      penulis: "drg. Hendra Santoso, M.Kes, Akp., Siti Rahmawati",
-      tahun: "2026",
-      identitas: "Jurnal Pengabdian Kesehatan Vokasi (SINTA 2), Vol. 8 No. 1",
-      tautan: "https://jurnal.aas.ac.id/pkm/v8n1",
-      status: "Published",
-      tahunAkademik: "2025/2026 Genap"
-    },
-    {
-      kategori: "HKI",
-      judul: "Buku Pedoman Perawatan Akupresur Mandiri Gangguan Sendi Lansia Berbasis Sindrom TCM",
-      penulis: "drg. Hendra Santoso, M.Kes, Akp., Ahmad Fauzi, M.Biomed.",
-      tahun: "2026",
-      identitas: "EC00202619842 (Kemenkumham RI)",
-      tautan: "https://e-hki.kemenkumham.go.id/sertifikat/EC00202619842",
-      status: "Sertifikat Terbit",
-      tahunAkademik: "2025/2026 Genap"
-    },
-    {
-      kategori: "HKI",
-      judul: "Buku Saku Terapi Akupresur Titik Neiguan (PC6) untuk Emesis Gravidarum",
-      penulis: "Sri Wahyuni, M.Tr.Keb., Akp.",
-      tahun: "2025",
-      identitas: "EC00202588140 (Kemenkumham RI)",
-      tautan: "https://e-hki.kemenkumham.go.id/sertifikat/EC00202588140",
-      status: "Sertifikat Terbit",
-      tahunAkademik: "2024/2025 Genap"
-    },
-    {
-      kategori: "Video",
-      judul: "Video Tutorial Edukasi Akupresur Mandiri Meredakan Nyeri Pinggang Pekerja Industri",
-      penulis: "Ahmad Fauzi, M.Biomed., Nurul Hidayati",
-      tahun: "2026",
-      identitas: "Kanal YouTube Resmi Akademi Akupunktur Surabaya",
-      tautan: "https://youtube.com/watch?v=aas-pkm-akupresur-2026",
-      status: "Tayang Publik",
-      tahunAkademik: "2025/2026 Genap"
-    }
-  ],
-  reviews: [
-    {
-      pkm_id: "PKM-2026-001",
-      title: "Pemberdayaan Posyandu Lansia Kenjeran",
-      leader: "drg. Hendra Santoso, M.Kes, Akp.",
-      substansi: 90,
-      biaya: 86,
-      total: 88,
-      status: "Didanai",
-      notes: "Sangat relevan dengan profil lulusan D-III Akupunktur dalam penanganan kasus geriatri."
-    },
-    {
-      pkm_id: "PKM-2026-002",
-      title: "Hilirisasi Terapi Akupunktur Komplementer Pasca-Stroke",
-      leader: "Dewi Sartika, S.Kep., Akp.",
-      substansi: 93,
-      biaya: 91,
-      total: 92,
-      status: "Didanai",
-      notes: "Metodologi evaluasi VAS terukur sangat jelas dan pelibatan mahasiswa mencukupi."
-    },
-    {
-      pkm_id: "PKM-2026-003",
-      title: "Akupunktur Titik Neiguan & Yintang Mengatasi Insomnia Industri",
-      leader: "Ahmad Fauzi, S.Tr.Kes, M.Biomed.",
-      substansi: 86,
-      biaya: 84,
-      total: 85,
-      status: "Didanai",
-      notes: "Perlu penegasan jadwal kunjungan baksos agar tidak berbenturan dengan shift kerja buruh."
-    }
-  ],
-  dokumen: [
-    {
-      no: 1,
-      jenis: "Surat Tugas Tim PkM",
-      nomor: "048/ST-PKM/UPPM-AAS/II/2026",
-      perihal: "Penugasan Dosen & Mahasiswa Pelaksana PkM di Posyandu Lansia Kenjeran",
-      tanggal: "10 Februari 2026",
-      tte: "Valid (Direktur & Ka. UPPM AAS)",
-      file: "Surat_Tugas_PKM_2026_001.pdf"
-    },
-    {
-      no: 2,
-      jenis: "Surat Perjanjian Kontrak PkM",
-      nomor: "012/KTR-PKM/AAS/II/2026",
-      perihal: "Kontrak Pelaksanaan Hibah Pengabdian Masyarakat Internal Tahun 2026",
-      tanggal: "12 Februari 2026",
-      tte: "Valid (Wadir II Keuangan & Ketua Tim)",
-      file: "Kontrak_Hibah_PKM_2026_001.pdf"
-    },
-    {
-      no: 3,
-      jenis: "Berita Acara Pelayanan Baksos",
-      nomor: "005/BA-BAKSOS/PKM/II/2026",
-      perihal: "Penyelesaian Pelayanan Baksos Akupunktur 60 Pasien di Balai Kenjeran",
-      tanggal: "16 Februari 2026",
-      tte: "Valid (Ketua RW & Dosen Pembimbing)",
-      file: "BA_Baksos_Kenjeran_2026.pdf"
-    },
-    {
-      no: 4,
-      jenis: "Formulir Informed Consent & Logbook",
-      nomor: "FORM-IC-PKM-AAS-REV02",
-      perihal: "Persetujuan Tindakan Medis Akupunktur & Catatan VAS Pre-Post Pasien",
-      tanggal: "15 Februari 2026",
-      tte: "Valid (Terapis & Pasien)",
-      file: "Rekap_Informed_Consent_VAS.pdf"
-    },
-    {
-      no: 5,
-      jenis: "Laporan Evaluasi Audit Mutu SPMI",
-      nomor: "SPMI-PKM-EVAL-2026-01",
-      perihal: "Hasil Pengukuran Kepuasan Mitra (IKM) & Kesesuaian Standar Pelayanan",
-      tanggal: "01 Maret 2026",
-      tte: "Valid (Ketua SPMI AAS)",
-      file: "Audit_Mutu_SPMI_PKM_2026.pdf"
-    }
-  ]
+  proposals: [],
+  patients: [],
+  outputs: [],
+  reviews: [],
+  dokumen: []
 };
 
 let pengabdianData = (function() {
@@ -6706,11 +6405,31 @@ let pengabdianData = (function() {
     const saved = localStorage.getItem('simarsip_pengabdian_data');
     if (saved) {
       const parsed = JSON.parse(saved);
-      if (parsed && parsed.proposals && parsed.proposals.length > 0) return parsed;
+      // Auto-purge data dummy lama jika masih tersimpan di local storage
+      const hasDummyProposals = parsed.proposals && parsed.proposals.some(p => p.id === "PKM-2026-001" || p.id === "PKM-2026-002" || (p.title && p.title.includes("Kenjeran")));
+      const hasDummyPatients = parsed.patients && parsed.patients.some(pt => pt.id === "REG-2026-001" || pt.id === "PTS-001");
+      if (hasDummyProposals || hasDummyPatients) {
+        localStorage.removeItem('simarsip_pengabdian_data');
+        return { proposals: [], patients: [], outputs: [], reviews: [], dokumen: [] };
+      }
+      if (parsed && typeof parsed === 'object') {
+        return {
+          proposals: Array.isArray(parsed.proposals) ? parsed.proposals : [],
+          patients: Array.isArray(parsed.patients) ? parsed.patients : [],
+          outputs: Array.isArray(parsed.outputs) ? parsed.outputs : [],
+          reviews: Array.isArray(parsed.reviews) ? parsed.reviews : [],
+          dokumen: Array.isArray(parsed.dokumen) ? parsed.dokumen : []
+        };
+      }
     }
   } catch(e) { console.warn("Load pengabdianData fallback", e); }
-  return JSON.parse(JSON.stringify(defaultPengabdianData));
+  return { proposals: [], patients: [], outputs: [], reviews: [], dokumen: [] };
 })();
+
+// Bersihkan arsip lokal dari record dummy SIMPKM lama pada startup
+if (typeof arsip !== 'undefined' && Array.isArray(arsip)) {
+  arsip = arsip.filter(a => !a.id || (!a.id.startsWith('SIMPKM-PKM-2026-') && !a.id.startsWith('SIMPKM-PKM-2025-')));
+}
 
 function savePengabdianData() {
   try {
@@ -6862,7 +6581,7 @@ function renderPengabdianContent() {
       vasCount++;
     }
   });
-  const avgReduction = vasCount > 0 ? (totalVasReduction / vasCount).toFixed(1) : "5.4";
+  const avgReduction = vasCount > 0 ? (totalVasReduction / vasCount).toFixed(1) : "0.0";
 
   const totalAnggaran = proposals.reduce((acc, p) => acc + (Number(p.budget) || 0), 0);
 
@@ -6873,7 +6592,7 @@ function renderPengabdianContent() {
 
   if (statTotalEl) statTotalEl.textContent = totalPkm;
   if (statPasienEl) statPasienEl.textContent = totalPasien;
-  if (statVasEl) statVasEl.textContent = `-${avgReduction} Poin`;
+  if (statVasEl) statVasEl.textContent = vasCount > 0 ? `-${avgReduction} Poin` : '0.0 Poin';
   if (statAnggaranEl) statAnggaranEl.textContent = 'Rp ' + totalAnggaran.toLocaleString('id-ID');
 
   // Badge in sidebar
@@ -6907,18 +6626,20 @@ function initPengabdianCharts() {
   if (chartPkmLuaranInstance) { chartPkmLuaranInstance.destroy(); chartPkmLuaranInstance = null; }
 
   const filtered = getFilteredPengabdianData();
-  const proposals = filtered.proposals.length ? filtered.proposals : defaultPengabdianData.proposals;
-  const patients = filtered.patients.length ? filtered.patients : defaultPengabdianData.patients;
-  const outputs = filtered.outputs.length ? filtered.outputs : defaultPengabdianData.outputs;
+  const proposals = filtered.proposals || [];
+  const patients = filtered.patients || [];
+  const outputs = filtered.outputs || [];
 
   // 1. Chart Skema PkM (Doughnut)
   const skemaCounts = {};
   proposals.forEach(p => {
-    const s = p.scheme || 'PkM Reguler';
+    const s = p.scheme || 'PkM Reguler Internal AAS';
     skemaCounts[s] = (skemaCounts[s] || 0) + 1;
   });
-  const skemaLabels = Object.keys(skemaCounts).length ? Object.keys(skemaCounts) : ['PkM Kemitraan Wilayah Binaan', 'PkM Reguler Internal AAS', 'PkM Tanggap Bencana & Baksos'];
-  const skemaValues = Object.keys(skemaCounts).length ? Object.values(skemaCounts) : [2, 1, 1];
+  const hasSkemaData = Object.keys(skemaCounts).length > 0;
+  const skemaLabels = hasSkemaData ? Object.keys(skemaCounts) : ['Belum Ada Usulan (0 Data)'];
+  const skemaValues = hasSkemaData ? Object.values(skemaCounts) : [1];
+  const skemaColors = hasSkemaData ? ['#eab308', '#3b82f6', '#10b981', '#ec4899', '#8b5cf6'] : ['#cbd5e1'];
 
   chartPkmSkemaInstance = new Chart(ctxSkema.getContext('2d'), {
     type: 'doughnut',
@@ -6926,7 +6647,7 @@ function initPengabdianCharts() {
       labels: skemaLabels,
       datasets: [{
         data: skemaValues,
-        backgroundColor: ['#eab308', '#3b82f6', '#10b981', '#ec4899', '#8b5cf6'],
+        backgroundColor: skemaColors,
         borderWidth: 2,
         borderColor: '#ffffff'
       }]
@@ -6935,7 +6656,15 @@ function initPengabdianCharts() {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter', size: 11 } } }
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter', size: 11 } } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (!hasSkemaData) return ' 0 Usulan PkM';
+              return ' ' + ctx.label + ': ' + ctx.raw + ' Usulan';
+            }
+          }
+        }
       }
     }
   });
@@ -6976,16 +6705,31 @@ function initPengabdianCharts() {
         legend: { display: false }
       },
       scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        y: { beginAtZero: true, suggestedMax: 5, ticks: { stepSize: 1, precision: 0 } }
       }
     }
   });
 
   // 3. Chart Evaluasi Penurunan Nyeri VAS (Grouped Bar Chart)
   if (ctxVAS) {
-    const kasusLabels = ['OA Genu Lutut', 'LBP Pinggang', 'Pasca-Stroke', 'Insomnia Stres', 'Kaku Leher'];
-    const vasPreValues = [8.0, 7.5, 8.2, 7.0, 9.0];
-    const vasPostValues = [2.2, 2.8, 3.0, 2.0, 3.0];
+    let kasusLabels = [];
+    let vasPreValues = [];
+    let vasPostValues = [];
+
+    if (patients.length === 0) {
+      kasusLabels = ['Belum Ada Data Pasien (0 Data)'];
+      vasPreValues = [0];
+      vasPostValues = [0];
+    } else {
+      const sample = patients.slice(0, 6);
+      sample.forEach(p => {
+        const shortName = p.name ? p.name : 'Pasien';
+        const diag = p.complaint ? p.complaint.slice(0, 16) : 'Baksos';
+        kasusLabels.push(shortName + ' (' + diag + '...)');
+        vasPreValues.push(Number(p.vas_pre) || 0);
+        vasPostValues.push(Number(p.vas_post) || 0);
+      });
+    }
 
     chartPkmVASInstance = new Chart(ctxVAS.getContext('2d'), {
       type: 'bar',
@@ -7014,18 +6758,19 @@ function initPengabdianCharts() {
           tooltip: {
             callbacks: {
               afterLabel: function(ctx) {
-                if (ctx.datasetIndex === 1) {
+                if (ctx.datasetIndex === 1 && vasPreValues[ctx.dataIndex] > 0) {
                   const pre = vasPreValues[ctx.dataIndex];
                   const post = vasPostValues[ctx.dataIndex];
                   const pct = Math.round(((pre - post) / pre) * 100);
-                  return `Efektivitas Penurunan: ${pct}%`;
+                  return 'Efektivitas Penurunan: ' + pct + '%';
                 }
+                return null;
               }
             }
           }
         },
         scales: {
-          y: { beginAtZero: true, max: 10, title: { display: true, text: 'Skala VAS (0-10)' } }
+          y: { beginAtZero: true, max: 10, ticks: { stepSize: 2 }, title: { display: true, text: 'Skala VAS (0-10)' } }
         }
       }
     });
@@ -7057,7 +6802,7 @@ function initPengabdianCharts() {
         responsive: true,
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+        scales: { y: { beginAtZero: true, suggestedMax: 5, ticks: { stepSize: 1, precision: 0 } } }
       }
     });
   }
@@ -7199,6 +6944,21 @@ function renderPengabdianReviewerTable() {
     return true;
   });
 
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--t3);"><i class="fas fa-clipboard-check" style="font-size:2rem; margin-bottom:8px; display:block;"></i>Belum ada data review proposal PkM (0 Data)</td></tr>';
+    return;
+  }
+
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--t3);"><i class="fas fa-award" style="font-size:2rem; margin-bottom:8px; display:block;"></i>Belum ada luaran publikasi atau HKI (0 Data)</td></tr>';
+    return;
+  }
+
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--t3);"><i class="fas fa-folder-open" style="font-size:2rem; margin-bottom:8px; display:block;"></i>Tidak ada berkas / dokumen SK PkM (0 Data)</td></tr>';
+    return;
+  }
+
   tbody.innerHTML = list.map(item => `
     <tr>
       <td><strong style="color:var(--primary); font-family:monospace;">${item.pkm_id}</strong></td>
@@ -7278,7 +7038,31 @@ function renderPengabdianBorangTable() {
   const container = document.getElementById('pkmBorangContainer');
   if (!container) return;
 
+  const proposals = pengabdianData.proposals || [];
+
   if (currentBorangSubTab === '71') {
+    let rowsHtml = '';
+    if (proposals.length === 0) {
+      rowsHtml = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--t3);"><i class="fas fa-inbox" style="font-size:2rem; margin-bottom:8px; display:block;"></i>Belum ada data kegiatan Pengabdian kepada Masyarakat (PkM) DTPS (0 Data)</td></tr>';
+    } else {
+      rowsHtml = proposals.map((p, idx) => {
+        const mhs = Array.isArray(p.members_student)
+          ? p.members_student.map(m => typeof m === 'object' ? m.name : m).join(', ')
+          : '-';
+        return `
+          <tr>
+            <td style="text-align:center;">${idx + 1}</td>
+            <td><strong>${p.leader || '-'}</strong></td>
+            <td>${p.scheme || 'Akupunktur Terapan'}</td>
+            <td>${mhs}</td>
+            <td>${p.title}</td>
+            <td style="text-align:center;">${(p.date || '').slice(0, 4) || '2026'}</td>
+            <td>${p.scheme} (Rp ${(Number(p.budget) || 0).toLocaleString('id-ID')})</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
     container.innerHTML = `
       <div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
         <strong style="color:var(--t1); font-size:0.9rem;">Tabel 7.1 Kegiatan Pengabdian kepada Masyarakat (PkM) DTPS</strong>
@@ -7296,47 +7080,27 @@ function renderPengabdianBorangTable() {
             <th>Sumber Pembiayaan</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td style="text-align:center;">1</td>
-            <td><strong>drg. Hendra Santoso, M.Kes, Akp.</strong></td>
-            <td>Akupunktur Geriatri &amp; Osteoartritis</td>
-            <td>Siti Rahmawati, Budi Wicaksono</td>
-            <td>Pemberdayaan Posyandu Lansia Kenjeran Nyeri Sendi</td>
-            <td style="text-align:center;">2026</td>
-            <td>Hibah PkM Wilayah Binaan (Rp 12.500.000)</td>
-          </tr>
-          <tr>
-            <td style="text-align:center;">2</td>
-            <td><strong>Dewi Sartika, S.Kep., Akp.</strong></td>
-            <td>Rehabilitasi Akupunktur Pasca-Stroke</td>
-            <td>Rizal Kurniawan, Dimas Prasetyo</td>
-            <td>Hilirisasi Terapi Akupunktur Pasca-Stroke Puskesmas Ampel</td>
-            <td style="text-align:center;">2026</td>
-            <td>Hibah PkM Wilayah Binaan (Rp 15.000.000)</td>
-          </tr>
-          <tr>
-            <td style="text-align:center;">3</td>
-            <td><strong>Ahmad Fauzi, S.Tr.Kes, M.Biomed.</strong></td>
-            <td>Elektroakupunktur &amp; Ergonomi Industri</td>
-            <td>Nurul Hidayati, Eko Purnomo</td>
-            <td>Penerapan Akupunktur PC6 Insomnia Pekerja SIER</td>
-            <td style="text-align:center;">2026</td>
-            <td>Dana Internal AAS (Rp 10.000.000)</td>
-          </tr>
-          <tr>
-            <td style="text-align:center;">4</td>
-            <td><strong>Sri Wahyuni, M.Tr.Keb., Akp.</strong></td>
-            <td>Akupunktur Maternitas &amp; Pediatri</td>
-            <td>Indah Permata, Farhan Maulana</td>
-            <td>Bakti Sosial Akupunktur Titik ST36 Tambaksari</td>
-            <td style="text-align:center;">2025</td>
-            <td>Dana Mandiri &amp; UPPM (Rp 8.500.000)</td>
-          </tr>
-        </tbody>
+        <tbody>${rowsHtml}</tbody>
       </table>
     `;
   } else if (currentBorangSubTab === '72') {
+    const proposalsWithPartner = proposals.filter(p => p.partner);
+    let rowsHtml = '';
+    if (proposalsWithPartner.length === 0) {
+      rowsHtml = '<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--t3);"><i class="fas fa-handshake-slash" style="font-size:2rem; margin-bottom:8px; display:block;"></i>Belum ada data kerjasama mitra PkM (0 Data)</td></tr>';
+    } else {
+      rowsHtml = proposalsWithPartner.map((p, idx) => `
+        <tr>
+          <td style="text-align:center;">${idx + 1}</td>
+          <td><strong>${p.partner}</strong></td>
+          <td>Lokal (Kota Surabaya)</td>
+          <td>${p.title}</td>
+          <td>MoA / Kontrak PkM No. ${p.id}</td>
+          <td>Wahana Praktik Klinis & Pembelajaran Lapangan D-III Akupunktur</td>
+        </tr>
+      `).join('');
+    }
+
     container.innerHTML = `
       <div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
         <strong style="color:var(--t1); font-size:0.9rem;">Tabel 7.2 Kerjasama Pengabdian kepada Masyarakat (PkM)</strong>
@@ -7353,35 +7117,40 @@ function renderPengabdianBorangTable() {
             <th>Manfaat bagi PS</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td style="text-align:center;">1</td>
-            <td><strong>Posyandu Lansia RW 04 Kelurahan Kenjeran</strong></td>
-            <td>Lokal (Kota Surabaya)</td>
-            <td>Penyuluhan &amp; Pelayanan Akupunktur Lansia</td>
-            <td>MoA No. 018/MoA-AAS/I/2026</td>
-            <td>Wahana Praktek Klinis Mahasiswa D-III Akupunktur</td>
-          </tr>
-          <tr>
-            <td style="text-align:center;">2</td>
-            <td><strong>Puskesmas Pembantu Pegirian &amp; RW 05 Ampel</strong></td>
-            <td>Lokal (Kota Surabaya)</td>
-            <td>Pendampingan Rehabilitasi Gerak Pasca-Stroke</td>
-            <td>IA No. 042/IA-UPPM/II/2026</td>
-            <td>Integrasi Kasus Neurologi ke Mata Kuliah Akupunktur Penyakit</td>
-          </tr>
-          <tr>
-            <td style="text-align:center;">3</td>
-            <td><strong>Serikat Pekerja Industri Rungkut (SIER)</strong></td>
-            <td>Lokal (Jawa Timur)</td>
-            <td>Skrining Stres Kerja &amp; Akupresur Mandiri</td>
-            <td>MoU No. 009/MoU-AAS/XII/2025</td>
-            <td>Pengembangan Akupunktur Okupasi &amp; Ergonomi</td>
-          </tr>
-        </tbody>
+        <tbody>${rowsHtml}</tbody>
       </table>
     `;
   } else if (currentBorangSubTab === '81') {
+    let studentRows = [];
+    proposals.forEach(p => {
+      if (Array.isArray(p.members_student)) {
+        p.members_student.forEach(m => {
+          studentRows.push({
+            name: typeof m === 'object' ? m.name : m,
+            nim: typeof m === 'object' ? (m.nim || '-') : '-',
+            leader: p.leader,
+            title: p.title
+          });
+        });
+      }
+    });
+
+    let rowsHtml = '';
+    if (studentRows.length === 0) {
+      rowsHtml = '<tr><td colspan="6" style="text-align:center; padding:30px; color:var(--t3);"><i class="fas fa-user-graduate" style="font-size:2rem; margin-bottom:8px; display:block;"></i>Belum ada data pelibatan mahasiswa dalam PkM (0 Data)</td></tr>';
+    } else {
+      rowsHtml = studentRows.map((s, idx) => `
+        <tr>
+          <td style="text-align:center;">${idx + 1}</td>
+          <td><strong>${s.name}</strong></td>
+          <td>${s.nim}</td>
+          <td>${s.leader}</td>
+          <td>Pelaksana Skrining &amp; Terapi Baksos: ${s.title}</td>
+          <td>Praktik Klinik Lapangan (PKL PkM) - 2 SKS</td>
+        </tr>
+      `).join('');
+    }
+
     container.innerHTML = `
       <div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
         <strong style="color:var(--t1); font-size:0.9rem;">Tabel 8.1 Pelibatan Mahasiswa dalam Pengabdian kepada Masyarakat</strong>
@@ -7398,35 +7167,26 @@ function renderPengabdianBorangTable() {
             <th>Rekognisi / SKS Diakui</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td style="text-align:center;">1</td>
-            <td><strong>Siti Rahmawati</strong></td>
-            <td>AAS-23-014</td>
-            <td>drg. Hendra Santoso, M.Kes, Akp.</td>
-            <td>Skrining VAS Nyeri &amp; Penusukan Titik ST36, SP6 Supervisi</td>
-            <td>Praktik Klinik Lapangan (PKL PkM) - 2 SKS</td>
-          </tr>
-          <tr>
-            <td style="text-align:center;">2</td>
-            <td><strong>Budi Wicaksono</strong></td>
-            <td>AAS-23-021</td>
-            <td>drg. Hendra Santoso, M.Kes, Akp.</td>
-            <td>Edukasi Akupresur Mandiri Lansia &amp; Pengelolaan BMHP</td>
-            <td>Praktik Klinik Lapangan (PKL PkM) - 2 SKS</td>
-          </tr>
-          <tr>
-            <td style="text-align:center;">3</td>
-            <td><strong>Rizal Kurniawan</strong></td>
-            <td>AAS-23-018</td>
-            <td>Dewi Sartika, S.Kep., Akp.</td>
-            <td>Pemeriksaan Nadi TCM &amp; Terapi Titik Ekstremitas Pasca-Stroke</td>
-            <td>Asisten Pembimbing Baksos Mandiri</td>
-          </tr>
-        </tbody>
+        <tbody>${rowsHtml}</tbody>
       </table>
     `;
   } else if (currentBorangSubTab === '82') {
+    const outputs = pengabdianData.outputs || [];
+    let rowsHtml = '';
+    if (outputs.length === 0) {
+      rowsHtml = '<tr><td colspan="5" style="text-align:center; padding:30px; color:var(--t3);"><i class="fas fa-book-open" style="font-size:2rem; margin-bottom:8px; display:block;"></i>Belum ada data integrasi hasil PkM ke pembelajaran (0 Data)</td></tr>';
+    } else {
+      rowsHtml = outputs.map((o, idx) => `
+        <tr>
+          <td style="text-align:center;">${idx + 1}</td>
+          <td>${o.judul || '-'}</td>
+          <td>Akupunktur Terapan &amp; Klinis</td>
+          <td>Modul Praktikum &amp; Studi Kasus Pembelajaran</td>
+          <td>${o.tahun || '2026'}</td>
+        </tr>
+      `).join('');
+    }
+
     container.innerHTML = `
       <div style="margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
         <strong style="color:var(--t1); font-size:0.9rem;">Tabel 8.2 Integrasi Hasil PkM ke dalam Proses Pembelajaran</strong>
@@ -7442,29 +7202,7 @@ function renderPengabdianBorangTable() {
             <th>Semester / Tahun</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td style="text-align:center;">1</td>
-            <td>Pedoman Akupresur Mandiri Sendi Lansia Berbasis Sindrom TCM</td>
-            <td>Akupunktur Geriatri &amp; Nyeri (AKP-302)</td>
-            <td>Modul Praktikum Pemeriksaan &amp; Formula Titik Sendi</td>
-            <td>Genap 2025/2026</td>
-          </tr>
-          <tr>
-            <td style="text-align:center;">2</td>
-            <td>Efektivitas Titik Zusanli &amp; Sanyinjiao Pasien Geriatri (Jurnal SINTA)</td>
-            <td>Metodologi Penelitian &amp; EBM Akupunktur (AKP-304)</td>
-            <td>Studi Kasus Pembahasan Jurnal Ilmiah Akupunktur Klinis</td>
-            <td>Genap 2025/2026</td>
-          </tr>
-          <tr>
-            <td style="text-align:center;">3</td>
-            <td>Buku Saku Akupresur Titik Neiguan Emesis Gravidarum (HKI)</td>
-            <td>Akupunktur Maternitas (AKP-206)</td>
-            <td>Buku Ajar Acuan Terapi Mual Muntah Kehamilan</td>
-            <td>Ganjil 2025/2026</td>
-          </tr>
-        </tbody>
+        <tbody>${rowsHtml}</tbody>
       </table>
     `;
   }
@@ -7616,6 +7354,71 @@ function viewPkmPatientDetail(id) {
   if (overlay) overlay.style.display = 'flex';
 }
 
+async function clearAllPengabdianData() {
+  if (!confirm("Hapus seluruh data dummy / reset data Bidang Pengabdian Masyarakat ke 0?\n\nTindakan ini akan mengosongkan usulan proposal, rekam pasien baksos, luaran, dan menyinkronkan seluruh grafik analitik ke angka 0.")) {
+    return;
+  }
+
+  // 1. Reset memori lokal pengabdianData
+  pengabdianData = {
+    proposals: [],
+    patients: [],
+    outputs: [],
+    reviews: [],
+    dokumen: []
+  };
+
+  // 2. Bersihkan local storage
+  try {
+    localStorage.removeItem('simarsip_pengabdian_data');
+    savePengabdianData();
+  } catch(e) { console.warn("Hapus localStorage error:", e); }
+
+  // 3. Bersihkan record dummy SIMPKM dari arsip SIMARSIP
+  if (typeof arsip !== 'undefined' && Array.isArray(arsip)) {
+    arsip = arsip.filter(a => !a.id || (!a.id.startsWith('SIMPKM-') && !a.id.startsWith('PKM-')));
+    if (typeof save === 'function') save();
+  }
+
+  // 4. Reset remote Firestore jika terhubung
+  try {
+    if (!dbPkmSumber && typeof firebase !== 'undefined') {
+      let appPkm = firebase.apps.find(a => a.name === "pkmSumber");
+      if (!appPkm) {
+        appPkm = firebase.initializeApp({
+          apiKey: "AIzaSyCxBx_NOjA5AYxVPZALoVg7erqH2ybm9xA",
+          authDomain: "bidang-pengabdian-masyarakat.firebaseapp.com",
+          projectId: "bidang-pengabdian-masyarakat",
+          storageBucket: "bidang-pengabdian-masyarakat.firebasestorage.app"
+        }, 'pkmSumber');
+      }
+      dbPkmSumber = appPkm.firestore();
+    }
+    if (dbPkmSumber) {
+      await dbPkmSumber.collection('sim_pkm_data').doc('main_store').set({
+        proposals: [],
+        patients: [],
+        outputs: [],
+        reviews: [],
+        dokumen: [],
+        lastUpdated: new Date().toISOString()
+      }, { merge: true });
+    }
+  } catch(e) {
+    console.warn("Reset remote Firestore store info:", e);
+  }
+
+  // 5. Update tampilan indikator & grafik ke 0
+  if (typeof updateBadges === 'function') updateBadges();
+  renderPengabdianContent();
+
+  if (typeof toast === 'function') {
+    toast("Semua data dummy berhasil dihapus! Seluruh grafik & indikator disinkronkan ke angka 0.", "success");
+  } else {
+    alert("Semua data dummy berhasil dihapus! Seluruh grafik & indikator disinkronkan ke angka 0.");
+  }
+}
+
 async function syncPengabdianFromSumber() {
   const btn = document.getElementById('btnSyncPengabdian');
   const icon = document.getElementById('pengabdianSyncIcon') || document.getElementById('sbPengabdianSyncIcon');
@@ -7649,30 +7452,32 @@ async function syncPengabdianFromSumber() {
           syncedData = snap.data();
         }
       } catch (err) {
-        console.warn("Koneksi Firestore SIM-PKM pending (menggunakan dataset sinkronisasi standar):", err);
+        console.warn("Koneksi Firestore SIM-PKM pending (menggunakan dataset lokal tersimpan):", err);
       }
     }
 
     if (syncedData) {
-      if (syncedData.proposals && Array.isArray(syncedData.proposals) && syncedData.proposals.length) {
-        pengabdianData.proposals = syncedData.proposals;
-      }
-      if (syncedData.patients && Array.isArray(syncedData.patients) && syncedData.patients.length) {
-        pengabdianData.patients = syncedData.patients;
-      }
-      if (syncedData.outputs && Array.isArray(syncedData.outputs) && syncedData.outputs.length) {
-        pengabdianData.outputs = syncedData.outputs;
-      }
+      pengabdianData.proposals = Array.isArray(syncedData.proposals) ? syncedData.proposals : [];
+      pengabdianData.patients = Array.isArray(syncedData.patients) ? syncedData.patients : [];
+      pengabdianData.outputs = Array.isArray(syncedData.outputs) ? syncedData.outputs : [];
+      pengabdianData.reviews = Array.isArray(syncedData.reviews) ? syncedData.reviews : [];
+      pengabdianData.dokumen = Array.isArray(syncedData.dokumen) ? syncedData.dokumen : [];
     }
 
-    // Upsert into SIMARSIP 'arsip' collection for cross-bidang reporting & BAN-PT/LAM-PTKes
+    // Bersihkan record proposal yang dihapus dari arsip SIMARSIP
+    const validProposalIds = new Set((pengabdianData.proposals || []).map(p => 'SIMPKM-' + p.id));
+    if (typeof arsip !== 'undefined' && Array.isArray(arsip)) {
+      arsip = arsip.filter(a => !a.id || !a.id.startsWith('SIMPKM-') || validProposalIds.has(a.id));
+    }
+
+    // Upsert usulan proposal aktif ke SIMARSIP arsip collection
     let countUpsert = 0;
     for (const p of pengabdianData.proposals) {
-      const pId = `SIMPKM-${p.id}`;
+      const pId = 'SIMPKM-' + p.id;
       const record = {
         id: pId,
         nomor: p.id,
-        judul: `PkM: ${p.title}`,
+        judul: 'PkM: ' + p.title,
         tanggal: p.date || new Date().toISOString().slice(0, 10),
         ay: p.tahunAkademik || '2025/2026 Genap',
         jenis: 'k5_9',
@@ -7680,7 +7485,7 @@ async function syncPengabdianFromSumber() {
         pengirim: p.leader || 'UPPM AAS',
         status: (p.status || '').toLowerCase() === 'selesai' ? 'selesai' : 'aktif',
         format: 'dokumen',
-        keterangan: `Skema: ${p.scheme} • Dana: Rp ${(Number(p.budget)||0).toLocaleString('id-ID')} • Mitra: ${p.partner || '-'}`,
+        keterangan: 'Skema: ' + (p.scheme || '-') + ' • Dana: Rp ' + (Number(p.budget)||0).toLocaleString('id-ID') + ' • Mitra: ' + (p.partner || '-'),
         metadata: {
           originalId: p.id,
           scheme: p.scheme,
@@ -7711,12 +7516,12 @@ async function syncPengabdianFromSumber() {
     renderPengabdianContent();
 
     if (typeof toast === 'function') {
-      toast(`Sinkronisasi berhasil! ${countUpsert} data PkM & baksos klinis tersinkron ke SIMARSIP.`, 'success');
+      toast('Sinkronisasi selesai! ' + countUpsert + ' data PkM tersinkron ke SIMARSIP.', 'success');
     }
   } catch(e) {
     console.error("Gagal sinkron PkM:", e);
     if (typeof toast === 'function') {
-      toast('Sinkronisasi selesai (mode lokal tersimpan): ' + e.message, 'info');
+      toast('Sinkronisasi selesai: ' + e.message, 'info');
     }
   } finally {
     if (btn) {
@@ -7725,6 +7530,3 @@ async function syncPengabdianFromSumber() {
     }
   }
 }
-
-
-
