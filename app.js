@@ -1889,6 +1889,7 @@ function renderDeptPage(dept) {
   const labContainer = document.getElementById('laboratoriumContainer');
   const saranaContainer = document.getElementById('saranaContainer');
   const pengabdianContainer = document.getElementById('pengabdianContainer');
+  const ketenagaanContainer = document.getElementById('ketenagaanContainer');
   const deptTableContainer = document.getElementById('deptTableContainer');
 
   if (dept === 'kemahasiswaan') {
@@ -1896,6 +1897,7 @@ function renderDeptPage(dept) {
     if (labContainer) labContainer.style.display = 'none';
     if (saranaContainer) saranaContainer.style.display = 'none';
     if (pengabdianContainer) pengabdianContainer.style.display = 'none';
+    if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
     if (statRow) statRow.style.display = 'flex';
     if (deptTableContainer) deptTableContainer.style.display = 'block';
@@ -1910,6 +1912,7 @@ function renderDeptPage(dept) {
     if (labContainer) labContainer.style.display = 'block';
     if (saranaContainer) saranaContainer.style.display = 'none';
     if (pengabdianContainer) pengabdianContainer.style.display = 'none';
+    if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
     if (statRow) statRow.style.display = 'none';
     if (deptTableContainer) deptTableContainer.style.display = 'none';
@@ -1921,6 +1924,7 @@ function renderDeptPage(dept) {
     if (labContainer) labContainer.style.display = 'none';
     if (saranaContainer) saranaContainer.style.display = 'block';
     if (pengabdianContainer) pengabdianContainer.style.display = 'none';
+    if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
     if (statRow) statRow.style.display = 'none';
     if (deptTableContainer) deptTableContainer.style.display = 'none';
@@ -1932,6 +1936,7 @@ function renderDeptPage(dept) {
     if (labContainer) labContainer.style.display = 'none';
     if (saranaContainer) saranaContainer.style.display = 'none';
     if (pengabdianContainer) pengabdianContainer.style.display = 'block';
+    if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
     if (statRow) statRow.style.display = 'none';
     if (deptTableContainer) deptTableContainer.style.display = 'none';
@@ -1941,7 +1946,23 @@ function renderDeptPage(dept) {
     if (dSdm) dSdm.style.display = 'none';
     switchPengabdianTab(currentPengabdianTab || 'dashboard');
     renderPengabdianContent();
+  } else if (dept === 'ketenagaan') {
+    if (kmhsContainer) kmhsContainer.style.display = 'none';
+    if (iframeContainer) iframeContainer.style.display = 'none';
+    if (labContainer) labContainer.style.display = 'none';
+    if (saranaContainer) saranaContainer.style.display = 'none';
+    if (pengabdianContainer) pengabdianContainer.style.display = 'none';
+    if (ketenagaanContainer) ketenagaanContainer.style.display = 'block';
+    if (deptArsipCharts) deptArsipCharts.style.display = 'none';
+    const dMhs = document.getElementById('deptMhsContainer');
+    if (dMhs) dMhs.style.display = 'none';
+    const dSdm = document.getElementById('deptSdmContainer');
+    if (dSdm) dSdm.style.display = 'none';
+    if (typeof switchKetenagaanTab === 'function') {
+      switchKetenagaanTab(typeof currentKetenagaanTab !== 'undefined' ? currentKetenagaanTab : 'portal');
+    }
   } else {
+    if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
     if (kmhsContainer) kmhsContainer.style.display = 'none';
     if (iframeContainer) iframeContainer.style.display = 'none';
     if (labContainer) labContainer.style.display = 'none';
@@ -2362,6 +2383,19 @@ function filterByJenis(jenis) {
     return;
   }
 
+  if (currentDept === 'ketenagaan') {
+    if (arsipC) arsipC.style.display = 'none';
+    if (mhsC) mhsC.style.display = 'none';
+    if (tC) tC.style.display = 'none';
+    if (dMhs) dMhs.style.display = 'none';
+    if (dSdm) dSdm.style.display = 'none';
+    const ketC = document.getElementById('ketenagaanContainer');
+    if (ketC) ketC.style.display = 'block';
+    const sRow = document.getElementById('deptStatRow');
+    if (sRow) sRow.style.display = 'none';
+    return;
+  }
+
   if (currentDept === 'laboratorium') {
     if (arsipC) arsipC.style.display = 'none';
     if (mhsC) mhsC.style.display = 'none';
@@ -2492,6 +2526,27 @@ function initSidebarSubMenus() {
       html += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
       html += `<li onclick="syncPengabdianFromSumber()" style="color:#22c55e; font-weight:600;">
         <i class="fas fa-rotate" id="sbPengabdianSyncIcon"></i> <span style="flex:1; min-width:0; line-height:1.4;">Sinkron Data Live PkM</span>
+      </li>`;
+      ul.innerHTML = html;
+      navLink.after(ul);
+      return;
+    }
+
+    if (k === 'ketenagaan') {
+      const ketSubItems = [
+        { id: 'portal', label: 'Web App Ketenagaan (Utuh)', icon: 'fas fa-window-maximize' },
+        { id: 'arsip', label: 'Dokumen & Arsip', icon: 'fas fa-folder-open' }
+      ];
+      let html = '';
+      ketSubItems.forEach(item => {
+        let isActive = (typeof currentKetenagaanTab !== 'undefined' && currentKetenagaanTab === item.id) ? 'active' : '';
+        html += `<li class="${isActive}" onclick="switchKetenagaanTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
+        </li>`;
+      });
+      html += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
+      html += `<li onclick="window.open('https://bidang-ketenagaan.web.app', '_blank')" style="color:#6366f1; font-weight:600;">
+        <i class="fas fa-up-right-from-square"></i> <span style="flex:1; min-width:0; line-height:1.4;">Buka Portal di Tab Baru</span>
       </li>`;
       ul.innerHTML = html;
       navLink.after(ul);
@@ -7750,3 +7805,74 @@ async function syncPengabdianFromSumber(silent = false) {
 setTimeout(() => {
   try { syncPengabdianFromSumber(true); } catch(e) {}
 }, 1200);
+
+
+// ══════════════════════════════════════════════════════════════
+// KETENAGAAN (SDM & DOSEN) INTEGRATION LOGIC
+// ══════════════════════════════════════════════════════════════
+let currentKetenagaanTab = 'portal';
+
+function switchKetenagaanTab(tabKey) {
+  currentKetenagaanTab = tabKey;
+  const ketContainer = document.getElementById('ketenagaanContainer');
+  if (ketContainer) ketContainer.style.display = 'block';
+
+  const btnPortal = document.getElementById('btnKetenagaanTab-portal');
+  const btnArsip = document.getElementById('btnKetenagaanTab-arsip');
+  const viewPortal = document.getElementById('ketenagaanView-portal');
+  const deptTableContainer = document.getElementById('deptTableContainer');
+  const statRow = document.getElementById('deptStatRow');
+
+  if (tabKey === 'portal') {
+    if (btnPortal) {
+      btnPortal.classList.add('active');
+      btnPortal.style.background = 'var(--primary)';
+      btnPortal.style.color = '#fff';
+    }
+    if (btnArsip) {
+      btnArsip.classList.remove('active');
+      btnArsip.style.background = 'transparent';
+      btnArsip.style.color = 'var(--t2)';
+    }
+    if (viewPortal) viewPortal.style.display = 'block';
+    if (deptTableContainer) deptTableContainer.style.display = 'none';
+    if (statRow) statRow.style.display = 'none';
+
+    const iframe = document.getElementById('ketenagaanIframe');
+    if (iframe && (!iframe.src || !iframe.src.includes('bidang-ketenagaan.web.app'))) {
+      iframe.src = 'https://bidang-ketenagaan.web.app';
+    }
+  } else if (tabKey === 'arsip') {
+    if (btnArsip) {
+      btnArsip.classList.add('active');
+      btnArsip.style.background = 'var(--primary)';
+      btnArsip.style.color = '#fff';
+    }
+    if (btnPortal) {
+      btnPortal.classList.remove('active');
+      btnPortal.style.background = 'transparent';
+      btnPortal.style.color = 'var(--t2)';
+    }
+    if (viewPortal) viewPortal.style.display = 'none';
+    if (deptTableContainer) deptTableContainer.style.display = 'block';
+    if (statRow) statRow.style.display = 'flex';
+    if (typeof renderDeptTable === 'function') renderDeptTable();
+  }
+}
+
+function switchKetenagaanTabFromSidebar(tabKey, el) {
+  if (typeof currentPage === 'undefined' || currentPage !== 'dept' || currentDept !== 'ketenagaan') {
+    const link = document.getElementById('nav-ketenagaan');
+    if (link && typeof setActiveNav === 'function') setActiveNav(link);
+    currentDept = 'ketenagaan';
+    if (typeof showPage === 'function') showPage('dept');
+  }
+  switchKetenagaanTab(tabKey);
+}
+
+function reloadKetenagaanFrame() {
+  const iframe = document.getElementById('ketenagaanIframe');
+  if (iframe) {
+    iframe.src = 'https://bidang-ketenagaan.web.app';
+  }
+}
