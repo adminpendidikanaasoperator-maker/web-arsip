@@ -966,6 +966,25 @@ function renderDeptSubmenus() {
       ul.innerHTML += `<li onclick="syncPengabdianFromSumber()" style="color:#22c55e; font-weight:600;">
         <i class="fas fa-rotate" id="sbPengabdianSyncIcon"></i> <span style="flex:1;">Sinkron Data Live PkM</span>
       </li>`;
+    } else if (deptId === 'ketenagaan') {
+      const ketSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
+        { id: 'sdm', label: 'Data SDM (Dosen & Tendik)', icon: 'fas fa-users' },
+        { id: 'akreditasi', label: 'Akreditasi SDM (LAM-PTKes)', icon: 'fas fa-shield-halved' },
+        { id: 'bkd', label: 'Rekap BKD & Tri Dharma', icon: 'fas fa-briefcase' },
+        { id: 'dokumen', label: 'Dokumen & SK Dosen', icon: 'fas fa-file-contract' },
+        { id: 'portal', label: 'Web App SIM-Ketenagaan', icon: 'fas fa-window-maximize' }
+      ];
+      ketSubItems.forEach(item => {
+        let isActive = (currentKetenagaanTab === item.id && currentDept === 'ketenagaan') ? 'active' : '';
+        ul.innerHTML += `<li class="${isActive}" onclick="switchKetenagaanTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> ${item.label}
+        </li>`;
+      });
+      ul.innerHTML += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
+      ul.innerHTML += `<li onclick="window.open('https://bidang-ketenagaan.web.app', '_blank')" style="color:#6366f1; font-weight:600;">
+        <i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Buka Portal di Tab Baru</span>
+      </li>`;
     } else if (DEPT_JENIS[deptId]) {
       let countAll = arsip.filter(a => a.bidang === deptId).length;
       ul.innerHTML += `<li class="${currentDeptSub === 'all' && currentDept === deptId ? 'active' : ''}" onclick="switchDeptSub('all', this, '${deptId}')">
@@ -1954,13 +1973,14 @@ function renderDeptPage(dept) {
     if (pengabdianContainer) pengabdianContainer.style.display = 'none';
     if (ketenagaanContainer) ketenagaanContainer.style.display = 'block';
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
+    if (statRow) statRow.style.display = 'none';
+    if (deptTableContainer) deptTableContainer.style.display = 'none';
     const dMhs = document.getElementById('deptMhsContainer');
     if (dMhs) dMhs.style.display = 'none';
     const dSdm = document.getElementById('deptSdmContainer');
     if (dSdm) dSdm.style.display = 'none';
-    if (typeof switchKetenagaanTab === 'function') {
-      switchKetenagaanTab(typeof currentKetenagaanTab !== 'undefined' ? currentKetenagaanTab : 'portal');
-    }
+    switchKetenagaanTab(currentKetenagaanTab || 'dashboard');
+    renderKetenagaanContent();
   } else {
     if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
     if (kmhsContainer) kmhsContainer.style.display = 'none';
@@ -2393,6 +2413,8 @@ function filterByJenis(jenis) {
     if (ketC) ketC.style.display = 'block';
     const sRow = document.getElementById('deptStatRow');
     if (sRow) sRow.style.display = 'none';
+    switchKetenagaanTab(currentKetenagaanTab || 'dashboard');
+    renderKetenagaanContent();
     return;
   }
 
@@ -2534,8 +2556,12 @@ function initSidebarSubMenus() {
 
     if (k === 'ketenagaan') {
       const ketSubItems = [
-        { id: 'portal', label: 'Web App Ketenagaan (Utuh)', icon: 'fas fa-window-maximize' },
-        { id: 'arsip', label: 'Dokumen & Arsip', icon: 'fas fa-folder-open' }
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
+        { id: 'sdm', label: 'Data SDM (Dosen & Tendik)', icon: 'fas fa-users' },
+        { id: 'akreditasi', label: 'Akreditasi SDM (LAM-PTKes)', icon: 'fas fa-shield-halved' },
+        { id: 'bkd', label: 'Rekap BKD & Tri Dharma', icon: 'fas fa-briefcase' },
+        { id: 'dokumen', label: 'Dokumen & SK Dosen', icon: 'fas fa-file-contract' },
+        { id: 'portal', label: 'Web App SIM-Ketenagaan', icon: 'fas fa-window-maximize' }
       ];
       let html = '';
       ketSubItems.forEach(item => {
@@ -7810,53 +7836,262 @@ setTimeout(() => {
 // ══════════════════════════════════════════════════════════════
 // KETENAGAAN (SDM & DOSEN) INTEGRATION LOGIC
 // ══════════════════════════════════════════════════════════════
-let currentKetenagaanTab = 'portal';
+let currentKetenagaanTab = 'dashboard';
+
+const DEFAULT_KETENAGAAN_DOSEN = [
+  { id: 1, nidn: '0727068702', nama: 'IVONNE JONATHAN, S.Ak., M.Kes.', jenis: 'Dosen Tetap', statusIkatan: 'DTY (Dosen Tetap Yayasan)', jafung: 'Lektor', pendidikan: 'S2 Ilmu Kesehatan', prodi: 'D-III Akupunktur', status: 'Aktif' },
+  { id: 2, nidn: '0715088201', nama: 'Dr. Budi Santoso, S.Ak., M.Biomed.', jenis: 'Dosen Tetap', statusIkatan: 'DTY (Dosen Tetap Yayasan)', jafung: 'Lektor', pendidikan: 'S3 Biomedik', prodi: 'D-III Akupunktur', status: 'Aktif' },
+  { id: 3, nidn: '0704037501', nama: 'Dr. dr. Hendra Wijaya, Sp.Ak., M.Kes.', jenis: 'Dosen Tetap', statusIkatan: 'DTY (Dosen Tetap Yayasan)', jafung: 'Asisten Ahli', pendidikan: 'Sp-2 / Spesialis Akupunktur Medik', prodi: 'D-III Akupunktur', status: 'Aktif' },
+  { id: 4, nidn: '9907123456', nama: 'Siti Rahmawati, S.Tr.Akup., M.Tr.Kes.', jenis: 'Dosen Tidak Tetap', statusIkatan: 'DTT (Praktisi / Dosen Luar Biasa)', jafung: 'Tenaga Pengajar', pendidikan: 'S2 Terapan Kesehatan', prodi: 'D-III Akupunktur', status: 'Aktif' }
+];
+
+const DEFAULT_KETENAGAAN_TENDIK = [
+  { id: 101, nik: '202108001', nama: 'Agus Supriyadi, S.Kom.', jenis: 'Tendik', statusIkatan: 'Tenaga Kependidikan Tetap', jafung: 'Pranata Komputer (IT)', pendidikan: 'S1 Sistem Informasi', prodi: 'Unit TI & SIM Kampus', status: 'Aktif' },
+  { id: 102, nik: '202209002', nama: 'Maya Anggraini, A.Md.Kes.', jenis: 'Tendik', statusIkatan: 'Tenaga Kependidikan Tetap', jafung: 'Laboran Medis', pendidikan: 'D-III Akupunktur', prodi: 'Laboratorium Terpadu', status: 'Aktif' },
+  { id: 103, nik: '201905003', nama: 'Rina Wulandari, S.E.', jenis: 'Tendik', statusIkatan: 'Tenaga Kependidikan Tetap', jafung: 'Staf Administrasi Keuangan', pendidikan: 'S1 Akuntansi', prodi: 'Bagian Keuangan', status: 'Aktif' },
+  { id: 104, nik: '202004004', nama: 'Dian Kusuma, S.Sos.', jenis: 'Tendik', statusIkatan: 'Tenaga Kependidikan Tetap', jafung: 'Tata Usaha & Kepegawaian', pendidikan: 'S1 Administrasi Negara', prodi: 'Bagian Kepegawaian / SDM', status: 'Aktif' }
+];
+
+function renderKetenagaanSdmTable() {
+  const tbody = document.getElementById('ketSdmTableBody');
+  if (!tbody) return;
+
+  const filterKategori = (document.getElementById('ketFilterKategori')?.value || '').trim();
+  const search = (document.getElementById('ketSearchSdm')?.value || '').toLowerCase().trim();
+
+  const allSDM = [...DEFAULT_KETENAGAAN_DOSEN, ...DEFAULT_KETENAGAAN_TENDIK];
+
+  const filtered = allSDM.filter(item => {
+    if (filterKategori && item.jenis !== filterKategori) return false;
+    if (search) {
+      const matchNama = (item.nama || '').toLowerCase().includes(search);
+      const matchNidn = (item.nidn || item.nik || '').toLowerCase().includes(search);
+      const matchJafung = (item.jafung || '').toLowerCase().includes(search);
+      const matchProdi = (item.prodi || '').toLowerCase().includes(search);
+      return matchNama || matchNidn || matchJafung || matchProdi;
+    }
+    return true;
+  });
+
+  const emptyEl = document.getElementById('ketSdmEmpty');
+  if (emptyEl) {
+    emptyEl.classList.toggle('hidden', filtered.length > 0);
+  }
+
+  tbody.innerHTML = filtered.map((item, idx) => {
+    let badgeColor = '#6366f1';
+    let badgeBg = '#e0e7ff';
+    if (item.jenis === 'Dosen Tetap') {
+      badgeColor = '#1d4ed8';
+      badgeBg = '#dbeafe';
+    } else if (item.jenis === 'Dosen Tidak Tetap') {
+      badgeColor = '#7c3aed';
+      badgeBg = '#ede9fe';
+    } else if (item.jenis === 'Tendik') {
+      badgeColor = '#0f766e';
+      badgeBg = '#ccfbf1';
+    }
+
+    const idNumber = item.nidn || item.nik;
+    const idLabel = item.nidn ? 'NIDN' : 'NIK';
+
+    return `<tr>
+      <td style="text-align:center; font-weight:600; color:var(--t3);">${idx + 1}</td>
+      <td><span style="font-family:monospace; font-size:0.85rem; font-weight:600; color:var(--t1);">${idNumber}</span> <span style="font-size:0.7rem; color:var(--t3);">(${idLabel})</span></td>
+      <td><strong style="color:var(--t1);">${item.nama}</strong></td>
+      <td><span class="badge" style="background:${badgeBg}; color:${badgeColor}; font-weight:600;">${item.statusIkatan || item.jenis}</span></td>
+      <td><strong>${item.jafung}</strong></td>
+      <td><span style="font-size:0.85rem; color:var(--t2);">${item.pendidikan}</span></td>
+      <td><span style="font-size:0.85rem;">${item.prodi}</span></td>
+      <td><span class="badge" style="background:#dcfce7; color:#15803d; font-weight:600;"><i class="fas fa-check-circle"></i> ${item.status}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+let ketChartIkatanInst = null;
+let ketChartJafungInst = null;
+let ketChartPendidikanInst = null;
+let ketChartTendikInst = null;
+
+function initKetenagaanCharts() {
+  if (typeof Chart === 'undefined') return;
+
+  // 1. Chart Ikatan Dosen (Tetap vs Tidak Tetap)
+  const canvasIkatan = document.getElementById('ketChartIkatan');
+  if (canvasIkatan) {
+    if (ketChartIkatanInst) ketChartIkatanInst.destroy();
+    const ctx = canvasIkatan.getContext('2d');
+    ketChartIkatanInst = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Dosen Tetap (DTY)', 'Dosen Tidak Tetap (DTT)'],
+        datasets: [{
+          data: [3, 1],
+          backgroundColor: ['#2563eb', '#8b5cf6'],
+          borderColor: '#ffffff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+          tooltip: {
+            callbacks: {
+              label: (item) => ` ${item.label}: ${item.raw} Dosen (${Math.round(item.raw / 4 * 100)}%)`
+            }
+          }
+        },
+        cutout: '65%'
+      }
+    });
+  }
+
+  // 2. Chart Jabatan Fungsional Dosen
+  const canvasJafung = document.getElementById('ketChartJafung');
+  if (canvasJafung) {
+    if (ketChartJafungInst) ketChartJafungInst.destroy();
+    const ctx = canvasJafung.getContext('2d');
+    ketChartJafungInst = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Lektor', 'Asisten Ahli', 'Tenaga Pengajar'],
+        datasets: [{
+          label: 'Jumlah Dosen',
+          data: [2, 1, 1],
+          backgroundColor: ['#2563eb', '#3b82f6', '#93c5fd'],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // 3. Chart Jenjang Pendidikan
+  const canvasPendidikan = document.getElementById('ketChartPendidikan');
+  if (canvasPendidikan) {
+    if (ketChartPendidikanInst) ketChartPendidikanInst.destroy();
+    const ctx = canvasPendidikan.getContext('2d');
+    ketChartPendidikanInst = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['S3 / Sp-2', 'S2 / Sp-1', 'S1 / D4'],
+        datasets: [{
+          label: 'Jumlah Dosen',
+          data: [2, 2, 0],
+          backgroundColor: ['#10b981', '#34d399', '#a7f3d0'],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // 4. Chart Bidang Tenaga Kependidikan
+  const canvasTendik = document.getElementById('ketChartTendik');
+  if (canvasTendik) {
+    if (ketChartTendikInst) ketChartTendikInst.destroy();
+    const ctx = canvasTendik.getContext('2d');
+    ketChartTendikInst = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['IT & SIM', 'Laboran', 'Keuangan', 'TU & Kepegawaian'],
+        datasets: [{
+          label: 'Personel',
+          data: [1, 1, 1, 1],
+          backgroundColor: ['#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+}
 
 function switchKetenagaanTab(tabKey) {
-  currentKetenagaanTab = tabKey;
+  currentKetenagaanTab = tabKey || 'dashboard';
+
   const ketContainer = document.getElementById('ketenagaanContainer');
   if (ketContainer) ketContainer.style.display = 'block';
 
-  const btnPortal = document.getElementById('btnKetenagaanTab-portal');
-  const btnArsip = document.getElementById('btnKetenagaanTab-arsip');
-  const viewPortal = document.getElementById('ketenagaanView-portal');
-  const deptTableContainer = document.getElementById('deptTableContainer');
-  const statRow = document.getElementById('deptStatRow');
+  // Toggle tab views
+  const views = [
+    { key: 'dashboard', id: 'ketenagaanView-dashboard' },
+    { key: 'sdm', id: 'ketenagaanView-sdm' },
+    { key: 'akreditasi', id: 'ketenagaanView-akreditasi' },
+    { key: 'bkd', id: 'ketenagaanView-bkd' },
+    { key: 'dokumen', id: 'ketenagaanView-dokumen' },
+    { key: 'portal', id: 'ketenagaanView-portal' }
+  ];
 
-  if (tabKey === 'portal') {
-    if (btnPortal) {
-      btnPortal.classList.add('active');
-      btnPortal.style.background = 'var(--primary)';
-      btnPortal.style.color = '#fff';
-    }
-    if (btnArsip) {
-      btnArsip.classList.remove('active');
-      btnArsip.style.background = 'transparent';
-      btnArsip.style.color = 'var(--t2)';
-    }
-    if (viewPortal) viewPortal.style.display = 'block';
-    if (deptTableContainer) deptTableContainer.style.display = 'none';
-    if (statRow) statRow.style.display = 'none';
+  views.forEach(v => {
+    const el = document.getElementById(v.id);
+    if (el) el.style.display = (v.key === currentKetenagaanTab) ? 'block' : 'none';
 
+    const btn = document.getElementById(`btnKetenagaanTab-${v.key}`);
+    if (btn) {
+      if (v.key === currentKetenagaanTab) {
+        btn.classList.add('active');
+        btn.style.background = 'var(--primary)';
+        btn.style.color = '#fff';
+      } else {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.color = (v.key === 'portal') ? '#6366f1' : 'var(--t1)';
+      }
+    }
+  });
+
+  // Highlight active sidebar item
+  const sbMenu = document.getElementById('dept-ketenagaan-sub-menu');
+  if (sbMenu) {
+    const lis = sbMenu.querySelectorAll('li');
+    lis.forEach(li => {
+      const onclickAttr = li.getAttribute('onclick') || '';
+      if (onclickAttr.includes(`'${currentKetenagaanTab}'`)) {
+        li.classList.add('active');
+      } else if (!onclickAttr.includes('window.open')) {
+        li.classList.remove('active');
+      }
+    });
+  }
+
+  // Trigger content-specific rendering
+  if (currentKetenagaanTab === 'dashboard') {
+    setTimeout(initKetenagaanCharts, 80);
+  } else if (currentKetenagaanTab === 'sdm') {
+    renderKetenagaanSdmTable();
+  } else if (currentKetenagaanTab === 'portal') {
     const iframe = document.getElementById('ketenagaanIframe');
     if (iframe && (!iframe.src || !iframe.src.includes('bidang-ketenagaan.web.app'))) {
       iframe.src = 'https://bidang-ketenagaan.web.app';
     }
-  } else if (tabKey === 'arsip') {
-    if (btnArsip) {
-      btnArsip.classList.add('active');
-      btnArsip.style.background = 'var(--primary)';
-      btnArsip.style.color = '#fff';
-    }
-    if (btnPortal) {
-      btnPortal.classList.remove('active');
-      btnPortal.style.background = 'transparent';
-      btnPortal.style.color = 'var(--t2)';
-    }
-    if (viewPortal) viewPortal.style.display = 'none';
-    if (deptTableContainer) deptTableContainer.style.display = 'block';
-    if (statRow) statRow.style.display = 'flex';
-    if (typeof renderDeptTable === 'function') renderDeptTable();
   }
 }
 
@@ -7868,6 +8103,13 @@ function switchKetenagaanTabFromSidebar(tabKey, el) {
     if (typeof showPage === 'function') showPage('dept');
   }
   switchKetenagaanTab(tabKey);
+}
+
+function renderKetenagaanContent() {
+  renderKetenagaanSdmTable();
+  if (currentKetenagaanTab === 'dashboard') {
+    setTimeout(initKetenagaanCharts, 80);
+  }
 }
 
 function reloadKetenagaanFrame() {
