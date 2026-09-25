@@ -9131,25 +9131,9 @@ const PENDIDIKAN_CATEGORIES = [
   'Dokumen Lainnya / Kebijakan'
 ];
 
-// Fallback kurikulum data for visual curriculum view
-const FALLBACK_PENDIDIKAN_COURSES = [
-  { code: 'AKP101', name: 'Falsafah & Teori Dasar Akupunktur', sks: 3, semester: 'Semester I', dosen: 'Ivonne Jonathan, M.Kes.', cpl: 'Sikap & Pengetahuan Inti', statusRps: 'Tersedia (OBE)' },
-  { code: 'AKP102', name: 'Anatomi & Fisiologi Terapan Akupunktur', sks: 3, semester: 'Semester I', dosen: 'Dr. Budi Santoso, M.Biomed.', cpl: 'Pengetahuan Biomedik', statusRps: 'Tersedia (OBE)' },
-  { code: 'AKP103', name: 'Ilmu Meridian & Titik Akupunktur I', sks: 4, semester: 'Semester I', dosen: 'Dr. dr. Hendra Wijaya, Sp.Ak.', cpl: 'Keterampilan Khusus', statusRps: 'Tersedia (OBE)' },
-  { code: 'AKP201', name: 'Ilmu Meridian & Titik Akupunktur II', sks: 4, semester: 'Semester II', dosen: 'Dr. dr. Hendra Wijaya, Sp.Ak.', cpl: 'Keterampilan Khusus', statusRps: 'Tersedia (OBE)' },
-  { code: 'AKP202', name: 'Diagnostik Akupunktur & TCM', sks: 3, semester: 'Semester II', dosen: 'Ivonne Jonathan, M.Kes.', cpl: 'Pengetahuan Klinis', statusRps: 'Tersedia (OBE)' },
-  { code: 'AKP203', name: 'Teknik Manipulasi Jarum & Moxibusi', sks: 3, semester: 'Semester II', dosen: 'Siti Rahmawati, M.Tr.Kes.', cpl: 'Keterampilan Klinis', statusRps: 'Tersedia (OBE)' },
-  { code: 'AKP301', name: 'Patologi Klinis & Sindrom Akupunktur', sks: 3, semester: 'Semester III', dosen: 'Dr. Budi Santoso, M.Biomed.', cpl: 'Pengetahuan Patologi', statusRps: 'Tersedia (OBE)' },
-  { code: 'AKP302', name: 'Terapi Akupunktur Penyakit Dalam', sks: 4, semester: 'Semester III', dosen: 'Dr. dr. Hendra Wijaya, Sp.Ak.', cpl: 'Keahlian Terapi Khusus', statusRps: 'Tersedia (OBE)' },
-  { code: 'AKP401', name: 'Akupunktur Neurologi & Muskuloskeletal', sks: 4, semester: 'Semester IV', dosen: 'Ivonne Jonathan, M.Kes.', cpl: 'Keahlian Terapi Khusus', statusRps: 'Tersedia (OBE)' },
-  { code: 'AKP402', name: 'Praktik Klinik Akupunktur I (RS & PKM)', sks: 4, semester: 'Semester IV', dosen: 'Tim Dosen Pembimbing Klinik', cpl: 'Praktik Lapangan', statusRps: 'Tersedia (OBE)' },
-  { code: 'AKP501', name: 'Praktik Klinik Komprehensif II', sks: 6, semester: 'Semester V', dosen: 'Tim Dosen Pembimbing Klinik', cpl: 'Praktik Lapangan Mandiri', statusRps: 'Tersedia (OBE)' },
-  { code: 'AKP601', name: 'Tugas Akhir / Laporan Kasus Klinik & OSCE', sks: 6, semester: 'Semester VI', dosen: 'Dewan Penguji Kasus AAS', cpl: 'Kelulusan & Profesi', statusRps: 'Tersedia (OBE)' }
-];
-
 let pendidikanData = {
   archives: [],
-  courses: FALLBACK_PENDIDIKAN_COURSES
+  courses: []
 };
 
 function switchPendidikanTab(tabKey) {
@@ -9636,21 +9620,38 @@ function renderPendidikanKurikulumTable() {
   const tbody = document.getElementById('pendKurikulumTableBody');
   if (!tbody) return;
 
-  const courses = pendidikanData.courses || FALLBACK_PENDIDIKAN_COURSES;
-  tbody.innerHTML = courses.map((c, idx) => {
+  // Hanya tampilkan mata kuliah jika ada dokumen RPS riil yang diunggah di database
+  const rpsFiles = (pendidikanData.archives || []).filter(f => {
+    const c = (f.category || f.kategori || '').toLowerCase();
+    return c.includes('kurikulum') || c.includes('rps');
+  });
+
+  if (rpsFiles.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:36px 20px; color:var(--t3);"><i class="fas fa-inbox" style="font-size:1.6rem; margin-bottom:8px; display:block; color:var(--t3);"></i> Belum ada dokumen Kurikulum &amp; RPS yang diunggah. Data kosong siap pakai sesuai Portal Bidang Pendidikan.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rpsFiles.map((f, idx) => {
+    const code = f.id || `MK-${idx + 1}`;
+    const name = f.mataKuliah || f.name || f.title || 'Mata Kuliah';
+    const sks = f.sks ? `${f.sks} SKS` : '-';
+    const sem = f.semester || '-';
+    const dosen = f.uploadedBy || '-';
+    const cpl = f.description || 'CPL Kurikulum AAS';
+    const statusRps = f.verified ? 'Terverifikasi' : 'Menunggu';
+    const fileUrl = f.downloadUrl || f.fileUrl || f.dataUrl || '#';
+
     return `<tr>
       <td style="text-align:center; font-weight:600; color:var(--t3);">${idx + 1}</td>
-      <td><span style="font-family:monospace; font-weight:700; color:#8b5cf6;">${c.code}</span></td>
-      <td><strong style="color:var(--t1);">${c.name}</strong></td>
-      <td style="text-align:center;"><span class="badge" style="background:var(--bg3); color:var(--t1); font-weight:700;">${c.sks} SKS</span></td>
-      <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${c.semester}</span></td>
-      <td><span style="font-size:0.85rem; color:var(--t2);">${c.dosen}</span></td>
-      <td><span style="font-size:0.8rem; color:var(--t3);">${c.cpl}</span></td>
-      <td><span class="badge" style="background:#dcfce7; color:#15803d;"><i class="fas fa-check-circle"></i> ${c.statusRps}</span></td>
+      <td><span style="font-family:monospace; font-weight:700; color:#8b5cf6;">${code}</span></td>
+      <td><strong style="color:var(--t1);">${name}</strong></td>
+      <td style="text-align:center;"><span class="badge" style="background:var(--bg3); color:var(--t1); font-weight:700;">${sks}</span></td>
+      <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${sem}</span></td>
+      <td><span style="font-size:0.85rem; color:var(--t2);">${dosen}</span></td>
+      <td><span style="font-size:0.8rem; color:var(--t3);">${cpl}</span></td>
+      <td><span class="badge" style="background:${f.verified ? '#dcfce7' : '#fef3c7'}; color:${f.verified ? '#15803d' : '#b45309'};"><i class="fas fa-check-circle"></i> ${statusRps}</span></td>
       <td style="text-align:center;">
-        <button onclick="filterPendidikanArchiveByCategory('Kurikulum & RPS OBE')" class="btn-ghost-sm" style="color:#8b5cf6; font-weight:700;">
-          <i class="fas fa-magnifying-glass"></i> Cari RPS
-        </button>
+        ${fileUrl !== '#' ? `<a href="${fileUrl}" target="_blank" download="${name}" rel="noopener" class="btn-ghost-sm" style="color:#8b5cf6; font-weight:700; text-decoration:none;"><i class="fas fa-download"></i> Unduh RPS</a>` : '-'}
       </td>
     </tr>`;
   }).join('');
