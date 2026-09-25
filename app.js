@@ -3426,6 +3426,46 @@ async function saveArsip(e) {
             } catch (e) { console.warn("Gagal add ke Portal Kemahasiswaan", e); }
           }
       }
+
+      // Sinkronisasi simpan ke Cloud Database SIAKAD Akademik
+      if (record.bidang === 'akademik') {
+        try {
+          if (!dbAkademikSumber && typeof firebase !== 'undefined') {
+            let appAkademik = firebase.apps.find(a => a.name === "akademikSumber");
+            if (!appAkademik) {
+              appAkademik = firebase.initializeApp({
+                apiKey: "AIzaSyAqkdRbq3PBqaxa-6bitBuUnn5o5DR6J14",
+                authDomain: "bidang-administrasi-akademik.firebaseapp.com",
+                projectId: "bidang-administrasi-akademik",
+                storageBucket: "bidang-administrasi-akademik.firebasestorage.app",
+                messagingSenderId: "638267238061",
+                appId: "1:638267238061:web:17bcae776551f66b394824"
+              }, 'akademikSumber');
+            }
+            dbAkademikSumber = appAkademik.firestore();
+          }
+          if (dbAkademikSumber) {
+            const cleanId = (record.metadata && record.metadata.originalId) ? record.metadata.originalId : record.id.replace(/^SIAKAD-/, '');
+            const akDoc = {
+              id: cleanId,
+              name: record.judul,
+              title: record.judul,
+              category: record.jenis || 'Umum',
+              sizeFormatted: record.format || '1 MB',
+              extension: record.format || 'pdf',
+              uploadedBy: record.pengirim || 'Operator SIMARSIP',
+              uploadedAt: record.tanggal,
+              uploadDate: record.tanggal,
+              academicYear: record.ay,
+              fileUrl: record.gdriveLink || '',
+              description: record.keterangan || 'Diunggah dari Portal SIMARSIP'
+            };
+            await dbAkademikSumber.collection('archive_files').doc(cleanId).set(akDoc, { merge: true });
+          }
+        } catch(e) {
+          console.warn("Gagal mirror simpan ke dbAkademikSumber:", e);
+        }
+      }
     } catch(e) {
       console.error(e);
       alert('GAGAL MENYIMPAN KE DATABASE CLOUD: ' + e.message + '\n\nData hanya tersimpan sementara di browser. Periksa Koneksi atau Aturan Keamanan Firebase Anda.');
@@ -3598,6 +3638,20 @@ async function deleteArsip(id) {
         }
       }
     } catch(e) { console.warn("Gagal menghapus dari dbSarprasSumber", e); }
+  }
+
+  // Hapus dari Portal Akademik (SIAKAD) jika bidang akademik
+  if (a.bidang === 'akademik') {
+    try {
+      if (!dbAkademikSumber && typeof firebase !== 'undefined') {
+        let appAk = firebase.apps.find(app => app.name === "akademikSumber");
+        if (appAk) dbAkademikSumber = appAk.firestore();
+      }
+      if (dbAkademikSumber) {
+        const origId = (a.metadata && a.metadata.originalId) ? a.metadata.originalId : a.id.replace(/^SIAKAD-/, '');
+        await dbAkademikSumber.collection('archive_files').doc(origId).delete();
+      }
+    } catch(e) { console.warn("Hapus arsip akademik sumber:", e); }
   }
 
   arsip=arsip.filter(x=>x.id!==id);
@@ -8521,11 +8575,13 @@ function renderAkademikArsipTable() {
   const list = akademikData.archives || [];
 
   const filtered = list.filter(item => {
-    if (filterKat && (item.category || item.jenis) !== filterKat) return false;
+    const itemCat = item.category || item.kategori || item.jenis || '';
+    if (filterKat && itemCat !== filterKat) return false;
     if (search) {
-      const matchTitle = (item.title || item.judul || '').toLowerCase().includes(search);
-      const matchAy = (item.academicYear || item.ay || '').toLowerCase().includes(search);
-      return matchTitle || matchAy;
+      const matchTitle = (item.title || item.name || item.judul || '').toLowerCase().includes(search);
+      const matchAy = (item.academicYear || (item.semester ? 'Semester ' + item.semester : '') || item.ay || '').toLowerCase().includes(search);
+      const matchDesc = (item.description || item.keterangan || '').toLowerCase().includes(search);
+      return matchTitle || matchAy || matchDesc;
     }
     return true;
   });
@@ -8536,16 +8592,22 @@ function renderAkademikArsipTable() {
   }
 
   tbody.innerHTML = filtered.map((a, idx) => {
-    const fileUrl = a.fileUrl || a.url || '#';
+    const fileUrl = a.fileUrl || a.dataUrl || a.blobUrl || a.url || '#';
+    const title = a.name || a.title || a.judul || 'Dokumen Tanpa Judul';
+    const kat = a.category || a.kategori || a.jenis || 'Umum';
+    const ay = a.academicYear || (a.semester ? `Semester ${a.semester}` : '') || a.ay || '-';
+    const tgl = a.uploadedAt || a.uploadDate || a.tanggal || '-';
+    const size = a.sizeFormatted || a.fileSize || a.size || a.format || '-';
+
     return `<tr>
       <td style="text-align:center; font-weight:600; color:var(--t3);">${idx + 1}</td>
-      <td><strong style="color:var(--t1);">${a.title || a.judul || 'Dokumen Tanpa Judul'}</strong></td>
-      <td><span class="badge" style="background:#dbeafe; color:#1e40af;">${a.category || a.jenis || 'Umum'}</span></td>
-      <td>${a.academicYear || a.ay || '-'}</td>
-      <td>${a.uploadDate || a.tanggal || '-'}</td>
-      <td>${a.fileSize || a.format || '-'}</td>
+      <td><strong style="color:var(--t1);">${title}</strong></td>
+      <td><span class="badge" style="background:#dbeafe; color:#1e40af;">${kat}</span></td>
+      <td>${ay}</td>
+      <td>${tgl}</td>
+      <td>${size}</td>
       <td style="text-align:center;">
-        ${fileUrl !== '#' ? `<a href="${fileUrl}" target="_blank" rel="noopener" class="btn-ghost-sm" style="color:var(--primary); font-weight:600; text-decoration:none;"><i class="fas fa-download"></i> Unduh</a>` : `<span style="color:var(--t3); font-size:0.8rem;">-</span>`}
+        ${fileUrl !== '#' ? `<a href="${fileUrl}" target="_blank" download="${title}" rel="noopener" class="btn-ghost-sm" style="color:var(--primary); font-weight:600; text-decoration:none;"><i class="fas fa-download"></i> Unduh</a>` : `<span style="color:var(--t3); font-size:0.8rem;">-</span>`}
       </td>
     </tr>`;
   }).join('');
@@ -8590,7 +8652,7 @@ async function syncAkademikFromSumber(silent = false) {
     if (dbAkademikSumber && !akademikListenerAttached) {
       akademikListenerAttached = true;
 
-      // Realtime listener for students
+      // 1. Realtime listener for students
       dbAkademikSumber.collection('students').onSnapshot((snap) => {
         const items = [];
         snap.forEach(docSnap => items.push({ id: docSnap.id, ...docSnap.data() }));
@@ -8599,6 +8661,25 @@ async function syncAkademikFromSumber(silent = false) {
         } else if (akademikData.students.length === 0) {
           akademikData.students = FALLBACK_AKADEMIK_STUDENTS;
         }
+
+        // Sinkronisasi data mahasiswa ke array global SIMARSIP
+        if (typeof mahasiswa !== 'undefined') {
+          mahasiswa = mahasiswa.filter(m => !(m.id && (m.id.startsWith('SIAKAD-') || (m.metadata && m.metadata.sourceApp === 'akademik'))));
+          items.forEach(st => {
+            mahasiswa.push({
+              id: `SIAKAD-${st.id}`,
+              nim: st.nim,
+              nama: st.name,
+              prodi: st.prodi,
+              angkatan: st.angkatan || '',
+              status: st.status || 'Aktif',
+              semester: st.semester,
+              gender: st.gender,
+              metadata: { sourceApp: 'akademik', originalId: st.id }
+            });
+          });
+        }
+
         updateAkademikStats();
         if (currentAkademikTab === 'dashboard') initAkademikCharts();
         if (currentAkademikTab === 'mahasiswa') renderAkademikMhsTable();
@@ -8606,15 +8687,65 @@ async function syncAkademikFromSumber(silent = false) {
         console.warn("Firestore listener students error:", err);
       });
 
-      // Realtime listener for archive files
+      // 2. Realtime listener for archive files
       dbAkademikSumber.collection('archive_files').onSnapshot((snap) => {
         const files = [];
         snap.forEach(docSnap => files.push({ id: docSnap.id, ...docSnap.data() }));
         akademikData.archives = files;
+
+        // Sinkronisasi ke array arsip global SIMARSIP
+        if (typeof arsip !== 'undefined') {
+          arsip = arsip.filter(a => !(a.id && (a.id.startsWith('SIAKAD-') || (a.metadata && a.metadata.sourceApp === 'akademik'))));
+          files.forEach(f => {
+            const itemDate = f.uploadDate || f.uploadedAt || new Date().toISOString().slice(0, 10);
+            const title = f.name || f.title || f.judul || 'Dokumen Arsip Akademik';
+            const rec = {
+              id: `SIAKAD-${f.id}`,
+              nomor: f.id,
+              judul: title,
+              bidang: 'akademik',
+              jenis: f.category || f.kategori || 'Dokumen Akademik',
+              tanggal: itemDate,
+              ay: f.academicYear || (f.semester ? `Semester ${f.semester}` : '2026/2027 Ganjil'),
+              pengirim: f.uploadedBy || 'Staf BAAK AAS',
+              status: 'selesai',
+              format: f.extension || f.type || 'pdf',
+              fileName: f.name || 'dokumen.pdf',
+              gdriveLink: f.fileUrl || f.dataUrl || f.blobUrl || '',
+              keterangan: f.description || `Arsip SIAKAD AAS (${f.category || 'Umum'})`,
+              metadata: {
+                sourceApp: 'akademik',
+                originalId: f.id,
+                sizeFormatted: f.sizeFormatted || f.size || '',
+                studentName: f.studentName || ''
+              }
+            };
+            arsip.unshift(rec);
+          });
+
+          if (typeof updateBadges === 'function') updateBadges();
+        }
+
         updateAkademikStats();
-        if (currentAkademikTab === 'arsip') renderAkademikArsipTable();
+        if (typeof currentPage !== 'undefined') {
+          if (currentPage === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
+          if (currentPage === 'arsip' && typeof renderArsipTable === 'function') renderArsipTable();
+          if (currentPage === 'dept' && currentDept === 'akademik') {
+            if (currentAkademikTab === 'arsip') renderAkademikArsipTable();
+          }
+        }
       }, (err) => {
         console.warn("Firestore listener archive_files error:", err);
+      });
+
+      // 3. PostMessage listener untuk update instan antar-tab/iframe
+      window.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'SIAKAD_REALTIME_UPDATE') {
+          updateAkademikStats();
+          if (currentAkademikTab === 'dashboard') initAkademikCharts();
+          if (currentAkademikTab === 'mahasiswa') renderAkademikMhsTable();
+          if (currentAkademikTab === 'arsip') renderAkademikArsipTable();
+        }
       });
     }
 
@@ -8638,4 +8769,4 @@ async function syncAkademikFromSumber(silent = false) {
 // Auto-sync real-time data akademik saat web dimuat
 setTimeout(() => {
   try { syncAkademikFromSumber(true); } catch(e) {}
-}, 1500);
+}, 300);
