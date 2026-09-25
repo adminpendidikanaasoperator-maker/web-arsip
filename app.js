@@ -194,6 +194,33 @@ const COMMON_JENIS = [
 
 
 const DEPT_JENIS = {
+    "pendidikan": [
+        {
+            "group": "Kurikulum & Pembelajaran",
+            "items": [
+                { "val": "Kurikulum & RPS OBE", "label": "Kurikulum & RPS (OBE)", "icon": "fas fa-graduation-cap" },
+                { "val": "Modul & Bahan Ajar", "label": "Modul & Bahan Ajar", "icon": "fas fa-book-bookmark" },
+                { "val": "Kalender & Jadwal Kuliah", "label": "Kalender & Jadwal Kuliah", "icon": "fas fa-calendar-days" },
+                { "val": "Soal Ujian & OSCE", "label": "Soal Ujian & OSCE", "icon": "fas fa-file-signature" }
+            ]
+        },
+        {
+            "group": "Penugasan & Pelaksanaan",
+            "items": [
+                { "val": "SK Beban Mengajar Dosen", "label": "SK Beban Mengajar Dosen", "icon": "fas fa-file-contract" },
+                { "val": "Berita Acara & Presensi Kuliah", "label": "Berita Acara & Presensi Kuliah", "icon": "fas fa-clipboard-user" },
+                { "val": "Panduan Praktik Klinik & RS", "label": "Panduan Praktik Klinik & RS", "icon": "fas fa-hospital-user" }
+            ]
+        },
+        {
+            "group": "Mutu & Akreditasi",
+            "items": [
+                { "val": "Akreditasi & Dokumen LAM-PTKes", "label": "Akreditasi & Dokumen LAM-PTKes", "icon": "fas fa-award" },
+                { "val": "Evaluasi & Notulen Rapat Monev", "label": "Evaluasi & Notulen Rapat Monev", "icon": "fas fa-comments" },
+                { "val": "Dokumen Lainnya / Kebijakan", "label": "Dokumen Lainnya / Kebijakan", "icon": "fas fa-folder" }
+            ]
+        }
+    ],
     "akademik": [
         {
             "group": "Kurikulum",
@@ -1018,6 +1045,41 @@ function renderDeptSubmenus() {
       });
       ul.innerHTML += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
       ul.innerHTML += `<li onclick="window.open('https://bidang-ketenagaan.web.app', '_blank')" style="color:#6366f1; font-weight:600;">
+        <i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Buka Portal di Tab Baru</span>
+      </li>`;
+    } else if (deptId === 'pendidikan') {
+      const pendSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie', isCat: false },
+        { id: 'cat-kurikulum', catKey: 'Kurikulum & RPS OBE', label: 'Kurikulum & RPS OBE', icon: 'fas fa-graduation-cap', isCat: true },
+        { id: 'cat-modul', catKey: 'Modul & Bahan Ajar', label: 'Modul & Bahan Ajar', icon: 'fas fa-book-bookmark', isCat: true },
+        { id: 'cat-kalender', catKey: 'Kalender & Jadwal Kuliah', label: 'Kalender & Jadwal', icon: 'fas fa-calendar-days', isCat: true },
+        { id: 'cat-soal', catKey: 'Soal Ujian & OSCE', label: 'Soal Ujian & OSCE', icon: 'fas fa-file-signature', isCat: true },
+        { id: 'cat-sk', catKey: 'SK Beban Mengajar Dosen', label: 'SK Beban Mengajar', icon: 'fas fa-file-contract', isCat: true },
+        { id: 'cat-bap', catKey: 'Berita Acara & Presensi Kuliah', label: 'BAP & Presensi', icon: 'fas fa-clipboard-user', isCat: true },
+        { id: 'cat-klinik', catKey: 'Panduan Praktik Klinik & RS', label: 'Praktik Klinik & RS', icon: 'fas fa-hospital-user', isCat: true },
+        { id: 'cat-akreditasi', catKey: 'Akreditasi & Dokumen LAM-PTKes', label: 'Akreditasi LAM-PTKes', icon: 'fas fa-award', isCat: true },
+        { id: 'cat-monev', catKey: 'Evaluasi & Notulen Rapat Monev', label: 'Notulen & Monev', icon: 'fas fa-comments', isCat: true },
+        { id: 'cat-lainnya', catKey: 'Dokumen Lainnya / Kebijakan', label: 'Dokumen Lainnya', icon: 'fas fa-folder', isCat: true },
+        { id: 'kurikulum', label: 'Struktur Mata Kuliah & RPS', icon: 'fas fa-layer-group', isCat: false },
+        { id: 'portal', label: 'Web App SIPENAS Utuh', icon: 'fas fa-window-maximize', isCat: false }
+      ];
+      pendSubItems.forEach(item => {
+        let isActive = (typeof currentPendidikanTab !== 'undefined' && currentPendidikanTab === item.id && currentDept === 'pendidikan') ? 'active' : '';
+        if (item.isCat) {
+          ul.innerHTML += `<li class="${isActive}" onclick="selectPendidikanCategoryFromSidebar('${item.catKey}', this)">
+            <i class="${item.icon}"></i> <span style="flex:1;">${item.label}</span>
+          </li>`;
+        } else {
+          ul.innerHTML += `<li class="${isActive}" onclick="switchPendidikanTabFromSidebar('${item.id}', this)">
+            <i class="${item.icon}"></i> <span style="flex:1;">${item.label}</span>
+          </li>`;
+        }
+      });
+      ul.innerHTML += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
+      ul.innerHTML += `<li onclick="syncPendidikanFromSumber()" style="color:#22c55e; font-weight:600;">
+        <i class="fas fa-rotate" id="sbPendidikanSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Pendidikan</span>
+      </li>`;
+      ul.innerHTML += `<li onclick="window.open('https://bidang-pendidikan.web.app', '_blank')" style="color:#8b5cf6; font-weight:600;">
         <i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Buka Portal di Tab Baru</span>
       </li>`;
     } else if (DEPT_JENIS[deptId]) {
@@ -2034,11 +2096,35 @@ function renderDeptPage(dept) {
     if (dMhs) dMhs.style.display = 'none';
     const dSdm = document.getElementById('deptSdmContainer');
     if (dSdm) dSdm.style.display = 'none';
+    const pendC = document.getElementById('pendidikanContainer');
+    if (pendC) pendC.style.display = 'none';
     switchAkademikTab(currentAkademikTab || 'dashboard');
     renderAkademikContent();
+  } else if (dept === 'pendidikan') {
+    if (kmhsContainer) kmhsContainer.style.display = 'none';
+    if (iframeContainer) iframeContainer.style.display = 'none';
+    if (labContainer) labContainer.style.display = 'none';
+    if (saranaContainer) saranaContainer.style.display = 'none';
+    if (pengabdianContainer) pengabdianContainer.style.display = 'none';
+    if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
+    const akC = document.getElementById('akademikContainer');
+    if (akC) akC.style.display = 'none';
+    const pendC = document.getElementById('pendidikanContainer');
+    if (pendC) pendC.style.display = 'block';
+    if (deptArsipCharts) deptArsipCharts.style.display = 'none';
+    if (statRow) statRow.style.display = 'none';
+    if (deptTableContainer) deptTableContainer.style.display = 'none';
+    const dMhs = document.getElementById('deptMhsContainer');
+    if (dMhs) dMhs.style.display = 'none';
+    const dSdm = document.getElementById('deptSdmContainer');
+    if (dSdm) dSdm.style.display = 'none';
+    switchPendidikanTab(currentPendidikanTab || 'dashboard');
+    renderPendidikanContent();
   } else {
     const akC = document.getElementById('akademikContainer');
     if (akC) akC.style.display = 'none';
+    const pendC = document.getElementById('pendidikanContainer');
+    if (pendC) pendC.style.display = 'none';
     if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
     if (kmhsContainer) kmhsContainer.style.display = 'none';
     if (iframeContainer) iframeContainer.style.display = 'none';
@@ -2490,6 +2576,21 @@ function filterByJenis(jenis) {
     return;
   }
 
+  if (currentDept === 'pendidikan') {
+    if (arsipC) arsipC.style.display = 'none';
+    if (mhsC) mhsC.style.display = 'none';
+    if (tC) tC.style.display = 'none';
+    if (dMhs) dMhs.style.display = 'none';
+    if (dSdm) dSdm.style.display = 'none';
+    const pendC = document.getElementById('pendidikanContainer');
+    if (pendC) pendC.style.display = 'block';
+    const sRow = document.getElementById('deptStatRow');
+    if (sRow) sRow.style.display = 'none';
+    switchPendidikanTab(currentPendidikanTab || 'dashboard');
+    renderPendidikanContent();
+    return;
+  }
+
   if (currentDept === 'laboratorium') {
     if (arsipC) arsipC.style.display = 'none';
     if (mhsC) mhsC.style.display = 'none';
@@ -2682,6 +2783,47 @@ function initSidebarSubMenus() {
       });
       html += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
       html += `<li onclick="window.open('https://bidang-ketenagaan.web.app', '_blank')" style="color:#6366f1; font-weight:600;">
+        <i class="fas fa-up-right-from-square"></i> <span style="flex:1; min-width:0; line-height:1.4;">Buka Portal di Tab Baru</span>
+      </li>`;
+      ul.innerHTML = html;
+      navLink.after(ul);
+      return;
+    }
+
+    if (k === 'pendidikan') {
+      const pendSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie', isCat: false },
+        { id: 'cat-kurikulum', catKey: 'Kurikulum & RPS OBE', label: 'Kurikulum & RPS OBE', icon: 'fas fa-graduation-cap', isCat: true },
+        { id: 'cat-modul', catKey: 'Modul & Bahan Ajar', label: 'Modul & Bahan Ajar', icon: 'fas fa-book-bookmark', isCat: true },
+        { id: 'cat-kalender', catKey: 'Kalender & Jadwal Kuliah', label: 'Kalender & Jadwal', icon: 'fas fa-calendar-days', isCat: true },
+        { id: 'cat-soal', catKey: 'Soal Ujian & OSCE', label: 'Soal Ujian & OSCE', icon: 'fas fa-file-signature', isCat: true },
+        { id: 'cat-sk', catKey: 'SK Beban Mengajar Dosen', label: 'SK Beban Mengajar', icon: 'fas fa-file-contract', isCat: true },
+        { id: 'cat-bap', catKey: 'Berita Acara & Presensi Kuliah', label: 'BAP & Presensi', icon: 'fas fa-clipboard-user', isCat: true },
+        { id: 'cat-klinik', catKey: 'Panduan Praktik Klinik & RS', label: 'Praktik Klinik & RS', icon: 'fas fa-hospital-user', isCat: true },
+        { id: 'cat-akreditasi', catKey: 'Akreditasi & Dokumen LAM-PTKes', label: 'Akreditasi LAM-PTKes', icon: 'fas fa-award', isCat: true },
+        { id: 'cat-monev', catKey: 'Evaluasi & Notulen Rapat Monev', label: 'Notulen & Monev', icon: 'fas fa-comments', isCat: true },
+        { id: 'cat-lainnya', catKey: 'Dokumen Lainnya / Kebijakan', label: 'Dokumen Lainnya', icon: 'fas fa-folder', isCat: true },
+        { id: 'kurikulum', label: 'Struktur Mata Kuliah & RPS', icon: 'fas fa-layer-group', isCat: false },
+        { id: 'portal', label: 'Web App SIPENAS Utuh', icon: 'fas fa-window-maximize', isCat: false }
+      ];
+      let html = '';
+      pendSubItems.forEach(item => {
+        let isActive = (typeof currentPendidikanTab !== 'undefined' && currentPendidikanTab === item.id) ? 'active' : '';
+        if (item.isCat) {
+          html += `<li class="${isActive}" onclick="selectPendidikanCategoryFromSidebar('${item.catKey}', this)">
+            <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
+          </li>`;
+        } else {
+          html += `<li class="${isActive}" onclick="switchPendidikanTabFromSidebar('${item.id}', this)">
+            <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
+          </li>`;
+        }
+      });
+      html += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
+      html += `<li onclick="syncPendidikanFromSumber()" style="color:#22c55e; font-weight:600;">
+        <i class="fas fa-rotate" id="sbPendidikanSyncIcon"></i> <span style="flex:1; min-width:0; line-height:1.4;">Sinkron Data Live Pendidikan</span>
+      </li>`;
+      html += `<li onclick="window.open('https://bidang-pendidikan.web.app', '_blank')" style="color:#8b5cf6; font-weight:600;">
         <i class="fas fa-up-right-from-square"></i> <span style="flex:1; min-width:0; line-height:1.4;">Buka Portal di Tab Baru</span>
       </li>`;
       ul.innerHTML = html;
@@ -8963,3 +9105,683 @@ async function syncAkademikFromSumber(silent = false) {
 setTimeout(() => {
   try { syncAkademikFromSumber(true); } catch(e) {}
 }, 300);
+
+// ══════════════════════════════════════════════════════════════
+// BIDANG PENDIDIKAN (SIPENAS AAS) INTEGRATION LOGIC
+// ══════════════════════════════════════════════════════════════
+let currentPendidikanTab = 'dashboard';
+let pendChartCatInst = null;
+let pendChartYearsInst = null;
+let pendChartSemestersInst = null;
+let pendChartFormatsInst = null;
+let dbPendidikanSumber = null;
+let pendidikanListenerAttached = false;
+
+// 10 Kategori Resmi Bidang Pendidikan AAS
+const PENDIDIKAN_CATEGORIES = [
+  'Kurikulum & RPS OBE',
+  'Modul & Bahan Ajar',
+  'Kalender & Jadwal Kuliah',
+  'Soal Ujian & OSCE',
+  'SK Beban Mengajar Dosen',
+  'Berita Acara & Presensi Kuliah',
+  'Panduan Praktik Klinik & RS',
+  'Akreditasi & Dokumen LAM-PTKes',
+  'Evaluasi & Notulen Rapat Monev',
+  'Dokumen Lainnya / Kebijakan'
+];
+
+// Fallback kurikulum data for visual curriculum view
+const FALLBACK_PENDIDIKAN_COURSES = [
+  { code: 'AKP101', name: 'Falsafah & Teori Dasar Akupunktur', sks: 3, semester: 'Semester I', dosen: 'Ivonne Jonathan, M.Kes.', cpl: 'Sikap & Pengetahuan Inti', statusRps: 'Tersedia (OBE)' },
+  { code: 'AKP102', name: 'Anatomi & Fisiologi Terapan Akupunktur', sks: 3, semester: 'Semester I', dosen: 'Dr. Budi Santoso, M.Biomed.', cpl: 'Pengetahuan Biomedik', statusRps: 'Tersedia (OBE)' },
+  { code: 'AKP103', name: 'Ilmu Meridian & Titik Akupunktur I', sks: 4, semester: 'Semester I', dosen: 'Dr. dr. Hendra Wijaya, Sp.Ak.', cpl: 'Keterampilan Khusus', statusRps: 'Tersedia (OBE)' },
+  { code: 'AKP201', name: 'Ilmu Meridian & Titik Akupunktur II', sks: 4, semester: 'Semester II', dosen: 'Dr. dr. Hendra Wijaya, Sp.Ak.', cpl: 'Keterampilan Khusus', statusRps: 'Tersedia (OBE)' },
+  { code: 'AKP202', name: 'Diagnostik Akupunktur & TCM', sks: 3, semester: 'Semester II', dosen: 'Ivonne Jonathan, M.Kes.', cpl: 'Pengetahuan Klinis', statusRps: 'Tersedia (OBE)' },
+  { code: 'AKP203', name: 'Teknik Manipulasi Jarum & Moxibusi', sks: 3, semester: 'Semester II', dosen: 'Siti Rahmawati, M.Tr.Kes.', cpl: 'Keterampilan Klinis', statusRps: 'Tersedia (OBE)' },
+  { code: 'AKP301', name: 'Patologi Klinis & Sindrom Akupunktur', sks: 3, semester: 'Semester III', dosen: 'Dr. Budi Santoso, M.Biomed.', cpl: 'Pengetahuan Patologi', statusRps: 'Tersedia (OBE)' },
+  { code: 'AKP302', name: 'Terapi Akupunktur Penyakit Dalam', sks: 4, semester: 'Semester III', dosen: 'Dr. dr. Hendra Wijaya, Sp.Ak.', cpl: 'Keahlian Terapi Khusus', statusRps: 'Tersedia (OBE)' },
+  { code: 'AKP401', name: 'Akupunktur Neurologi & Muskuloskeletal', sks: 4, semester: 'Semester IV', dosen: 'Ivonne Jonathan, M.Kes.', cpl: 'Keahlian Terapi Khusus', statusRps: 'Tersedia (OBE)' },
+  { code: 'AKP402', name: 'Praktik Klinik Akupunktur I (RS & PKM)', sks: 4, semester: 'Semester IV', dosen: 'Tim Dosen Pembimbing Klinik', cpl: 'Praktik Lapangan', statusRps: 'Tersedia (OBE)' },
+  { code: 'AKP501', name: 'Praktik Klinik Komprehensif II', sks: 6, semester: 'Semester V', dosen: 'Tim Dosen Pembimbing Klinik', cpl: 'Praktik Lapangan Mandiri', statusRps: 'Tersedia (OBE)' },
+  { code: 'AKP601', name: 'Tugas Akhir / Laporan Kasus Klinik & OSCE', sks: 6, semester: 'Semester VI', dosen: 'Dewan Penguji Kasus AAS', cpl: 'Kelulusan & Profesi', statusRps: 'Tersedia (OBE)' }
+];
+
+let pendidikanData = {
+  archives: [],
+  courses: FALLBACK_PENDIDIKAN_COURSES
+};
+
+function switchPendidikanTab(tabKey) {
+  currentPendidikanTab = tabKey || 'dashboard';
+
+  const pendContainer = document.getElementById('pendidikanContainer');
+  if (pendContainer) pendContainer.style.display = 'block';
+
+  // Toggle tab views
+  const views = [
+    { key: 'dashboard', id: 'pendidikanView-dashboard' },
+    { key: 'arsip', id: 'pendidikanView-arsip' },
+    { key: 'kurikulum', id: 'pendidikanView-kurikulum' },
+    { key: 'portal', id: 'pendidikanView-portal' }
+  ];
+
+  views.forEach(v => {
+    const el = document.getElementById(v.id);
+    if (el) el.style.display = (v.key === currentPendidikanTab) ? 'block' : 'none';
+
+    const btn = document.getElementById(`btnPendidikanTab-${v.key}`);
+    if (btn) {
+      if (v.key === currentPendidikanTab) {
+        btn.classList.add('active');
+        btn.style.background = 'var(--primary)';
+        btn.style.color = '#fff';
+      } else {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.color = (v.key === 'portal') ? '#8b5cf6' : 'var(--t1)';
+      }
+    }
+  });
+
+  // Highlight active sidebar item
+  const sbMenu = document.getElementById('dept-pendidikan-sub-menu');
+  if (sbMenu) {
+    const lis = sbMenu.querySelectorAll('li');
+    lis.forEach(li => {
+      const onclickAttr = li.getAttribute('onclick') || '';
+      if (onclickAttr.includes(`'${currentPendidikanTab}'`)) {
+        li.classList.add('active');
+      } else if (!onclickAttr.includes('window.open')) {
+        li.classList.remove('active');
+      }
+    });
+  }
+
+  // Trigger content-specific rendering
+  if (currentPendidikanTab === 'dashboard') {
+    updatePendidikanStats();
+    setTimeout(initPendidikanCharts, 80);
+    renderPendidikanCategoryCards();
+    renderPendidikanRecentUploads();
+  } else if (currentPendidikanTab === 'arsip') {
+    renderPendidikanArsipTable();
+  } else if (currentPendidikanTab === 'kurikulum') {
+    renderPendidikanKurikulumTable();
+  } else if (currentPendidikanTab === 'portal') {
+    const iframe = document.getElementById('pendidikanIframe');
+    if (iframe && (!iframe.src || (!iframe.src.includes('bidang-pendidikan.web.app') && !iframe.src.includes('workers.dev')))) {
+      iframe.src = 'https://bidang-pendidikan.web.app';
+    }
+  }
+}
+
+function switchPendidikanTabFromSidebar(tabKey, el) {
+  if (typeof currentPage === 'undefined' || currentPage !== 'dept' || currentDept !== 'pendidikan') {
+    const link = document.getElementById('nav-pendidikan');
+    if (link && typeof setActiveNav === 'function') setActiveNav(link);
+    currentDept = 'pendidikan';
+    if (typeof showPage === 'function') showPage('dept');
+  }
+  switchPendidikanTab(tabKey);
+
+  const sbMenu = document.getElementById('dept-pendidikan-sub-menu');
+  if (sbMenu && el) {
+    sbMenu.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+    el.classList.add('active');
+  }
+}
+
+function selectPendidikanCategoryFromSidebar(catKey, el) {
+  if (typeof currentPage === 'undefined' || currentPage !== 'dept' || currentDept !== 'pendidikan') {
+    const link = document.getElementById('nav-pendidikan');
+    if (link && typeof setActiveNav === 'function') setActiveNav(link);
+    currentDept = 'pendidikan';
+    if (typeof showPage === 'function') showPage('dept');
+  }
+
+  filterPendidikanArchiveByCategory(catKey);
+
+  const sbMenu = document.getElementById('dept-pendidikan-sub-menu');
+  if (sbMenu) {
+    sbMenu.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+    if (el) el.classList.add('active');
+  }
+}
+
+function filterPendidikanArchiveByCategory(catKey) {
+  switchPendidikanTab('arsip');
+  const sel = document.getElementById('pendFilterCategory');
+  if (sel) {
+    sel.value = catKey || '';
+  }
+  renderPendidikanArsipTable();
+}
+
+function reloadPendidikanFrame() {
+  const iframe = document.getElementById('pendidikanIframe');
+  if (iframe) {
+    iframe.src = iframe.src || 'https://bidang-pendidikan.web.app';
+    try { iframe.contentWindow?.location.reload(); } catch(e) { iframe.src = iframe.src; }
+  }
+}
+
+function renderPendidikanContent() {
+  updatePendidikanStats();
+  if (currentPendidikanTab === 'dashboard') {
+    setTimeout(initPendidikanCharts, 80);
+    renderPendidikanCategoryCards();
+    renderPendidikanRecentUploads();
+  } else if (currentPendidikanTab === 'arsip') {
+    renderPendidikanArsipTable();
+  } else if (currentPendidikanTab === 'kurikulum') {
+    renderPendidikanKurikulumTable();
+  }
+}
+
+function updatePendidikanStats() {
+  const files = pendidikanData.archives || [];
+  const total = files.length;
+
+  let totalBytes = 0;
+  let verifiedCount = 0;
+  let currentAy = '2026/2027 Ganjil';
+
+  files.forEach(f => {
+    totalBytes += Number(f.size) || 0;
+    if (f.verified === true || f.verified === 'true' || f.status === 'Terverifikasi' || f.status === 'selesai') {
+      verifiedCount++;
+    }
+    if (f.academicYear && f.academicYear.includes('2026')) {
+      currentAy = f.academicYear;
+    }
+  });
+
+  const formatSize = (bytes) => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+  };
+
+  const elTotal = document.getElementById('pendStatTotalFiles');
+  if (elTotal) elTotal.textContent = total;
+
+  const elStorage = document.getElementById('pendStatStorage');
+  if (elStorage) elStorage.textContent = formatSize(totalBytes);
+
+  const elVerified = document.getElementById('pendStatVerified');
+  if (elVerified) elVerified.textContent = verifiedCount;
+
+  const elAy = document.getElementById('pendStatAcademicYear');
+  if (elAy) elAy.textContent = currentAy;
+}
+
+function initPendidikanCharts() {
+  const files = pendidikanData.archives || [];
+
+  // Chart 1: 10 Categories Distribution
+  const catCanvas = document.getElementById('chartPendCategories');
+  if (catCanvas) {
+    const catCounts = {};
+    PENDIDIKAN_CATEGORIES.forEach(c => { catCounts[c] = 0; });
+    files.forEach(f => {
+      const c = f.category || f.kategori || 'Dokumen Lainnya / Kebijakan';
+      catCounts[c] = (catCounts[c] || 0) + 1;
+    });
+
+    const labels = Object.keys(catCounts).map(l => l.length > 20 ? l.slice(0, 18) + '...' : l);
+    const dataVals = Object.values(catCounts);
+
+    if (pendChartCatInst) pendChartCatInst.destroy();
+    pendChartCatInst = new Chart(catCanvas, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Jumlah Dokumen',
+          data: dataVals,
+          backgroundColor: '#8b5cf6',
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true, ticks: { precision: 0 } },
+          x: { ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 30 } }
+        }
+      }
+    });
+  }
+
+  // Chart 2: Academic Years Trend
+  const yearsCanvas = document.getElementById('chartPendYears');
+  if (yearsCanvas) {
+    const yearCounts = {
+      '2023/2024': 0,
+      '2024/2025': 0,
+      '2025/2026': 0,
+      '2026/2027': 0
+    };
+
+    files.forEach(f => {
+      const ay = f.academicYear || f.ay || '2026/2027';
+      const cleanYear = (ay.match(/20\d\d\/20\d\d/) || ['2026/2027'])[0];
+      if (yearCounts[cleanYear] !== undefined) {
+        yearCounts[cleanYear]++;
+      } else {
+        yearCounts[cleanYear] = 1;
+      }
+    });
+
+    if (pendChartYearsInst) pendChartYearsInst.destroy();
+    pendChartYearsInst = new Chart(yearsCanvas, {
+      type: 'line',
+      data: {
+        labels: Object.keys(yearCounts),
+        datasets: [{
+          label: 'Arsip per Tahun Akademik',
+          data: Object.values(yearCounts),
+          borderColor: '#10b981',
+          backgroundColor: 'rgba(16, 185, 129, 0.15)',
+          fill: true,
+          tension: 0.35,
+          pointBackgroundColor: '#10b981',
+          pointRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+      }
+    });
+  }
+
+  // Chart 3: Semesters Doughnut
+  const semCanvas = document.getElementById('chartPendSemesters');
+  if (semCanvas) {
+    const semCounts = { 'Sem I': 0, 'Sem II': 0, 'Sem III': 0, 'Sem IV': 0, 'Sem V': 0, 'Sem VI': 0, 'Umum': 0 };
+    files.forEach(f => {
+      const s = (f.semester || '').toUpperCase();
+      if (s.includes('I') && !s.includes('II') && !s.includes('III') && !s.includes('IV') && !s.includes('V') && !s.includes('VI')) semCounts['Sem I']++;
+      else if (s.includes('II') && !s.includes('III')) semCounts['Sem II']++;
+      else if (s.includes('III')) semCounts['Sem III']++;
+      else if (s.includes('IV')) semCounts['Sem IV']++;
+      else if (s.includes('V') && !s.includes('VI')) semCounts['Sem V']++;
+      else if (s.includes('VI')) semCounts['Sem VI']++;
+      else semCounts['Umum']++;
+    });
+
+    if (pendChartSemestersInst) pendChartSemestersInst.destroy();
+    pendChartSemestersInst = new Chart(semCanvas, {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(semCounts),
+        datasets: [{
+          data: Object.values(semCounts),
+          backgroundColor: ['#3b82f6', '#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#94a3b8']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+        }
+      }
+    });
+  }
+
+  // Chart 4: File Formats Pie
+  const formatCanvas = document.getElementById('chartPendFormats');
+  if (formatCanvas) {
+    const formatCounts = { 'PDF': 0, 'DOCX/Word': 0, 'XLSX/Excel': 0, 'PPTX/Slide': 0, 'Lainnya': 0 };
+    files.forEach(f => {
+      const t = (f.fileType || f.format || f.extension || '').toLowerCase();
+      if (t.includes('pdf')) formatCounts['PDF']++;
+      else if (t.includes('doc')) formatCounts['DOCX/Word']++;
+      else if (t.includes('xls') || t.includes('sheet') || t.includes('csv')) formatCounts['XLSX/Excel']++;
+      else if (t.includes('ppt')) formatCounts['PPTX/Slide']++;
+      else formatCounts['Lainnya']++;
+    });
+
+    if (pendChartFormatsInst) pendChartFormatsInst.destroy();
+    pendChartFormatsInst = new Chart(formatCanvas, {
+      type: 'pie',
+      data: {
+        labels: Object.keys(formatCounts),
+        datasets: [{
+          data: Object.values(formatCounts),
+          backgroundColor: ['#ef4444', '#2563eb', '#16a34a', '#ea580c', '#64748b']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
+        }
+      }
+    });
+  }
+}
+
+function renderPendidikanCategoryCards() {
+  const container = document.getElementById('pendCategoryCardsGrid');
+  if (!container) return;
+
+  const files = pendidikanData.archives || [];
+  const icons = [
+    'fas fa-graduation-cap', 'fas fa-book-bookmark', 'fas fa-calendar-days', 'fas fa-file-signature',
+    'fas fa-file-contract', 'fas fa-clipboard-user', 'fas fa-hospital-user', 'fas fa-award',
+    'fas fa-comments', 'fas fa-folder'
+  ];
+  const colors = [
+    '#6366f1', '#0ea5e9', '#10b981', '#f59e0b',
+    '#ef4444', '#14b8a6', '#ec4899', '#a855f7',
+    '#3b82f6', '#64748b'
+  ];
+
+  container.innerHTML = PENDIDIKAN_CATEGORIES.map((cat, idx) => {
+    const count = files.filter(f => (f.category || f.kategori) === cat).length;
+    const icon = icons[idx] || 'fas fa-folder';
+    const color = colors[idx] || '#8b5cf6';
+
+    return `
+      <div onclick="filterPendidikanArchiveByCategory('${cat}')" style="background:var(--bg2); border:1px solid var(--b1); border-radius:10px; padding:12px 14px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:12px;" onmouseover="this.style.borderColor='${color}'; this.style.transform='translateY(-2px)';" onmouseout="this.style.borderColor='var(--b1)'; this.style.transform='none';">
+        <div style="width:36px; height:36px; border-radius:8px; background:${color}18; color:${color}; display:flex; align-items:center; justify-content:center; font-size:1.1rem; flex-shrink:0;">
+          <i class="${icon}"></i>
+        </div>
+        <div style="min-width:0; flex:1;">
+          <div style="font-size:0.8rem; font-weight:700; color:var(--t1); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cat}</div>
+          <div style="font-size:0.75rem; color:var(--t3);">${count} Berkas Tersimpan</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderPendidikanRecentUploads() {
+  const tbody = document.getElementById('pendRecentTableBody');
+  if (!tbody) return;
+
+  const files = pendidikanData.archives || [];
+  if (files.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:24px; color:var(--t3);"><i class="fas fa-folder-open"></i> Belum ada dokumen pendidikan yang diunggah di database cloud. Silakan gunakan tombol Buka Web App untuk mengunggah file.</td></tr>`;
+    return;
+  }
+
+  const recents = [...files].slice(0, 6);
+  tbody.innerHTML = recents.map((f, idx) => {
+    const fileId = f.id || `DOC-PEND-${idx + 1}`;
+    const name = f.name || f.title || f.judul || 'Dokumen Pendidikan';
+    const cat = f.category || f.kategori || 'Umum';
+    const ay = f.academicYear || f.ay || '2026/2027 Ganjil';
+    const sem = f.semester || '-';
+    const date = f.uploadDate || f.uploadedAt || '-';
+    const size = f.size ? (Number(f.size) > 1024 * 1024 ? (f.size / (1024 * 1024)).toFixed(1) + ' MB' : Math.round(f.size / 1024) + ' KB') : '-';
+    const fileUrl = f.fileUrl || f.dataUrl || f.url || '#';
+
+    return `<tr>
+      <td style="text-align:center; font-weight:600; color:var(--t3);">${idx + 1}</td>
+      <td><span style="font-family:monospace; font-size:0.78rem; font-weight:700; color:#8b5cf6; background:rgba(139,92,246,0.1); padding:2px 6px; border-radius:4px;">${fileId}</span></td>
+      <td>
+        <strong style="color:var(--t1);">${name}</strong>
+        ${f.mataKuliah ? `<div style="font-size:0.75rem; color:var(--t3);"><i class="fas fa-book"></i> ${f.mataKuliah}</div>` : ''}
+      </td>
+      <td><span class="badge" style="background:#f5f3ff; color:#7c3aed;">${cat}</span></td>
+      <td><span style="font-size:0.82rem;">${ay}</span></td>
+      <td><span class="badge" style="background:var(--bg3); color:var(--t1);">${sem}</span></td>
+      <td><span style="font-size:0.8rem; color:var(--t2);">${size}</span></td>
+      <td><span style="font-size:0.8rem; color:var(--t3);">${date}</span></td>
+      <td style="text-align:center;">
+        ${fileUrl !== '#' ? `<a href="${fileUrl}" target="_blank" download="${name}" rel="noopener" class="btn-ghost-sm" style="color:#8b5cf6; font-weight:700; text-decoration:none;"><i class="fas fa-download"></i> Unduh</a>` : `<span style="color:var(--t3); font-size:0.75rem;">-</span>`}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderPendidikanArsipTable() {
+  const tbody = document.getElementById('pendArsipTableBody');
+  if (!tbody) return;
+
+  const search = (document.getElementById('pendArsipSearch')?.value || '').toLowerCase().trim();
+  const filterCat = (document.getElementById('pendFilterCategory')?.value || '').trim();
+  const filterAy = (document.getElementById('pendFilterAcademicYear')?.value || '').trim();
+  const filterSem = (document.getElementById('pendFilterSemester')?.value || '').trim();
+
+  const files = pendidikanData.archives || [];
+
+  const filtered = files.filter(f => {
+    const cat = f.category || f.kategori || '';
+    const ay = f.academicYear || f.ay || '';
+    const sem = f.semester || '';
+
+    if (filterCat && cat !== filterCat) return false;
+    if (filterAy && !ay.includes(filterAy.slice(0, 9))) return false;
+    if (filterSem && !sem.toLowerCase().includes(filterSem.toLowerCase())) return false;
+
+    if (search) {
+      const matchName = (f.name || f.title || f.judul || '').toLowerCase().includes(search);
+      const matchId = (f.id || '').toLowerCase().includes(search);
+      const matchMk = (f.mataKuliah || '').toLowerCase().includes(search);
+      const matchDesc = (f.description || f.keterangan || '').toLowerCase().includes(search);
+      return matchName || matchId || matchMk || matchDesc;
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:32px; color:var(--t3);"><i class="fas fa-inbox" style="font-size:1.5rem; margin-bottom:8px; display:block;"></i> Tidak ada berkas arsip pendidikan yang sesuai dengan kriteria filter.</td></tr>`;
+    const foot = document.getElementById('pendArsipTableFoot');
+    if (foot) foot.textContent = `Menampilkan 0 dari total ${files.length} dokumen pendidikan`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((f, idx) => {
+    const fileId = f.id || `DOC-PEND-${idx + 1}`;
+    const name = f.name || f.title || f.judul || 'Dokumen Pendidikan';
+    const cat = f.category || f.kategori || 'Kurikulum & RPS OBE';
+    const ay = f.academicYear || f.ay || '2026/2027 Ganjil';
+    const sem = f.semester || '-';
+    const uploader = f.uploadedBy || 'Admin Operator';
+    const isVerified = f.verified === true || f.verified === 'true' || f.status === 'Terverifikasi' || f.status === 'selesai';
+    const type = (f.fileType || f.format || 'pdf').toUpperCase();
+    const size = f.size ? (Number(f.size) > 1024 * 1024 ? (f.size / (1024 * 1024)).toFixed(1) + ' MB' : Math.round(f.size / 1024) + ' KB') : '-';
+    const fileUrl = f.fileUrl || f.dataUrl || f.url || '#';
+
+    return `<tr>
+      <td style="text-align:center; font-weight:600; color:var(--t3);">${idx + 1}</td>
+      <td><span style="font-family:monospace; font-size:0.78rem; font-weight:700; color:#8b5cf6; background:rgba(139,92,246,0.1); padding:2px 6px; border-radius:4px;">${fileId}</span></td>
+      <td>
+        <strong style="color:var(--t1);">${name}</strong>
+        ${f.mataKuliah ? `<div style="font-size:0.75rem; color:var(--t3); margin-top:2px;"><i class="fas fa-book"></i> MK: ${f.mataKuliah}</div>` : ''}
+        ${f.description ? `<div style="font-size:0.72rem; color:var(--t3); font-style:italic;">${f.description.slice(0, 60)}${f.description.length > 60 ? '...' : ''}</div>` : ''}
+      </td>
+      <td><span class="badge" style="background:#f5f3ff; color:#7c3aed; font-size:0.75rem;">${cat}</span></td>
+      <td><span style="font-size:0.82rem; font-weight:600;">${ay}</span></td>
+      <td><span class="badge" style="background:var(--bg3); color:var(--t1);">${sem}</span></td>
+      <td><span style="font-size:0.78rem; color:var(--t2); font-weight:600;">${type} &bull; ${size}</span></td>
+      <td><span style="font-size:0.8rem; color:var(--t2);">${uploader}</span></td>
+      <td style="text-align:center;">
+        <span class="badge" style="background:${isVerified ? '#ecfdf5' : '#fef3c7'}; color:${isVerified ? '#059669' : '#d97706'}; font-size:0.75rem;">
+          <i class="fas ${isVerified ? 'fa-circle-check' : 'fa-clock'}"></i> ${isVerified ? 'Terverifikasi' : 'Menunggu'}
+        </span>
+      </td>
+      <td style="text-align:center;">
+        <div style="display:flex; justify-content:center; gap:6px;">
+          ${fileUrl !== '#' ? `<a href="${fileUrl}" target="_blank" download="${name}" rel="noopener" class="btn-ghost-sm" style="color:#8b5cf6; font-weight:700; text-decoration:none;" title="Unduh Berkas"><i class="fas fa-download"></i></a>` : ''}
+          <button onclick="switchPendidikanTab('portal')" class="btn-ghost-sm" style="color:var(--primary); font-weight:600;" title="Buka di Portal SIPENAS"><i class="fas fa-arrow-up-right-from-square"></i></button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const foot = document.getElementById('pendArsipTableFoot');
+  if (foot) {
+    foot.textContent = `Menampilkan ${filtered.length} dari total ${files.length} dokumen pendidikan`;
+  }
+}
+
+function renderPendidikanKurikulumTable() {
+  const tbody = document.getElementById('pendKurikulumTableBody');
+  if (!tbody) return;
+
+  const courses = pendidikanData.courses || FALLBACK_PENDIDIKAN_COURSES;
+  tbody.innerHTML = courses.map((c, idx) => {
+    return `<tr>
+      <td style="text-align:center; font-weight:600; color:var(--t3);">${idx + 1}</td>
+      <td><span style="font-family:monospace; font-weight:700; color:#8b5cf6;">${c.code}</span></td>
+      <td><strong style="color:var(--t1);">${c.name}</strong></td>
+      <td style="text-align:center;"><span class="badge" style="background:var(--bg3); color:var(--t1); font-weight:700;">${c.sks} SKS</span></td>
+      <td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${c.semester}</span></td>
+      <td><span style="font-size:0.85rem; color:var(--t2);">${c.dosen}</span></td>
+      <td><span style="font-size:0.8rem; color:var(--t3);">${c.cpl}</span></td>
+      <td><span class="badge" style="background:#dcfce7; color:#15803d;"><i class="fas fa-check-circle"></i> ${c.statusRps}</span></td>
+      <td style="text-align:center;">
+        <button onclick="filterPendidikanArchiveByCategory('Kurikulum & RPS OBE')" class="btn-ghost-sm" style="color:#8b5cf6; font-weight:700;">
+          <i class="fas fa-magnifying-glass"></i> Cari RPS
+        </button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function syncPendidikanFromSumber(silent = false) {
+  const btn = document.getElementById('btnSyncPendidikan');
+  const icon = document.getElementById('pendidikanSyncBtnIcon');
+  const sbIcon = document.getElementById('sbPendidikanSyncIcon');
+
+  if (btn && !silent) {
+    btn.disabled = true;
+    if (icon) icon.className = 'fas fa-spinner fa-spin';
+  }
+  if (sbIcon) sbIcon.className = 'fas fa-spinner fa-spin';
+
+  if (!silent && typeof toast === 'function') {
+    toast('Menyambungkan real-time ke Database SIPENAS Bidang Pendidikan...', 'info');
+  }
+
+  try {
+    if (!dbPendidikanSumber && typeof firebase !== 'undefined') {
+      let appPendidikan = firebase.apps.find(a => a.name === "pendidikanSumber");
+      if (!appPendidikan) {
+        appPendidikan = firebase.initializeApp({
+          apiKey: "AIzaSyDlpgjE6R5DYOkYU-hc2L4ZNtBxcni4quM",
+          authDomain: "bidang-pendidikan.firebaseapp.com",
+          projectId: "bidang-pendidikan",
+          storageBucket: "bidang-pendidikan.firebasestorage.app",
+          messagingSenderId: "182889991680",
+          appId: "1:182889991680:web:ca08256083f071ad8812e5",
+          measurementId: "G-T4QLXEMRBX"
+        }, 'pendidikanSumber');
+      }
+      dbPendidikanSumber = appPendidikan.firestore();
+    }
+
+    if (dbPendidikanSumber && !pendidikanListenerAttached) {
+      pendidikanListenerAttached = true;
+
+      // 1. Realtime listener for sipenas_archive_files
+      dbPendidikanSumber.collection('sipenas_archive_files').onSnapshot((snap) => {
+        const files = [];
+        snap.forEach(docSnap => {
+          files.push({ id: docSnap.id, ...docSnap.data() });
+        });
+
+        pendidikanData.archives = files;
+
+        // Sinkronisasi ke array arsip global SIMARSIP
+        if (typeof arsip !== 'undefined') {
+          arsip = arsip.filter(a => !(a.id && (a.id.startsWith('SIPENAS-') || (a.metadata && a.metadata.sourceApp === 'pendidikan'))));
+          files.forEach(f => {
+            const itemDate = f.uploadDate || f.uploadedAt || new Date().toISOString().slice(0, 10);
+            const title = f.name || f.title || f.judul || 'Dokumen Arsip Pendidikan';
+            const rec = {
+              id: `SIPENAS-${f.id}`,
+              nomor: f.id,
+              judul: title,
+              bidang: 'pendidikan',
+              jenis: f.category || f.kategori || 'Kurikulum & RPS OBE',
+              tanggal: itemDate,
+              ay: f.academicYear || '2026/2027 Ganjil',
+              pengirim: f.uploadedBy || 'Staf Bidang Pendidikan AAS',
+              status: f.verified ? 'selesai' : 'proses',
+              format: f.fileType || f.extension || 'pdf',
+              fileName: f.name || 'dokumen.pdf',
+              gdriveLink: f.fileUrl || f.dataUrl || '',
+              keterangan: f.description || `Arsip SIPENAS AAS (${f.category || 'Pendidikan'})`,
+              metadata: {
+                sourceApp: 'pendidikan',
+                originalId: f.id,
+                size: f.size || 0,
+                mataKuliah: f.mataKuliah || '',
+                semester: f.semester || ''
+              }
+            };
+            arsip.unshift(rec);
+          });
+
+          if (typeof updateBadges === 'function') updateBadges();
+        }
+
+        updatePendidikanStats();
+        if (currentPendidikanTab === 'dashboard') {
+          initPendidikanCharts();
+          renderPendidikanCategoryCards();
+          renderPendidikanRecentUploads();
+        }
+        if (currentPendidikanTab === 'arsip') renderPendidikanArsipTable();
+
+        if (typeof currentPage !== 'undefined') {
+          if (currentPage === 'dashboard' && typeof renderDashboard === 'function') renderDashboard();
+          if (currentPage === 'arsip' && typeof renderArsipTable === 'function') renderArsipTable();
+          if (currentPage === 'dept' && currentDept === 'pendidikan') {
+            if (currentPendidikanTab === 'arsip') renderPendidikanArsipTable();
+          }
+        }
+      }, (err) => {
+        console.warn("Firestore listener sipenas_archive_files error:", err);
+      });
+
+      // 2. PostMessage listener untuk update instan antar-tab/iframe
+      window.addEventListener('message', (e) => {
+        if (e.data && (e.data.type === 'SIPENAS_REALTIME_UPDATE' || e.data.type === 'PENDIDIKAN_REALTIME_UPDATE')) {
+          updatePendidikanStats();
+          if (currentPendidikanTab === 'dashboard') {
+            initPendidikanCharts();
+            renderPendidikanRecentUploads();
+          }
+          if (currentPendidikanTab === 'arsip') renderPendidikanArsipTable();
+        }
+      });
+    }
+
+    if (!silent && typeof toast === 'function') {
+      toast('Sinkronisasi Realtime Bidang Pendidikan Aktif!', 'success');
+    }
+  } catch (err) {
+    console.error("Sinkronisasi Pendidikan error:", err);
+    if (!silent && typeof toast === 'function') {
+      toast('Gagal menyinkronkan data pendidikan: ' + err.message, 'error');
+    }
+  } finally {
+    if (btn && !silent) {
+      btn.disabled = false;
+      if (icon) icon.className = 'fas fa-rotate';
+    }
+    if (sbIcon) sbIcon.className = 'fas fa-rotate';
+  }
+}
+
+// Auto-sync real-time data pendidikan saat web dimuat
+setTimeout(() => {
+  try { syncPendidikanFromSumber(true); } catch(e) {}
+}, 350);
+

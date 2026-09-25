@@ -179,6 +179,23 @@
       <li onclick="switchKetenagaanTabFromSidebar('portal', this)" style="color:#6366f1; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App SIM-Ketenagaan</span></li>
     </ul>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="pendidikan" id="nav-pendidikan"><i class="fas fa-chalkboard-teacher" style="color:#8b5cf6"></i><span>Pendidikan</span><em id="badge-pendidikan">0</em></a>
+    <ul class="sb-sub-menu" id="dept-pendidikan-sub-menu" style="display:none;">
+      <li class="active" onclick="switchPendidikanTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#8b5cf6;"></i> <span style="flex:1;">Dashboard &amp; Grafik</span></li>
+      <li onclick="selectPendidikanCategoryFromSidebar('Kurikulum & RPS OBE', this)"><i class="fas fa-graduation-cap" style="color:#6366f1;"></i> <span style="flex:1;">Kurikulum &amp; RPS OBE</span></li>
+      <li onclick="selectPendidikanCategoryFromSidebar('Modul & Bahan Ajar', this)"><i class="fas fa-book-bookmark" style="color:#0ea5e9;"></i> <span style="flex:1;">Modul &amp; Bahan Ajar</span></li>
+      <li onclick="selectPendidikanCategoryFromSidebar('Kalender & Jadwal Kuliah', this)"><i class="fas fa-calendar-days" style="color:#10b981;"></i> <span style="flex:1;">Kalender &amp; Jadwal</span></li>
+      <li onclick="selectPendidikanCategoryFromSidebar('Soal Ujian & OSCE', this)"><i class="fas fa-file-signature" style="color:#f59e0b;"></i> <span style="flex:1;">Soal Ujian &amp; OSCE</span></li>
+      <li onclick="selectPendidikanCategoryFromSidebar('SK Beban Mengajar Dosen', this)"><i class="fas fa-file-contract" style="color:#ef4444;"></i> <span style="flex:1;">SK Beban Mengajar</span></li>
+      <li onclick="selectPendidikanCategoryFromSidebar('Berita Acara & Presensi Kuliah', this)"><i class="fas fa-clipboard-user" style="color:#14b8a6;"></i> <span style="flex:1;">BAP &amp; Presensi</span></li>
+      <li onclick="selectPendidikanCategoryFromSidebar('Panduan Praktik Klinik & RS', this)"><i class="fas fa-hospital-user" style="color:#ec4899;"></i> <span style="flex:1;">Praktik Klinik &amp; RS</span></li>
+      <li onclick="selectPendidikanCategoryFromSidebar('Akreditasi & Dokumen LAM-PTKes', this)"><i class="fas fa-award" style="color:#a855f7;"></i> <span style="flex:1;">Akreditasi LAM-PTKes</span></li>
+      <li onclick="selectPendidikanCategoryFromSidebar('Evaluasi & Notulen Rapat Monev', this)"><i class="fas fa-comments" style="color:#3b82f6;"></i> <span style="flex:1;">Notulen &amp; Monev</span></li>
+      <li onclick="selectPendidikanCategoryFromSidebar('Dokumen Lainnya / Kebijakan', this)"><i class="fas fa-folder" style="color:#94a3b8;"></i> <span style="flex:1;">Dokumen Lainnya</span></li>
+      <hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">
+      <li onclick="switchPendidikanTabFromSidebar('kurikulum', this)"><i class="fas fa-layer-group" style="color:#10b981;"></i> <span style="flex:1;">Struktur Mata Kuliah &amp; RPS</span></li>
+      <li onclick="switchPendidikanTabFromSidebar('portal', this)" style="color:#8b5cf6; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App SIPENAS Utuh</span></li>
+      <li onclick="syncPendidikanFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbPendidikanSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Pendidikan</span></li>
+    </ul>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="administrasi" id="nav-administrasi"><i class="fas fa-folder-open" style="color:#a855f7"></i><span>Administrasi</span><em id="badge-administrasi">0</em></a>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="sistem_pendidikan" id="nav-sistem_pendidikan"><i class="fas fa-laptop-code" style="color:#d946ef"></i><span>Sistem Informasi Pendidikan Tinggi</span><em id="badge-sistem_pendidikan">0</em></a>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="laboratorium" id="nav-laboratorium"><i class="fas fa-vials" style="color:#ec4899"></i><span>Laboratorium</span><em id="badge-laboratorium">0</em></a>
@@ -2572,6 +2589,395 @@
 
     </div>
 
+    <!-- ════════════ BIDANG PENDIDIKAN INTEGRATED MODULES ════════════ -->
+    <div id="pendidikanContainer" style="display:none; margin-bottom: 25px;">
+      
+      <!-- Navigasi Tab Modul Pendidikan AAS -->
+      <div id="pendidikanNavTabs" style="background:var(--card); border:1px solid var(--b1); border-radius:var(--r2); padding:12px 16px; margin-bottom:20px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; box-shadow:var(--sh2);">
+        <div style="font-weight:700; color:#8b5cf6; font-size:0.9rem; margin-right:8px; display:flex; align-items:center; gap:6px;">
+          <i class="fas fa-chalkboard-teacher" style="color:#8b5cf6;"></i> Modul Pendidikan:
+        </div>
+        <button type="button" class="btn-ghost-sm active" id="btnPendidikanTab-dashboard" onclick="switchPendidikanTab('dashboard')" style="border-radius:20px; padding:6px 14px; font-weight:600; background:var(--primary); color:#fff;">
+          <i class="fas fa-chart-pie"></i> Dashboard &amp; Grafik
+        </button>
+        <button type="button" class="btn-ghost-sm" id="btnPendidikanTab-arsip" onclick="switchPendidikanTab('arsip')" style="border-radius:20px; padding:6px 14px; font-weight:600;">
+          <i class="fas fa-folder-tree"></i> Kelola Berkas Arsip (10 Kategori)
+        </button>
+        <button type="button" class="btn-ghost-sm" id="btnPendidikanTab-kurikulum" onclick="switchPendidikanTab('kurikulum')" style="border-radius:20px; padding:6px 14px; font-weight:600;">
+          <i class="fas fa-book-open"></i> Struktur Kurikulum OBE &amp; RPS
+        </button>
+        <button type="button" class="btn-ghost-sm" id="btnPendidikanTab-portal" onclick="switchPendidikanTab('portal')" style="border-radius:20px; padding:6px 14px; font-weight:600; color:#8b5cf6; border:1px solid #8b5cf6;">
+          <i class="fas fa-window-maximize"></i> Web App SIPENAS Utuh
+        </button>
+        <button type="button" class="btn-ghost-sm" onclick="syncPendidikanFromSumber()" id="btnSyncPendidikan" style="background:var(--bg3); border:1px solid #22c55e60; color:#22c55e; font-weight:600; border-radius:20px; padding:6px 14px;" title="Sinkronkan data live dari Firebase Cloud Bidang Pendidikan AAS">
+          <i class="fas fa-rotate" id="pendidikanSyncBtnIcon"></i> Sinkron Data Live
+        </button>
+        <span id="pendRealtimeBadge" style="display:inline-flex; align-items:center; gap:6px; font-size:0.75rem; color:#10b981; font-weight:700; background:#10b98115; border:1px solid #10b98140; border-radius:20px; padding:4px 10px;">
+          <span style="width:7px; height:7px; border-radius:50%; background:#10b981; box-shadow:0 0 6px #10b981; display:inline-block;"></span> ⚡ Realtime Live (Firestore)
+        </span>
+
+        <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+          <a href="https://bidang-pendidikan.adminpendidikanaas-operator.workers.dev" target="_blank" rel="noopener" class="btn-ghost-sm" style="background:var(--bg3); border:1px solid #f97316; color:#ea580c; font-weight:600; border-radius:6px; text-decoration:none;" title="Buka aplikasi web Bidang Pendidikan di Cloudflare">
+            <i class="fab fa-cloudflare" style="color:#f97316;"></i> Cloudflare Live
+          </a>
+          <a href="https://bidang-pendidikan.web.app" target="_blank" rel="noopener" class="btn-ghost-sm" style="background:var(--bg3); border:1px solid var(--b2); color:var(--primary); font-weight:600; border-radius:6px; text-decoration:none;" title="Buka aplikasi web Bidang Pendidikan di Firebase">
+            <i class="fas fa-fire" style="color:#f59e0b;"></i> Firebase Live
+          </a>
+        </div>
+      </div>
+
+      <!-- TAB 1: DASHBOARD & GRAFIK PENDIDIKAN -->
+      <div id="pendidikanView-dashboard" class="pendidikan-tab-view">
+        <!-- Header -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:24px;">
+          <div>
+            <h2 style="font-size:1.625rem; font-weight:800; color:var(--t1); margin:0; letter-spacing:-0.025em; display:flex; align-items:center; gap:10px;">
+              <span style="background:rgba(139,92,246,0.15); color:#8b5cf6; padding:6px 12px; border-radius:10px; font-size:1.25rem;"><i class="fas fa-chalkboard-teacher"></i></span>
+              Dashboard Bidang Pendidikan &amp; Pembelajaran (SIPENAS)
+            </h2>
+            <p style="font-size:0.875rem; color:var(--t3); margin:6px 0 0; line-height:1.5;">
+              Sistem Informasi &amp; Arsip Digital Bidang Pendidikan Akademi Akupunktur Surabaya. Mengelola 10 kategori arsip kurikulum OBE, RPS, bahan ajar, SK beban mengajar, BAP, hingga akreditasi LAM-PTKes secara terpusat dan tersinkronisasi realtime.
+            </p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button type="button" class="btn btn-primary" onclick="switchPendidikanTab('arsip')" style="display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:8px; font-weight:700; background:#8b5cf6; border-color:#7c3aed; box-shadow:0 4px 14px rgba(139,92,246,0.25);">
+              <i class="fas fa-folder-tree"></i> Telusuri 10 Kategori
+            </button>
+            <button type="button" class="btn btn-ghost" onclick="switchPendidikanTab('portal')" style="display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:8px; font-weight:700; border:1px solid #8b5cf6; color:#8b5cf6;">
+              <i class="fas fa-window-maximize"></i> Buka Web App
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Stats Cards -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:18px; margin-bottom:26px;">
+          <!-- Card 1: Total Dokumen -->
+          <div style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:22px; box-shadow:var(--sh1); display:flex; align-items:center; gap:18px;">
+            <div style="width:52px; height:52px; border-radius:12px; background:#f5f3ff; color:#8b5cf6; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;">
+              <i class="fas fa-file-invoice"></i>
+            </div>
+            <div>
+              <div style="font-size:0.8125rem; font-weight:600; color:var(--t3);">Total Dokumen Pendidikan</div>
+              <div style="font-size:1.75rem; font-weight:800; color:var(--t1); margin:2px 0;" id="pendStatTotalFiles">0</div>
+              <div style="font-size:0.75rem; font-weight:600; color:#10b981; display:flex; align-items:center; gap:4px;">
+                <i class="fas fa-bolt"></i> Tersinkron Realtime
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Penyimpanan Terpakai -->
+          <div style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:22px; box-shadow:var(--sh1); display:flex; align-items:center; gap:18px;">
+            <div style="width:52px; height:52px; border-radius:12px; background:#eff6ff; color:#2563eb; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;">
+              <i class="fas fa-hard-drive"></i>
+            </div>
+            <div>
+              <div style="font-size:0.8125rem; font-weight:600; color:var(--t3);">Penyimpanan Terpakai</div>
+              <div style="font-size:1.75rem; font-weight:800; color:var(--t1); margin:2px 0;" id="pendStatStorage">0 KB</div>
+              <div style="font-size:0.75rem; font-weight:600; color:#3b82f6; display:flex; align-items:center; gap:4px;">
+                <i class="fas fa-cloud"></i> Firebase Cloud Storage
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Dokumen Terverifikasi -->
+          <div style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:22px; box-shadow:var(--sh1); display:flex; align-items:center; gap:18px;">
+            <div style="width:52px; height:52px; border-radius:12px; background:#ecfdf5; color:#059669; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;">
+              <i class="fas fa-circle-check"></i>
+            </div>
+            <div>
+              <div style="font-size:0.8125rem; font-weight:600; color:var(--t3);">Dokumen Terverifikasi</div>
+              <div style="font-size:1.75rem; font-weight:800; color:var(--t1); margin:2px 0;" id="pendStatVerified">0</div>
+              <div style="font-size:0.75rem; font-weight:600; color:#10b981; display:flex; align-items:center; gap:4px;">
+                <i class="fas fa-shield-halved"></i> Validasi Pendidikan AAS
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Tahun Akademik Aktif -->
+          <div style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:22px; box-shadow:var(--sh1); display:flex; align-items:center; gap:18px;">
+            <div style="width:52px; height:52px; border-radius:12px; background:#fef3c7; color:#d97706; display:flex; align-items:center; justify-content:center; font-size:1.5rem; flex-shrink:0;">
+              <i class="fas fa-calendar-check"></i>
+            </div>
+            <div>
+              <div style="font-size:0.8125rem; font-weight:600; color:var(--t3);">Tahun Akademik Aktif</div>
+              <div style="font-size:1.45rem; font-weight:800; color:var(--t1); margin:2px 0;" id="pendStatAcademicYear">2026/2027 Ganjil</div>
+              <div style="font-size:0.75rem; font-weight:600; color:#d97706; display:flex; align-items:center; gap:4px;">
+                <i class="fas fa-clock"></i> Semester Berjalan
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 Visual Interactive Charts -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(460px, 1fr)); gap:20px; margin-bottom:26px;">
+          <!-- Chart 1: Distribusi 10 Kategori -->
+          <div class="panel" style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:20px; box-shadow:var(--sh1);">
+            <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+              <h3 style="margin:0; font-size:1rem; font-weight:700; color:var(--t1); display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-chart-column" style="color:#8b5cf6;"></i> Distribusi 10 Kategori Dokumen Pendidikan
+              </h3>
+              <span class="badge" style="background:#f5f3ff; color:#7c3aed; font-size:0.75rem;">10 Kategori</span>
+            </div>
+            <div style="height:280px; position:relative;">
+              <canvas id="chartPendCategories"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: Tren Dokumen per Tahun Akademik -->
+          <div class="panel" style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:20px; box-shadow:var(--sh1);">
+            <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+              <h3 style="margin:0; font-size:1rem; font-weight:700; color:var(--t1); display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-chart-line" style="color:#10b981;"></i> Tren Dokumen per Tahun Akademik
+              </h3>
+              <span class="badge" style="background:#ecfdf5; color:#059669; font-size:0.75rem;">Multi-Tahun</span>
+            </div>
+            <div style="height:280px; position:relative;">
+              <canvas id="chartPendYears"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 3: Proporsi Dokumen per Semester -->
+          <div class="panel" style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:20px; box-shadow:var(--sh1);">
+            <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+              <h3 style="margin:0; font-size:1rem; font-weight:700; color:var(--t1); display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-chart-pie" style="color:#f59e0b;"></i> Proporsi Dokumen Berdasarkan Semester (I - VI)
+              </h3>
+              <span class="badge" style="background:#fef3c7; color:#b45309; font-size:0.75rem;">Semester</span>
+            </div>
+            <div style="height:260px; position:relative;">
+              <canvas id="chartPendSemesters"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 4: Format Berkas & Media Storage -->
+          <div class="panel" style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:20px; box-shadow:var(--sh1);">
+            <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+              <h3 style="margin:0; font-size:1rem; font-weight:700; color:var(--t1); display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-file-shield" style="color:#0ea5e9;"></i> Komposisi Format &amp; Ekstensi Berkas
+              </h3>
+              <span class="badge" style="background:#e0f2fe; color:#0369a1; font-size:0.75rem;">Format Berkas</span>
+            </div>
+            <div style="height:260px; position:relative;">
+              <canvas id="chartPendFormats"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10 Kategori Quick Access Grid -->
+        <div style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:20px; margin-bottom:26px; box-shadow:var(--sh1);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h3 style="margin:0; font-size:1.05rem; font-weight:700; color:var(--t1); display:flex; align-items:center; gap:8px;">
+              <i class="fas fa-boxes-stacked" style="color:#8b5cf6;"></i> 10 Kategori Utama Bidang Pendidikan AAS
+            </h3>
+            <span style="font-size:0.8rem; color:var(--t3);">Klik salah satu kategori untuk memfilter data arsip</span>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px;" id="pendCategoryCardsGrid"></div>
+        </div>
+
+        <!-- Recent Uploads Table in Dashboard -->
+        <div class="table-card" style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:20px; box-shadow:var(--sh1);">
+          <div class="table-top-row" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <div>
+              <h3 style="margin:0; font-size:1.05rem; font-weight:700; color:var(--t1); display:flex; align-items:center; gap:8px;">
+                <i class="fas fa-clock-rotate-left" style="color:#8b5cf6;"></i> Berkas Terbaru Diunggah ke SIPENAS
+              </h3>
+              <p style="margin:4px 0 0 0; font-size:0.8rem; color:var(--t3);">Daftar dokumen terkini yang tersimpan di cloud database bidang pendidikan</p>
+            </div>
+            <button type="button" class="btn-ghost-sm" onclick="switchPendidikanTab('arsip')" style="color:#8b5cf6; font-weight:700;">
+              Lihat Semua Berkas <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>ID Dokumen</th>
+                  <th>Nama Dokumen &amp; Mata Kuliah</th>
+                  <th>Kategori</th>
+                  <th>Tahun Akademik</th>
+                  <th>Semester</th>
+                  <th>Ukuran</th>
+                  <th>Tanggal</th>
+                  <th style="text-align:center;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="pendRecentTableBody">
+                <tr><td colspan="9" style="text-align:center; padding:24px; color:var(--t3);"><i class="fas fa-spinner fa-spin"></i> Memuat data arsip terbaru...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 2: KELOLA BERKAS ARSIP PENDIDIKAN (10 KATEGORI) -->
+      <div id="pendidikanView-arsip" class="pendidikan-tab-view" style="display:none;">
+        <div class="table-card" style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:22px; box-shadow:var(--sh1);">
+          <div class="table-top-row" style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:16px; margin-bottom:18px;">
+            <div>
+              <h3 style="margin:0; font-size:1.25rem; font-weight:800; color:var(--t1); display:flex; align-items:center; gap:10px;">
+                <i class="fas fa-folder-tree" style="color:#8b5cf6;"></i> Arsip Digital Dokumen Pembelajaran &amp; Pendidikan
+              </h3>
+              <p style="margin:4px 0 0 0; font-size:0.85rem; color:var(--t3);">
+                Telusuri dan kelola seluruh berkas berdasarkan 10 kategori, tahun akademik, dan semester perkuliahan
+              </p>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <button onclick="renderPendidikanArsipTable()" class="btn-ghost-sm" style="border:1px solid var(--b2); border-radius:8px; padding:8px 14px; font-weight:600;">
+                <i class="fas fa-rotate"></i> Refresh Tabel
+              </button>
+            </div>
+          </div>
+
+          <!-- Filter & Search Controls -->
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:20px; background:var(--bg2); padding:16px; border-radius:10px; border:1px solid var(--b1);">
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--t2); margin-bottom:6px; text-transform:uppercase;">Pencarian Kata Kunci</label>
+              <div class="search-field" style="max-width:none; width:100%;">
+                <i class="fas fa-search"></i>
+                <input type="text" id="pendArsipSearch" placeholder="Cari nama dokumen, kode ID, matakuliah..." oninput="renderPendidikanArsipTable()" style="width:100%;" />
+              </div>
+            </div>
+
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--t2); margin-bottom:6px; text-transform:uppercase;">Filter 10 Kategori</label>
+              <select id="pendFilterCategory" class="form-input" onchange="renderPendidikanArsipTable()" style="width:100%;">
+                <option value="">Semua Kategori (10 Kategori)</option>
+                <option value="Kurikulum & RPS OBE">1. Kurikulum &amp; RPS OBE</option>
+                <option value="Modul & Bahan Ajar">2. Modul &amp; Bahan Ajar</option>
+                <option value="Kalender & Jadwal Kuliah">3. Kalender &amp; Jadwal Kuliah</option>
+                <option value="Soal Ujian & OSCE">4. Soal Ujian &amp; OSCE</option>
+                <option value="SK Beban Mengajar Dosen">5. SK Beban Mengajar Dosen</option>
+                <option value="Berita Acara & Presensi Kuliah">6. Berita Acara &amp; Presensi Kuliah</option>
+                <option value="Panduan Praktik Klinik & RS">7. Panduan Praktik Klinik &amp; RS</option>
+                <option value="Akreditasi & Dokumen LAM-PTKes">8. Akreditasi &amp; Dokumen LAM-PTKes</option>
+                <option value="Evaluasi & Notulen Rapat Monev">9. Evaluasi &amp; Notulen Rapat Monev</option>
+                <option value="Dokumen Lainnya / Kebijakan">10. Dokumen Lainnya / Kebijakan</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--t2); margin-bottom:6px; text-transform:uppercase;">Tahun Akademik</label>
+              <select id="pendFilterAcademicYear" class="form-input" onchange="renderPendidikanArsipTable()" style="width:100%;">
+                <option value="">Semua Tahun Akademik</option>
+                <option value="2026/2027 Ganjil">2026/2027 Ganjil</option>
+                <option value="2025/2026 Genap">2025/2026 Genap</option>
+                <option value="2025/2026 Ganjil">2025/2026 Ganjil</option>
+                <option value="2024/2025 Genap">2024/2025 Genap</option>
+                <option value="2024/2025 Ganjil">2024/2025 Ganjil</option>
+                <option value="2023/2024 Genap">2023/2024 Genap</option>
+                <option value="2023/2024 Ganjil">2023/2024 Ganjil</option>
+              </select>
+            </div>
+
+            <div>
+              <label style="display:block; font-size:0.75rem; font-weight:700; color:var(--t2); margin-bottom:6px; text-transform:uppercase;">Semester Perkuliahan</label>
+              <select id="pendFilterSemester" class="form-input" onchange="renderPendidikanArsipTable()" style="width:100%;">
+                <option value="">Semua Semester</option>
+                <option value="Semester I">Semester I</option>
+                <option value="Semester II">Semester II</option>
+                <option value="Semester III">Semester III</option>
+                <option value="Semester IV">Semester IV</option>
+                <option value="Semester V">Semester V</option>
+                <option value="Semester VI">Semester VI</option>
+                <option value="Semua Semester">Semua Semester (Umum)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>ID Dokumen</th>
+                  <th>Nama Dokumen &amp; Mata Kuliah</th>
+                  <th>Kategori</th>
+                  <th>Tahun Akademik</th>
+                  <th>Semester</th>
+                  <th>Format / Ukuran</th>
+                  <th>Pengunggah</th>
+                  <th>Verifikasi</th>
+                  <th style="text-align:center;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="pendArsipTableBody">
+                <tr><td colspan="10" style="text-align:center; padding:24px; color:var(--t3);"><i class="fas fa-inbox"></i> Belum ada dokumen arsip pendidikan yang diunggah.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="pendArsipTableFoot" style="margin-top:14px; font-size:0.8125rem; color:var(--t3); font-weight:500;"></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: STRUKTUR KURIKULUM OBE & RPS -->
+      <div id="pendidikanView-kurikulum" class="pendidikan-tab-view" style="display:none;">
+        <div class="table-card" style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:22px; box-shadow:var(--sh1);">
+          <div class="table-top-row" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div>
+              <h3 style="margin:0; font-size:1.25rem; font-weight:800; color:var(--t1); display:flex; align-items:center; gap:10px;">
+                <i class="fas fa-book-open" style="color:#8b5cf6;"></i> Struktur Kurikulum OBE D-III Akupunktur Surabaya
+              </h3>
+              <p style="margin:4px 0 0 0; font-size:0.85rem; color:var(--t3);">
+                Distribusi 110 SKS kurikulum OBE, capaian pembelajaran (CPL), dan ketersediaan Rencana Pembelajaran Semester (RPS)
+              </p>
+            </div>
+            <span class="badge" style="background:#f5f3ff; color:#7c3aed; font-weight:700; padding:6px 12px; font-size:0.85rem;">
+              Total 110 SKS (6 Semester)
+            </span>
+          </div>
+
+          <div style="overflow-x:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>Kode MK</th>
+                  <th>Nama Mata Kuliah</th>
+                  <th>SKS (T/P/K)</th>
+                  <th>Semester</th>
+                  <th>Dosen Pengampu</th>
+                  <th>Kategori CPL</th>
+                  <th>Status RPS OBE</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="pendKurikulumTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: WEB APP SIPENAS UTUH (IFRAME) -->
+      <div id="pendidikanView-portal" class="pendidikan-tab-view" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; padding:12px 18px; background:var(--card); border:1px solid var(--b1); border-radius:var(--r2); box-shadow:var(--sh1);">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="background:rgba(139,92,246,0.15); color:#8b5cf6; padding:6px 10px; border-radius:8px;"><i class="fas fa-window-maximize"></i></span>
+            <div>
+              <strong style="color:var(--t1); font-size:0.95rem;">SIPENAS — Sistem Informasi &amp; Arsip Bidang Pendidikan Terpadu</strong>
+              <div style="font-size:0.75rem; color:var(--t3);">Akademi Akupunktur Surabaya (Tersinkronisasi Cloud Firestore)</div>
+            </div>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button onclick="reloadPendidikanFrame()" class="btn-ghost-sm" style="font-weight:600; cursor:pointer; border:1px solid var(--b2); border-radius:6px; padding:6px 12px;">
+              <i class="fas fa-rotate"></i> Muat Ulang
+            </button>
+            <a href="https://bidang-pendidikan.adminpendidikanaas-operator.workers.dev" target="_blank" rel="noopener" class="btn-ghost-sm" style="color:#ea580c; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px; border:1px solid #ea580c40; border-radius:6px; padding:6px 12px;">
+              <i class="fab fa-cloudflare"></i> Cloudflare Live
+            </a>
+            <a href="https://bidang-pendidikan.web.app" target="_blank" rel="noopener" class="btn-ghost-sm" style="color:#8b5cf6; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px; border:1px solid #8b5cf640; border-radius:6px; padding:6px 12px;">
+              <i class="fas fa-fire"></i> Firebase Live
+            </a>
+          </div>
+        </div>
+        <div style="width:100%; height:860px; border:1px solid var(--b1); border-radius:var(--r3); overflow:hidden; background:var(--bg2); box-shadow:var(--sh2);">
+          <iframe id="pendidikanIframe" src="" width="100%" height="100%" style="border:none;" title="Portal Bidang Pendidikan AAS"></iframe>
+        </div>
+      </div>
+
+    </div>
+
     <!-- ════════════ ADMINISTRASI AKADEMIK INTEGRATED MODULES ════════════ -->
     <div id="akademikContainer" style="display:none; margin-bottom: 25px;">
       
@@ -3279,7 +3685,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=1031" defer></script>
+<script src="app.js?v=1032" defer></script>
 
 <!-- Notification Sounds -->
 
