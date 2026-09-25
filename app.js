@@ -968,16 +968,31 @@ function renderDeptSubmenus() {
       </li>`;
     } else if (deptId === 'akademik') {
       const akSubItems = [
-        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
-        { id: 'mahasiswa', label: 'Data Mahasiswa AAS', icon: 'fas fa-user-graduate' },
-        { id: 'arsip', label: 'Arsip Dokumen Akademik', icon: 'fas fa-folder-tree' },
-        { id: 'portal', label: 'Web App SIAKAD Utuh', icon: 'fas fa-window-maximize' }
+        { id: 'dashboard', label: 'Dashboard Arsip', icon: 'fas fa-table-cells-large', isCat: false },
+        { id: 'cat-khs', catKey: 'KHS & Transkrip', label: 'KHS & Transkrip', icon: 'fas fa-copy', isCat: true },
+        { id: 'cat-krs', catKey: 'KRS', label: 'KRS (Rencana Studi)', icon: 'fas fa-folder-open', isCat: true },
+        { id: 'cat-sertifikat', catKey: 'Sertifikat & UKOM', label: 'Sertifikat & UKOM', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-ijazah', catKey: 'Ijazah & SKL', label: 'Ijazah & SKL', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-surat', catKey: 'Surat Keterangan', label: 'Surat Keterangan', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-presensi', catKey: 'Presensi & Absensi', label: 'Presensi & Absensi', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-logbook', catKey: 'Logbook Klinik', label: 'Logbook Klinik', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-sk', catKey: 'SK & Keputusan', label: 'SK & Keputusan', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-akreditasi', catKey: 'Akreditasi & Feeder', label: 'Akreditasi & Feeder', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-lainnya', catKey: 'Lainnya', label: 'Dokumen Lainnya', icon: 'fas fa-folder', isCat: true },
+        { id: 'mahasiswa', label: 'Data Mahasiswa AAS & Grafik', icon: 'fas fa-user-graduate', isCat: false },
+        { id: 'portal', label: 'Web App SIAKAD Utuh', icon: 'fas fa-window-maximize', isCat: false }
       ];
       akSubItems.forEach(item => {
         let isActive = (typeof currentAkademikTab !== 'undefined' && currentAkademikTab === item.id && currentDept === 'akademik') ? 'active' : '';
-        ul.innerHTML += `<li class="${isActive}" onclick="switchAkademikTabFromSidebar('${item.id}', this)">
-          <i class="${item.icon}"></i> ${item.label}
-        </li>`;
+        if (item.isCat) {
+          ul.innerHTML += `<li class="${isActive}" onclick="selectAkademikCategoryFromSidebar('${item.catKey}', this)">
+            <i class="${item.icon}"></i> <span style="flex:1;">${item.label}</span>
+          </li>`;
+        } else {
+          ul.innerHTML += `<li class="${isActive}" onclick="switchAkademikTabFromSidebar('${item.id}', this)">
+            <i class="${item.icon}"></i> <span style="flex:1;">${item.label}</span>
+          </li>`;
+        }
       });
       ul.innerHTML += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
       ul.innerHTML += `<li onclick="syncAkademikFromSumber()" style="color:#22c55e; font-weight:600;">
@@ -2613,17 +2628,32 @@ function initSidebarSubMenus() {
 
     if (k === 'akademik') {
       const akSubItems = [
-        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
-        { id: 'mahasiswa', label: 'Data Mahasiswa AAS', icon: 'fas fa-user-graduate' },
-        { id: 'arsip', label: 'Arsip Dokumen Akademik', icon: 'fas fa-folder-tree' },
-        { id: 'portal', label: 'Web App SIAKAD Utuh', icon: 'fas fa-window-maximize' }
+        { id: 'dashboard', label: 'Dashboard Arsip', icon: 'fas fa-table-cells-large', isCat: false },
+        { id: 'cat-khs', catKey: 'KHS & Transkrip', label: 'KHS & Transkrip', icon: 'fas fa-copy', isCat: true },
+        { id: 'cat-krs', catKey: 'KRS', label: 'KRS (Rencana Studi)', icon: 'fas fa-folder-open', isCat: true },
+        { id: 'cat-sertifikat', catKey: 'Sertifikat & UKOM', label: 'Sertifikat & UKOM', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-ijazah', catKey: 'Ijazah & SKL', label: 'Ijazah & SKL', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-surat', catKey: 'Surat Keterangan', label: 'Surat Keterangan', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-presensi', catKey: 'Presensi & Absensi', label: 'Presensi & Absensi', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-logbook', catKey: 'Logbook Klinik', label: 'Logbook Klinik', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-sk', catKey: 'SK & Keputusan', label: 'SK & Keputusan', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-akreditasi', catKey: 'Akreditasi & Feeder', label: 'Akreditasi & Feeder', icon: 'fas fa-box-archive', isCat: true },
+        { id: 'cat-lainnya', catKey: 'Lainnya', label: 'Dokumen Lainnya', icon: 'fas fa-folder', isCat: true },
+        { id: 'mahasiswa', label: 'Data Mahasiswa AAS & Grafik', icon: 'fas fa-user-graduate', isCat: false },
+        { id: 'portal', label: 'Web App SIAKAD Utuh', icon: 'fas fa-window-maximize', isCat: false }
       ];
       let html = '';
       akSubItems.forEach(item => {
         let isActive = (typeof currentAkademikTab !== 'undefined' && currentAkademikTab === item.id) ? 'active' : '';
-        html += `<li class="${isActive}" onclick="switchAkademikTabFromSidebar('${item.id}', this)">
-          <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
-        </li>`;
+        if (item.isCat) {
+          html += `<li class="${isActive}" onclick="selectAkademikCategoryFromSidebar('${item.catKey}', this)">
+            <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
+          </li>`;
+        } else {
+          html += `<li class="${isActive}" onclick="switchAkademikTabFromSidebar('${item.id}', this)">
+            <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
+          </li>`;
+        }
       });
       html += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
       html += `<li onclick="syncAkademikFromSumber()" style="color:#22c55e; font-weight:600;">
@@ -8351,6 +8381,29 @@ function switchAkademikTabFromSidebar(tabKey, el) {
     if (typeof showPage === 'function') showPage('dept');
   }
   switchAkademikTab(tabKey);
+
+  const sbMenu = document.getElementById('dept-akademik-sub-menu');
+  if (sbMenu && el) {
+    sbMenu.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+    el.classList.add('active');
+  }
+}
+
+function selectAkademikCategoryFromSidebar(catKey, el) {
+  if (typeof currentPage === 'undefined' || currentPage !== 'dept' || currentDept !== 'akademik') {
+    const link = document.getElementById('nav-akademik');
+    if (link && typeof setActiveNav === 'function') setActiveNav(link);
+    currentDept = 'akademik';
+    if (typeof showPage === 'function') showPage('dept');
+  }
+
+  filterAkademikArchiveByCategory(catKey);
+
+  const sbMenu = document.getElementById('dept-akademik-sub-menu');
+  if (sbMenu) {
+    sbMenu.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+    if (el) el.classList.add('active');
+  }
 }
 
 function renderAkademikContent() {

@@ -131,11 +131,13 @@
 
 <!-- ÔòÉÔòÉÔòÉ SIDEBAR ÔòÉÔòÉÔòÉ -->
 <aside class="sidebar" id="sidebar">
-  <div class="sb-brand">
-    <div class="sb-logo-wrap"><img src="logo.jpg" alt="Logo AAS" class="sb-logo" /></div>
+  <div class="sb-brand" style="display:flex; align-items:center; gap:12px; padding:16px 18px;">
+    <div class="sb-logo-wrap" style="background:#ffffff; border-radius:12px; padding:5px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.15); flex-shrink:0;">
+      <img src="logo.jpg" alt="Logo AAS" class="sb-logo" style="width:100%; height:100%; object-fit:contain;" />
+    </div>
     <div class="sb-brand-text">
-      <span class="sb-name">Akademi Akupunktur</span>
-      <span class="sb-city">SURABAYA</span>
+      <div style="font-size:1.15rem; font-weight:800; color:#ffffff; letter-spacing:0.5px; line-height:1.2;">ARSIP <span style="color:#38bdf8;">AAS</span></div>
+      <div style="font-size:0.75rem; color:#94a3b8; font-weight:500; margin-top:2px;">File Archive SIAKAD</div>
     </div>
   </div>
   <div class="sb-app-label"><i class="fas fa-boxes-stacked"></i>&nbsp;SIMARSIP <span class="sb-version">v3.0</span></div>
@@ -151,9 +153,19 @@
     <div class="sb-section">Daftar Bidang / Departemen</div>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="akademik" id="nav-akademik"><i class="fas fa-graduation-cap" style="color:#3b82f6"></i><span>Administrasi Akademik</span><em id="badge-akademik">0</em></a>
     <ul class="sb-sub-menu" id="dept-akademik-sub-menu" style="display:none;">
-      <li class="active" onclick="switchAkademikTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#3b82f6;"></i> <span style="flex:1;">Dashboard &amp; Grafik</span></li>
-      <li onclick="switchAkademikTabFromSidebar('mahasiswa', this)"><i class="fas fa-user-graduate" style="color:#10b981;"></i> <span style="flex:1;">Data Mahasiswa AAS</span></li>
-      <li onclick="switchAkademikTabFromSidebar('arsip', this)"><i class="fas fa-folder-tree" style="color:#f59e0b;"></i> <span style="flex:1;">Arsip Dokumen Akademik</span></li>
+      <li class="active" onclick="switchAkademikTabFromSidebar('dashboard', this)"><i class="fas fa-table-cells-large" style="color:#3b82f6;"></i> <span style="flex:1;">Dashboard Arsip</span></li>
+      <li onclick="selectAkademikCategoryFromSidebar('KHS & Transkrip', this)"><i class="fas fa-copy" style="color:#60a5fa;"></i> <span style="flex:1;">KHS &amp; Transkrip</span></li>
+      <li onclick="selectAkademikCategoryFromSidebar('KRS', this)"><i class="fas fa-folder-open" style="color:#a78bfa;"></i> <span style="flex:1;">KRS (Rencana Studi)</span></li>
+      <li onclick="selectAkademikCategoryFromSidebar('Sertifikat & UKOM', this)"><i class="fas fa-box-archive" style="color:#34d399;"></i> <span style="flex:1;">Sertifikat &amp; UKOM</span></li>
+      <li onclick="selectAkademikCategoryFromSidebar('Ijazah & SKL', this)"><i class="fas fa-box-archive" style="color:#f87171;"></i> <span style="flex:1;">Ijazah &amp; SKL</span></li>
+      <li onclick="selectAkademikCategoryFromSidebar('Surat Keterangan', this)"><i class="fas fa-box-archive" style="color:#fbbf24;"></i> <span style="flex:1;">Surat Keterangan</span></li>
+      <li onclick="selectAkademikCategoryFromSidebar('Presensi & Absensi', this)"><i class="fas fa-box-archive" style="color:#22d3ee;"></i> <span style="flex:1;">Presensi &amp; Absensi</span></li>
+      <li onclick="selectAkademikCategoryFromSidebar('Logbook Klinik', this)"><i class="fas fa-box-archive" style="color:#f472b6;"></i> <span style="flex:1;">Logbook Klinik</span></li>
+      <li onclick="selectAkademikCategoryFromSidebar('SK & Keputusan', this)"><i class="fas fa-box-archive" style="color:#818cf8;"></i> <span style="flex:1;">SK &amp; Keputusan</span></li>
+      <li onclick="selectAkademikCategoryFromSidebar('Akreditasi & Feeder', this)"><i class="fas fa-box-archive" style="color:#fb923c;"></i> <span style="flex:1;">Akreditasi &amp; Feeder</span></li>
+      <li onclick="selectAkademikCategoryFromSidebar('Lainnya', this)"><i class="fas fa-folder" style="color:#94a3b8;"></i> <span style="flex:1;">Dokumen Lainnya</span></li>
+      <hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">
+      <li onclick="switchAkademikTabFromSidebar('mahasiswa', this)"><i class="fas fa-user-graduate" style="color:#10b981;"></i> <span style="flex:1;">Data Mahasiswa AAS &amp; Grafik</span></li>
       <li onclick="switchAkademikTabFromSidebar('portal', this)" style="color:#3b82f6; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App SIAKAD Utuh</span></li>
       <li onclick="syncAkademikFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbAkademikSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Akademik</span></li>
     </ul>
@@ -3267,7 +3279,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=1030" defer></script>
+<script src="app.js?v=1031" defer></script>
 
 <!-- Notification Sounds -->
 
