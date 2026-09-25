@@ -9616,7 +9616,10 @@ function renderPendidikanArsipTable() {
       </td>
       <td style="text-align:center;">
         <div style="display:flex; justify-content:center; gap:6px;">
-          ${fileUrl !== '#' ? `<a href="${fileUrl}" target="_blank" download="${name}" rel="noopener" class="btn-ghost-sm" style="color:#8b5cf6; font-weight:700; text-decoration:none;" title="Unduh Berkas"><i class="fas fa-download"></i></a>` : ''}
+          ${fileUrl !== '#' ? `
+            <button onclick="previewDoc('SIPENAS-${f.id}')" class="btn-ghost-sm" style="color:#2563eb; font-weight:700;" title="Pratinjau Dokumen Online"><i class="fas fa-eye"></i></button>
+            <a href="${fileUrl}" target="_blank" download="${name}" rel="noopener" class="btn-ghost-sm" style="color:#8b5cf6; font-weight:700; text-decoration:none;" title="Unduh Berkas"><i class="fas fa-download"></i></a>
+          ` : ''}
           <button onclick="switchPendidikanTab('portal')" class="btn-ghost-sm" style="color:var(--primary); font-weight:600;" title="Buka di Portal SIPENAS"><i class="fas fa-arrow-up-right-from-square"></i></button>
         </div>
       </td>
@@ -9715,7 +9718,7 @@ async function syncPendidikanFromSumber(silent = false) {
               status: f.verified ? 'selesai' : 'proses',
               format: f.fileType || f.extension || 'pdf',
               fileName: f.name || 'dokumen.pdf',
-              gdriveLink: f.fileUrl || f.dataUrl || '',
+              gdriveLink: f.downloadUrl || f.fileUrl || f.dataUrl || '',
               keterangan: f.description || `Arsip SIPENAS AAS (${f.category || 'Pendidikan'})`,
               metadata: {
                 sourceApp: 'pendidikan',
