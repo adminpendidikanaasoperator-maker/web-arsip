@@ -966,6 +966,26 @@ function renderDeptSubmenus() {
       ul.innerHTML += `<li onclick="syncPengabdianFromSumber()" style="color:#22c55e; font-weight:600;">
         <i class="fas fa-rotate" id="sbPengabdianSyncIcon"></i> <span style="flex:1;">Sinkron Data Live PkM</span>
       </li>`;
+    } else if (deptId === 'akademik') {
+      const akSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
+        { id: 'mahasiswa', label: 'Data Mahasiswa AAS', icon: 'fas fa-user-graduate' },
+        { id: 'arsip', label: 'Arsip Dokumen Akademik', icon: 'fas fa-folder-tree' },
+        { id: 'portal', label: 'Web App SIAKAD Utuh', icon: 'fas fa-window-maximize' }
+      ];
+      akSubItems.forEach(item => {
+        let isActive = (typeof currentAkademikTab !== 'undefined' && currentAkademikTab === item.id && currentDept === 'akademik') ? 'active' : '';
+        ul.innerHTML += `<li class="${isActive}" onclick="switchAkademikTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> ${item.label}
+        </li>`;
+      });
+      ul.innerHTML += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
+      ul.innerHTML += `<li onclick="syncAkademikFromSumber()" style="color:#22c55e; font-weight:600;">
+        <i class="fas fa-rotate" id="sbAkademikSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Akademik</span>
+      </li>`;
+      ul.innerHTML += `<li onclick="window.open('https://bidang-administrasi-akademik.web.app', '_blank')" style="color:#3b82f6; font-weight:600;">
+        <i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Buka Portal di Tab Baru</span>
+      </li>`;
     } else if (deptId === 'ketenagaan') {
       const ketSubItems = [
         { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
@@ -1972,6 +1992,8 @@ function renderDeptPage(dept) {
     if (saranaContainer) saranaContainer.style.display = 'none';
     if (pengabdianContainer) pengabdianContainer.style.display = 'none';
     if (ketenagaanContainer) ketenagaanContainer.style.display = 'block';
+    const akC = document.getElementById('akademikContainer');
+    if (akC) akC.style.display = 'none';
     if (deptArsipCharts) deptArsipCharts.style.display = 'none';
     if (statRow) statRow.style.display = 'none';
     if (deptTableContainer) deptTableContainer.style.display = 'none';
@@ -1981,7 +2003,27 @@ function renderDeptPage(dept) {
     if (dSdm) dSdm.style.display = 'none';
     switchKetenagaanTab(currentKetenagaanTab || 'dashboard');
     renderKetenagaanContent();
+  } else if (dept === 'akademik') {
+    if (kmhsContainer) kmhsContainer.style.display = 'none';
+    if (iframeContainer) iframeContainer.style.display = 'none';
+    if (labContainer) labContainer.style.display = 'none';
+    if (saranaContainer) saranaContainer.style.display = 'none';
+    if (pengabdianContainer) pengabdianContainer.style.display = 'none';
+    if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
+    const akC = document.getElementById('akademikContainer');
+    if (akC) akC.style.display = 'block';
+    if (deptArsipCharts) deptArsipCharts.style.display = 'none';
+    if (statRow) statRow.style.display = 'none';
+    if (deptTableContainer) deptTableContainer.style.display = 'none';
+    const dMhs = document.getElementById('deptMhsContainer');
+    if (dMhs) dMhs.style.display = 'none';
+    const dSdm = document.getElementById('deptSdmContainer');
+    if (dSdm) dSdm.style.display = 'none';
+    switchAkademikTab(currentAkademikTab || 'dashboard');
+    renderAkademikContent();
   } else {
+    const akC = document.getElementById('akademikContainer');
+    if (akC) akC.style.display = 'none';
     if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
     if (kmhsContainer) kmhsContainer.style.display = 'none';
     if (iframeContainer) iframeContainer.style.display = 'none';
@@ -2418,6 +2460,21 @@ function filterByJenis(jenis) {
     return;
   }
 
+  if (currentDept === 'akademik') {
+    if (arsipC) arsipC.style.display = 'none';
+    if (mhsC) mhsC.style.display = 'none';
+    if (tC) tC.style.display = 'none';
+    if (dMhs) dMhs.style.display = 'none';
+    if (dSdm) dSdm.style.display = 'none';
+    const akC = document.getElementById('akademikContainer');
+    if (akC) akC.style.display = 'block';
+    const sRow = document.getElementById('deptStatRow');
+    if (sRow) sRow.style.display = 'none';
+    switchAkademikTab(currentAkademikTab || 'dashboard');
+    renderAkademikContent();
+    return;
+  }
+
   if (currentDept === 'laboratorium') {
     if (arsipC) arsipC.style.display = 'none';
     if (mhsC) mhsC.style.display = 'none';
@@ -2548,6 +2605,29 @@ function initSidebarSubMenus() {
       html += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
       html += `<li onclick="syncPengabdianFromSumber()" style="color:#22c55e; font-weight:600;">
         <i class="fas fa-rotate" id="sbPengabdianSyncIcon"></i> <span style="flex:1; min-width:0; line-height:1.4;">Sinkron Data Live PkM</span>
+      </li>`;
+      ul.innerHTML = html;
+      navLink.after(ul);
+      return;
+    }
+
+    if (k === 'akademik') {
+      const akSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
+        { id: 'mahasiswa', label: 'Data Mahasiswa AAS', icon: 'fas fa-user-graduate' },
+        { id: 'arsip', label: 'Arsip Dokumen Akademik', icon: 'fas fa-folder-tree' },
+        { id: 'portal', label: 'Web App SIAKAD Utuh', icon: 'fas fa-window-maximize' }
+      ];
+      let html = '';
+      akSubItems.forEach(item => {
+        let isActive = (typeof currentAkademikTab !== 'undefined' && currentAkademikTab === item.id) ? 'active' : '';
+        html += `<li class="${isActive}" onclick="switchAkademikTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
+        </li>`;
+      });
+      html += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
+      html += `<li onclick="syncAkademikFromSumber()" style="color:#22c55e; font-weight:600;">
+        <i class="fas fa-rotate" id="sbAkademikSyncIcon"></i> <span style="flex:1; min-width:0; line-height:1.4;">Sinkron Data Live Akademik</span>
       </li>`;
       ul.innerHTML = html;
       navLink.after(ul);
@@ -8119,3 +8199,443 @@ function reloadKetenagaanFrame() {
     try { iframe.contentWindow?.location.reload(); } catch(e) { iframe.src = iframe.src; }
   }
 }
+
+// ══════════════════════════════════════════════════════════════
+// ADMINISTRASI AKADEMIK (SIAKAD AAS) INTEGRATION LOGIC
+// ══════════════════════════════════════════════════════════════
+let currentAkademikTab = 'dashboard';
+let akChartSemesterInst = null;
+let akChartKelasInst = null;
+let akChartGenderInst = null;
+let akChartStatusInst = null;
+let dbAkademikSumber = null;
+let akademikListenerAttached = false;
+
+let akademikData = {
+  students: [],
+  archives: []
+};
+
+// Data cadangan jika database cloud baru/kosong
+const FALLBACK_AKADEMIK_STUDENTS = [
+  { id: '1', nim: '2301001', name: 'Ahmad Fauzi', gender: 'L', prodi: 'D-III Akupunktur (Reguler)', semester: 3, status: 'Aktif' },
+  { id: '2', nim: '2301002', name: 'Siti Nurhaliza', gender: 'P', prodi: 'D-III Akupunktur (Reguler)', semester: 3, status: 'Aktif' },
+  { id: '3', nim: '2201015', name: 'Bambang Pratama', gender: 'L', prodi: 'D-III Akupunktur (Karyawan/Alih Jenjang)', semester: 5, status: 'Aktif' },
+  { id: '4', nim: '2401008', name: 'Dewi Lestari', gender: 'P', prodi: 'D-III Akupunktur (Reguler)', semester: 1, status: 'Aktif' },
+  { id: '5', nim: '2101030', name: 'Eko Prasetyo', gender: 'L', prodi: 'D-III Akupunktur (Reguler)', semester: 6, status: 'Lulus' }
+];
+
+function switchAkademikTab(tabKey) {
+  currentAkademikTab = tabKey || 'dashboard';
+
+  const akContainer = document.getElementById('akademikContainer');
+  if (akContainer) akContainer.style.display = 'block';
+
+  // Toggle tab views
+  const views = [
+    { key: 'dashboard', id: 'akademikView-dashboard' },
+    { key: 'mahasiswa', id: 'akademikView-mahasiswa' },
+    { key: 'arsip', id: 'akademikView-arsip' },
+    { key: 'portal', id: 'akademikView-portal' }
+  ];
+
+  views.forEach(v => {
+    const el = document.getElementById(v.id);
+    if (el) el.style.display = (v.key === currentAkademikTab) ? 'block' : 'none';
+
+    const btn = document.getElementById(`btnAkademikTab-${v.key}`);
+    if (btn) {
+      if (v.key === currentAkademikTab) {
+        btn.classList.add('active');
+        btn.style.background = 'var(--primary)';
+        btn.style.color = '#fff';
+      } else {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.color = (v.key === 'portal') ? '#3b82f6' : 'var(--t1)';
+      }
+    }
+  });
+
+  // Highlight active sidebar item
+  const sbMenu = document.getElementById('dept-akademik-sub-menu');
+  if (sbMenu) {
+    const lis = sbMenu.querySelectorAll('li');
+    lis.forEach(li => {
+      const onclickAttr = li.getAttribute('onclick') || '';
+      if (onclickAttr.includes(`'${currentAkademikTab}'`)) {
+        li.classList.add('active');
+      } else if (!onclickAttr.includes('window.open')) {
+        li.classList.remove('active');
+      }
+    });
+  }
+
+  // Trigger content-specific rendering
+  if (currentAkademikTab === 'dashboard') {
+    setTimeout(initAkademikCharts, 80);
+  } else if (currentAkademikTab === 'mahasiswa') {
+    renderAkademikMhsTable();
+  } else if (currentAkademikTab === 'arsip') {
+    renderAkademikArsipTable();
+  } else if (currentAkademikTab === 'portal') {
+    const iframe = document.getElementById('akademikIframe');
+    if (iframe && (!iframe.src || (!iframe.src.includes('bidang-administrasi-akademik.web.app') && !iframe.src.includes('workers.dev')))) {
+      iframe.src = 'https://bidang-administrasi-akademik.web.app';
+    }
+  }
+}
+
+function switchAkademikTabFromSidebar(tabKey, el) {
+  if (typeof currentPage === 'undefined' || currentPage !== 'dept' || currentDept !== 'akademik') {
+    const link = document.getElementById('nav-akademik');
+    if (link && typeof setActiveNav === 'function') setActiveNav(link);
+    currentDept = 'akademik';
+    if (typeof showPage === 'function') showPage('dept');
+  }
+  switchAkademikTab(tabKey);
+}
+
+function renderAkademikContent() {
+  updateAkademikStats();
+  if (currentAkademikTab === 'dashboard') {
+    setTimeout(initAkademikCharts, 80);
+  } else if (currentAkademikTab === 'mahasiswa') {
+    renderAkademikMhsTable();
+  } else if (currentAkademikTab === 'arsip') {
+    renderAkademikArsipTable();
+  }
+}
+
+function reloadAkademikFrame() {
+  const iframe = document.getElementById('akademikIframe');
+  if (iframe) {
+    iframe.src = iframe.src || 'https://bidang-administrasi-akademik.web.app';
+    try { iframe.contentWindow?.location.reload(); } catch(e) { iframe.src = iframe.src; }
+  }
+}
+
+function updateAkademikStats() {
+  const list = (akademikData.students && akademikData.students.length > 0) 
+    ? akademikData.students 
+    : FALLBACK_AKADEMIK_STUDENTS;
+
+  const total = list.length;
+  const aktif = list.filter(s => (s.status || '').toLowerCase() === 'aktif').length;
+  const reguler = list.filter(s => (s.prodi || '').includes('Reguler')).length;
+  const alihJenjang = list.filter(s => (s.prodi || '').includes('Alih Jenjang') || (s.prodi || '').includes('Karyawan')).length;
+  const laki = list.filter(s => s.gender === 'L').length;
+  const perempuan = list.filter(s => s.gender === 'P').length;
+  const totalArsip = (akademikData.archives || []).length;
+
+  const elTotal = document.getElementById('ak-stat-total');
+  if (elTotal) elTotal.textContent = total;
+
+  const elAktif = document.getElementById('ak-stat-aktif');
+  if (elAktif) elAktif.textContent = aktif;
+
+  const elKelas = document.getElementById('ak-stat-kelas');
+  if (elKelas) elKelas.textContent = `${reguler} : ${alihJenjang}`;
+
+  const elGender = document.getElementById('ak-stat-gender');
+  if (elGender) elGender.textContent = `${laki} : ${perempuan}`;
+
+  const elArsip = document.getElementById('ak-stat-arsip');
+  if (elArsip) elArsip.textContent = totalArsip;
+
+  const badgeAk = document.getElementById('badge-akademik');
+  if (badgeAk) badgeAk.textContent = totalArsip || total;
+}
+
+function initAkademikCharts() {
+  if (typeof Chart === 'undefined') return;
+
+  const list = (akademikData.students && akademikData.students.length > 0) 
+    ? akademikData.students 
+    : FALLBACK_AKADEMIK_STUDENTS;
+
+  // 1. Chart Semester (1 - 6)
+  const canvasSem = document.getElementById('akChartSemester');
+  if (canvasSem) {
+    if (akChartSemesterInst) akChartSemesterInst.destroy();
+    const semCounts = [1, 2, 3, 4, 5, 6].map(sem => list.filter(s => Number(s.semester) === sem).length);
+    const ctx = canvasSem.getContext('2d');
+    akChartSemesterInst = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6'],
+        datasets: [{
+          label: 'Jumlah Mahasiswa',
+          data: semCounts,
+          backgroundColor: '#3b82f6',
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+  }
+
+  // 2. Chart Program Kelas (Reguler vs Alih Jenjang/Karyawan)
+  const canvasKelas = document.getElementById('akChartKelas');
+  if (canvasKelas) {
+    if (akChartKelasInst) akChartKelasInst.destroy();
+    const regulerCount = list.filter(s => (s.prodi || '').includes('Reguler')).length;
+    const alihCount = list.filter(s => (s.prodi || '').includes('Alih Jenjang') || (s.prodi || '').includes('Karyawan')).length;
+    const ctx = canvasKelas.getContext('2d');
+    akChartKelasInst = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Reguler', 'Alih Jenjang / Karyawan'],
+        datasets: [{
+          data: [regulerCount || 1, alihCount || 1],
+          backgroundColor: ['#3b82f6', '#8b5cf6'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  }
+
+  // 3. Chart Gender (L vs P)
+  const canvasGender = document.getElementById('akChartGender');
+  if (canvasGender) {
+    if (akChartGenderInst) akChartGenderInst.destroy();
+    const lCount = list.filter(s => s.gender === 'L').length;
+    const pCount = list.filter(s => s.gender === 'P').length;
+    const ctx = canvasGender.getContext('2d');
+    akChartGenderInst = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Laki-laki', 'Perempuan'],
+        datasets: [{
+          data: [lCount || 1, pCount || 1],
+          backgroundColor: ['#0284c7', '#ec4899'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  }
+
+  // 4. Chart Status Keaktifan
+  const canvasStatus = document.getElementById('akChartStatus');
+  if (canvasStatus) {
+    if (akChartStatusInst) akChartStatusInst.destroy();
+    const aktifCount = list.filter(s => (s.status || '').toLowerCase() === 'aktif').length;
+    const cutiCount = list.filter(s => (s.status || '').toLowerCase() === 'cuti').length;
+    const lulusCount = list.filter(s => (s.status || '').toLowerCase() === 'lulus').length;
+    const ctx = canvasStatus.getContext('2d');
+    akChartStatusInst = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Aktif', 'Cuti', 'Lulus'],
+        datasets: [{
+          data: [aktifCount || 1, cutiCount, lulusCount],
+          backgroundColor: ['#10b981', '#f59e0b', '#6366f1'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+  }
+}
+
+function renderAkademikMhsTable() {
+  const tbody = document.getElementById('akMhsTableBody');
+  if (!tbody) return;
+
+  const filterSem = (document.getElementById('akFilterSemester')?.value || '').trim();
+  const filterStat = (document.getElementById('akFilterStatus')?.value || '').trim();
+  const search = (document.getElementById('akMhsSearch')?.value || '').toLowerCase().trim();
+
+  const list = (akademikData.students && akademikData.students.length > 0) 
+    ? akademikData.students 
+    : FALLBACK_AKADEMIK_STUDENTS;
+
+  const filtered = list.filter(item => {
+    if (filterSem && String(item.semester) !== filterSem) return false;
+    if (filterStat && (item.status || '').toLowerCase() !== filterStat.toLowerCase()) return false;
+    if (search) {
+      const matchNim = (item.nim || '').toLowerCase().includes(search);
+      const matchName = (item.name || '').toLowerCase().includes(search);
+      const matchProdi = (item.prodi || '').toLowerCase().includes(search);
+      return matchNim || matchName || matchProdi;
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--t3);"><i class="fas fa-inbox"></i> Tidak ada data mahasiswa yang sesuai filter.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((s, idx) => {
+    const isAktif = (s.status || '').toLowerCase() === 'aktif';
+    const statusBg = isAktif ? '#dcfce7' : '#fef3c7';
+    const statusColor = isAktif ? '#15803d' : '#b45309';
+
+    return `<tr>
+      <td style="text-align:center; font-weight:600; color:var(--t3);">${idx + 1}</td>
+      <td><span style="font-family:monospace; font-weight:700; color:var(--primary);">${s.nim || '-'}</span></td>
+      <td><strong>${s.name || '-'}</strong></td>
+      <td style="text-align:center;">${s.gender === 'L' ? '<span class="badge" style="background:#e0f2fe; color:#0369a1;">L</span>' : '<span class="badge" style="background:#fce7f3; color:#be185d;">P</span>'}</td>
+      <td><span style="font-size:0.85rem; color:var(--t2);">${s.prodi || 'D-III Akupunktur'}</span></td>
+      <td style="text-align:center;"><span class="badge" style="background:var(--bg3); color:var(--t1);">Semester ${s.semester || '-'}</span></td>
+      <td><span class="badge" style="background:${statusBg}; color:${statusColor};"><i class="fas ${isAktif ? 'fa-check-circle' : 'fa-clock'}"></i> ${s.status || 'Aktif'}</span></td>
+    </tr>`;
+  }).join('');
+
+  const foot = document.getElementById('akMhsTableFoot');
+  if (foot) {
+    foot.textContent = `Menampilkan ${filtered.length} dari total ${list.length} mahasiswa`;
+  }
+}
+
+function renderAkademikArsipTable() {
+  const tbody = document.getElementById('akArsipTableBody');
+  if (!tbody) return;
+
+  const filterKat = (document.getElementById('akFilterArsipKategori')?.value || '').trim();
+  const search = (document.getElementById('akArsipSearch')?.value || '').toLowerCase().trim();
+
+  const list = akademikData.archives || [];
+
+  const filtered = list.filter(item => {
+    if (filterKat && (item.category || item.jenis) !== filterKat) return false;
+    if (search) {
+      const matchTitle = (item.title || item.judul || '').toLowerCase().includes(search);
+      const matchAy = (item.academicYear || item.ay || '').toLowerCase().includes(search);
+      return matchTitle || matchAy;
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:24px; color:var(--t3);"><i class="fas fa-folder-open"></i> Belum ada dokumen arsip akademik yang diunggah di database.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((a, idx) => {
+    const fileUrl = a.fileUrl || a.url || '#';
+    return `<tr>
+      <td style="text-align:center; font-weight:600; color:var(--t3);">${idx + 1}</td>
+      <td><strong style="color:var(--t1);">${a.title || a.judul || 'Dokumen Tanpa Judul'}</strong></td>
+      <td><span class="badge" style="background:#dbeafe; color:#1e40af;">${a.category || a.jenis || 'Umum'}</span></td>
+      <td>${a.academicYear || a.ay || '-'}</td>
+      <td>${a.uploadDate || a.tanggal || '-'}</td>
+      <td>${a.fileSize || a.format || '-'}</td>
+      <td style="text-align:center;">
+        ${fileUrl !== '#' ? `<a href="${fileUrl}" target="_blank" rel="noopener" class="btn-ghost-sm" style="color:var(--primary); font-weight:600; text-decoration:none;"><i class="fas fa-download"></i> Unduh</a>` : `<span style="color:var(--t3); font-size:0.8rem;">-</span>`}
+      </td>
+    </tr>`;
+  }).join('');
+
+  const foot = document.getElementById('akArsipTableFoot');
+  if (foot) {
+    foot.textContent = `Menampilkan ${filtered.length} dari total ${list.length} berkas arsip`;
+  }
+}
+
+async function syncAkademikFromSumber(silent = false) {
+  const btn = document.getElementById('btnSyncAkademik');
+  const icon = document.getElementById('akademikSyncBtnIcon');
+  const sbIcon = document.getElementById('sbAkademikSyncIcon');
+
+  if (btn && !silent) {
+    btn.disabled = true;
+    if (icon) icon.className = 'fas fa-spinner fa-spin';
+  }
+  if (sbIcon) sbIcon.className = 'fas fa-spinner fa-spin';
+
+  if (!silent && typeof toast === 'function') {
+    toast('Menyambungkan real-time ke Database SIAKAD AAS...', 'info');
+  }
+
+  try {
+    if (!dbAkademikSumber && typeof firebase !== 'undefined') {
+      let appAkademik = firebase.apps.find(a => a.name === "akademikSumber");
+      if (!appAkademik) {
+        appAkademik = firebase.initializeApp({
+          apiKey: "AIzaSyAqkdRbq3PBqaxa-6bitBuUnn5o5DR6J14",
+          authDomain: "bidang-administrasi-akademik.firebaseapp.com",
+          projectId: "bidang-administrasi-akademik",
+          storageBucket: "bidang-administrasi-akademik.firebasestorage.app",
+          messagingSenderId: "638267238061",
+          appId: "1:638267238061:web:17bcae776551f66b394824"
+        }, 'akademikSumber');
+      }
+      dbAkademikSumber = appAkademik.firestore();
+    }
+
+    if (dbAkademikSumber && !akademikListenerAttached) {
+      akademikListenerAttached = true;
+
+      // Realtime listener for students
+      dbAkademikSumber.collection('students').onSnapshot((snap) => {
+        const items = [];
+        snap.forEach(docSnap => items.push({ id: docSnap.id, ...docSnap.data() }));
+        if (items.length > 0) {
+          akademikData.students = items;
+        } else if (akademikData.students.length === 0) {
+          akademikData.students = FALLBACK_AKADEMIK_STUDENTS;
+        }
+        updateAkademikStats();
+        if (currentAkademikTab === 'dashboard') initAkademikCharts();
+        if (currentAkademikTab === 'mahasiswa') renderAkademikMhsTable();
+      }, (err) => {
+        console.warn("Firestore listener students error:", err);
+      });
+
+      // Realtime listener for archive files
+      dbAkademikSumber.collection('archive_files').onSnapshot((snap) => {
+        const files = [];
+        snap.forEach(docSnap => files.push({ id: docSnap.id, ...docSnap.data() }));
+        akademikData.archives = files;
+        updateAkademikStats();
+        if (currentAkademikTab === 'arsip') renderAkademikArsipTable();
+      }, (err) => {
+        console.warn("Firestore listener archive_files error:", err);
+      });
+    }
+
+    if (!silent && typeof toast === 'function') {
+      toast('Sinkronisasi Realtime SIAKAD AAS Aktif!', 'success');
+    }
+  } catch (err) {
+    console.error("Sinkronisasi Akademik error:", err);
+    if (!silent && typeof toast === 'function') {
+      toast('Gagal menyinkronkan data: ' + err.message, 'error');
+    }
+  } finally {
+    if (btn && !silent) {
+      btn.disabled = false;
+      if (icon) icon.className = 'fas fa-rotate';
+    }
+    if (sbIcon) sbIcon.className = 'fas fa-rotate';
+  }
+}
+
+// Auto-sync real-time data akademik saat web dimuat
+setTimeout(() => {
+  try { syncAkademikFromSumber(true); } catch(e) {}
+}, 1500);
