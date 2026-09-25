@@ -9627,7 +9627,7 @@ function renderPendidikanKurikulumTable() {
   });
 
   if (rpsFiles.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:36px 20px; color:var(--t3);"><i class="fas fa-inbox" style="font-size:1.6rem; margin-bottom:8px; display:block; color:var(--t3);"></i> Belum ada dokumen Kurikulum &amp; RPS yang diunggah. Data kosong siap pakai sesuai Portal Bidang Pendidikan.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:36px 20px; color:var(--t3);"><i class="fas fa-inbox" style="font-size:1.8rem; margin-bottom:10px; display:block; color:#8b5cf6;"></i><strong style="color:var(--t1); font-size:0.95rem; display:block; margin-bottom:4px;">Belum Ada Dokumen Kurikulum &amp; RPS</strong>Data kosong (0 berkas) murni sesuai database Portal Bidang Pendidikan.</td></tr>`;
     return;
   }
 

@@ -2911,21 +2911,21 @@
         </div>
       </div>
 
-      <!-- TAB 3: STRUKTUR KURIKULUM OBE & RPS -->
+      <!-- TAB 3: STRUKTUR KURIKULUM OBE & RPS (BERSIH DARI DUMMY) -->
       <div id="pendidikanView-kurikulum" class="pendidikan-tab-view" style="display:none;">
         <div class="table-card" style="background:var(--card); border:1px solid var(--b1); border-radius:14px; padding:22px; box-shadow:var(--sh1);">
           <div class="table-top-row" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
             <div>
               <h3 style="margin:0; font-size:1.25rem; font-weight:800; color:var(--t1); display:flex; align-items:center; gap:10px;">
-                <i class="fas fa-book-open" style="color:#8b5cf6;"></i> Struktur Kurikulum OBE D-III Akupunktur Surabaya
+                <i class="fas fa-book-open" style="color:#8b5cf6;"></i> Struktur Kurikulum OBE &amp; RPS D-III Akupunktur
               </h3>
               <p style="margin:4px 0 0 0; font-size:0.85rem; color:var(--t3);">
-                Distribusi 110 SKS kurikulum OBE, capaian pembelajaran (CPL), dan ketersediaan Rencana Pembelajaran Semester (RPS)
+                Daftar mata kuliah kurikulum OBE dan ketersediaan berkas RPS. Data kosong murni tersinkronisasi realtime dengan database SIPENAS.
               </p>
             </div>
-            <span class="badge" style="background:#f5f3ff; color:#7c3aed; font-weight:700; padding:6px 12px; font-size:0.85rem;">
-              Total 110 SKS (6 Semester)
-            </span>
+            <button onclick="switchPendidikanTab('arsip')" class="btn-ghost-sm" style="color:#8b5cf6; font-weight:700; border:1px solid #8b5cf640; border-radius:8px; padding:6px 12px;">
+              <i class="fas fa-plus-circle"></i> Unggah Dokumen RPS
+            </button>
           </div>
 
           <div style="overflow-x:auto;">
@@ -2935,7 +2935,7 @@
                   <th style="width:40px">#</th>
                   <th>Kode MK</th>
                   <th>Nama Mata Kuliah</th>
-                  <th>SKS (T/P/K)</th>
+                  <th>SKS</th>
                   <th>Semester</th>
                   <th>Dosen Pengampu</th>
                   <th>Kategori CPL</th>
@@ -2943,7 +2943,15 @@
                   <th>Aksi</th>
                 </tr>
               </thead>
-              <tbody id="pendKurikulumTableBody"></tbody>
+              <tbody id="pendKurikulumTableBody">
+                <tr>
+                  <td colspan="9" style="text-align:center; padding:36px; color:var(--t3);">
+                    <i class="fas fa-inbox" style="font-size:1.8rem; margin-bottom:10px; display:block; color:#8b5cf6;"></i>
+                    <strong style="color:var(--t1); font-size:0.95rem; display:block; margin-bottom:4px;">Belum Ada Dokumen Kurikulum &amp; RPS</strong>
+                    Data kosong (0 berkas) murni sesuai database Portal Bidang Pendidikan.
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -3685,7 +3693,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=1034" defer></script>
+<script src="app.js?v=20260926_kurikulum_clean" defer></script>
 
 <!-- Notification Sounds -->
 
