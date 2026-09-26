@@ -318,4 +318,30 @@ Menjawab instruksi lanjutan (*"Proses opsi 3"*), telah dibangun modul otomasi pe
 
 ---
 
+
+## 📜 11. Kronologi Percakapan & Solusi: Fase 7 (Animasi Latar Belakang Bergerak Halaman Login & Registrasi)
+
+### 1. Peningkatan Estetika Visual Premium Latar Belakang (*Animated Ambient Aurora & Digital Constellation*) (27 September 2026)
+
+Menjawab permintaan pengguna (*"bisa buat animasi bergerak untuk latar belakangnya"* pada halaman login SIMARSIP), telah diterapkan desain visual modern interaktif berstandar enterprise:
+
+- **Latar Belakang Aurora Mesh Bergerak (*Floating Ambient Plasma Orbs*)**:
+  - Menggantikan latar belakang abu-abu polos statis dengan perpaduan gradien malam institusi (*Deep Academic Midnight Navy & Royal Blue*).
+  - 4 buah bola cahaya aurora (*glowing diffuse orbs*) berukuran 450px–620px dengan efek `filter: blur(85px)` yang bergerak mengambang secara dinamis dan organik menggunakan keyframe CSS terpisah (`floatOrb1` s.d `floatOrb4`).
+- **Jaringan Garis Grid Perspektif Mengalir (*Subtle Perspective Grid Drift*)**:
+  - Layer kisi-kisi matriks digital semi-transparan (`opacity: 0.6`) dengan transformasi 3D perspektif yang meluncur perlahan secara berkelanjutan.
+- **Kanvas Partikel Interaktif Rasi Digital (*Digital Archival Constellation Canvas*)**:
+  - Menggunakan elemen `<canvas id="authCanvas">` berkinerja tinggi (60 FPS, konsumsi daya sangat rendah) yang merender ~50 partikel cahaya yang saling terhubung dengan garis-garis halus ketika berdekatan.
+  - Partikel merespons gerakan kursor mouse pengguna secara interaktif (*gentle mouse repulsion & drift*).
+  - Otomatis melakukan jeda (*pause*) saat pengguna sudah berhasil login ke dalam sistem agar tidak mengonsumsi memori atau CPU laptop saat bekerja di dashboard.
+- **Peningkatan Kartu Login Glassmorphism**:
+  - Panel login (`.auth-box`) kini memiliki efek *frosted glass* halus (`backdrop-filter: blur(20px)`), border kaca tipis, elevasi bayangan mendalam, serta animasi muncul lembut (*smooth entrance animation*).
+  - Dilengkapi pill status resmi di bawah kartu login: **`🟢 SIMARSIP Cloud • Akademi Akupunktur Surabaya • Server Online`** dengan titik lampu indikator yang berdenyut (*pulsing dot*).
+- **Kesesuaian Halaman Registrasi**:
+  - Halaman pendaftaran pengguna (`register.html`) otomatis mengadopsi latar belakang animasi yang sama indahnya.
+- **Pembaruan Tag Versi Cache**:
+  - Diperbarui menjadi `?v=20260927_superapp_v12` pada seluruh berkas terkait.
+
+---
+
 *Dokumen ini merupakan arsip riwayat percakapan resmi, keputusan teknis, dan dokumentasi arsitektur pengembangan sistem Akademi Akupunktur Surabaya (AAS).*

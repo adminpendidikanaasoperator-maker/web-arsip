@@ -43,6 +43,15 @@
 </style>
 
 <div id="authWrapper" class="auth-container" style="display:flex;">
+  <!-- ANIMATED AMBIENT BACKGROUND & PARTICLES -->
+  <div class="auth-bg-ambient">
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+    <div class="ambient-orb orb-4"></div>
+    <div class="ambient-grid-overlay"></div>
+    <canvas id="authCanvas" class="auth-canvas"></canvas>
+  </div>
   <div class="auth-box reg-landscape" id="registerForm" style="display:flex;">
     
     <!-- LEFT COLUMN -->
@@ -121,5 +130,93 @@
 <script src="generator.js?v=999" defer></script>
 <script src="auth.js?v=999" defer></script>
 <script src="app.js?v=999" defer></script>
+
+  <script>
+    (function initAuthParticles() {
+      const canvas = document.getElementById('authCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let particles = [];
+      let mouse = { x: -1000, y: -1000, radius: 150 };
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      window.addEventListener('mousemove', function(e) {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+      });
+      window.addEventListener('mouseleave', function() {
+        mouse.x = -1000;
+        mouse.y = -1000;
+      });
+
+      const count = Math.min(Math.floor((width * height) / 20000), 55);
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.65,
+          vy: (Math.random() - 0.5) * 0.65,
+          size: Math.random() * 2 + 1,
+          alpha: Math.random() * 0.5 + 0.3
+        });
+      }
+
+      function loop() {
+        ctx.clearRect(0, 0, width, height);
+
+        for (let i = 0; i < particles.length; i++) {
+          let p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          const dx = mouse.x - p.x;
+          const dy = mouse.y - p.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < mouse.radius) {
+            const force = (mouse.radius - dist) / mouse.radius;
+            p.x -= (dx / dist) * force * 2.2;
+            p.y -= (dy / dist) * force * 2.2;
+          }
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(186, 230, 253, ' + p.alpha + ')';
+          ctx.shadowBlur = 8;
+          ctx.shadowColor = '#60a5fa';
+          ctx.fill();
+
+          for (let j = i + 1; j < particles.length; j++) {
+            let p2 = particles[j];
+            const dxx = p.x - p2.x;
+            const dyy = p.y - p2.y;
+            const d = Math.sqrt(dxx * dxx + dyy * dyy);
+            if (d < 120) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p2.x, p2.y);
+              ctx.strokeStyle = 'rgba(147, 197, 253, ' + ((1 - d / 120) * 0.22) + ')';
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(loop);
+      }
+      loop();
+    })();
+  </script>
+  
 </body>
 </html>
