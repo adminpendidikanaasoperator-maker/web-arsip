@@ -23,7 +23,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=20260927_superapp_v15" />
+  <link rel="stylesheet" href="style.css?v=20260927_superapp_v16" />
 </head>
 <body>
 
@@ -369,20 +369,14 @@
         <input type="text" id="topbarSearch" class="topbar-search-input" placeholder="Cari arsip, no. surat..." onkeyup="handleTopbarSearch(event)">
       </div>
 
-            <button id="btnInstallPwa" class="tb-btn tb-btn-outline" style="display:none; color:#1e40af; border-color:#93c5fd; background:rgba(37,99,235,0.06); font-size:0.8rem; padding:6px 12px;" onclick="triggerPwaInstall()" title="Install Aplikasi SIMARSIP di Komputer">
-        <i class="fas fa-download"></i> <span>Install App</span>
-      </button>
-      <button class="tb-btn tb-btn-outline" style="color:#b91c1c; border-color:#b91c1c; margin-left:10px;" onclick="doLogout()">
-        <i class="fas fa-sign-out-alt"></i> Keluar
-      </button>
-
       <div class="ayear-box">
         <i class="fas fa-calendar-alt"></i>
         <select id="globalAYear" onchange="onAYearChange()" title="Filter Tahun"></select>
       </div>
+
       <div class="export-box">
         <button class="tb-btn tb-btn-outline" onclick="toggleExportMenu()">
-          <i class="fas fa-download"></i> Ekspor <i class="fas fa-caret-down"></i>
+          <i class="fas fa-download"></i> <span>Ekspor</span> <i class="fas fa-caret-down"></i>
         </button>
         <div class="export-menu" id="exportMenu">
           <span class="export-label">Pilih Format</span>
@@ -397,7 +391,6 @@
           <hr/>
           <button onclick="backupFullSystem()"><i class="fas fa-shield-halved" style="color:#2563eb;"></i> Backup Lengkap Sistem (.JSON)</button>
           <button onclick="openRestoreModal()"><i class="fas fa-file-import" style="color:#10b981;"></i> Pulihkan Data (Restore)</button>
-
         </div>
       </div>
       
@@ -405,9 +398,17 @@
         <i class="fas fa-bell"></i>
         <span class="badge" id="expiryBadge">0</span>
       </button>
-      <button id="btnGlobalAdd"
- class="tb-btn tb-btn-primary" onclick="isLamptkesMode=false; isBanptMode=false; openForm();">
+
+      <button id="btnGlobalAdd" class="tb-btn tb-btn-primary" onclick="isLamptkesMode=false; isBanptMode=false; openForm();">
         <i class="fas fa-plus"></i> <span>Tambah Arsip</span>
+      </button>
+
+      <button id="btnInstallPwa" class="tb-btn tb-btn-outline" style="display:none; color:#1e40af; border-color:#93c5fd; background:rgba(37,99,235,0.06); font-size:0.8rem; padding:6px 12px;" onclick="triggerPwaInstall()" title="Install Aplikasi SIMARSIP di Komputer">
+        <i class="fas fa-download"></i> <span>Install App</span>
+      </button>
+
+      <button class="tb-btn tb-btn-outline" style="color:#b91c1c; border-color:#fca5a5; background:#fef2f2;" onclick="doLogout()" title="Keluar dari Akun">
+        <i class="fas fa-sign-out-alt"></i> <span>Keluar</span>
       </button>
     </div>
   </header>
@@ -5066,7 +5067,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=20260927_superapp_v15" defer></script>
+<script src="app.js?v=20260927_superapp_v16" defer></script>
 
 <!-- Notification Sounds -->
 
