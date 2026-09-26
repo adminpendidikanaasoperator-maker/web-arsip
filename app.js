@@ -901,7 +901,7 @@ function renderDeptSubmenus() {
     
     const ul = document.createElement('ul');
     ul.className = 'sb-sub-menu';
-    ul.id = `submenu-${deptId}`;
+    ul.id = `dept-${deptId}-sub-menu`;
     ul.style.display = (currentPage === 'dept' && currentDept === deptId) ? 'block' : 'none';
     
     if (deptId === 'laboratorium') {
@@ -1572,7 +1572,7 @@ function setupNav() {
       const page = link.dataset.page, dept = link.dataset.dept||'';
       
       if (page === 'dept' && currentDept === dept && currentPage === 'dept') {
-        const menu = document.getElementById(`dept-${dept}-sub-menu`);
+        const menu = document.getElementById(`dept-${dept}-sub-menu`) || document.getElementById(`submenu-${dept}`);
         if (menu) menu.style.display = (menu.style.display === 'none') ? 'flex' : 'none';
         return;
       }
@@ -1588,7 +1588,7 @@ function setupNav() {
       // Otomatis buka sub-menu dept yang dipilih, tutup yang lain
       if (page === 'dept' && dept) {
         Object.keys(DEPT).forEach(k => {
-          const m = document.getElementById(`dept-${k}-sub-menu`);
+          const m = document.getElementById(`dept-${k}-sub-menu`) || document.getElementById(`submenu-${k}`);
           if (m) m.style.display = (k === dept) ? 'flex' : 'none';
         });
       }
@@ -1623,7 +1623,7 @@ async function showPage(page) {
   if(page === 'lamptkes' && typeof generateLamptkesReport === 'function') generateLamptkesReport();
 
   Object.keys(DEPT).forEach(k => {
-    const menu = document.getElementById(`dept-${k}-sub-menu`);
+    const menu = document.getElementById(`dept-${k}-sub-menu`) || document.getElementById(`submenu-${k}`);
     if(menu) menu.style.display = (page === 'dept' && currentDept === k) ? 'flex' : 'none';
   });
 
