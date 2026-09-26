@@ -1069,7 +1069,7 @@ function renderDeptSubmenus() {
       ul.innerHTML += `<li onclick="syncRumahTanggaFromSumber()" style="color:#22c55e; font-weight:600;">
         <i class="fas fa-rotate" id="sbRumahTanggaSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Rumah Tangga</span>
       </li>`;
-      ul.innerHTML += `<li onclick="window.open('https://bidang-rumah-tangga.web.app', '_blank')" style="color:#06b6d4; font-weight:700;">
+      ul.innerHTML += `<li onclick="window.open('https://bidang-rumah-tangga.adminpendidikanaas-operator.workers.dev', '_blank')" style="color:#06b6d4; font-weight:700;">
         <i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Web App SIM-RT Utuh</span>
       </li>`;
     } else if (DEPT_JENIS[deptId]) {
@@ -10223,7 +10223,7 @@ function switchRumahTanggaTab(tabKey) {
   if (currentRumahTanggaTab === 'portal') {
     const iframe = document.getElementById('rumahTanggaIframe');
     if (iframe && !iframe.src) {
-      iframe.src = 'https://bidang-rumah-tangga.web.app';
+      iframe.src = 'https://bidang-rumah-tangga.adminpendidikanaas-operator.workers.dev';
     }
   }
 
