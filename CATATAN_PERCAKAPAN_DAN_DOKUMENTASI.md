@@ -481,4 +481,69 @@ Kini, telah diintegrasikan **Pusat Grafik & Analisis Seluruh Bidang Institusi (*
 
 ---
 
+## 📜 14. Kronologi Percakapan & Solusi: Fase 10 (Standarisasi Penamaan Berkas & Struktur Folder Cloud Multi-Portal)
+
+### 1. Instruksi Kunci Pengguna (27 September 2026)
+> *"Pastikan semua portal bidang saat mengupload file di portalnya masing masing dan tersinkron ke simarsip, filenya tersimpan dengan nama bidangnya, sesuai nama sidebarnya, tahun akademik ganjil/genap, bulan,tanggal,file."*
+
+### 2. Formulasi Arsitektur Penamaan Standar Institusi
+
+Sistem menetapkan protokol penamaan berkas dan pengorganisasian direktori penyimpanan Google Drive terpadu yang berlaku otomatis di seluruh portal institusi:
+
+1. **Rumus Penamaan Berkas (File Name Standard)**:
+   ```
+   [Nama Bidang Sesuai Sidebar] - [TA Ganjil/Genap] - [Bulan] - [Tanggal] - [Nama File Asli]
+   ```
+   - **Contoh Riil**:
+     - `Bidang Sarana dan Prasarana - TA 2026-2027 Ganjil - September - 20 - SPJ_Kas_Kecil_Rumah_Tangga_September_2026.pdf`
+     - `Bidang Administrasi Akademik - TA 2026-2027 Ganjil - September - 27 - KHS_Mahasiswa_Semester_4.pdf`
+     - `Bidang Pendidikan - TA 2025-2026 Genap - April - 10 - RPS_Moxibustion.docx`
+     - `Bidang Administrasi Sistem Informasi Pendidikan Tinggi - TA 2026-2027 Ganjil - September - 20 - Laporan_PDDikti_Feeder_Genap_2026.pdf`
+     - `Bidang Kemahasiswaan dan Alumni - TA 2026-2027 Ganjil - September - 27 - SK_Pengurus_BEM.pdf`
+     - `Bidang Laboratorium - TA 2025-2026 Ganjil - Januari - 15 - Kalibrasi_Jarum_Akupunktur.pdf`
+
+2. **Rumus Struktur Folder Cloud Google Drive (`folderPath` Apps Script)**:
+   ```
+   SIMARSIP AAS / [Nama Bidang Sesuai Sidebar] / [TA Ganjil/Genap] / [Bulan] / Tanggal [DD]
+   ```
+   - **Contoh Path Hirarki**:
+     `SIMARSIP AAS / Bidang Administrasi Akademik / TA 2026-2027 Ganjil / September / Tanggal 27`
+   - Parameter ini dikirimkan langsung ke Google Apps Script backend (`AKfycby0heFyeXzAmm_uNBvItuoCqFBe-79h6vL0sJ6iIYYJ-b-eWesITSu4MvHoSv4gqgMoNw`) yang secara otomatis membuat subfolder bertingkat di Google Drive institusi.
+
+3. **Logika Otomatisasi Penentuan Tahun Akademik (Ganjil/Genap)**:
+   - Dibuat fungsi cerdas `formatTahunAkademikGanjilGenap(dateStr, ayStr, semesterStr)`:
+     - Bulan 9 s/d Bulan 2 $\rightarrow$ **Semester Ganjil** (misal: Tanggal September 2026 $\rightarrow$ `TA 2026-2027 Ganjil`).
+     - Bulan 3 s/d Bulan 8 $\rightarrow$ **Semester Genap** (misal: Tanggal April 2026 $\rightarrow$ `TA 2025-2026 Genap`).
+     - Jika dokumen menyertakan semester eksplisit (misal Semester 1, 3, 5), otomatis dikelompokkan ke Ganjil; sedangkan Semester 2, 4, 6 dikelompokkan ke Genap.
+
+---
+
+### 3. Implementasi Menyeluruh di Seluruh Portal Bidang
+
+Pembaruan dilakukan secara terkoordinasi pada seluruh modul pengunggahan (*upload service*) portal bidang:
+
+| No | Modul / Subportal | File Sumber | Penyesuaian yang Dilakukan |
+|---|---|---|---|
+| 1 | **Portal Utama SIMARSIP** | `DATA WEB ARSIP/app.js` | Penambahan modul helper utama (`getSidebarDeptLabel`, `formatTahunAkademikGanjilGenap`, `generateStandardArchivalFileName`, `getStandardArchivalFolderPath`), normalisasi in-memory snapshot, sinkronisasi sumber data, dan pembaruan modal `viewDetail`. |
+| 2 | **Bidang Pendidikan & Kurikulum SIPENAS** | `App Bidang Pendidikan/src/services/cloudUploadService.js` | Integrasi format nama berkas standar & payload `folderPath` 5-tingkat sebelum dikirim ke Google Apps Script. |
+| 3 | **Bidang SIMTI (Sistem Informasi Pendidikan Tinggi)** | `APP Bidang Administrasi Sitem Informasi Pendidikan Tinggi/src/services/cloudUploadService.js` | Penerapan label resmi sidebar `Bidang Administrasi Sistem Informasi Pendidikan Tinggi`, TA Ganjil/Genap, dan folder hirearki cloud. |
+| 4 | **Bidang Administrasi Akademik** | `App Bidang Administrasi Akademik/src/components/ArchiveView.jsx` | Integrasi penamaan berkas standar `Bidang Administrasi Akademik` saat sinkronisasi arsip akademik. |
+| 5 | **Bidang Kemahasiswaan & Alumni** | `Bidang Kemahasiswaan dan ALUMNI/src/utils/gdrive.js` | Format payload upload Google Drive disesuaikan dengan standar penamaan & folder 5-tingkat `Bidang Kemahasiswaan dan Alumni`. |
+| 6 | **Bidang Sarana dan Prasarana** | `Bidang Sarana Prasaran/js/app.js` | Integrasi penamaan standar berkas sarpras & folder path saat berkas diunggah. |
+| 7 | **Fungsi Sinkronisasi Sub-Bidang ke SIMARSIP** | `DATA WEB ARSIP/app.js` | Pembaruan rutin sinkronisasi: `syncKemahasiswaanFromSumber`, `syncSarprasFromSumber`, `syncAkademikFromSumber`, `syncPendidikanFromSumber`, `syncPengabdianFromSumber`. |
+
+---
+
+### 4. Penyempurnaan Tampilan Antarmuka (UI/UX)
+- **Modal Detail Dokumen (`viewDetail`)**:
+  - Diberikan blok visual khusus **"DOKUMEN BERKAS & LOKASI ARSIP CLOUD"**.
+  - Menampilkan chip nama berkas standar institusi secara jelas.
+  - Menampilkan path lengkap direktori folder penyimpanan Google Drive (`Lokasi Penyimpanan: SIMARSIP AAS / [Bidang] / [TA Ganjil/Genap] / [Bulan] / [Tanggal]`).
+- **Panduan Pengunggahan Google Drive**:
+  - Diberikan keterangan panduan real-time pada formulir upload di `index.html`.
+- **Pembaruan Tag Versi Cache**:
+  - Diperbarui menjadi `?v=20260927_superapp_v15` pada `index.html` untuk menjamin browser memuat versi terbaru tanpa terhalang cache.
+
+---
+
 *Dokumen ini merupakan arsip riwayat percakapan resmi, keputusan teknis, dan dokumentasi arsitektur pengembangan sistem Akademi Akupunktur Surabaya (AAS).*

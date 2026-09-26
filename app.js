@@ -1147,6 +1147,118 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 /* ─── ACADEMIC YEAR ─── */
+/* ─── STANDAR PENAMAAN & PENYIMPANAN ARSIP BIDANG (SESUAI SIDEBAR) ─── */
+const INDO_MONTH_NAMES = [
+  'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+  'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+];
+
+function getSidebarDeptLabel(bidang) {
+  if (!bidang) return 'Bidang Institusi AAS';
+  const bClean = String(bidang).toLowerCase().trim().replace(/-/g, '_');
+  if (typeof DEPT !== 'undefined') {
+    if (DEPT[bClean]?.label) return DEPT[bClean].label;
+    if (DEPT[bidang]?.label) return DEPT[bidang].label;
+  }
+
+  const map = {
+    'akademik': 'Bidang Administrasi Akademik',
+    'ketenagaan': 'Bidang Ketenagaan',
+    'pendidikan': 'Bidang Pendidikan',
+    'administrasi': 'Bidang Administrasi',
+    'sistem_pendidikan': 'Bidang Administrasi Sistem Informasi Pendidikan Tinggi',
+    'laboratorium': 'Bidang Laboratorium',
+    'perpustakaan': 'Bidang Perpustakaan',
+    'penelitian_pelatihan': 'Bidang Penelitian dan Pelatihan',
+    'kemahasiswaan': 'Bidang Kemahasiswaan dan Alumni',
+    'pengabdian': 'Bidang Pengabdian Masyarakat',
+    'admin_kelembagaan': 'Bidang Administrasi dan Kelembagaan',
+    'admin_umum': 'Bidang Administrasi Umum',
+    'admin_kepegawaian': 'Bidang Administrasi Kepegawaian',
+    'admin_keuangan': 'Bidang Administrasi Keuangan Institusi dan Pendidikan',
+    'rumah_tangga': 'Bidang Rumah Tangga',
+    'sarana': 'Bidang Sarana dan Prasarana',
+    'sarpras': 'Bidang Sarana dan Prasarana',
+    'sistem_informasi': 'Bidang Sistem Informasi',
+    'humas': 'Bidang Humas',
+    'promosi': 'Bidang Promosi',
+    'kerjasama': 'Bidang Kerjasama',
+    'it': 'Bidang IT',
+    'spmi': 'Bidang SPMI',
+    'ami': 'Bidang AMI',
+    'sdm': 'Bidang Ketenagaan',
+    'umum': 'Bidang Administrasi Umum',
+    'kepegawaian': 'Bidang Administrasi Kepegawaian',
+    'keuangan': 'Bidang Administrasi Keuangan Institusi dan Pendidikan',
+    'lppm': 'Bidang Penelitian dan Pelatihan'
+  };
+  return map[bClean] || (bidang.startsWith('Bidang ') ? bidang : ('Bidang ' + bidang.charAt(0).toUpperCase() + bidang.slice(1)));
+}
+
+function formatTahunAkademikGanjilGenap(dateStr, ayStr, semesterStr) {
+  const strCombined = ((ayStr || '') + ' ' + (semesterStr || '')).toLowerCase();
+  const isGenap = /genap|semester 2|semester ii|semester 4|semester iv|semester 6|semester vi/i.test(strCombined);
+  const isGanjil = /ganjil|semester 1|semester i|semester 3|semester iii|semester 5|semester v/i.test(strCombined);
+
+  const d = dateStr ? new Date(dateStr) : new Date();
+  const month = isNaN(d.getMonth()) ? (new Date().getMonth() + 1) : (d.getMonth() + 1); // 1-12
+  const year = isNaN(d.getFullYear()) ? new Date().getFullYear() : d.getFullYear();
+
+  let semName = '';
+  let taStart = year;
+  let taEnd = year + 1;
+
+  if (isGenap) {
+    semName = 'Genap';
+    taStart = (month <= 8) ? (year - 1) : year;
+    taEnd = taStart + 1;
+  } else if (isGanjil) {
+    semName = 'Ganjil';
+    taStart = (month <= 2) ? (year - 1) : year;
+    taEnd = taStart + 1;
+  } else {
+    if (month >= 9 || month <= 2) {
+      semName = 'Ganjil';
+      taStart = (month <= 2) ? (year - 1) : year;
+      taEnd = taStart + 1;
+    } else {
+      semName = 'Genap';
+      taStart = year - 1;
+      taEnd = year;
+    }
+  }
+
+  if (ayStr && /20\d\d[/-]20\d\d/.test(ayStr)) {
+    const cleaned = ayStr.replace('/', '-').replace(/[^0-9-]/g, '');
+    return 'TA ' + cleaned + ' ' + semName;
+  }
+
+  return 'TA ' + taStart + '-' + taEnd + ' ' + semName;
+}
+
+function generateStandardArchivalFileName(bidang, dateStr, ayStr, originalFileName, semesterStr) {
+  const deptLabel = getSidebarDeptLabel(bidang);
+  const d = dateStr ? new Date(dateStr) : new Date();
+  const monthName = isNaN(d.getMonth()) ? INDO_MONTH_NAMES[new Date().getMonth()] : INDO_MONTH_NAMES[d.getMonth()];
+  const dayNum = isNaN(d.getDate()) ? String(new Date().getDate()).padStart(2, '0') : String(d.getDate()).padStart(2, '0');
+  const taStr = formatTahunAkademikGanjilGenap(dateStr, ayStr, semesterStr);
+
+  let cleanName = (originalFileName || 'dokumen.pdf').trim();
+  cleanName = cleanName.replace(/^Bidang [^-]+ - TA [^-]+ - [^-]+ - [^-]+ - /i, '');
+
+  return `${deptLabel} - ${taStr} - ${monthName} - ${dayNum} - ${cleanName}`;
+}
+
+function getStandardArchivalFolderPath(bidang, dateStr, ayStr, semesterStr) {
+  const deptLabel = getSidebarDeptLabel(bidang);
+  const d = dateStr ? new Date(dateStr) : new Date();
+  const monthName = isNaN(d.getMonth()) ? INDO_MONTH_NAMES[new Date().getMonth()] : INDO_MONTH_NAMES[d.getMonth()];
+  const dayNum = isNaN(d.getDate()) ? String(new Date().getDate()).padStart(2, '0') : String(d.getDate()).padStart(2, '0');
+  const taStr = formatTahunAkademikGanjilGenap(dateStr, ayStr, semesterStr);
+
+  return ['SIMARSIP AAS', deptLabel, taStr, monthName, 'Tanggal ' + dayNum];
+}
+
 function getAY(dateStr) {
   if (!dateStr) return '';
   if (String(dateStr).length === 4) return String(dateStr);
@@ -1224,7 +1336,16 @@ function processSnapshot(snapshot, collectionName) {
               a.gdriveLink = '';
               try { db.collection('arsip').doc(a.id).update({ gdriveLink: '' }); } catch(e) {}
           }
-          a.ay = getAY(a.tanggal); 
+          a.ay = getAY(a.tanggal);
+          if (!a.fileName || a.fileName === 'dokumen.pdf' || a.fileName.length < 5) {
+            const baseName = a.judul ? (a.judul.replace(/[^a-zA-Z0-9_-]/g, '_') + '.' + (a.format || 'pdf')) : 'dokumen.pdf';
+            a.fileName = generateStandardArchivalFileName(a.bidang, a.tanggal, a.ay, baseName, a.metadata?.semester);
+          } else {
+            a.fileName = generateStandardArchivalFileName(a.bidang, a.tanggal, a.ay, a.fileName, a.metadata?.semester);
+          }
+          if (!a.gdriveFolder) {
+            a.gdriveFolder = getStandardArchivalFolderPath(a.bidang, a.tanggal, a.ay, a.metadata?.semester).join(' / ');
+          } 
       });
       arsip = data;
  
@@ -3763,6 +3884,7 @@ async function syncSarprasFromSumber() {
         }
 
         const portalId = `SIMSPRAS-${col.key}-${docSnap.id}`;
+        const origSarFile = item.fileName || item.namaFile || `${col.name}_${docSnap.id}.pdf`;
         
         let judul = item.nama || item.namaBarang || item.judul || 'Dokumen Sarpras';
         let ket = [];
@@ -5026,7 +5148,7 @@ async function saveArsip(e) {
     pengirim:document.getElementById('fPengirim').value.trim(),
     status:document.getElementById('fStatus').value,
     format:document.getElementById('fFormat').value||'pdf',
-    fileName:document.getElementById('fFileName').value.trim(),
+    fileName:standardFileName,
     gdriveLink,
     gdriveFolder,
     keterangan:document.getElementById('fKeterangan') ? document.getElementById('fKeterangan').value.trim() : '',
@@ -5161,9 +5283,8 @@ async function saveArsip(e) {
   }
 }
 
-async function uploadToGDrive(file, bidang, jenis, tahun, tanggal = new Date().toISOString().slice(0, 10)) {
+async function uploadToGDrive(file, bidang, jenis, tahun, tanggal = new Date().toISOString().slice(0, 10), semester = '') {
   if (!GAS_URL) {
-    // Simulasi jika belum punya URL GAS
     return new Promise(resolve => {
       setTimeout(() => {
         resolve({
@@ -5174,31 +5295,29 @@ async function uploadToGDrive(file, bidang, jenis, tahun, tanggal = new Date().t
     });
   }
 
+  const deptLabel = getSidebarDeptLabel(bidang);
+  const standardFileName = generateStandardArchivalFileName(bidang, tanggal, tahun, file.name, semester);
+  const folderPathArr = getStandardArchivalFolderPath(bidang, tanggal, tahun, semester);
+
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = async function() {
       const base64Data = reader.result.split(',')[1];
       const payload = {
-          fileName: file.name,
-          filename: file.name,
-          mimeType: file.type || 'application/octet-stream',
-          base64Data: base64Data,
-          base64: base64Data,
-          bidang: DEPT[bidang]?.label || bidang,
-          jenis: jenis,
-          tahun: tahun,
-          folderPath: (function() {
-            let levelBidang = DEPT[bidang]?.label || bidang;
-            
-            const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            const tgl = new Date(tanggal);
-            const levelTahun = isNaN(tgl.getFullYear()) ? (tahun || "Umum") : tgl.getFullYear().toString();
-            const levelBulan = isNaN(tgl.getMonth()) ? "Bulan Umum" : monthNames[tgl.getMonth()];
-            const levelTanggal = isNaN(tgl.getDate()) ? "Tanggal Umum" : String(tgl.getDate()).padStart(2, '0');
-            
-            return ["SIMARSIP AAS", levelBidang, levelTahun, levelBulan, levelTanggal];
-          })()
-        };
+        fileName: standardFileName,
+        filename: standardFileName,
+        originalName: file.name,
+        mimeType: file.type || 'application/octet-stream',
+        base64Data: base64Data,
+        base64: base64Data,
+        bidang: deptLabel,
+        jenis: jenis,
+        tahun: tahun,
+        academicYear: formatTahunAkademikGanjilGenap(tanggal, tahun, semester),
+        folderPath: folderPathArr,
+        folderPaths: [folderPathArr],
+        folderPathString: folderPathArr.join(' / ')
+      };
 
       try {
         const response = await fetch(GAS_URL, {
@@ -5207,7 +5326,11 @@ async function uploadToGDrive(file, bidang, jenis, tahun, tanggal = new Date().t
         });
         const result = await response.json();
         if(result.status === 'success') {
-          resolve(result);
+          resolve({
+            ...result,
+            standardFileName: standardFileName,
+            folderPathString: folderPathArr.join(' / ')
+          });
         } else {
           reject(new Error(result.message || 'Unknown error from GAS'));
         }
@@ -5326,8 +5449,8 @@ function viewDetail(id) {
       <div class="detail-field"><label>Pengirim / Pembuat</label><span>${esc(a.pengirim||'—')}</span></div>
       <div class="detail-field"><label>Status</label>${statusBadge(a.status)}</div>
       <div class="detail-field"><label>Tahun Akademik</label><span class="td-ta">${a.ay||'—'}</span></div>
-      <div class="detail-field" style="grid-column:1/-1">
-        <label>Dokumen Google Drive</label>
+            <div class="detail-field" style="grid-column:1/-1">
+        <label>Dokumen Berkas &amp; Lokasi Arsip Cloud</label>
         ${a.gdriveLink && a.gdriveLink !== 'UPLOADING'
           ?`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px">
               <a href="${esc(a.gdriveLink)}" target="_blank" rel="noopener" class="gdrive-link-btn" onclick="logGDriveOpen('${a.id}',event)">
@@ -5338,10 +5461,14 @@ function viewDetail(id) {
               <button class="btn-ghost" onclick="previewDoc('${a.id}');closeDetail()">
                 <i class="fas fa-eye"></i> Pratinjau
               </button>
-            </div>
-            ${a.fileName?`<div style="margin-top:6px;font-size:.75rem;color:var(--t3)"><i class="${f.icon}" style="color:${f.color}"></i> ${esc(a.fileName)}</div>`:''}
-          `
-          :`<span style="color:var(--t3);font-size:.84rem">Belum ada file dilampirkan — Edit arsip untuk menambahkan link Google Drive.</span>`}
+            </div>`
+          :`<div style="color:var(--t3);font-size:.84rem;margin-bottom:6px;"><i class="fas fa-circle-info" style="color:#64748b;"></i> Berkas siap disinkronkan ke Cloud Drive.</div>`}
+        <div style="margin-top:6px;font-size:.78rem;font-weight:600;color:var(--text-main);background:#f8fafc;padding:6px 10px;border-radius:6px;border:1px solid #e2e8f0;word-break:break-all;">
+          <i class="${f.icon}" style="color:${f.color};margin-right:6px;"></i> ${esc(a.fileName || generateStandardArchivalFileName(a.bidang, a.tanggal, a.ay, a.judul + '.' + (a.format || 'pdf')))}
+        </div>
+        <div style="margin-top:5px;font-size:.75rem;color:var(--t3);">
+          <i class="fas fa-folder-tree" style="color:#f59e0b;margin-right:5px;"></i> Lokasi Penyimpanan: <b>${esc(a.gdriveFolder || getStandardArchivalFolderPath(a.bidang, a.tanggal, a.ay).join(' / '))}</b>
+        </div>
       </div>
     </div>
     ${a.keterangan?`<div><label style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3)">Keterangan</label><div class="detail-keterangan">${esc(a.keterangan)}</div></div>`:''}
