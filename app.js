@@ -1998,6 +1998,7 @@ function renderArsipTable() {
       <td>${fmtBadge(a)}</td>
       <td><div class="act-group">
         <button class="act-btn" title="Detail" onclick="viewDetail('${a.id}')"><i class="fas fa-eye"></i></button>
+        <button class="act-btn qr" title="Verifikasi Keaslian QR" onclick="openVerificationModal('${a.id}')" style="color:#2563eb;"><i class="fas fa-qrcode"></i></button>
         <button class="act-btn edit" title="Edit" onclick="editArsip('${a.id}')"><i class="fas fa-pen"></i></button>
         <button class="act-btn del" title="Hapus" onclick="deleteArsip('${a.id}')"><i class="fas fa-trash"></i></button>
       </div></td>
@@ -3655,6 +3656,7 @@ async function saveArsip(e) {
 
   const id=document.getElementById('editId').value;
   const tgl=document.getElementById('fTanggal').value;
+  const expDateVal = document.getElementById('fExpiredDate')?.value || '';
   let gdriveLink=document.getElementById('fGdriveLink').value.trim();
   let gdriveFolder='';
   const bidang=document.getElementById('fBidang').value;
@@ -3681,7 +3683,7 @@ async function saveArsip(e) {
     judul:document.getElementById('fJudul').value.trim(),
     bidang:bidang,
     jenis:jenis,
-    tanggal:tgl, ay:tahun,
+    tanggal:tgl, ay:tahun, expiredDate: expDateVal,
     pengirim:document.getElementById('fPengirim').value.trim(),
     status:document.getElementById('fStatus').value,
     format:document.getElementById('fFormat').value||'pdf',
@@ -10580,3 +10582,485 @@ window.handleTopbarSearch = function(e) {
     }
   }
 };
+
+
+// ══════════════════════════════════════════════════════════════════
+// FITUR BARU: EXPIRY NOTIF, QR VERIFIKASI, BACKUP/RESTORE & PWA
+// ══════════════════════════════════════════════════════════════════
+
+// 1. DOKUMEN RETENSI & MASA BERLAKU (EXPIRY ALERT)
+let currentExpiryFilter = 'all';
+
+function calculateDocExpiry(a) {
+  let expDateStr = a.expiredDate || a.tgl_kedaluwarsa || (a.metadata && (a.metadata.expiredDate || a.metadata.tgl_berlaku)) || null;
+  
+  if (!expDateStr && a.tanggal) {
+    const rawTgl = new Date(a.tanggal);
+    if (!isNaN(rawTgl.getTime())) {
+      const b = (a.bidang || '').toLowerCase();
+      const j = (a.jenis || '').toLowerCase();
+      if (b === 'kerjasama' || j.includes('mou') || j.includes('pks')) {
+        rawTgl.setFullYear(rawTgl.getFullYear() + 3);
+        expDateStr = rawTgl.toISOString().slice(0, 10);
+      } else if (j.includes('akreditasi') || b === 'banpt' || b === 'lamptkes') {
+        rawTgl.setFullYear(rawTgl.getFullYear() + 5);
+        expDateStr = rawTgl.toISOString().slice(0, 10);
+      } else if (j.includes('kalibrasi') || b === 'laboratorium') {
+        rawTgl.setFullYear(rawTgl.getFullYear() + 1);
+        expDateStr = rawTgl.toISOString().slice(0, 10);
+      }
+    }
+  }
+
+  if (!expDateStr) return null;
+
+  const expDate = new Date(expDateStr + 'T00:00:00');
+  if (isNaN(expDate.getTime())) return null;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const diffMs = expDate - today;
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  let status = 'active';
+  if (diffDays < 0) status = 'expired';
+  else if (diffDays <= 60) status = 'warning';
+
+  return {
+    date: expDateStr,
+    diffDays: diffDays,
+    status: status
+  };
+}
+
+function updateExpiryBadgeAndList() {
+  let expList = [];
+  arsip.forEach(a => {
+    const exp = calculateDocExpiry(a);
+    if (exp) {
+      expList.push({ doc: a, expiry: exp });
+    }
+  });
+
+  const countExpired = expList.filter(x => x.expiry.status === 'expired').length;
+  const countWarning = expList.filter(x => x.expiry.status === 'warning').length;
+  const countActive  = expList.filter(x => x.expiry.status === 'active').length;
+
+  const badgeEl = document.getElementById('expiryBadge');
+  if (badgeEl) {
+    const totalAlert = countExpired + countWarning;
+    badgeEl.textContent = totalAlert;
+    badgeEl.style.display = totalAlert > 0 ? 'inline-block' : 'none';
+    badgeEl.style.background = countExpired > 0 ? '#ef4444' : '#f59e0b';
+  }
+
+  const cAll = document.getElementById('expCountAll'); if (cAll) cAll.textContent = expList.length;
+  const cExp = document.getElementById('expCountExpired'); if (cExp) cExp.textContent = countExpired;
+  const cWar = document.getElementById('expCountWarning'); if (cWar) cWar.textContent = countWarning;
+  const cAct = document.getElementById('expCountActive'); if (cAct) cAct.textContent = countActive;
+
+  return expList;
+}
+
+window.openExpiryModal = function() {
+  const overlay = document.getElementById('overlayExpiry');
+  if (!overlay) return;
+  overlay.classList.add('open');
+  renderExpiryList(currentExpiryFilter || 'all');
+};
+
+window.closeExpiryModal = function() {
+  document.getElementById('overlayExpiry')?.classList.remove('open');
+};
+
+window.filterExpiryList = function(filter, btn) {
+  currentExpiryFilter = filter;
+  document.querySelectorAll('#expiryFilterTabs button').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderExpiryList(filter);
+};
+
+function renderExpiryList(filter) {
+  const container = document.getElementById('expiryListContainer');
+  if (!container) return;
+
+  const allItems = updateExpiryBadgeAndList();
+  let filtered = allItems;
+  if (filter && filter !== 'all') {
+    filtered = allItems.filter(x => x.expiry.status === filter);
+  }
+
+  if (!filtered.length) {
+    container.innerHTML = '<div style="text-align:center; padding:32px; color:var(--t3); font-size:0.85rem;"><i class="fas fa-check-circle" style="color:#10b981; font-size:1.5rem; margin-bottom:8px; display:block;"></i>Tidak ada dokumen yang memerlukan perhatian dalam kategori ini.</div>';
+    return;
+  }
+
+  // Sort: expired first, then warning, then active
+  filtered.sort((a, b) => a.expiry.diffDays - b.expiry.diffDays);
+
+  container.innerHTML = filtered.map(item => {
+    const a = item.doc;
+    const exp = item.expiry;
+    let badgeHtml = '';
+    if (exp.status === 'expired') {
+      badgeHtml = `<span style="background:#fee2e2; color:#b91c1c; font-weight:700; font-size:0.75rem; padding:3px 10px; border-radius:99px;"><i class="fas fa-triangle-exclamation"></i> Kedaluwarsa ${Math.abs(exp.diffDays)} hari lalu</span>`;
+    } else if (exp.status === 'warning') {
+      badgeHtml = `<span style="background:#fef3c7; color:#b45309; font-weight:700; font-size:0.75rem; padding:3px 10px; border-radius:99px;"><i class="fas fa-clock"></i> Sisa ${exp.diffDays} hari</span>`;
+    } else {
+      badgeHtml = `<span style="background:#dcfce7; color:#15803d; font-weight:700; font-size:0.75rem; padding:3px 10px; border-radius:99px;"><i class="fas fa-check"></i> Berlaku s.d ${exp.date}</span>`;
+    }
+
+    const d = DEPT[a.bidang] || { label: a.bidang || 'Umum', color: '#3b82f6' };
+
+    return `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:var(--bg3); border:1px solid var(--b1); border-radius:10px; gap:12px; flex-wrap:wrap;">
+        <div style="flex:1; min-width:240px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+            <span style="font-weight:700; color:var(--t1); font-size:0.9rem;">${esc(a.judul)}</span>
+            ${badgeHtml}
+          </div>
+          <div style="font-size:0.78rem; color:var(--t3);">
+            No: <b style="color:var(--t2);">${esc(a.nomor||'-')}</b> &bull; Bidang: <span style="color:${d.color}; font-weight:600;">${d.label}</span> &bull; Terbit: ${fmtDate(a.tanggal)}
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-ghost-sm" onclick="closeExpiryModal(); viewDetail('${a.id}');" style="border:1px solid var(--b1); font-size:0.78rem; padding:6px 12px;">
+            <i class="fas fa-eye"></i> Detail
+          </button>
+          <button class="btn-ghost-sm" onclick="closeExpiryModal(); openVerificationModal('${a.id}');" style="border:1px solid var(--b1); font-size:0.78rem; padding:6px 12px; color:#2563eb;">
+            <i class="fas fa-qrcode"></i> QR
+          </button>
+          <button class="btn-ghost-sm" onclick="closeExpiryModal(); editArsip('${a.id}');" style="border:1px solid #93c5fd; background:#eff6ff; color:#1d4ed8; font-size:0.78rem; padding:6px 12px; font-weight:600;">
+            <i class="fas fa-pen"></i> Perbarui
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+
+// 2. VERIFIKASI KEABSAHAN QR CODE
+let currentVerifDoc = null;
+
+window.openVerificationModal = function(id) {
+  const a = arsip.find(x => x.id === id);
+  if (!a) {
+    toast('Dokumen tidak ditemukan', 'error');
+    return;
+  }
+  currentVerifDoc = a;
+
+  const modal = document.getElementById('overlayVerification');
+  if (!modal) return;
+
+  const d = DEPT[a.bidang] || { label: a.bidang || 'Umum' };
+  document.getElementById('qrDocTitle').textContent = a.judul;
+  document.getElementById('qrDocNomor').textContent = a.nomor || a.id;
+  document.getElementById('qrDocBidang').textContent = d.label;
+
+  const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '');
+  const verifyUrl = baseUrl + '/verify.html?doc=' + encodeURIComponent(a.id);
+
+  const qrImg = document.getElementById('qrCodeImg');
+  if (qrImg) {
+    qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(verifyUrl);
+  }
+
+  modal.classList.add('open');
+};
+
+window.closeVerificationModal = function() {
+  document.getElementById('overlayVerification')?.classList.remove('open');
+};
+
+window.openVerificationPage = function() {
+  if (!currentVerifDoc) return;
+  const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '');
+  const verifyUrl = baseUrl + '/verify.html?doc=' + encodeURIComponent(currentVerifDoc.id);
+  window.open(verifyUrl, '_blank');
+};
+
+window.copyVerificationLink = function() {
+  if (!currentVerifDoc) return;
+  const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '');
+  const verifyUrl = baseUrl + '/verify.html?doc=' + encodeURIComponent(currentVerifDoc.id);
+  navigator.clipboard.writeText(verifyUrl).then(() => {
+    toast('Tautan verifikasi keaslian berhasil disalin!', 'success');
+  }).catch(() => {
+    prompt('Salin tautan verifikasi:', verifyUrl);
+  });
+};
+
+window.printVerificationSheet = function() {
+  if (!currentVerifDoc) return;
+  const a = currentVerifDoc;
+  const d = DEPT[a.bidang] || { label: a.bidang || 'Umum' };
+  const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '');
+  const verifyUrl = baseUrl + '/verify.html?doc=' + encodeURIComponent(a.id);
+  const qrApi = 'https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=' + encodeURIComponent(verifyUrl);
+
+  const printWin = window.open('', '_blank', 'width=750,height=800');
+  printWin.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Lembar Verifikasi - ${esc(a.nomor||a.id)}</title>
+      <style>
+        body { font-family: 'Times New Roman', serif; padding: 40px; color: #111; line-height: 1.5; }
+        .kop { display: flex; align-items: center; justify-content: center; gap: 20px; border-bottom: 3px double #000; padding-bottom: 15px; margin-bottom: 25px; }
+        .kop img { width: 75px; height: 75px; object-fit: contain; }
+        .kop-text { text-align: center; }
+        .kop-text h2 { margin: 0; font-size: 16pt; font-weight: bold; }
+        .kop-text h3 { margin: 2px 0; font-size: 13pt; font-weight: normal; }
+        .kop-text p { margin: 0; font-size: 9pt; font-style: italic; }
+        .cert-title { text-align: center; font-size: 14pt; font-weight: bold; text-decoration: underline; margin-bottom: 4px; }
+        .cert-sub { text-align: center; font-size: 10pt; margin-bottom: 25px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 11pt; }
+        td { padding: 8px 6px; vertical-align: top; }
+        td.label { width: 30%; font-weight: bold; }
+        td.sep { width: 3%; text-align: center; }
+        .ttd-box { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 30px; }
+        .qr-box { text-align: center; }
+        .qr-box img { width: 120px; height: 120px; border: 1px solid #ccc; padding: 4px; }
+        .legal-stamp { border: 2px solid #16a34a; background: #f0fdf4; color: #166534; padding: 10px 14px; border-radius: 8px; font-size: 9pt; font-weight: bold; text-align: center; margin-top: 20px; }
+      </style>
+    </head>
+    <body>
+      <div class="kop">
+        <img src="logo.jpg" alt="Logo AAS" />
+        <div class="kop-text">
+          <h2>AKADEMI AKUPUNKTUR SURABAYA</h2>
+          <h3>SISTEM INFORMASI MANAJEMEN ARSIP (SIMARSIP)</h3>
+          <p>Jl. Ketintang Madya No. 4 Surabaya, Jawa Timur | Telp: (031) 8282828 | Web: akademiakupunktursurabaya.web.id</p>
+        </div>
+      </div>
+
+      <div class="cert-title">LEMBAR PENGESAHAN DOKUMEN DIGITAL</div>
+      <div class="cert-sub">Nomor Registrasi Sistem: ${esc(a.id)}</div>
+
+      <table>
+        <tr><td class="label">Nomor Surat / Arsip</td><td class="sep">:</td><td><b>${esc(a.nomor||'-')}</b></td></tr>
+        <tr><td class="label">Perihal / Judul Dokumen</td><td class="sep">:</td><td><b>${esc(a.judul)}</b></td></tr>
+        <tr><td class="label">Unit Kerja / Bidang</td><td class="sep">:</td><td>${esc(d.label)}</td></tr>
+        <tr><td class="label">Kategori Dokumen</td><td class="sep">:</td><td>${esc(a.jenis||'-')}</td></tr>
+        <tr><td class="label">Tanggal Diterbitkan</td><td class="sep">:</td><td>${fmtDate(a.tanggal)}</td></tr>
+        <tr><td class="label">Tahun Akademik</td><td class="sep">:</td><td>${esc(a.ay||'-')}</td></tr>
+        <tr><td class="label">Pengirim / Penerbit</td><td class="sep">:</td><td>${esc(a.pengirim||'Akademi Akupunktur Surabaya')}</td></tr>
+        <tr><td class="label">Status Berkas</td><td class="sep">:</td><td>RESMI &bull; AKTIF TERDAFTAR DI DATABASE PUSAT AAS</td></tr>
+      </table>
+
+      <div class="legal-stamp">
+        DOKUMEN INI TELAH DILEGALISASI DAN DIVERIFIKASI SECARA ELEKTRONIK MELALUI PORTAL SIMARSIP AAS SEBAGAI BUKTI DOKUMENTASI FISIK DAN DIGITAL YANG SAH.
+      </div>
+
+      <div class="ttd-box">
+        <div class="qr-box">
+          <img src="${qrApi}" alt="QR Validation" />
+          <div style="font-size:8pt; margin-top:4px;">Scan untuk verifikasi online</div>
+        </div>
+        <div style="text-align:center; width:250px;">
+          <div>Surabaya, ${new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})}</div>
+          <div style="margin-top:5px; font-weight:bold;">Operator SIMARSIP AAS,</div>
+          <div style="height:60px;"></div>
+          <div style="font-weight:bold; text-decoration:underline;">BAGIAN ADMINISTRASI &amp; ARSIP</div>
+          <div style="font-size:9pt;">NIP/NIDN. AAS-SISTEM-RESMI</div>
+        </div>
+      </div>
+
+      <script>
+        window.onload = function() { window.print(); };
+      </script>
+    </body>
+    </html>
+  `);
+  printWin.document.close();
+};
+
+
+// 3. BACKUP LENGKAP SISTEM & RESTORE DATABASE
+window.backupFullSystem = function() {
+  toast('Menyiapkan cadangan lengkap sistem...', 'info');
+
+  const backupData = {
+    system: 'SIMARSIP-AAS',
+    institution: 'Akademi Akupunktur Surabaya',
+    version: 'v3.0-enterprise',
+    backupTimestamp: new Date().toISOString(),
+    academicYear: currentAY,
+    totalRecords: arsip.length,
+    arsip: arsip,
+    activities: (typeof activities !== 'undefined') ? activities : [],
+    mahasiswa: (typeof mhsData !== 'undefined') ? mhsData : [],
+    sdm: (typeof sdmData !== 'undefined') ? sdmData : []
+  };
+
+  const jsonStr = JSON.stringify(backupData, null, 2);
+  const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+  const dateStr = new Date().toISOString().slice(0, 10);
+  const fileName = `SIMARSIP_AAS_CADANGAN_LENGKAP_${dateStr}.json`;
+
+  if (typeof saveAs === 'function') {
+    saveAs(blob, fileName);
+  } else {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName;
+    a.click();
+  }
+
+  log('export', `Mengunduh Cadangan Lengkap Sistem (${arsip.length} arsip)`);
+  toast(`Cadangan lengkap (${arsip.length} dokumen) berhasil diunduh!`, 'success');
+};
+
+let pendingRestoreData = null;
+
+window.openRestoreModal = function() {
+  document.getElementById('overlayRestore')?.classList.add('open');
+  const infoEl = document.getElementById('restoreFileInfo');
+  if (infoEl) infoEl.style.display = 'none';
+  const btn = document.getElementById('btnExecuteRestore');
+  if (btn) btn.disabled = true;
+};
+
+window.closeRestoreModal = function() {
+  document.getElementById('overlayRestore')?.classList.remove('open');
+  pendingRestoreData = null;
+};
+
+window.previewRestoreFile = function(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!data.arsip && !Array.isArray(data)) {
+        throw new Error('Format file bukan cadangan SIMARSIP yang valid.');
+      }
+      const count = Array.isArray(data) ? data.length : (data.arsip ? data.arsip.length : 0);
+      pendingRestoreData = data;
+
+      const infoEl = document.getElementById('restoreFileInfo');
+      if (infoEl) {
+        infoEl.innerHTML = `<i class="fas fa-check-circle" style="color:#10b981;"></i> Berkas valid: <b>${file.name}</b> (${count} arsip siap dipulihkan).`;
+        infoEl.style.display = 'block';
+      }
+      document.getElementById('btnExecuteRestore').disabled = false;
+    } catch (err) {
+      toast('File cadangan tidak valid: ' + err.message, 'error');
+      pendingRestoreData = null;
+      document.getElementById('btnExecuteRestore').disabled = true;
+    }
+  };
+  reader.readAsText(file);
+};
+
+window.executeRestore = async function() {
+  if (!pendingRestoreData) {
+    toast('Pilih file cadangan terlebih dahulu', 'error');
+    return;
+  }
+
+  if (!confirm('Apakah Anda yakin ingin memulihkan database dari file cadangan ini? Data saat ini akan digabungkan dan diperbarui.')) {
+    return;
+  }
+
+  const btn = document.getElementById('btnExecuteRestore');
+  const oriText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memulihkan...';
+
+  try {
+    const restoreList = Array.isArray(pendingRestoreData) ? pendingRestoreData : (pendingRestoreData.arsip || []);
+    
+    // Gabungkan dengan arsip yang ada (hindari duplikat id)
+    let addedCount = 0;
+    restoreList.forEach(item => {
+      const idx = arsip.findIndex(x => x.id === item.id);
+      if (idx > -1) {
+        arsip[idx] = item;
+      } else {
+        arsip.push(item);
+        addedCount++;
+      }
+    });
+
+    save();
+
+    // Mirror simpan ke Firestore
+    if (typeof db !== 'undefined' && db) {
+      for (const item of restoreList.slice(0, 30)) {
+        try {
+          await db.collection('arsip').doc(item.id).set(item, { merge: true });
+        } catch (e) {
+          console.warn('Sync restore item error:', e);
+        }
+      }
+    }
+
+    log('import', `Memulihkan database: ${restoreList.length} arsip diproses`);
+    toast(`Database berhasil dipulihkan! Total ${arsip.length} arsip aktif.`, 'success');
+    closeRestoreModal();
+
+    if (currentPage === 'dashboard') renderDashboard();
+    else if (currentPage === 'arsip') renderArsipTable();
+    else if (currentPage === 'dept') renderDeptPage(currentDept);
+    updateBadges();
+    updateExpiryBadgeAndList();
+  } catch (err) {
+    console.error(err);
+    toast('Gagal memulihkan database: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = oriText;
+  }
+};
+
+
+// 4. PROGRESSIVE WEB APP (PWA) & DESKTOP INSTALL PROMPT
+let deferredInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const btn = document.getElementById('btnInstallPwa');
+  if (btn) btn.style.display = 'inline-flex';
+});
+
+window.triggerPwaInstall = function() {
+  if (!deferredInstallPrompt) {
+    toast('Aplikasi sudah terpasang atau browser Anda belum mendukung instalasi otomatis.', 'info');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(choiceResult => {
+    if (choiceResult.outcome === 'accepted') {
+      toast('SIMARSIP AAS berhasil dipasang di desktop Anda!', 'success');
+    }
+    deferredInstallPrompt = null;
+    const btn = document.getElementById('btnInstallPwa');
+    if (btn) btn.style.display = 'none';
+  });
+};
+
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => {
+        console.log('SIMARSIP PWA Service Worker terdaftar:', reg.scope);
+      })
+      .catch(err => {
+        console.log('PWA Service Worker register notice:', err);
+      });
+  });
+}
+
+// Inisialisasi hitung expiry saat data pertama dimuat
+setTimeout(() => {
+  if (typeof updateExpiryBadgeAndList === 'function') {
+    updateExpiryBadgeAndList();
+  }
+}, 1500);

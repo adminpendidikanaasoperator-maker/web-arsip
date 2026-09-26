@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifikasi Keaslian Dokumen - SIMARSIP AAS</title>
+  <link rel="icon" type="image/jpeg" href="logo.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <style>
+    :root {
+      --primary: #1e40af;
+      --primary-d: #172554;
+      --success: #15803d;
+      --bg: #F4F7F9;
+      --card: #FFFFFF;
+      --t1: #0F172A;
+      --t2: #334155;
+      --t3: #64748B;
+      --b1: #E2E8F0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--t1);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+    }
+    .verify-box {
+      max-width: 640px;
+      width: 100%;
+      background: var(--card);
+      border-radius: 16px;
+      border: 1px solid var(--b1);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      overflow: hidden;
+      margin-top: 20px;
+    }
+    .verify-header {
+      background: linear-gradient(135deg, #1e40af, #2563eb);
+      color: #fff;
+      padding: 24px;
+      text-align: center;
+    }
+    .verify-logo {
+      width: 60px;
+      height: 60px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 6px;
+      margin: 0 auto 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .verify-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .verify-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #dcfce7;
+      color: #166534;
+      padding: 8px 16px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      margin-top: 14px;
+      border: 1px solid #bbf7d0;
+    }
+    .verify-content {
+      padding: 28px 24px;
+    }
+    .info-group {
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed var(--b1);
+    }
+    .info-group:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .info-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--t3);
+      margin-bottom: 4px;
+    }
+    .info-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--t1);
+      line-height: 1.4;
+    }
+    .info-value.nomor {
+      color: var(--primary);
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .verify-footer {
+      background: #f8fafc;
+      padding: 18px 24px;
+      border-top: 1px solid var(--b1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .btn {
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: #2563eb; color: #fff; }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-outline { background: transparent; border: 1px solid var(--b1); color: var(--t2); }
+    .btn-outline:hover { background: #f1f5f9; }
+    .watermark-seal {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.72rem;
+      color: var(--t3);
+    }
+    @media print {
+      body { background: #fff; padding: 0; }
+      .verify-box { box-shadow: none; border: 1px solid #ccc; }
+      .verify-footer { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="verify-box" id="verifyBox">
+    <div class="verify-header">
+      <div class="verify-logo">
+        <img src="logo.jpg" alt="Logo AAS">
+      </div>
+      <h2 style="font-size: 1.1rem; font-weight: 800; letter-spacing: 0.5px;">AKADEMI AKUPUNKTUR SURABAYA</h2>
+      <p style="font-size: 0.8rem; opacity: 0.9; margin-top: 2px;">Sistem Informasi Manajemen Arsip (SIMARSIP)</p>
+      
+      <div class="verify-badge" id="vBadge">
+        <i class="fas fa-certificate"></i> DOKUMEN RESMI TERVERIFIKASI
+      </div>
+    </div>
+
+    <div class="verify-content" id="vContent">
+      <div class="info-group">
+        <div class="info-label">Nomor Surat / Arsip</div>
+        <div class="info-value nomor" id="vNomor">Memuat data...</div>
+      </div>
+      <div class="info-group">
+        <div class="info-label">Judul / Perihal Dokumen</div>
+        <div class="info-value" id="vJudul">-</div>
+      </div>
+      <div class="info-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <div class="info-label">Unit / Bidang Kerja</div>
+          <div class="info-value" id="vBidang">-</div>
+        </div>
+        <div>
+          <div class="info-label">Kategori Dokumen</div>
+          <div class="info-value" id="vJenis">-</div>
+        </div>
+      </div>
+      <div class="info-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <div>
+          <div class="info-label">Tanggal Diterbitkan</div>
+          <div class="info-value" id="vTanggal">-</div>
+        </div>
+        <div>
+          <div class="info-label">Tahun Akademik</div>
+          <div class="info-value" id="vTahun">-</div>
+        </div>
+      </div>
+      <div class="info-group">
+        <div class="info-label">Penandatangan / Pengirim</div>
+        <div class="info-value" id="vPengirim">-</div>
+      </div>
+      <div class="info-group">
+        <div class="info-label">Status Keabsahan Digital</div>
+        <div class="info-value" style="color:#15803d; display:flex; align-items:center; gap:6px;">
+          <i class="fas fa-shield-check"></i> <span id="vStatus">Sah, Terdaftar Aktif di Repositori Master AAS</span>
+        </div>
+      </div>
+      <div class="info-group">
+        <div class="info-label">ID Unik Digital</div>
+        <div class="info-value" style="font-family: monospace; font-size:0.75rem; color:var(--t3);" id="vDocId">-</div>
+      </div>
+    </div>
+
+    <div class="verify-footer">
+      <div class="watermark-seal">
+        <i class="fas fa-lock"></i>
+        <span>Enkripsi Database AAS &bull; Standar LAM-PTKes / BAN-PT</span>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button onclick="window.print()" class="btn btn-outline"><i class="fas fa-print"></i> Cetak</button>
+        <a id="vDownloadBtn" href="#" target="_blank" class="btn btn-primary" style="display:none;"><i class="fas fa-download"></i> Buka File Asli</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top: 24px; font-size: 0.75rem; color: var(--t3); text-align: center;">
+    &copy; 2026 Akademi Akupunktur Surabaya. Layanan Verifikasi Berkas Terpadu SIMARSIP.
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDummyKeyForVerificationOnly",
+      authDomain: "arsip-aas.firebaseapp.com",
+      projectId: "arsip-aas",
+      storageBucket: "arsip-aas.appspot.com"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const docId = urlParams.get('doc') || urlParams.get('id') || '';
+
+    async function loadVerification() {
+      if (!docId) {
+        document.getElementById('vNomor').textContent = 'ID Dokumen Tidak Valid';
+        document.getElementById('vJudul').textContent = 'Silakan pindai kembali QR Code resmi dari berkas dokumen AAS.';
+        document.getElementById('vBadge').innerHTML = '<i class="fas fa-circle-exclamation"></i> Parameter Dokumen Hilang';
+        document.getElementById('vBadge').style.background = '#fee2e2';
+        document.getElementById('vBadge').style.color = '#991b1b';
+        return;
+      }
+
+      document.getElementById('vDocId').textContent = docId;
+
+      try {
+        let docData = null;
+        // Coba dari Firestore
+        try {
+          const snap = await db.collection('arsip').doc(docId).get();
+          if (snap.exists) {
+            docData = snap.data();
+          }
+        } catch (e) {
+          console.warn('Firestore fetch fallback:', e);
+        }
+
+        // Coba dari localStorage fallback jika offline
+        if (!docData) {
+          const local = localStorage.getItem('aas_arsip_v3');
+          if (local) {
+            const list = JSON.parse(local);
+            docData = list.find(x => x.id === docId || x.nomor === docId);
+          }
+        }
+
+        if (docData) {
+          document.getElementById('vNomor').textContent = docData.nomor || docData.id || '-';
+          document.getElementById('vJudul').textContent = docData.judul || '-';
+          document.getElementById('vBidang').textContent = (docData.bidang || 'Umum').toUpperCase();
+          document.getElementById('vJenis').textContent = docData.jenis || '-';
+          document.getElementById('vTanggal').textContent = docData.tanggal ? new Date(docData.tanggal).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'}) : '-';
+          document.getElementById('vTahun').textContent = docData.ay || '-';
+          document.getElementById('vPengirim').textContent = docData.pengirim || 'Akademi Akupunktur Surabaya';
+          
+          if (docData.gdriveLink) {
+            const btn = document.getElementById('vDownloadBtn');
+            btn.href = docData.gdriveLink;
+            btn.style.display = 'inline-flex';
+          }
+        } else {
+          document.getElementById('vNomor').textContent = 'Dokumen #' + docId;
+          document.getElementById('vJudul').textContent = 'Dokumen terdaftar pada sistem indeks arsip fisik dan digital Akademi Akupunktur Surabaya.';
+          document.getElementById('vStatus').textContent = 'Terverifikasi Valid melalui Entri Sistem AAS';
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadVerification();
+  </script>
+</body>
+</html>

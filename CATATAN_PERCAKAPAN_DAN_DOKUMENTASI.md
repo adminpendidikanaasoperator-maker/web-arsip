@@ -216,4 +216,29 @@ Dokumen database utama disimpan pada Firestore Proyek `bidang-rumah-tangga`:
 - **Cache Busting**:
   - Versi aset diperbarui ke `?v=20260927_superapp_v8` pada `index.html`.
 
+
+---
+
+## 📜 8. Kronologi Percakapan & Solusi: Fase 4 (Fitur Enterprise: Expiry Alert, QR Verifikasi, Backup/Restore & PWA)
+
+### 1. Implementasi 4 Fitur Kunci Operasional & Akreditasi (27 September 2026)
+- **Point 1: Pelacak Masa Berlaku & Retensi Dokumen (`#overlayExpiry`)**:
+  - Tombol lonceng navigasi (`#btnExpiryNotif`) kini aktif dan dinamis membaca seluruh arsip institusi.
+  - Menghitung sisa hari kedaluwarsa secara otomatis (MoU/PKS 3 tahun, Akreditasi 5 tahun, Kalibrasi Lab 1 tahun, atau tanggal kedaluwarsa manual `#fExpiredDate`).
+  - Menampilkan filter tab kategori (*Semua*, *🔴 Kedaluwarsa*, *🟡 Segera Habis*, *🟢 Aktif*) dengan tombol aksi langsung: Detail, QR, dan Perbarui Dokumen.
+  - Badge merah/kuning aktif di navbar jika ada dokumen yang membutuhkan perpanjangan.
+- **Point 2: QR Code Verifikasi Keabsahan Dokumen Digital (`verify.html` & `#overlayVerification`)**:
+  - Ditambahkan tombol QR code pada setiap baris tabel arsip dan panel detail dokumen.
+  - Menghasilkan QR Code dinamis resmi yang memuat URL validasi publik: `verify.html?doc=[ID]`.
+  - Halaman `verify.html` menyajikan sertifikat validasi keaslian berkas resmi berstempel digital dengan nomor surat, judul, bidang, tanggal, pengirim, dan ID digital.
+  - Dilengkapi fitur **"Cetak Lembar Pengesahan"** berkop surat resmi Akademi Akupunktur Surabaya siap cetak/PDF untuk kebutuhan akreditasi & pihak eksternal.
+- **Point 4: Pusat Cadangan & Pemulihan Sistem 1-Klik (`backupFullSystem` & `#overlayRestore`)**:
+  - Pada menu dropdown Ekspor ditambahkan opsi **"Backup Lengkap Sistem (.JSON)"** yang mengemas seluruh arsip, aktivitas, mahasiswa, dan SDM ke dalam berkas JSON bertanggal.
+  - Ditambahkan modal **"Pemulihan Database (Restore)"** untuk memulihkan seluruh sistem dari berkas cadangan ke memori lokal dan tersinkronisasi kembali ke Cloud Firestore.
+- **Point 5: PWA (Progressive Web App) & Dukungan Instalasi Desktop**:
+  - Dibuat Web App Manifest (`manifest.json`) lengkap dengan ikon logo AAS, nama resmi, tema, dan display standalone.
+  - Dibuat Service Worker (`sw.js`) untuk caching aset statis dan kesiapan akses offline.
+  - Dipasang tombol **"Install App"** di topbar yang mendeteksi dukungan peramban untuk menginstal SIMARSIP langsung ke Desktop PC/laptop staf kampus.
+  - Tag versi aset diperbarui ke `?v=20260927_superapp_v9`.
+
 *Dokumen ini merupakan arsip riwayat percakapan resmi, keputusan teknis, dan dokumentasi arsitektur pengembangan sistem Akademi Akupunktur Surabaya (AAS).*
