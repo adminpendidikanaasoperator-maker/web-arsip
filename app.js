@@ -2863,6 +2863,34 @@ function initSidebarSubMenus() {
       return;
     }
 
+    if (k === 'rumah_tangga') {
+      const rtSubItems = [
+        { id: 'dashboard', label: 'Dashboard & Grafik', icon: 'fas fa-chart-pie' },
+        { id: 'kas-kecil', label: 'Buku Kas Kecil (Petty Cash)', icon: 'fas fa-wallet' },
+        { id: 'rab', label: 'Anggaran & Realisasi RAB', icon: 'fas fa-file-invoice-dollar' },
+        { id: 'utilitas', label: 'Tagihan & Utilitas Kampus', icon: 'fas fa-bolt' },
+        { id: 'atk', label: 'Inventaris & Stok ATK', icon: 'fas fa-boxes-stacked' },
+        { id: 'cash-opname', label: 'Berita Acara Cash Opname', icon: 'fas fa-money-bill-wave' }
+      ];
+      let html = '';
+      rtSubItems.forEach(item => {
+        let isActive = (typeof currentRumahTanggaTab !== 'undefined' && currentRumahTanggaTab === item.id) ? 'active' : '';
+        html += `<li class="${isActive}" onclick="switchRumahTanggaTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> <span style="flex:1; min-width:0; line-height:1.4;">${item.label}</span>
+        </li>`;
+      });
+      html += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
+      html += `<li onclick="syncRumahTanggaFromSumber()" style="color:#22c55e; font-weight:600;">
+        <i class="fas fa-rotate" id="sbRumahTanggaSyncIcon"></i> <span style="flex:1; min-width:0; line-height:1.4;">Sinkron Data Live Rumah Tangga</span>
+      </li>`;
+      html += `<li onclick="window.open('https://bidang-rumah-tangga.adminpendidikanaas-operator.workers.dev', '_blank')" style="color:#06b6d4; font-weight:700;">
+        <i class="fas fa-up-right-from-square"></i> <span style="flex:1; min-width:0; line-height:1.4;">Web App SIM-RT Utuh</span>
+      </li>`;
+      ul.innerHTML = html;
+      navLink.after(ul);
+      return;
+    }
+
     let html = `<li class="active" onclick="filterByJenisFromSidebar('', '${k}', this)"><i class="fas fa-layer-group"></i> Semua Jenis</li>`;
     
     const dJenis = DEPT_JENIS[k] || [];
