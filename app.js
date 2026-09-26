@@ -921,6 +921,7 @@ let currentLabTab = 'dashboard';
 let currentSaranaTab = 'dashboard';
 let currentPengabdianTab = 'dashboard';
 let currentPengabdianAY = '2025/2026 Genap';
+let currentSistemPendidikanTab = 'portal';
 
 function renderDeptSubmenus() {
   document.querySelectorAll('.sb-link[data-page="dept"]').forEach(link => {
@@ -1080,6 +1081,24 @@ function renderDeptSubmenus() {
         <i class="fas fa-rotate" id="sbPendidikanSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Pendidikan</span>
       </li>`;
       ul.innerHTML += `<li onclick="window.open('https://bidang-pendidikan.web.app', '_blank')" style="color:#8b5cf6; font-weight:600;">
+        <i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Buka Portal di Tab Baru</span>
+      </li>`;
+    } else if (deptId === 'sistem_pendidikan') {
+      const spSubItems = [
+        { id: 'portal', label: 'Web App SIM-TI AAS Utuh', icon: 'fas fa-window-maximize', isCat: false },
+        { id: 'dashboard', label: 'Ringkasan & Statistik', icon: 'fas fa-chart-pie', isCat: false },
+      ];
+      spSubItems.forEach(item => {
+        let isActive = (currentSistemPendidikanTab === item.id && currentDept === 'sistem_pendidikan') ? 'active' : '';
+        ul.innerHTML += `<li class="${isActive}" onclick="switchSistemPendidikanTabFromSidebar('${item.id}', this)">
+          <i class="${item.icon}"></i> <span style="flex:1;">${item.label}</span>
+        </li>`;
+      });
+      ul.innerHTML += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
+      ul.innerHTML += `<li onclick="reloadSistemPendidikanFrame()" style="color:#22c55e; font-weight:600;">
+        <i class="fas fa-rotate"></i> <span style="flex:1;">Muat Ulang Portal</span>
+      </li>`;
+      ul.innerHTML += `<li onclick="window.open('https://bidang-administrasi-sistem-informasi-pendidikan-tinggi.adminpendidikanaas-operator.workers.dev', '_blank')" style="color:#d946ef; font-weight:600;">
         <i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Buka Portal di Tab Baru</span>
       </li>`;
     } else if (DEPT_JENIS[deptId]) {
@@ -1991,7 +2010,7 @@ function renderDeptPage(dept) {
   ].map(c=>`<div class="stat-card" style="--c:${c.c}"><div class="sc-icon"><i class="fas fa-${c.ic}"></i></div><div class="sc-label">${c.lb}</div><div class="sc-val">${c.val}</div></div>`).join('');
 
   document.getElementById('deptChartSub').textContent=`TA ${currentAY}`;
-  if (dept !== 'laboratorium' && dept !== 'sarana' && dept !== 'pengabdian') {
+  if (dept !== 'laboratorium' && dept !== 'sarana' && dept !== 'pengabdian' && dept !== 'sistem_pendidikan') {
     initDeptCharts(dept,all,d.color);
   }
 
@@ -2007,6 +2026,10 @@ function renderDeptPage(dept) {
   const pengabdianContainer = document.getElementById('pengabdianContainer');
   const ketenagaanContainer = document.getElementById('ketenagaanContainer');
   const deptTableContainer = document.getElementById('deptTableContainer');
+  const sistemPendidikanContainer = document.getElementById('sistemPendidikanContainer');
+
+  // Hide sistemPendidikanContainer by default (shown only for sistem_pendidikan)
+  if (sistemPendidikanContainer) sistemPendidikanContainer.style.display = 'none';
 
   if (dept === 'kemahasiswaan') {
     if (kmhsContainer) kmhsContainer.style.display = 'block';
@@ -2120,11 +2143,34 @@ function renderDeptPage(dept) {
     if (dSdm) dSdm.style.display = 'none';
     switchPendidikanTab(currentPendidikanTab || 'dashboard');
     renderPendidikanContent();
+  } else if (dept === 'sistem_pendidikan') {
+    if (kmhsContainer) kmhsContainer.style.display = 'none';
+    if (iframeContainer) iframeContainer.style.display = 'none';
+    if (labContainer) labContainer.style.display = 'none';
+    if (saranaContainer) saranaContainer.style.display = 'none';
+    if (pengabdianContainer) pengabdianContainer.style.display = 'none';
+    if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
+    const akC = document.getElementById('akademikContainer');
+    if (akC) akC.style.display = 'none';
+    const pendC = document.getElementById('pendidikanContainer');
+    if (pendC) pendC.style.display = 'none';
+    const spC = document.getElementById('sistemPendidikanContainer');
+    if (spC) spC.style.display = 'block';
+    if (deptArsipCharts) deptArsipCharts.style.display = 'none';
+    if (statRow) statRow.style.display = 'none';
+    if (deptTableContainer) deptTableContainer.style.display = 'none';
+    const dMhs = document.getElementById('deptMhsContainer');
+    if (dMhs) dMhs.style.display = 'none';
+    const dSdm = document.getElementById('deptSdmContainer');
+    if (dSdm) dSdm.style.display = 'none';
+    switchSistemPendidikanTab(currentSistemPendidikanTab || 'portal');
   } else {
     const akC = document.getElementById('akademikContainer');
     if (akC) akC.style.display = 'none';
     const pendC = document.getElementById('pendidikanContainer');
     if (pendC) pendC.style.display = 'none';
+    const spC = document.getElementById('sistemPendidikanContainer');
+    if (spC) spC.style.display = 'none';
     if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
     if (kmhsContainer) kmhsContainer.style.display = 'none';
     if (iframeContainer) iframeContainer.style.display = 'none';
@@ -9789,3 +9835,85 @@ setTimeout(() => {
   try { syncPendidikanFromSumber(true); } catch(e) {}
 }, 350);
 
+/* ═══════════════════════════════════════════════════════════════
+   BIDANG ADMINISTRASI SISTEM INFORMASI PENDIDIKAN TINGGI
+   ═══════════════════════════════════════════════════════════════ */
+
+function switchSistemPendidikanTab(tabKey) {
+  currentSistemPendidikanTab = tabKey || 'portal';
+
+  const spContainer = document.getElementById('sistemPendidikanContainer');
+  if (spContainer) spContainer.style.display = 'block';
+
+  const views = [
+    { key: 'portal', id: 'sistemPendidikanView-portal' },
+    { key: 'dashboard', id: 'sistemPendidikanView-dashboard' }
+  ];
+
+  views.forEach(v => {
+    const el = document.getElementById(v.id);
+    if (el) el.style.display = (v.key === currentSistemPendidikanTab) ? 'block' : 'none';
+
+    const btn = document.getElementById(`btnSistemPendidikanTab-${v.key}`);
+    if (btn) {
+      if (v.key === currentSistemPendidikanTab) {
+        btn.classList.add('active');
+        btn.style.background = 'linear-gradient(135deg, #d946ef, #a21caf)';
+        btn.style.color = '#fff';
+        btn.style.fontWeight = '700';
+      } else {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.color = 'var(--t1)';
+        btn.style.fontWeight = '600';
+      }
+    }
+  });
+
+  // Highlight active sidebar item
+  const sbMenu = document.getElementById('submenu-sistem_pendidikan');
+  if (sbMenu) {
+    const lis = sbMenu.querySelectorAll('li');
+    lis.forEach(li => {
+      const onclickAttr = li.getAttribute('onclick') || '';
+      if (onclickAttr.includes(`'${currentSistemPendidikanTab}'`)) {
+        li.classList.add('active');
+      } else if (!onclickAttr.includes('window.open') && !onclickAttr.includes('reloadSistemPendidikan')) {
+        li.classList.remove('active');
+      }
+    });
+  }
+
+  // Load iframe if portal tab
+  if (currentSistemPendidikanTab === 'portal') {
+    const iframe = document.getElementById('sistemPendidikanIframe');
+    if (iframe && !iframe.src) {
+      iframe.src = 'https://bidang-administrasi-sistem-informasi-pendidikan-tinggi.adminpendidikanaas-operator.workers.dev';
+    }
+  }
+}
+
+function switchSistemPendidikanTabFromSidebar(tabKey, el) {
+  if (typeof currentPage === 'undefined' || currentPage !== 'dept' || currentDept !== 'sistem_pendidikan') {
+    const link = document.getElementById('nav-sistem_pendidikan');
+    if (link && typeof setActiveNav === 'function') setActiveNav(link);
+    currentDept = 'sistem_pendidikan';
+    if (typeof showPage === 'function') showPage('dept');
+  }
+  switchSistemPendidikanTab(tabKey);
+
+  const sbMenu = document.getElementById('submenu-sistem_pendidikan');
+  if (sbMenu && el) {
+    sbMenu.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+    el.classList.add('active');
+  }
+}
+
+function reloadSistemPendidikanFrame() {
+  const iframe = document.getElementById('sistemPendidikanIframe');
+  if (iframe) {
+    const url = 'https://bidang-administrasi-sistem-informasi-pendidikan-tinggi.adminpendidikanaas-operator.workers.dev';
+    iframe.src = url;
+    try { iframe.contentWindow?.location.reload(); } catch(e) { iframe.src = url; }
+  }
+}
