@@ -3084,6 +3084,8 @@ function renderDeptTable() {
       <td>${fmtBadge(a)}</td>
       <td><div class="act-group">
         <button class="act-btn" title="Detail" onclick="viewDetail('${a.id}')"><i class="fas fa-eye"></i></button>
+        <button class="act-btn qr" title="Verifikasi QR" onclick="openVerificationModal('${a.id}')" style="color:#2563eb;"><i class="fas fa-qrcode"></i></button>
+        <button class="act-btn disposisi" title="Cetak Lembar Disposisi" onclick="printDisposisiSheet('${a.id}')" style="color:#d97706;"><i class="fas fa-file-invoice"></i></button>
         <button class="act-btn edit" title="Edit" onclick="editArsip('${a.id}')"><i class="fas fa-pen"></i></button>
         <button class="act-btn del" title="Hapus" onclick="deleteArsip('${a.id}')"><i class="fas fa-trash"></i></button>
       </div></td>
@@ -4004,9 +4006,19 @@ function viewDetail(id) {
       </div>
     </div>
     ${a.keterangan?`<div><label style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3)">Keterangan</label><div class="detail-keterangan">${esc(a.keterangan)}</div></div>`:''}
-    <div class="detail-actions">
-      <button class="btn-ghost" onclick="closeDetail()">Tutup</button>
-      <button class="tb-btn tb-btn-primary" onclick="closeDetail();editArsip('${a.id}')"><i class="fas fa-pen"></i> Edit</button>
+    <div class="detail-actions" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn-ghost" style="color:#d97706; border-color:#fde68a; background:#fffbeb;" onclick="printDisposisiSheet('${a.id}')">
+          <i class="fas fa-file-invoice"></i> Cetak Lembar Disposisi
+        </button>
+        <button class="btn-ghost" style="color:#2563eb; border-color:#bfdbfe; background:#eff6ff;" onclick="closeDetail(); openVerificationModal('${a.id}')">
+          <i class="fas fa-qrcode"></i> QR &amp; Validasi
+        </button>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-ghost" onclick="closeDetail()">Tutup</button>
+        <button class="tb-btn tb-btn-primary" onclick="closeDetail();editArsip('${a.id}')"><i class="fas fa-pen"></i> Edit</button>
+      </div>
     </div>`;
   document.getElementById('overlayDetail').classList.add('open');
 }
@@ -11064,3 +11076,500 @@ setTimeout(() => {
     updateExpiryBadgeAndList();
   }
 }, 1500);
+
+
+// ══════════════════════════════════════════════════════════════════
+// FITUR OPSI 1: LEMBAR DISPOSISI SURAT MASUK DIGITAL RESMI AAS
+// ══════════════════════════════════════════════════════════════════
+
+window.printDisposisiSheet = function(id) {
+  const a = arsip.find(x => x.id === id);
+  if (!a) {
+    toast('Dokumen tidak ditemukan', 'error');
+    return;
+  }
+  const d = DEPT[a.bidang] || { label: a.bidang || 'Umum', color: '#2563eb' };
+  const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '');
+  const verifyUrl = baseUrl + '/verify.html?doc=' + encodeURIComponent(a.id);
+  const qrApi = 'https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=' + encodeURIComponent(verifyUrl);
+
+  const now = new Date();
+  const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  const printDateStr = `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+
+  const w = window.open('', '_blank', 'width=860,height=960');
+  w.document.write(`
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+      <meta charset="UTF-8">
+      <title>Lembar Disposisi - ${esc(a.nomor || a.id)}</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+      <style>
+        @page { size: A4 portrait; margin: 15mm 18mm; }
+        body { font-family: 'Times New Roman', serif; color: #111; line-height: 1.4; padding: 25px; margin: 0; }
+        .no-print-bar { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 16px; margin-bottom: 20px; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        .btn-print { background: #2563eb; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .btn-close { background: #64748b; color: #fff; border: none; border-radius: 6px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+        @media print { .no-print-bar { display: none !important; } body { padding: 0; } }
+
+        /* KOP SURAT RESMI */
+        .kop { display: flex; align-items: center; justify-content: center; gap: 16px; border-bottom: 3px double #000; padding-bottom: 12px; margin-bottom: 15px; }
+        .kop img { width: 75px; height: 75px; object-fit: contain; }
+        .kop-text { text-align: center; }
+        .kop-text .inst { font-size: 11pt; letter-spacing: 1px; font-weight: bold; margin: 0; }
+        .kop-text .campus { font-size: 15pt; font-weight: bold; margin: 2px 0; color: #0b2239; }
+        .kop-text .sk { font-size: 8.5pt; margin: 0; }
+        .kop-text .address { font-size: 8pt; margin: 2px 0 0; font-style: italic; }
+
+        .sheet-title { text-align: center; font-size: 13pt; font-weight: bold; text-decoration: underline; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .sheet-sub { text-align: center; font-size: 9pt; margin-bottom: 16px; }
+
+        /* TABEL SURAT */
+        .doc-table { width: 100%; border-collapse: collapse; margin-bottom: 12px; font-size: 10.5pt; }
+        .doc-table td { border: 1px solid #333; padding: 6px 10px; vertical-align: top; }
+        .doc-table td.bg-lbl { background: #f1f5f9; font-weight: bold; width: 22%; }
+
+        /* DISPOSISI SECTION GRID */
+        .disp-grid { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #333; margin-bottom: 12px; font-size: 10pt; }
+        .disp-col { padding: 10px 14px; }
+        .disp-col:first-child { border-right: 1px solid #333; }
+        .disp-head { font-weight: bold; font-size: 10.5pt; border-bottom: 1.5px solid #333; padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase; }
+
+        .chk-list { list-style: none; padding: 0; margin: 0 0 10px 0; }
+        .chk-list li { margin-bottom: 4px; display: flex; align-items: flex-start; gap: 8px; }
+        .box-chk { width: 13px; height: 13px; border: 1.5px solid #000; display: inline-block; flex-shrink: 0; margin-top: 2px; }
+
+        /* CATATAN DISPOSISI */
+        .notes-box { border: 1px solid #333; padding: 10px 14px; min-height: 85px; margin-bottom: 14px; font-size: 10pt; }
+        .notes-head { font-weight: bold; text-transform: uppercase; margin-bottom: 6px; font-size: 10pt; }
+        .notes-lines { border-bottom: 1px dashed #ccc; height: 24px; }
+
+        /* FOOTER & TTD */
+        .foot-sec { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 10px; font-size: 10pt; }
+        .qr-wrap { text-align: center; width: 150px; }
+        .qr-wrap img { width: 100px; height: 100px; border: 1px solid #ddd; padding: 2px; }
+        .qr-wrap small { display: block; font-size: 7.5pt; margin-top: 3px; font-style: italic; }
+
+        .stamp-official {
+          border: 2px solid #15803d;
+          background: #f0fdf4;
+          color: #166534;
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 8pt;
+          font-weight: bold;
+          text-align: center;
+          margin-bottom: 10px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="no-print-bar">
+        <div>
+          <strong style="color:#0f172a;"><i class="fas fa-file-invoice"></i> Pratinjau Lembar Disposisi Surat Masuk</strong>
+          <div style="font-size:0.8rem; color:#64748b;">Siap cetak atau simpan sebagai PDF resmi AAS.</div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-print" onclick="window.print()"><i class="fas fa-print"></i> Cetak / Simpan PDF</button>
+          <button class="btn-close" onclick="window.close()">Tutup</button>
+        </div>
+      </div>
+
+      <div class="kop">
+        <img src="logo.jpg" alt="Logo AAS" onerror="this.style.display='none'">
+        <div class="kop-text">
+          <div class="inst">YAYASAN SAMUDRA PRATIDINA</div>
+          <div class="campus">AKADEMI AKUPUNKTUR SURABAYA</div>
+          <div class="sk">Izin Mendiknas RI No. 89/D/O/2002 &bull; Terakreditasi LAM-PTKes</div>
+          <div class="address">Jl. Ketintang Madya No. 4, Surabaya, Jawa Timur | Telp: (031) 8282828 | Web: akademiakupunktursurabaya.web.id</div>
+        </div>
+      </div>
+
+      <div class="sheet-title">LEMBAR DISPOSISI SURAT MASUK</div>
+      <div class="sheet-sub">Nomor Agenda Sistem: ${esc(a.id)}</div>
+
+      <table class="doc-table">
+        <tr>
+          <td class="bg-lbl">Indeks / No. Agenda</td>
+          <td style="width:28%;"><b>${esc(a.nomor || a.id)}</b></td>
+          <td class="bg-lbl" style="width:22%;">Tanggal Diterima</td>
+          <td>${fmtDate(a.tanggal)}</td>
+        </tr>
+        <tr>
+          <td class="bg-lbl">Nomor Surat</td>
+          <td><b>${esc(a.nomor || '-')}</b></td>
+          <td class="bg-lbl">Tanggal Surat</td>
+          <td>${fmtDate(a.tanggal)}</td>
+        </tr>
+        <tr>
+          <td class="bg-lbl">Asal Surat / Pengirim</td>
+          <td colspan="3"><b>${esc(a.pengirim || 'Instansi Terkait / Mitra AAS')}</b></td>
+        </tr>
+        <tr>
+          <td class="bg-lbl">Perihal / Isi Ringkas</td>
+          <td colspan="3" style="font-size:10.5pt; font-weight:bold; color:#0f172a;">${esc(a.judul)}</td>
+        </tr>
+        <tr>
+          <td class="bg-lbl">Klasifikasi / Unit Kerja</td>
+          <td colspan="3">${esc(d.label)} ${a.jenis ? ' &bull; ' + esc(a.jenis) : ''}</td>
+        </tr>
+      </table>
+
+      <div class="disp-grid">
+        <!-- KOLOM 1: SIFAT & TUJUAN -->
+        <div class="disp-col">
+          <div class="disp-head">I. SIFAT SURAT</div>
+          <ul class="chk-list" style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:14px;">
+            <li><span class="box-chk"></span> Sangat Segera</li>
+            <li><span class="box-chk"></span> Segera</li>
+            <li><span class="box-chk"></span> Rahasia</li>
+            <li><span class="box-chk"></span> Biasa</li>
+          </ul>
+
+          <div class="disp-head">II. DITERUSKAN KEPADA</div>
+          <ul class="chk-list">
+            <li><span class="box-chk"></span> Direktur</li>
+            <li><span class="box-chk"></span> Wakil Direktur I (Akademik &amp; Pendidikan)</li>
+            <li><span class="box-chk"></span> Wakil Direktur II (Umum, SDM &amp; Keuangan)</li>
+            <li><span class="box-chk"></span> Wakil Direktur III (Kemahasiswaan &amp; Kerjasama)</li>
+            <li><span class="box-chk"></span> Ketua Program Studi D3 Akupunktur</li>
+            <li><span class="box-chk"></span> Ka. Bagian Tata Usaha (KTU)</li>
+            <li><span class="box-chk"></span> Ka. Unit Penjaminan Mutu (SPMI)</li>
+            <li><span class="box-chk"></span> Bendahara Institusi / Keuangan</li>
+            <li><span class="box-chk"></span> Ka. Unit Rumah Tangga &amp; Sarpras</li>
+            <li><span class="box-chk"></span> Ka. LPPM (Penelitian &amp; Pengabdian)</li>
+            <li><span class="box-chk"></span> Ka. Unit Sistem Informasi &amp; IT</li>
+          </ul>
+        </div>
+
+        <!-- KOLOM 2: PETUNJUK DIREKTUR -->
+        <div class="disp-col">
+          <div class="disp-head">III. PETUNJUK / DISPOSISI DIREKTUR</div>
+          <ul class="chk-list">
+            <li><span class="box-chk"></span> Tindak lanjuti &amp; selesaikan</li>
+            <li><span class="box-chk"></span> Pelajari &amp; berikan telaah / masukan</li>
+            <li><span class="box-chk"></span> Siapkan bahan balasan / draft SK</li>
+            <li><span class="box-chk"></span> Hadiri / koordinasikan kegiatan</li>
+            <li><span class="box-chk"></span> Koordinasikan dengan bidang terkait</li>
+            <li><span class="box-chk"></span> Untuk diketahui / monitor perkembangan</li>
+            <li><span class="box-chk"></span> Simpan / arsipkan berkas</li>
+            <li><span class="box-chk"></span> Bicarakan bersama Direktur</li>
+          </ul>
+          <div style="font-size:8.5pt; font-style:italic; color:#444; margin-top:8px;">
+            * Berikan tanda centang [✓] pada arahan yang ditentukan.
+          </div>
+        </div>
+      </div>
+
+      <div class="notes-box">
+        <div class="notes-head">IV. CATATAN KHUSUS DIREKTUR / PIMPINAN:</div>
+        <div class="notes-lines"></div>
+        <div class="notes-lines"></div>
+        <div class="notes-lines"></div>
+      </div>
+
+      <div class="stamp-official">
+        DOKUMEN INI TELAH DIREGISTRASIKAN DI SISTEM INFORMASI MANAJEMEN ARSIP (SIMARSIP) AKADEMI AKUPUNKTUR SURABAYA
+      </div>
+
+      <div class="foot-sec">
+        <div class="qr-wrap">
+          <img src="${qrApi}" alt="QR Validation" />
+          <small>Pindai untuk verifikasi keaslian lembar disposisi</small>
+        </div>
+        <div style="text-align:center; width:270px;">
+          <div>Surabaya, ${printDateStr}</div>
+          <div style="font-weight:bold; margin-top:4px;">Direktur Akademi Akupunktur Surabaya,</div>
+          <div style="height:65px;"></div>
+          <div style="font-weight:bold; text-decoration:underline;">( .................................................... )</div>
+          <div style="font-size:8.5pt;">NIDN / NIP. ........................................</div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+  w.document.close();
+};
+
+
+// ══════════════════════════════════════════════════════════════════
+// FITUR OPSI 4: LAPORAN EKSEKUTIF BULANAN UNTUK DIREKTUR
+// ══════════════════════════════════════════════════════════════════
+
+window.printExecutiveReport = function() {
+  const currentAY = document.getElementById('globalAYear')?.value || 'Semua';
+  const filtered = (currentAY && currentAY !== 'Semua') ? arsip.filter(x => x.ay === currentAY) : arsip;
+  const totalArsip = filtered.length;
+
+  // Digitalized Count (valid GDrive file)
+  const digitalizedCount = filtered.filter(x => x.gdriveLink && x.gdriveLink !== 'UPLOADING').length;
+  const digitalizedPct = totalArsip > 0 ? Math.round((digitalizedCount / totalArsip) * 100) : 0;
+
+  // Expiry stats
+  const expItems = (typeof updateExpiryBadgeAndList === 'function') ? updateExpiryBadgeAndList() : [];
+  const expiredCount = expItems.filter(x => x.expiry.status === 'expired').length;
+  const warningCount = expItems.filter(x => x.expiry.status === 'warning').length;
+  const activeCount  = expItems.filter(x => x.expiry.status === 'active').length;
+
+  // Cluster breakdown
+  const cAkademik = ['akademik', 'pendidikan', 'kemahasiswaan', 'ketenagaan', 'penelitian_pelatihan', 'pengabdian'];
+  const cTataKelola = ['rumah_tangga', 'admin_keuangan', 'sarana', 'admin_kepegawaian', 'admin_umum', 'admin_kelembagaan', 'administrasi'];
+  const cIT = ['sistem_informasi', 'sistem_pendidikan'];
+  const cMutu = ['borang_akreditasi', 'spmi', 'audit_internal'];
+
+  const cntAkademik = filtered.filter(x => cAkademik.includes(x.bidang)).length;
+  const cntTataKelola = filtered.filter(x => cTataKelola.includes(x.bidang)).length;
+  const cntIT = filtered.filter(x => cIT.includes(x.bidang)).length;
+  const cntMutu = filtered.filter(x => cMutu.includes(x.bidang)).length;
+  const cntLain = totalArsip - (cntAkademik + cntTataKelola + cntIT + cntMutu);
+
+  const now = new Date();
+  const monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  const currentMonthStr = `${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+  const printDateStr = `${now.getDate()} ${monthNames[now.getMonth()]} ${now.getFullYear()}`;
+
+  const w = window.open('', '_blank', 'width=900,height=960');
+  w.document.write(`
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+      <meta charset="UTF-8">
+      <title>Laporan Eksekutif Bulanan Direktur - ${currentMonthStr}</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+      <style>
+        @page { size: A4 portrait; margin: 15mm 18mm; }
+        body { font-family: 'Segoe UI', Tahoma, Helvetica, sans-serif; color: #0f172a; line-height: 1.45; padding: 25px; margin: 0; background: #fff; }
+        .no-print-bar { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 16px; margin-bottom: 20px; }
+        .btn-print { background: #2563eb; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .btn-close { background: #64748b; color: #fff; border: none; border-radius: 6px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+        @media print { .no-print-bar { display: none !important; } body { padding: 0; } }
+
+        /* KOP SURAT */
+        .kop { display: flex; align-items: center; justify-content: center; gap: 16px; border-bottom: 3px double #0f172a; padding-bottom: 12px; margin-bottom: 18px; }
+        .kop img { width: 70px; height: 70px; object-fit: contain; }
+        .kop-text { text-align: center; }
+        .kop-text .inst { font-size: 10.5pt; font-weight: bold; letter-spacing: 0.5px; }
+        .kop-text .campus { font-size: 14pt; font-weight: 800; color: #1e3a8a; }
+        .kop-text .sk { font-size: 8.5pt; color: #475569; }
+        .kop-text .address { font-size: 8pt; color: #64748b; font-style: italic; }
+
+        .report-title { text-align: center; font-size: 13pt; font-weight: 800; color: #0f172a; text-transform: uppercase; margin-bottom: 2px; }
+        .report-sub { text-align: center; font-size: 9.5pt; color: #475569; margin-bottom: 18px; }
+
+        /* KPI METRIC CARDS */
+        .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+        .kpi-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; text-align: center; }
+        .kpi-val { font-size: 1.5rem; font-weight: 800; color: #1e40af; margin-bottom: 2px; }
+        .kpi-lbl { font-size: 0.74rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.3px; }
+
+        /* SECTION STYLING */
+        .sec-head { font-size: 10pt; font-weight: 700; color: #1e3a8a; text-transform: uppercase; border-bottom: 1.5px solid #cbd5e1; padding-bottom: 4px; margin: 16px 0 8px 0; display: flex; align-items: center; gap: 8px; }
+
+        /* TABLES */
+        table.rpt-table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin-bottom: 14px; }
+        table.rpt-table th { background: #f1f5f9; color: #1e293b; font-weight: 700; border: 1px solid #cbd5e1; padding: 6px 8px; text-align: left; }
+        table.rpt-table td { border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top; }
+
+        .badge-pill { display: inline-block; padding: 2px 7px; border-radius: 99px; font-size: 7.5pt; font-weight: 700; }
+        .pill-green { background: #dcfce7; color: #15803d; }
+        .pill-amber { background: #fef3c7; color: #b45309; }
+        .pill-red { background: #fee2e2; color: #b91c1c; }
+        .pill-blue { background: #dbeafe; color: #1d4ed8; }
+
+        .rec-box { background: #eff6ff; border-left: 4px solid #3b82f6; border-radius: 0 6px 6px 0; padding: 10px 14px; font-size: 8.5pt; line-height: 1.5; color: #1e3a8a; margin-bottom: 18px; }
+
+        .sign-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 25px; font-size: 9pt; }
+        .sign-col { text-align: center; width: 220px; }
+      </style>
+    </head>
+    <body>
+      <div class="no-print-bar">
+        <div>
+          <strong style="color:#0f172a;"><i class="fas fa-briefcase" style="color:#d97706;"></i> Laporan Eksekutif Bulanan untuk Direktur</strong>
+          <div style="font-size:0.8rem; color:#64748b;">Ringkasan manajerial komprehensif arsip dan sistem informasi institusi.</div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-print" onclick="window.print()"><i class="fas fa-print"></i> Cetak / Simpan PDF</button>
+          <button class="btn-close" onclick="window.close()">Tutup</button>
+        </div>
+      </div>
+
+      <div class="kop">
+        <img src="logo.jpg" alt="Logo AAS" onerror="this.style.display='none'">
+        <div class="kop-text">
+          <div class="inst">YAYASAN SAMUDRA PRATIDINA</div>
+          <div class="campus">AKADEMI AKUPUNKTUR SURABAYA</div>
+          <div class="sk">Izin Mendiknas RI No. 89/D/O/2002 &bull; Program Studi D3 Akupunktur</div>
+          <div class="address">Jl. Ketintang Madya No. 4, Surabaya | Telp: (031) 8282828 | info@akademiakupunktursurabaya.ac.id</div>
+        </div>
+      </div>
+
+      <div class="report-title">LAPORAN EKSEKUTIF BULANAN PENGELOLAAN ARSIP &amp; SISTEM INFORMASI</div>
+      <div class="report-sub">Periode Laporan: <b>${currentMonthStr}</b> &bull; Tahun Akademik: <b>${currentAY}</b></div>
+
+      <!-- METRIC CARDS -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-val">${totalArsip}</div>
+          <div class="kpi-lbl">Total Dokumen Arsip</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-val" style="color:#059669;">${digitalizedPct}%</div>
+          <div class="kpi-lbl">Tingkat Digitalisasi File</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-val" style="color:${expiredCount > 0 ? '#dc2626' : '#16a34a'};">${expiredCount}</div>
+          <div class="kpi-lbl">Dokumen Kedaluwarsa</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-val" style="color:${warningCount > 0 ? '#d97706' : '#2563eb'};">${warningCount}</div>
+          <div class="kpi-lbl">Segera Jatuh Tempo</div>
+        </div>
+      </div>
+
+      <!-- REKAPITULASI 4 KLASTER -->
+      <div class="sec-head"><i class="fas fa-layer-group"></i> I. Rekapitulasi Dokumen Berdasarkan 4 Klaster Institusi</div>
+      <table class="rpt-table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Klaster Organisasi</th>
+            <th>Cakupan Bidang / Unit Kerja</th>
+            <th style="text-align:center;">Jumlah Arsip</th>
+            <th style="text-align:center;">Proporsi</th>
+            <th style="text-align:center;">Status Digitalisasi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><b>Tridharma &amp; Akademik</b></td>
+            <td>Akademik, Pendidikan (SIPENAS), Kemahasiswaan, Ketenagaan SDM, PkM, LPPM</td>
+            <td style="text-align:center; font-weight:bold;">${cntAkademik}</td>
+            <td style="text-align:center;">${totalArsip>0 ? Math.round((cntAkademik/totalArsip)*100) : 0}%</td>
+            <td style="text-align:center;"><span class="badge-pill pill-blue">Tersinkron SIAKAD/SIPENAS</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><b>Tata Kelola, Keuangan &amp; Rumah Tangga</b></td>
+            <td>SIM-RT, Keuangan, Sarpras, Kepegawaian, Kelembagaan, Tata Usaha Umum</td>
+            <td style="text-align:center; font-weight:bold;">${cntTataKelola}</td>
+            <td style="text-align:center;">${totalArsip>0 ? Math.round((cntTataKelola/totalArsip)*100) : 0}%</td>
+            <td style="text-align:center;"><span class="badge-pill pill-green">Kas &amp; Utilitas Terintegrasi</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><b>Sistem Informasi &amp; Infrastruktur IT</b></td>
+            <td>SIMARSIP Cloud, Portal Akademik, Sistem Informasi Pendidikan, Jaringan</td>
+            <td style="text-align:center; font-weight:bold;">${cntIT}</td>
+            <td style="text-align:center;">${totalArsip>0 ? Math.round((cntIT/totalArsip)*100) : 0}%</td>
+            <td style="text-align:center;"><span class="badge-pill pill-green">SLA Sistem 99.8%</span></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><b>Penjaminan Mutu &amp; Akreditasi</b></td>
+            <td>Borang LAM-PTKes K1-K8, LED, Dokumen SPMI, Kebijakan Mutu</td>
+            <td style="text-align:center; font-weight:bold;">${cntMutu}</td>
+            <td style="text-align:center;">${totalArsip>0 ? Math.round((cntMutu/totalArsip)*100) : 0}%</td>
+            <td style="text-align:center;"><span class="badge-pill pill-amber">Monitoring Terjadwal</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- PERINGATAN DOKUMEN & RETENSI -->
+      <div class="sec-head"><i class="fas fa-bell"></i> II. Sorotan Dokumen Retensi &amp; Perhatian Khusus Pimpinan</div>
+      ${expItems.length > 0 ? `
+        <table class="rpt-table">
+          <thead>
+            <tr>
+              <th>Nomor &amp; Judul Dokumen</th>
+              <th>Unit Kerja</th>
+              <th>Masa Berlaku</th>
+              <th>Sisa Waktu</th>
+              <th>Status Manajerial</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${expItems.slice(0, 5).map(item => `
+              <tr>
+                <td><b>${esc(item.doc.judul)}</b><br><small style="color:#64748b;">No: ${esc(item.doc.nomor||'-')}</small></td>
+                <td>${esc(item.doc.bidang)}</td>
+                <td>${item.expiry.date}</td>
+                <td>${item.expiry.diffDays < 0 ? `Lewat ${Math.abs(item.expiry.diffDays)} hari` : `${item.expiry.diffDays} hari lagi`}</td>
+                <td>
+                  <span class="badge-pill ${item.expiry.status==='expired' ? 'pill-red' : item.expiry.status==='warning' ? 'pill-amber' : 'pill-green'}">
+                    ${item.expiry.status==='expired' ? 'Perlu Pembaruan Segera' : item.expiry.status==='warning' ? 'Persiapan Perpanjangan' : 'Aktif'}
+                  </span>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      ` : '<div style="font-size:8.5pt; color:#64748b; margin-bottom:12px; font-style:italic;">Seluruh dokumen terpantau dalam kondisi aktif dan belum ada masa retensi yang kedaluwarsa.</div>'}
+
+      <!-- REKOMENDASI TATA KELOLA -->
+      <div class="sec-head"><i class="fas fa-lightbulb"></i> III. Rekomendasi Penguatan Tata Kelola &amp; Akselerasi Digital</div>
+      <div class="rec-box">
+        <b>Catatan Eksekutif:</b>
+        <ol style="margin:4px 0 0 16px; padding:0;">
+          <li><b>Akselerasi Digitalisasi:</b> Masih terdapat ${totalArsip - digitalizedCount} berkas yang belum terpasang tautan Google Drive valid. Diimbau setiap unit kerja melakukan scanning dan lampiran bertahap.</li>
+          <li><b>Pembaruan MoU &amp; SK:</b> Dokumen kerjasama institusi dan SK dosen yang berstatus kuning/merah agar segera dijadwalkan tindak lanjut perpanjangan.</li>
+          <li><b>Verifikasi Mandiri Publik:</b> Sosialisasi penggunaan fitur QR Code Validasi di <code>verify.html</code> kepada mitra dan mahasiswa untuk mencegah pemalsuan dokumen AAS.</li>
+        </ol>
+      </div>
+
+      <!-- LEMBAR PENGESAHAN -->
+      <div class="sign-row">
+        <div class="sign-col">
+          <div>Disusun Oleh,</div>
+          <div style="font-weight:bold; margin-top:2px;">Kepala Bagian Arsip &amp; Tata Usaha</div>
+          <div style="height:55px;"></div>
+          <div style="font-weight:bold; text-decoration:underline;">( Tim Pengelola SIMARSIP )</div>
+          <div style="font-size:8pt; color:#64748b;">NIP. AAS-SIM-2026</div>
+        </div>
+        <div class="sign-col">
+          <div>Surabaya, ${printDateStr}</div>
+          <div style="font-weight:bold; margin-top:2px;">Mengetahui &amp; Menyetujui,<br>Direktur Akademi Akupunktur Surabaya</div>
+          <div style="height:55px;"></div>
+          <div style="font-weight:bold; text-decoration:underline;">( .................................................... )</div>
+          <div style="font-size:8pt; color:#64748b;">NIDN / NIP. Direktur</div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+  w.document.close();
+};
+
+
+// ══════════════════════════════════════════════════════════════════
+// FITUR OPSI 5: TOGGLE WATERMARK PRATINJAU DOKUMEN
+// ══════════════════════════════════════════════════════════════════
+
+let pdfWatermarkActive = true;
+window.togglePdfWatermark = function() {
+  pdfWatermarkActive = !pdfWatermarkActive;
+  const overlay = document.getElementById('pdfWatermarkOverlay');
+  const btn = document.getElementById('btnToggleWatermark');
+  if (overlay) {
+    if (pdfWatermarkActive) {
+      overlay.classList.remove('disabled');
+    } else {
+      overlay.classList.add('disabled');
+    }
+  }
+  if (btn) {
+    if (pdfWatermarkActive) {
+      btn.style.color = '#059669';
+      btn.style.borderColor = '#a7f3d0';
+      btn.style.background = '#ecfdf5';
+      btn.innerHTML = '<i class="fas fa-shield-halved"></i> <span>Watermark: AKTIF</span>';
+    } else {
+      btn.style.color = '#64748b';
+      btn.style.borderColor = 'var(--b1)';
+      btn.style.background = 'transparent';
+      btn.innerHTML = '<i class="fas fa-shield-slash"></i> <span>Watermark: NONAKTIF</span>';
+    }
+  }
+};

@@ -241,4 +241,54 @@ Dokumen database utama disimpan pada Firestore Proyek `bidang-rumah-tangga`:
   - Dipasang tombol **"Install App"** di topbar yang mendeteksi dukungan peramban untuk menginstal SIMARSIP langsung ke Desktop PC/laptop staf kampus.
   - Tag versi aset diperbarui ke `?v=20260927_superapp_v9`.
 
+
+---
+
+## 📜 9. Kronologi Percakapan & Solusi: Fase 5 (Opsi 1, 4, 5: Disposisi Digital, Laporan Eksekutif Direktur & Watermark Pengaman)
+
+### 1. Implementasi Fitur Tata Kelola Pimpinan & Pengamanan Berkas (27 September 2026)
+
+Menindaklanjuti instruksi lanjutan dari pengguna (*"proses opsi 1,4,5"*), telah diselesaikan dan diuji secara komprehensif 3 fitur strategis tingkat pimpinan:
+
+- **Opsi 1: 📑 Lembar Disposisi Surat Masuk Digital (*Digital Disposition Sheet*)**:
+  - **Akses & Pemicu**:
+    - Tombol **`Cetak Lembar Disposisi`** pada Modal Detail Arsip (`viewDetail`).
+    - Tombol ikon disposisi (`fa-file-invoice`) pada kolom aksi baris tabel utama dan tabel per departemen.
+  - **Format Standar Naskah Dinas Pendidikan Tinggi AAS**:
+    - **Kop Surat Resmi AAS**: Lengkap dengan identitas Yayasan Samudra Pratidina, Akademi Akupunktur Surabaya, izin SK Mendiknas RI No. 89/D/O/2002, akreditasi LAM-PTKes, alamat kampus, dan kontak resmi.
+    - **Tabel Data Surat**: No. Agenda/Arsip, Tanggal Diterima, No. Surat, Tanggal Surat, Asal Pengirim, Perihal, dan Klasifikasi Bidang.
+    - **Checklist Sifat Surat**: Sangat Segera, Segera, Rahasia, Biasa.
+    - **Checklist Diteruskan Kepada**: Direktur, Pudir I/II/III, Ka. Prodi D3, KTU, Bendahara/Keuangan, SPMI, RT/Sarpras, LPPM, dan Ka. IT.
+    - **Checklist Petunjuk Disposisi Direktur**: Tindak lanjuti, Pelajari & telaah, Siapkan bahan/draft SK, Hadiri/koordinasikan, Arsipkan, Bicarakan bersama Direktur, dll.
+    - **Catatan Pimpinan**: Area bergaris lapang untuk instruksi khusus pimpinan.
+    - **Pengesahan & Verifikasi**: QR Code resmi tertaut ke portal verifikasi publik (`verify.html`), stempel registrasi SIMARSIP AAS, dan tempat tanda tangan Direktur Akademi Akupunktur Surabaya.
+    - **Fitur Cetak A4**: Jendela pratinjau interaktif dilengkapi tombol *Cetak / Simpan PDF* (`window.print()`) dengan isolasi cetak bersih.
+
+- **Opsi 4: 📊 Laporan Eksekutif Bulanan untuk Direktur (*Executive Summary PDF*)**:
+  - **Akses & Pemicu**:
+    - Menu dropdown **Ekspor** pada Topbar: tombol **`Laporan Eksekutif Bulanan (Direktur)`**.
+  - **Agregasi Data & Indikator Kunci (KPI Manajerial)**:
+    - **Total Dokumen Terkelola**: Dihitung real-time sesuai Tahun Akademik aktif (misal TA 2026).
+    - **Tingkat Digitalisasi File**: Rasio persentase dokumen yang telah terhubung ke Google Drive valid.
+    - **Kesehatan Retensi Dokumen**: Rekap dokumen aktif, segera jatuh tempo (warning), dan kedaluwarsa (expired).
+    - **Rekapitulasi 4 Klaster Organisasi AAS**:
+      1. *Tridharma & Akademik* (Akademik, SIPENAS, Kemahasiswaan, Ketenagaan SDM, PkM, LPPM).
+      2. *Tata Kelola, Keuangan & Rumah Tangga* (SIM-RT, Keuangan, Sarpras, Kepegawaian, Umum, Kelembagaan).
+      3. *Sistem Informasi & IT* (SIMARSIP Cloud, Portal Web, Jaringan).
+      4. *Penjaminan Mutu & Akreditasi* (Borang LAM-PTKes K1-K8, SPMI, Audit Mutu Internal).
+    - **Sorotan Dokumen Retensi Pimpinan**: Daftar dokumen MoU kerjasama dan SK yang butuh tindak lanjut perpanjangan segera.
+    - **Rekomendasi Manajerial & Lembar Tanda Tangan**: Kolom pengesahan Direktur AAS & Kepala Bagian Tata Usaha.
+
+- **Opsi 5: 🛡️ Stempel Pengaman & Watermark Dokumen Otomatis**:
+  - **Watermark Pratinjau Dokumen (`#overlayPDF`)**:
+    - Saat dokumen dibuka melalui penampil dokumen (`previewDoc`), layer watermark semi-transparan diagonal otomatis melindungi tampilan berkas: *"ARSIP RESMI AKADEMI AKUPUNKTUR SURABAYA • INTERNAL & RAHASIA • SIMARSIP"*.
+    - Dilengkapi **Badge Stempel Legalitas Digital** di pojok kanan bawah: *"SIMARSIP AAS • TERVERIFIKASI • DOKUMEN ARSIP RESMI INSTITUSI"*.
+    - Tombol fleksibel di bilah alat penampil dokumen: **`Watermark: AKTIF / NONAKTIF`** (`togglePdfWatermark`) yang memungkinkan pimpinan menonaktifkan watermark jika diperlukan untuk pembacaan teks rapat.
+  - **Proteksi Standar Media Cetak (@media print)**:
+    - Menghilangkan elemen navigasi, tombol kontrol, dan elemen tidak relevan ketika pengguna mencetak dari aplikasi, menjaga kerahasiaan dan kerapian cetak A4.
+  - **Pembaruan Tag Versi Cache**:
+    - Diperbarui menjadi `?v=20260927_superapp_v10` pada `index.html` dan `style.css`.
+
+---
+
 *Dokumen ini merupakan arsip riwayat percakapan resmi, keputusan teknis, dan dokumentasi arsitektur pengembangan sistem Akademi Akupunktur Surabaya (AAS).*

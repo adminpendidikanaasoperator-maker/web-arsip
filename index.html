@@ -23,7 +23,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=20260927_superapp_v9" />
+  <link rel="stylesheet" href="style.css?v=20260927_superapp_v10" />
 </head>
 <body>
 
@@ -376,6 +376,8 @@
           <button onclick="exportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
           <button onclick="exportWord()"><i class="fas fa-file-word"></i> Word (.docx)</button>
           <hr/>
+          <button onclick="printExecutiveReport()"><i class="fas fa-chart-line" style="color:#d97706;"></i> Laporan Eksekutif Bulanan (Direktur)</button>
+          <hr/>
           <button onclick="exportJSON()"><i class="fas fa-database"></i> JSON Arsip</button>
           <hr/>
           <button onclick="backupFullSystem()"><i class="fas fa-shield-halved" style="color:#2563eb;"></i> Backup Lengkap Sistem (.JSON)</button>
@@ -586,6 +588,9 @@
     <div class="pdf-head">
       <div class="pdf-head-title" id="pdfHeadTitle" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%;"><i class="fas fa-file-pdf"></i> Pratinjau Dokumen</div>
       <div class="pdf-head-actions">
+        <button class="btn-ghost-sm" id="btnToggleWatermark" onclick="togglePdfWatermark()" style="color:#059669; border-color:#a7f3d0; background:#ecfdf5; font-size:0.78rem;" title="Aktif/Nonaktifkan Watermark Keamanan">
+          <i class="fas fa-shield-halved"></i> <span>Watermark: AKTIF</span>
+        </button>
         <button class="btn-ghost-sm" onclick="openInGDrive()">
           <i class="fab fa-google-drive"></i> Buka di Google Drive
         </button>
@@ -594,6 +599,18 @@
     </div>
     <div class="pdf-body">
       <iframe id="pdfFrame" src="" frameborder="0" title="Pratinjau Dokumen" allowfullscreen></iframe>
+      <div class="pdf-watermark-overlay" id="pdfWatermarkOverlay">
+        <div class="watermark-diagonal-text">ARSIP RESMI AKADEMI AKUPUNKTUR SURABAYA • INTERNAL &amp; RAHASIA • SIMARSIP</div>
+        <div class="watermark-stamp-badge">
+          <div class="stamp-inner">
+            <i class="fas fa-shield-halved"></i>
+            <div class="stamp-text">
+              <strong>SIMARSIP AAS • TERVERIFIKASI</strong>
+              <span>DOKUMEN ARSIP RESMI INSTITUSI</span>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="pdf-nofile hidden" id="pdfNoFile">
         <i class="fab fa-google-drive" style="color:#4285f4;font-size:3rem;display:block;margin-bottom:16px;opacity:.5"></i>
         <h3>Belum ada dokumen dilampirkan</h3>
@@ -4192,7 +4209,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=20260927_superapp_v9" defer></script>
+<script src="app.js?v=20260927_superapp_v10" defer></script>
 
 <!-- Notification Sounds -->
 
