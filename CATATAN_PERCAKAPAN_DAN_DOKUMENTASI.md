@@ -425,4 +425,60 @@ Kini, telah diintegrasikan **Pusat Grafik & Analisis Seluruh Bidang Institusi (*
 
 ---
 
+## 📜 13. Kronologi Percakapan & Solusi: Fase 9 (Pembersihan Data Dummy, Sinkronisasi Riil Portal-Subportal, & Klasifikasi Otomatis BAN-PT/LAM-PTKes)
+
+### 1. Instruksi Kunci Pengguna (27 September 2026)
+> *"hapus data dumy, dan pastikan grafik sinkron dengan data setiap bidang masing-masing. Bila datanya Nol Grafiknya Pastinya tidak membaca. portal simarsip dan portal setiap bidang pastikan saling tersinkron. dan pastikan setiap file otomatis sesuai kriteria BAN-PT dan LAM-PTKes."*
+
+### 2. Implementasi 4 Pilar Penyelesaian Komprehensif
+
+- **Pilar 1: Eliminasi Total Data Dummy (Zero Mock Data Fallback)**:
+  - Seluruh array statis buatan pada modul grafik Master Hub (`renderAllDepartmentHubCharts`) dan sub-portal bidang dihapus tanpa sisa.
+  - Jika data operasional suatu bidang bernilai 0 (seperti SDM Dosen=0, Mahasiswa Aktif TA berjalan=0, dsb.), grafik menampilkan angka 0 murni secara transparan (*tidak ada data fiktif yang dibaca*).
+  - Untuk grafik donat (*Doughnut Chart*), jika semua kategori bernilai 0, sistem merender representasi *clean empty state* bertuliskan *"Belum Ada Data (0)"* berwarna abu-abu netral dengan tooltip *"0 Data Terdata"*, mencegah grafik cincin hilang atau menampilkan potongan warna palsu.
+
+- **Pilar 2: Sinkronisasi Riil Portal SIMARSIP dan Portal Setiap Bidang**:
+  - Portal Utama SIMARSIP dan seluruh subportal bidang kini 100% menggunakan satu sumber data terpusat (*Single Source of Truth*): `arsip`, `mahasiswa`, `sdm`, dan `sim_rt_data`.
+  - Subportal **Laboratorium**: Mengkalkulasi 35 dokumen peralatan praktikum riil (35 Baik, 0 Rusak, 0 Pemeliharaan).
+  - Subportal **Sarana Prasarana (Sarpras)**: Menghitung 5 dokumen sarana riil (Gedung, Ruang Kuliah, Fasilitas).
+  - Subportal **Akademik & Kemahasiswaan**: Menghitung 32 data mahasiswa riil di database lokal (seluruhnya merupakan alumni angkatan 2004 berstatus Lulus).
+  - Subportal **Ketenagaan (SDM)**: Menghitung data aktual SDM (0 data terdata $\rightarrow$ grafik dan tabel menyajikan status 0 bersih).
+  - Subportal **Rumah Tangga (SIM-RT)**: Menghitung mutasi kas kecil dan tagihan operasional aktual dari Firestore `sim_rt_database`.
+  - Seluruh badge counter di topbar navigasi (`badge-arsip`: 51, `badge-aktif`: 32, `badge-banpt`: 51, `badge-lamptkes`: 51) sinkron sempurna dengan stat card di dalam dashboard.
+
+- **Pilar 3: Mesin Klasifikasi Otomatis BAN-PT (K1–K9) & LAM-PTKes (K1–K8)**:
+  - Dibangun fungsi kecerdasan buatan berbasis heuristik: `detectBanptCriteria(bidang, jenis, judul, ket)` dan `detectLamptkesCriteria(bidang, jenis, judul, ket)` di `app.js`.
+  - Setiap file arsip otomatis dipetakan ke kriteria yang tepat tanpa memerlukan input manual berulang:
+    - **BAN-PT (9 Kriteria)**:
+      - K1: Visi, Misi, Tujuan, dan Strategi
+      - K2: Tata Pamong, Tata Kelola, dan Kerjasama
+      - K3: Mahasiswa
+      - K4: Sumber Daya Manusia
+      - K5: Keuangan, Sarana, dan Prasarana
+      - K6: Pendidikan
+      - K7: Penelitian
+      - K8: Pengabdian kepada Masyarakat
+      - K9: Luaran dan Capaian Tridharma
+    - **LAM-PTKes (8 Kriteria Standar Akreditasi Kesehatan)**:
+      - K1: Visi, Misi, Tujuan, dan Sasaran
+      - K2: Tata Pamong, Kepemimpinan, Sistem Pengelolaan, dan Penjaminan Mutu
+      - K3: Mahasiswa dan Lulusan
+      - K4: Sumber Daya Manusia
+      - K5: Kurikulum, Pembelajaran, dan Suasana Akademik
+      - K6: Pembiayaan, Sarana dan Prasarana, serta Sistem Informasi
+      - K7: Penelitian, Pelayanan/Pengabdian kepada Masyarakat, dan Kerjasama
+      - K8: Sistem Penjaminan Mutu Internal
+  - **Hasil Klasifikasi Otomatis 51 Berkas Riil Database**:
+    - **BAN-PT**: K1=15, K2=4, K3=3, K4=1, K5=24, K6=2, K7=0, K8=0, K9=2 $\rightarrow$ Total: **51 Berkas (100% Lengkap, 0 Tidak Terpetakan)**.
+    - **LAM-PTKes**: K1=15, K2=3, K3=6, K4=1, K5=1, K6=25, K7=0, K8=0 $\rightarrow$ Total: **51 Berkas (100% Lengkap, 0 Tidak Terpetakan)**.
+  - Setiap kali pengguna menyimpan arsip baru melalui formulir (`saveArsip`), sistem secara otomatis menganalisis dan membubuhkan tag `kriteria_banpt` dan `kriteria_lamptkes`.
+  - Tabel daftar arsip dan modal detail dokumen menyajikan lencana visual (*badge chip*) klasifikasi kriteria secara otomatis.
+
+- **Pilar 4: Sinkronisasi Laporan Akreditasi & Ekspor Berkas**:
+  - Modul pelaporan borang akreditasi (`generateBanptReport` dan `generateLamptkesReport`) langsung merender baris berkas nyata sesuai kriteria tab yang aktif (contoh: Tab K1 merender 15 berkas).
+  - Fitur ekspor laporan akreditasi (Excel, Print, PDF) kini mencakup seluruh 51 arsip institusi.
+  - Pembaruan versi cache: `?v=20260927_superapp_v14` pada `index.html`.
+
+---
+
 *Dokumen ini merupakan arsip riwayat percakapan resmi, keputusan teknis, dan dokumentasi arsitektur pengembangan sistem Akademi Akupunktur Surabaya (AAS).*

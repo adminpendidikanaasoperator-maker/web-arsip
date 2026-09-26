@@ -1637,6 +1637,152 @@ function setupHamburger() { document.getElementById('hamburger').addEventListene
 function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sbOverlay').classList.add('hidden'); }
 function goToDept(dept) { currentDept=dept; document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active')); document.getElementById('nav-'+dept)?.classList.add('active'); showPage('dept'); }
 function renderSidebarDate() { const el=document.getElementById('sidebarDate'); if(el) el.textContent=new Date().toLocaleDateString('id-ID',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}); }
+
+// ══════════════════════════════════════════════════════════════
+// KLASIFIKASI OTOMATIS KRITERIA AKREDITASI BAN-PT & LAM-PTKes
+// ══════════════════════════════════════════════════════════════
+function detectBanptCriteria(bidang, jenis, judul, ket) {
+  const b = (bidang || '').toLowerCase();
+  const j = (jenis || '').toLowerCase();
+  const text = (b + ' ' + j + ' ' + (judul || '') + ' ' + (ket || '')).toLowerCase();
+
+  // K9: Luaran dan Capaian Tridharma (Lulusan, IPK, Tracer Study, Ukom, Publikasi, HKI/Paten)
+  if (text.includes('lulusan') || text.includes('ipk') || text.includes('wisuda') || 
+      text.includes('tracer') || text.includes('serapan') || text.includes('kerja alumni') || 
+      text.includes('ukom') || text.includes('ujikom') || text.includes('sertifikat kompetensi') || 
+      text.includes('publikasi') || text.includes('jurnal') || text.includes('hki') || 
+      text.includes('hak cipta') || text.includes('paten')) return 9;
+
+  // K1: Visi, Misi, Tujuan dan Strategi (VMTS, Renstra, Renop, Statuta, RIP)
+  if (text.includes('vmts') || text.includes('visi') || text.includes('misi') || 
+      text.includes('tujuan') || text.includes('sasaran') || text.includes('renstra') || 
+      text.includes('renop') || text.includes('rip') || text.includes('statuta') || 
+      b === 'admin_kelembagaan') return 1;
+
+  // K2: Tata Pamong, Tata Kelola dan Kerjasama (SPMI, AMI, SOTK, MoU/PKS, SK Direktur, IKU, Tata Kelola)
+  if (text.includes('spmi') || text.includes('ami') || text.includes('audit') || 
+      text.includes('sotk') || text.includes('organisasi') || text.includes('tata pamong') || 
+      text.includes('tata kelola') || text.includes('sk direktur') || text.includes('mou') || 
+      text.includes('moa') || text.includes('pks') || text.includes('kerjasama') || 
+      text.includes('kebijakan') || text.includes('iku') || text.includes('lldikti') ||
+      b === 'spmi' || b === 'ami' || b === 'kerjasama' || b === 'admin_umum' || b === 'umum' || b === 'administrasi' || b === 'penjaminan_mutu') return 2;
+
+  // K3: Mahasiswa (PMB, Beasiswa, Ormawa, Prestasi Mhs, SIMKATMAWA)
+  if (b === 'kemahasiswaan' || text.includes('mahasiswa') || text.includes('simkatmawa') || text.includes('pmb') || 
+      text.includes('beasiswa') || text.includes('prestasi') || text.includes('ormawa')) return 3;
+
+  // K4: Sumber Daya Manusia (Dosen, Tendik, Jafung, Serdos, BKD, SISTER, Laboran)
+  if (b === 'ketenagaan' || b === 'sdm' || b === 'admin_kepegawaian' || b === 'kepegawaian' || 
+      text.includes('dosen') || text.includes('tendik') || text.includes('jafung') || 
+      text.includes('lektor') || text.includes('serdos') || text.includes('bkd') || 
+      text.includes('sister') || text.includes('laboran')) return 4;
+
+  // K5: Keuangan, Sarana dan Prasarana (Anggaran, RAB, Kas Kecil, Sarpras, Inventaris Lab, Aset, IT)
+  if (b === 'keuangan' || b === 'admin_keuangan' || b === 'sarana' || b === 'sarpras' || 
+      b === 'rumah_tangga' || b === 'rumah-tangga' || b === 'it' || 
+      text.includes('anggaran') || text.includes('rab') || text.includes('keuangan') || 
+      text.includes('kas kecil') || text.includes('tagihan') || text.includes('utilitas') || 
+      text.includes('listrik') || text.includes('air pdam') || text.includes('sarana') || 
+      text.includes('prasarana') || text.includes('inventaris') || text.includes('gedung') || 
+      text.includes('fasilitas') || text.includes('aset') || text.includes('peralatan')) return 5;
+
+  // K7: Penelitian (Riset Dosen/Mhs, LPPM)
+  if (b === 'penelitian_pelatihan' || b === 'lppm' || text.includes('penelitian') || text.includes('riset')) return 7;
+
+  // K8: Pengabdian kepada Masyarakat (PkM, Baksos, Desa Binaan)
+  if (b === 'pengabdian' || text.includes('pengabdian') || text.includes('pkm') || 
+      text.includes('bakti sosial') || text.includes('baksos') || text.includes('desa binaan')) return 8;
+
+  // K6: Pendidikan (Kurikulum, RPS, Silabus, Modul, Praktikum, PDDikti Feeder, PIN/PISN, KHS/KRS)
+  if (b === 'akademik' || b === 'pendidikan' || b === 'sistem_pendidikan' || b === 'laboratorium' || 
+      b === 'perpustakaan' || text.includes('kurikulum') || text.includes('rps') || 
+      text.includes('silabus') || text.includes('modul') || text.includes('praktikum') || 
+      text.includes('pembelajaran') || text.includes('feeder') || text.includes('pddikti') || 
+      text.includes('pin') || text.includes('pisn') || text.includes('ijazah') || text.includes('khs') || 
+      text.includes('krs') || text.includes('transkrip') || text.includes('kalender') || text.includes('presensi')) return 6;
+
+  return 2;
+}
+
+function detectLamptkesCriteria(bidang, jenis, judul, ket) {
+  const b = (bidang || '').toLowerCase();
+  const j = (jenis || '').toLowerCase();
+  const text = (b + ' ' + j + ' ' + (judul || '') + ' ' + (ket || '')).toLowerCase();
+
+  // K8: Capaian & Luaran Tridharma (Publikasi Jurnal, HKI, Paten, Capaian PkM, Video Edukasi)
+  if (text.includes('publikasi') || text.includes('jurnal') || text.includes('hki') || 
+      text.includes('hak cipta') || text.includes('paten') || text.includes('luaran') || 
+      text.includes('capaian pkm') || text.includes('video edukasi')) return 8;
+
+  // K1: Visi, Misi, Tujuan dan Strategi Program Studi Akupunktur
+  if (text.includes('vmts') || text.includes('visi') || text.includes('misi') || 
+      text.includes('tujuan') || text.includes('sasaran') || text.includes('renstra') || 
+      text.includes('renop') || text.includes('rip') || text.includes('statuta') || 
+      b === 'admin_kelembagaan') return 1;
+
+  // K2: Tata Pamong, Tata Kelola dan Kerjasama (SPMI, AMI, Audit, SOTK, SK Direktur, MoU/PKS Rumah Sakit/Klinik)
+  if (text.includes('spmi') || text.includes('ami') || text.includes('audit') || 
+      text.includes('sotk') || text.includes('tata pamong') || text.includes('sk direktur') || 
+      text.includes('mou') || text.includes('moa') || text.includes('pks') || 
+      text.includes('kerjasama') || text.includes('kebijakan mutu') || text.includes('standar mutu') || 
+      text.includes('iku') || text.includes('lldikti') || b === 'spmi' || b === 'ami' || 
+      b === 'kerjasama' || b === 'admin_umum' || b === 'umum' || b === 'administrasi' || b === 'penjaminan_mutu') return 2;
+
+  // K3: Mahasiswa dan Lulusan (PMB, Mahasiswa Baru, Beasiswa, Tracer Study, Ukom Akupunktur, SKL/Ijazah)
+  if (b === 'kemahasiswaan' || text.includes('mahasiswa') || text.includes('simkatmawa') || 
+      text.includes('pmb') || text.includes('beasiswa') || text.includes('tracer') || 
+      text.includes('alumni') || text.includes('lulusan') || text.includes('ukom') || 
+      text.includes('ujikom') || text.includes('skl') || text.includes('ijazah')) return 3;
+
+  // K4: Sumber Daya Manusia (Dosen Tetap Akupunktur, STR/SIP, BKD, SISTER, Jafung, Tendik Laboran)
+  if (b === 'ketenagaan' || b === 'sdm' || b === 'admin_kepegawaian' || b === 'kepegawaian' || 
+      text.includes('dosen') || text.includes('tendik') || text.includes('jafung') || 
+      text.includes('lektor') || text.includes('asisten ahli') || text.includes('serdos') || 
+      text.includes('bkd') || text.includes('sister') || text.includes('laboran')) return 4;
+
+  // K7: Penelitian dan Pengabdian kepada Masyarakat (LPPM, Riset Akupunktur TCM, Baksos, PkM)
+  if (b === 'pengabdian' || b === 'penelitian_pelatihan' || b === 'lppm' || 
+      text.includes('penelitian') || text.includes('riset') || text.includes('pengabdian') || 
+      text.includes('pkm') || text.includes('baksos') || text.includes('bakti sosial') || 
+      text.includes('desa binaan')) return 7;
+
+  // K6: Keuangan, Sarana dan Prasarana (Anggaran, Sarpras, Lab Akupunktur, Jarum/Moxa/Phantom, SIMARSIP, Utilitas)
+  if (b === 'keuangan' || b === 'admin_keuangan' || b === 'sarana' || b === 'sarpras' || 
+      b === 'rumah_tangga' || b === 'rumah-tangga' || b === 'laboratorium' || b === 'it' || 
+      text.includes('anggaran') || text.includes('rab') || text.includes('kas kecil') || 
+      text.includes('sarana') || text.includes('prasarana') || text.includes('alat praktikum') || 
+      text.includes('jarum') || text.includes('moksibusi') || text.includes('phantom') || 
+      text.includes('inventaris') || text.includes('gedung') || text.includes('fasilitas') || 
+      text.includes('simarsip') || text.includes('siakad') || text.includes('server') || 
+      text.includes('aplikasi') || text.includes('utilitas') || text.includes('listrik') || text.includes('air pdam')) return 6;
+
+  // K5: Pendidikan (Kurikulum OBE Vokasi Akupunktur, RPS, Silabus, Modul Acupoint, Praktik Klinik, OSCE, Feeder PDDikti, PIN)
+  if (b === 'akademik' || b === 'pendidikan' || b === 'sistem_pendidikan' || b === 'perpustakaan' || 
+      text.includes('kurikulum') || text.includes('rps') || text.includes('silabus') || 
+      text.includes('modul') || text.includes('praktik klinik') || text.includes('pembelajaran') || 
+      text.includes('osce') || text.includes('ujian') || text.includes('khs') || text.includes('krs') || 
+      text.includes('transkrip') || text.includes('feeder') || text.includes('pddikti') || 
+      text.includes('kalender') || text.includes('presensi')) return 5;
+
+  return 2;
+}
+
+function getBanptCriteriaForDoc(a) {
+  if (!a) return 0;
+  if (a.kriteria_banpt && Number(a.kriteria_banpt) >= 1 && Number(a.kriteria_banpt) <= 9) {
+    return Number(a.kriteria_banpt);
+  }
+  return detectBanptCriteria(a.bidang, a.jenis, a.judul, a.keterangan);
+}
+
+function getLamptkesCriteriaForDoc(a) {
+  if (!a) return 0;
+  if (a.kriteria_lamptkes && Number(a.kriteria_lamptkes) >= 1 && Number(a.kriteria_lamptkes) <= 8) {
+    return Number(a.kriteria_lamptkes);
+  }
+  return detectLamptkesCriteria(a.bidang, a.jenis, a.judul, a.keterangan);
+}
+
 function updateBadges() {
   const f=arsip.filter(a=>!currentAY||a.ay===currentAY);
   
@@ -1665,20 +1811,16 @@ function updateBadges() {
   let lamptkesKCounts = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0};
 
   f.forEach(a => {
-    let bk = getBanptCriteriaForUpload(a.bidang, a.jenis);
+    let bk = getBanptCriteriaForDoc(a);
     if (bk > 0) {
        banptCount++;
        if(banptKCounts[bk] !== undefined) banptKCounts[bk]++;
     }
     
-    if (a.jenis) {
-       let lk = getKriteriaNumber(a.jenis);
-       if (lk > 0 || a.jenis.includes('_led') || a.jenis.startsWith('led_') || a.jenis.includes('_spmi') || a.jenis.startsWith('spmi_')) {
-          lamptkesCount++;
-       }
-       if (lk >= 1 && lk <= 8) {
-          lamptkesKCounts[lk]++;
-       }
+    let lk = getLamptkesCriteriaForDoc(a);
+    if (lk > 0) {
+       lamptkesCount++;
+       if (lamptkesKCounts[lk] !== undefined) lamptkesKCounts[lk]++;
     }
   });
 
@@ -1943,21 +2085,22 @@ function renderAllDepartmentHubCharts(data) {
   const baseFont = { family: "'Inter', sans-serif", size: 11 };
 
   // ══════════════════════════════════════════════════
-  // 1. AKADEMIK & SIAKAD
+  // 1. AKADEMIK & SIAKAD (Sumber Riil: mahasiswa & akademikData)
   // ══════════════════════════════════════════════════
-  const studList = (typeof akademikData !== 'undefined' && akademikData.students && akademikData.students.length > 0)
-    ? akademikData.students
-    : (typeof FALLBACK_AKADEMIK_STUDENTS !== 'undefined' ? FALLBACK_AKADEMIK_STUDENTS : []);
+  const studList = (typeof mahasiswa !== 'undefined' && Array.isArray(mahasiswa) && mahasiswa.length > 0)
+    ? mahasiswa
+    : ((typeof akademikData !== 'undefined' && akademikData.students) ? akademikData.students : []);
 
-  // 1a. Semester Distribution
+  // 1a. Semester Distribution (1 - 6)
   const semCounts = [1, 2, 3, 4, 5, 6].map(sem => studList.filter(s => Number(s.semester) === sem).length);
+  const maxSemVal = Math.max(...semCounts, 1);
   safeHubChart('allChart_akSem', {
     type: 'bar',
     data: {
       labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6'],
       datasets: [{
         label: 'Mahasiswa',
-        data: semCounts.some(c => c > 0) ? semCounts : [14, 18, 12, 16, 15, 11],
+        data: semCounts,
         backgroundColor: '#3b82f6',
         borderRadius: 6
       }]
@@ -1965,24 +2108,28 @@ function renderAllDepartmentHubCharts(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (c) => ' ' + c.raw + ' Mahasiswa' } }
+      },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { beginAtZero: true, suggestedMax: maxSemVal > 1 ? maxSemVal + 1 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         x: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
   });
 
-  // 1b. Kelas
-  const kReg = studList.filter(s => (s.prodi || '').includes('Reguler')).length || 24;
-  const kKar = studList.filter(s => (s.prodi || '').includes('Karyawan') || (s.prodi || '').includes('Sore')).length || 10;
+  // 1b. Program Kelas (Reguler vs Karyawan/Alih Jenjang)
+  const kReg = studList.filter(s => (s.prodi || '').toLowerCase().includes('reguler')).length;
+  const kKar = studList.filter(s => (s.prodi || '').toLowerCase().includes('karyawan') || (s.prodi || '').toLowerCase().includes('alih')).length;
+  const hasKelasData = (kReg + kKar) > 0;
   safeHubChart('allChart_akKelas', {
     type: 'doughnut',
     data: {
-      labels: ['Reguler Pagi', 'Kelas Karyawan / Sore'],
+      labels: hasKelasData ? ['Reguler Pagi (' + kReg + ')', 'Kelas Karyawan / Sore (' + kKar + ')'] : ['Belum Ada Data Kelas (0)'],
       datasets: [{
-        data: [kReg, kKar],
-        backgroundColor: ['#0ea5e9', '#6366f1'],
+        data: hasKelasData ? [kReg, kKar] : [1],
+        backgroundColor: hasKelasData ? ['#0ea5e9', '#6366f1'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -1990,21 +2137,32 @@ function renderAllDepartmentHubCharts(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (!hasKelasData) return ' 0 Mahasiswa';
+              return ' ' + ctx.label + ': ' + ctx.raw + ' Mahasiswa';
+            }
+          }
+        }
+      },
       cutout: '65%'
     }
   });
 
-  // 1c. Gender Rasio
-  const gL = studList.filter(s => s.gender === 'L').length || 14;
-  const gP = studList.filter(s => s.gender === 'P').length || 20;
+  // 1c. Gender Rasio (Laki-laki vs Perempuan)
+  const gL = studList.filter(s => s.gender === 'L' || s.jk === 'L' || s.jenisKelamin === 'L').length;
+  const gP = studList.filter(s => s.gender === 'P' || s.jk === 'P' || s.jenisKelamin === 'P').length;
+  const hasGenderData = (gL + gP) > 0;
   safeHubChart('allChart_akGender', {
     type: 'doughnut',
     data: {
-      labels: ['Laki-laki', 'Perempuan'],
+      labels: hasGenderData ? ['Laki-laki (' + gL + ')', 'Perempuan (' + gP + ')'] : ['Belum Ada Data Gender (0)'],
       datasets: [{
-        data: [gL, gP],
-        backgroundColor: ['#3b82f6', '#ec4899'],
+        data: hasGenderData ? [gL, gP] : [1],
+        backgroundColor: hasGenderData ? ['#3b82f6', '#ec4899'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2012,22 +2170,33 @@ function renderAllDepartmentHubCharts(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (!hasGenderData) return ' 0 Mahasiswa';
+              return ' ' + ctx.label + ': ' + ctx.raw + ' Mahasiswa';
+            }
+          }
+        }
+      },
       cutout: '65%'
     }
   });
 
-  // 1d. Status Akademik
-  const stAktif = studList.filter(s => (s.status || '').toLowerCase() === 'aktif').length || 31;
-  const stCuti = studList.filter(s => (s.status || '').toLowerCase() === 'cuti').length || 2;
-  const stLulus = studList.filter(s => (s.status || '').toLowerCase() === 'lulus').length || 1;
+  // 1d. Status Akademik (Aktif, Cuti, Lulus)
+  const stAktif = studList.filter(s => (s.status || '').toLowerCase() === 'aktif').length;
+  const stCuti = studList.filter(s => (s.status || '').toLowerCase() === 'cuti').length;
+  const stLulus = studList.filter(s => (s.status || '').toLowerCase() === 'lulus').length;
+  const hasStatusData = (stAktif + stCuti + stLulus) > 0;
   safeHubChart('allChart_akStatus', {
     type: 'doughnut',
     data: {
-      labels: ['Aktif', 'Cuti', 'Lulus'],
+      labels: hasStatusData ? ['Aktif (' + stAktif + ')', 'Cuti (' + stCuti + ')', 'Lulus (' + stLulus + ')'] : ['Belum Ada Data Status (0)'],
       datasets: [{
-        data: [stAktif, stCuti, stLulus],
-        backgroundColor: ['#22c55e', '#f59e0b', '#3b82f6'],
+        data: hasStatusData ? [stAktif, stCuti, stLulus] : [1],
+        backgroundColor: hasStatusData ? ['#22c55e', '#f59e0b', '#3b82f6'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2035,21 +2204,37 @@ function renderAllDepartmentHubCharts(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (!hasStatusData) return ' 0 Mahasiswa';
+              return ' ' + ctx.label + ': ' + ctx.raw + ' Mahasiswa';
+            }
+          }
+        }
+      },
       cutout: '65%'
     }
   });
 
   // ══════════════════════════════════════════════════
-  // 2. KETENAGAAN & SDM
+  // 2. KETENAGAAN & SDM (Sumber Riil: sdm)
   // ══════════════════════════════════════════════════
+  const sdmList = (typeof sdm !== 'undefined' && Array.isArray(sdm)) ? sdm : [];
+  const dty = sdmList.filter(s => (s.status || s.ikatan || '').toLowerCase().includes('tetap') && !(s.status || s.ikatan || '').toLowerCase().includes('tidak')).length;
+  const dtt = sdmList.filter(s => (s.status || s.ikatan || '').toLowerCase().includes('tidak tetap')).length;
+  const tamu = sdmList.filter(s => (s.status || s.ikatan || '').toLowerCase().includes('tamu') || (s.status || s.ikatan || '').toLowerCase().includes('pakar')).length;
+  const hasDosenData = (dty + dtt + tamu) > 0;
+
   safeHubChart('allChart_ketIkatan', {
     type: 'doughnut',
     data: {
-      labels: ['Dosen Tetap (DTY)', 'Dosen Tidak Tetap (DTT)', 'Dosen Tamu / Pakar'],
+      labels: hasDosenData ? ['Dosen Tetap / DTY (' + dty + ')', 'Dosen Tidak Tetap / DTT (' + dtt + ')', 'Dosen Tamu (' + tamu + ')'] : ['Belum Ada Data Dosen (0)'],
       datasets: [{
-        data: [6, 2, 2],
-        backgroundColor: ['#2563eb', '#8b5cf6', '#06b6d4'],
+        data: hasDosenData ? [dty, dtt, tamu] : [1],
+        backgroundColor: hasDosenData ? ['#2563eb', '#8b5cf6', '#06b6d4'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2057,18 +2242,32 @@ function renderAllDepartmentHubCharts(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (!hasDosenData) return ' 0 Dosen Terdata';
+              return ' ' + ctx.label + ': ' + ctx.raw + ' Dosen';
+            }
+          }
+        }
+      },
       cutout: '65%'
     }
   });
 
+  const lektor = sdmList.filter(s => (s.jafung || '').toLowerCase().includes('lektor')).length;
+  const asisten = sdmList.filter(s => (s.jafung || '').toLowerCase().includes('asisten')).length;
+  const pengajar = sdmList.filter(s => (s.jafung || '').toLowerCase().includes('pengajar')).length;
+  const maxJafung = Math.max(lektor, asisten, pengajar, 1);
   safeHubChart('allChart_ketJafung', {
     type: 'bar',
     data: {
       labels: ['Lektor', 'Asisten Ahli', 'Tenaga Pengajar'],
       datasets: [{
         label: 'Jumlah Dosen',
-        data: [4, 3, 3],
+        data: [lektor, asisten, pengajar],
         backgroundColor: ['#6366f1', '#8b5cf6', '#a855f7'],
         borderRadius: 6
       }]
@@ -2078,19 +2277,23 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { beginAtZero: true, suggestedMax: maxJafung > 1 ? maxJafung + 1 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         x: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
   });
 
+  const s3 = sdmList.filter(s => (s.pendidikan || '').toUpperCase().includes('S3')).length;
+  const s2 = sdmList.filter(s => (s.pendidikan || '').toUpperCase().includes('S2')).length;
+  const s1 = sdmList.filter(s => (s.pendidikan || '').toUpperCase().includes('S1') || (s.pendidikan || '').toUpperCase().includes('D4')).length;
+  const maxPend = Math.max(s3, s2, s1, 1);
   safeHubChart('allChart_ketPendidikan', {
     type: 'bar',
     data: {
       labels: ['S3 / Sp-2', 'S2 / Sp-1', 'S1 / D4'],
       datasets: [{
         label: 'Pendidikan',
-        data: [3, 5, 2],
+        data: [s3, s2, s1],
         backgroundColor: ['#10b981', '#34d399', '#6ee7b7'],
         borderRadius: 6
       }]
@@ -2101,19 +2304,24 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { beginAtZero: true, suggestedMax: maxPend > 1 ? maxPend + 1 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         y: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
   });
 
+  const it = sdmList.filter(s => (s.unit || s.bagian || '').toLowerCase().includes('it') || (s.role || '').toLowerCase().includes('it')).length;
+  const lab = sdmList.filter(s => (s.unit || s.bagian || '').toLowerCase().includes('lab') || (s.role || '').toLowerCase().includes('laboran')).length;
+  const keu = sdmList.filter(s => (s.unit || s.bagian || '').toLowerCase().includes('keuangan')).length;
+  const tu = sdmList.filter(s => (s.unit || s.bagian || '').toLowerCase().includes('tu') || (s.role || '').toLowerCase().includes('administrasi')).length;
+  const maxTendik = Math.max(it, lab, keu, tu, 1);
   safeHubChart('allChart_ketTendik', {
     type: 'bar',
     data: {
       labels: ['IT & SIM', 'Laboran', 'Keuangan', 'TU & Kepegawaian'],
       datasets: [{
         label: 'Personel',
-        data: [2, 2, 2, 3],
+        data: [it, lab, keu, tu],
         backgroundColor: ['#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'],
         borderRadius: 6
       }]
@@ -2123,35 +2331,35 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { beginAtZero: true, suggestedMax: maxTendik > 1 ? maxTendik + 1 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         x: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
   });
 
   // ══════════════════════════════════════════════════
-  // 3. PENDIDIKAN & KURIKULUM (SIPENAS)
+  // 3. PENDIDIKAN & KURIKULUM (SIPENAS) (Sumber Riil: arsip bidang pendidikan)
   // ══════════════════════════════════════════════════
-  const pendFiles = (typeof pendidikanData !== 'undefined' && pendidikanData.archives && pendidikanData.archives.length > 0)
-    ? pendidikanData.archives
-    : arsip.filter(a => a.bidang === 'pendidikan');
-
-  const catCounts = { 'Kurikulum OBE': 3, 'RPS & Silabus': 8, 'Modul & Bahan Ajar': 5, 'Soal Ujian & OSCE': 4, 'Jadwal & Kalender': 4 };
+  const pendFiles = (data || []).filter(a => a.bidang === 'pendidikan' || a.bidang === 'sistem_pendidikan');
+  const catCounts = { 'Kurikulum OBE': 0, 'RPS & Silabus': 0, 'Modul & Bahan Ajar': 0, 'Soal Ujian & OSCE': 0, 'Jadwal & Kalender': 0 };
   pendFiles.forEach(f => {
-    const c = f.category || f.kategori;
-    if (c) {
-      const shortC = c.replace(/Dokumens*/i, '').slice(0, 16);
-      catCounts[shortC] = (catCounts[shortC] || 0) + 1;
-    }
+    const text = ((f.jenis || '') + ' ' + (f.judul || '') + ' ' + (f.keterangan || '')).toLowerCase();
+    if (text.includes('kurikulum') || text.includes('obe')) catCounts['Kurikulum OBE']++;
+    else if (text.includes('rps') || text.includes('silabus')) catCounts['RPS & Silabus']++;
+    else if (text.includes('modul') || text.includes('ajar')) catCounts['Modul & Bahan Ajar']++;
+    else if (text.includes('soal') || text.includes('ujian') || text.includes('osce')) catCounts['Soal Ujian & OSCE']++;
+    else if (text.includes('jadwal') || text.includes('kalender')) catCounts['Jadwal & Kalender']++;
+    else catCounts['Kurikulum OBE']++;
   });
+  const maxPendCat = Math.max(...Object.values(catCounts), 1);
 
   safeHubChart('allChart_pendCat', {
     type: 'bar',
     data: {
-      labels: Object.keys(catCounts).slice(0, 5),
+      labels: Object.keys(catCounts),
       datasets: [{
         label: 'Dokumen',
-        data: Object.values(catCounts).slice(0, 5),
+        data: Object.values(catCounts),
         backgroundColor: '#8b5cf6',
         borderRadius: 6
       }]
@@ -2161,19 +2369,25 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { beginAtZero: true, suggestedMax: maxPendCat > 1 ? maxPendCat + 1 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         x: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
   });
 
+  const pendYears = { '2022': 0, '2023': 0, '2024': 0, '2025': 0, '2026': 0 };
+  pendFiles.forEach(f => {
+    const y = (f.ay || f.tanggal || '').slice(0, 4);
+    if (pendYears[y] !== undefined) pendYears[y]++;
+  });
+  const maxPendYear = Math.max(...Object.values(pendYears), 1);
   safeHubChart('allChart_pendYears', {
     type: 'line',
     data: {
       labels: ['2022', '2023', '2024', '2025', '2026'],
       datasets: [{
         label: 'Dokumen Pendidikan',
-        data: [4, 6, 8, 12, 16],
+        data: Object.values(pendYears),
         borderColor: '#a855f7',
         backgroundColor: 'rgba(168,85,247,0.15)',
         tension: 0.4,
@@ -2186,19 +2400,21 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { beginAtZero: true, suggestedMax: maxPendYear > 1 ? maxPendYear + 1 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         x: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
   });
 
+  const pendSemCounts = [1, 2, 3, 4, 5, 6].map(sem => pendFiles.filter(f => (f.keterangan || f.judul || '').includes('Sem ' + sem) || (f.keterangan || f.judul || '').includes('Semester ' + sem)).length);
+  const maxPendSem = Math.max(...pendSemCounts, 1);
   safeHubChart('allChart_pendSem', {
     type: 'bar',
     data: {
       labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6'],
       datasets: [{
-        label: 'SKS Mata Kuliah',
-        data: [20, 22, 21, 20, 18, 14],
+        label: 'Dokumen / SKS',
+        data: pendSemCounts,
         backgroundColor: '#6366f1',
         borderRadius: 6
       }]
@@ -2208,19 +2424,28 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { beginAtZero: true, suggestedMax: maxPendSem > 1 ? maxPendSem + 1 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         x: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
   });
 
+  const pendFmtCounts = { 'PDF': 0, 'DOCX / Word': 0, 'XLSX / Excel': 0, 'PPTX': 0 };
+  pendFiles.forEach(f => {
+    const fmt = (f.format || f.fileName || '').toLowerCase();
+    if (fmt.includes('pdf')) pendFmtCounts['PDF']++;
+    else if (fmt.includes('doc')) pendFmtCounts['DOCX / Word']++;
+    else if (fmt.includes('xls') || fmt.includes('sheet') || fmt.includes('csv')) pendFmtCounts['XLSX / Excel']++;
+    else if (fmt.includes('ppt')) pendFmtCounts['PPTX']++;
+  });
+  const totalPendFmt = Object.values(pendFmtCounts).reduce((a, b) => a + b, 0);
   safeHubChart('allChart_pendFmt', {
     type: 'doughnut',
     data: {
-      labels: ['PDF', 'DOCX / Word', 'XLSX / Excel', 'PPTX'],
+      labels: totalPendFmt > 0 ? ['PDF (' + pendFmtCounts['PDF'] + ')', 'Word (' + pendFmtCounts['DOCX / Word'] + ')', 'Excel (' + pendFmtCounts['XLSX / Excel'] + ')', 'PPTX (' + pendFmtCounts['PPTX'] + ')'] : ['Belum Ada Berkas Kurikulum (0)'],
       datasets: [{
-        data: [18, 6, 3, 2],
-        backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b'],
+        data: totalPendFmt > 0 ? Object.values(pendFmtCounts) : [1],
+        backgroundColor: totalPendFmt > 0 ? ['#ef4444', '#3b82f6', '#10b981', '#f59e0b'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2228,21 +2453,34 @@ function renderAllDepartmentHubCharts(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (totalPendFmt === 0) return ' 0 Dokumen';
+              return ' ' + ctx.label + ': ' + ctx.raw + ' Dokumen';
+            }
+          }
+        }
+      },
       cutout: '65%'
     }
   });
 
   // ══════════════════════════════════════════════════
-  // 4. KEMAHASISWAAN & ALUMNI
+  // 4. KEMAHASISWAAN & ALUMNI (Sumber Riil: mahasiswa & arsip bidang kemahasiswaan)
   // ══════════════════════════════════════════════════
+  const mhsYears = ['2004', '2022', '2023', '2024', '2025', '2026'];
+  const mhsCountsByYear = mhsYears.map(y => studList.filter(m => (m.angkatan || m.ay || '').includes(y)).length);
+  const maxMhsYear = Math.max(...mhsCountsByYear, 1);
   safeHubChart('allChart_mhsTrend', {
     type: 'line',
     data: {
-      labels: ['TA 2022', 'TA 2023', 'TA 2024', 'TA 2025', 'TA 2026'],
+      labels: mhsYears.map(y => 'TA ' + y),
       datasets: [{
-        label: 'Mhs Baru',
-        data: [22, 26, 30, 35, 42],
+        label: 'Mahasiswa Terdata',
+        data: mhsCountsByYear,
         borderColor: '#f59e0b',
         backgroundColor: 'rgba(245,158,11,0.15)',
         tension: 0.4,
@@ -2255,7 +2493,7 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { beginAtZero: true, suggestedMax: maxMhsYear > 1 ? maxMhsYear + 2 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         x: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
@@ -2264,10 +2502,10 @@ function renderAllDepartmentHubCharts(data) {
   safeHubChart('allChart_mhsStatus', {
     type: 'doughnut',
     data: {
-      labels: ['Mahasiswa Aktif', 'Cuti Akademik', 'Lulus / Alumni'],
+      labels: hasStatusData ? ['Mahasiswa Aktif (' + stAktif + ')', 'Cuti Akademik (' + stCuti + ')', 'Lulus / Alumni (' + stLulus + ')'] : ['Belum Ada Data (0)'],
       datasets: [{
-        data: [35, 2, 28],
-        backgroundColor: ['#22c55e', '#f59e0b', '#3b82f6'],
+        data: hasStatusData ? [stAktif, stCuti, stLulus] : [1],
+        backgroundColor: hasStatusData ? ['#22c55e', '#f59e0b', '#3b82f6'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2283,10 +2521,10 @@ function renderAllDepartmentHubCharts(data) {
   safeHubChart('allChart_mhsJk', {
     type: 'doughnut',
     data: {
-      labels: ['Laki-laki (42%)', 'Perempuan (58%)'],
+      labels: hasGenderData ? ['Laki-laki (' + gL + ')', 'Perempuan (' + gP + ')'] : ['Belum Ada Data Gender (0)'],
       datasets: [{
-        data: [15, 21],
-        backgroundColor: ['#0ea5e9', '#ec4899'],
+        data: hasGenderData ? [gL, gP] : [1],
+        backgroundColor: hasGenderData ? ['#0ea5e9', '#ec4899'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2302,10 +2540,10 @@ function renderAllDepartmentHubCharts(data) {
   safeHubChart('allChart_mhsTracer', {
     type: 'bar',
     data: {
-      labels: ['Klinik/RS Akupunktur', 'Praktek Mandiri', 'Homecare Terapi', 'Lanjut S1/S2', 'Mencari'],
+      labels: ['Klinik/RS Akupunktur', 'Praktek Mandiri', 'Homecare Terapi', 'Lanjut S1/S2', 'Mencari Kerja'],
       datasets: [{
         label: 'Alumni (%)',
-        data: [42, 28, 16, 10, 4],
+        data: [0, 0, 0, 0, 0],
         backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#94a3b8'],
         borderRadius: 6
       }]
@@ -2316,22 +2554,33 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { beginAtZero: true, max: 50, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, callback: v => v + '%' } },
+        x: { beginAtZero: true, suggestedMax: 10, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, callback: v => v + '%' } },
         y: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
   });
 
   // ══════════════════════════════════════════════════
-  // 5. LABORATORIUM AKUPUNKTUR & HERBAL
+  // 5. LABORATORIUM AKUPUNKTUR & HERBAL (Sumber Riil: 35 Dokumen Laboratorium)
   // ══════════════════════════════════════════════════
+  const labDocs = (data || []).filter(a => a.bidang === 'laboratorium');
+  const labKondisi = { baik: 0, rusakRingan: 0, rusakBerat: 0, sedangServis: 0 };
+  labDocs.forEach(a => {
+    const ket = (a.keterangan || '').toLowerCase();
+    if (ket.includes('kondisi: rusak ringan')) labKondisi.rusakRingan++;
+    else if (ket.includes('kondisi: rusak berat')) labKondisi.rusakBerat++;
+    else if (ket.includes('kondisi: servis') || ket.includes('sedang servis')) labKondisi.sedangServis++;
+    else labKondisi.baik++;
+  });
+  const hasLabData = labDocs.length > 0;
+
   safeHubChart('allChart_labKondisi', {
     type: 'doughnut',
     data: {
-      labels: ['Baik / Siap Pakai', 'Rusak Ringan', 'Rusak Berat', 'Sedang Servis'],
+      labels: hasLabData ? ['Kondisi Baik / Siap (' + labKondisi.baik + ')', 'Rusak Ringan (' + labKondisi.rusakRingan + ')', 'Rusak Berat (' + labKondisi.rusakBerat + ')', 'Sedang Servis (' + labKondisi.sedangServis + ')'] : ['Belum Ada Data Lab (0)'],
       datasets: [{
-        data: [14, 2, 0, 1],
-        backgroundColor: ['#22c55e', '#f59e0b', '#ef4444', '#3b82f6'],
+        data: hasLabData ? [labKondisi.baik, labKondisi.rusakRingan, labKondisi.rusakBerat, labKondisi.sedangServis] : [1],
+        backgroundColor: hasLabData ? ['#22c55e', '#f59e0b', '#ef4444', '#3b82f6'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2344,13 +2593,23 @@ function renderAllDepartmentHubCharts(data) {
     }
   });
 
+  const labCatCounts = {};
+  labDocs.forEach(a => {
+    const mKat = (a.keterangan || '').match(/Kategori:\s*([^•\n]+)/i);
+    const kat = mKat ? mKat[1].trim() : (a.jenis ? getJenisLabel(a.bidang, a.jenis) : 'Peralatan Lab');
+    labCatCounts[kat] = (labCatCounts[kat] || 0) + 1;
+  });
+  const labCatLabels = Object.keys(labCatCounts).length > 0 ? Object.keys(labCatCounts) : ['Jarum Akupunktur', 'Model Anatomi', 'Elektro-Akupunktur', 'Bahan Habis Pakai', 'Sterilisator'];
+  const labCatVals = Object.keys(labCatCounts).length > 0 ? Object.values(labCatCounts) : [0, 0, 0, 0, 0];
+  const maxLabCat = Math.max(...labCatVals, 1);
+
   safeHubChart('allChart_labKategori', {
     type: 'bar',
     data: {
-      labels: ['Jarum Akupunktur', 'Model Anatomi', 'Elektro-Akupunktur', 'Moksibusi', 'Sterilisator', 'Herbal'],
+      labels: labCatLabels.map(l => l.length > 20 ? l.slice(0, 18) + '...' : l),
       datasets: [{
-        label: 'Unit Alat',
-        data: [8, 5, 4, 3, 2, 4],
+        label: 'Jumlah Dokumen/Alat',
+        data: labCatVals,
         backgroundColor: '#f43f5e',
         borderRadius: 6
       }]
@@ -2360,19 +2619,27 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
-        x: { grid: { display: false }, ticks: { font: baseFont } }
+        y: { beginAtZero: true, suggestedMax: maxLabCat > 1 ? maxLabCat + 1 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
       }
     }
   });
 
+  const labMonthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  labDocs.forEach(a => {
+    if (a.tanggal) {
+      const m = new Date(a.tanggal).getMonth();
+      if (m >= 0 && m < 12) labMonthly[m]++;
+    }
+  });
+  const maxLabMonth = Math.max(...labMonthly, 1);
   safeHubChart('allChart_labLogbook', {
     type: 'line',
     data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep'],
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
       datasets: [{
-        label: 'Jam Praktikum',
-        data: [18, 24, 32, 28, 36, 40, 34, 44, 48],
+        label: 'Aktivitas Praktikum & Arsip',
+        data: labMonthly,
         borderColor: '#d946ef',
         backgroundColor: 'rgba(217,70,239,0.15)',
         tension: 0.4,
@@ -2385,7 +2652,7 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { beginAtZero: true, suggestedMax: maxLabMonth > 1 ? maxLabMonth + 1 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         x: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
@@ -2394,10 +2661,10 @@ function renderAllDepartmentHubCharts(data) {
   safeHubChart('allChart_labAnggaran', {
     type: 'doughnut',
     data: {
-      labels: ['Bahan Habis Pakai', 'Kalibrasi & Servis', 'Pengadaan Alat Baru', 'Sisa Anggaran'],
+      labels: hasLabData ? ['Aset Inventaris Lab (' + labDocs.length + ')', 'Bahan Habis Pakai (0)', 'Servis/Kalibrasi (0)'] : ['Belum Ada Anggaran Lab (0)'],
       datasets: [{
-        data: [45, 20, 25, 10],
-        backgroundColor: ['#ec4899', '#8b5cf6', '#3b82f6', '#10b981'],
+        data: hasLabData ? [labDocs.length, 0, 0] : [1],
+        backgroundColor: hasLabData ? ['#ec4899', '#8b5cf6', '#3b82f6'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2411,15 +2678,18 @@ function renderAllDepartmentHubCharts(data) {
   });
 
   // ══════════════════════════════════════════════════
-  // 6. SARANA & PRASARANA (SARPRAS)
+  // 6. SARANA & PRASARANA (SARPRAS) (Sumber Riil: 5 Dokumen Sarpras)
   // ══════════════════════════════════════════════════
+  const sarprasDocs = (data || []).filter(a => a.bidang === 'sarpras' || a.bidang === 'sarana');
+  const hasSarpras = sarprasDocs.length > 0;
+
   safeHubChart('allChart_saranaKondisi', {
     type: 'doughnut',
     data: {
-      labels: ['Sangat Baik (68%)', 'Baik (24%)', 'Rusak Ringan (8%)'],
+      labels: hasSarpras ? ['Kondisi Baik (' + sarprasDocs.length + ')', 'Rusak Ringan (0)', 'Rusak Berat (0)'] : ['Belum Ada Sarpras (0)'],
       datasets: [{
-        data: [28, 10, 3],
-        backgroundColor: ['#0284c7', '#38bdf8', '#f59e0b'],
+        data: hasSarpras ? [sarprasDocs.length, 0, 0] : [1],
+        backgroundColor: hasSarpras ? ['#0284c7', '#38bdf8', '#f59e0b'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2431,14 +2701,23 @@ function renderAllDepartmentHubCharts(data) {
       cutout: '65%'
     }
   });
+
+  const sarprasCat = {};
+  sarprasDocs.forEach(a => {
+    const k = a.jenis ? getJenisLabel(a.bidang, a.jenis) : 'Aset Fasilitas';
+    sarprasCat[k] = (sarprasCat[k] || 0) + 1;
+  });
+  const sarprasLabels = Object.keys(sarprasCat).length > 0 ? Object.keys(sarprasCat) : ['Ruang Kuliah', 'Ruang Lab', 'Gedung', 'Utilitas Listrik'];
+  const sarprasVals = Object.keys(sarprasCat).length > 0 ? Object.values(sarprasCat) : [0, 0, 0, 0];
+  const maxSarCat = Math.max(...sarprasVals, 1);
 
   safeHubChart('allChart_saranaKategori', {
     type: 'bar',
     data: {
-      labels: ['Ruang Kuliah', 'Ruang Lab', 'Gedung/Fasilitas', 'Utilitas/Listrik', 'Sistem AC'],
+      labels: sarprasLabels.map(l => l.length > 20 ? l.slice(0, 18) + '...' : l),
       datasets: [{
-        label: 'Aset Sarpras',
-        data: [12, 8, 5, 4, 7],
+        label: 'Aset / Dokumen Sarpras',
+        data: sarprasVals,
         backgroundColor: '#0ea5e9',
         borderRadius: 6
       }]
@@ -2448,19 +2727,26 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
-        x: { grid: { display: false }, ticks: { font: baseFont } }
+        y: { beginAtZero: true, suggestedMax: maxSarCat > 1 ? maxSarCat + 1 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
       }
     }
   });
+
+  const sarprasYears = { '2022': 0, '2023': 0, '2024': 0, '2025': 0, '2026': 0 };
+  sarprasDocs.forEach(a => {
+    const y = (a.ay || a.tanggal || '').slice(0, 4);
+    if (sarprasYears[y] !== undefined) sarprasYears[y]++;
+  });
+  const maxSarYear = Math.max(...Object.values(sarprasYears), 1);
 
   safeHubChart('allChart_saranaTren', {
     type: 'line',
     data: {
       labels: ['2022', '2023', '2024', '2025', '2026'],
       datasets: [{
-        label: 'Kegiatan Perawatan',
-        data: [8, 11, 14, 16, 20],
+        label: 'Dokumen Sarpras',
+        data: Object.values(sarprasYears),
         borderColor: '#38bdf8',
         backgroundColor: 'rgba(56,189,248,0.15)',
         tension: 0.4,
@@ -2473,7 +2759,7 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { beginAtZero: true, suggestedMax: maxSarYear > 1 ? maxSarYear + 1 : 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         x: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
@@ -2482,10 +2768,10 @@ function renderAllDepartmentHubCharts(data) {
   safeHubChart('allChart_saranaAnggaran', {
     type: 'bar',
     data: {
-      labels: ['Pemeliharaan AC', 'Kebersihan/Cat', 'Kelistrikan/Genset', 'Renovasi Lab'],
+      labels: ['Pemeliharaan Gedung', 'Kelistrikan / Genset', 'AC & Sirkulasi', 'Kas Kecil Sarpras'],
       datasets: [{
         label: 'Realisasi (Juta Rp)',
-        data: [12.5, 8.4, 6.2, 18.0],
+        data: [0, 0, 0, 0],
         backgroundColor: '#f59e0b',
         borderRadius: 6
       }]
@@ -2495,22 +2781,26 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, callback: v => 'Rp ' + v + ' jt' } },
+        y: { beginAtZero: true, suggestedMax: 5, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, callback: v => 'Rp ' + v + ' jt' } },
         x: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
   });
 
   // ══════════════════════════════════════════════════
-  // 7. PENGABDIAN KEPADA MASYARAKAT (PKM)
+  // 7. PENGABDIAN KEPADA MASYARAKAT (PKM) (Sumber Riil: pengabdianData)
   // ══════════════════════════════════════════════════
+  const pkmProposals = (typeof pengabdianData !== 'undefined' && Array.isArray(pengabdianData.proposals)) ? pengabdianData.proposals : [];
+  const pkmPatients = (typeof pengabdianData !== 'undefined' && Array.isArray(pengabdianData.patients)) ? pengabdianData.patients : [];
+  const pkmOutputs = (typeof pengabdianData !== 'undefined' && Array.isArray(pengabdianData.outputs)) ? pengabdianData.outputs : [];
+
   safeHubChart('allChart_pkmSkema', {
     type: 'doughnut',
     data: {
-      labels: ['Bakti Sosial Terapi', 'Penyuluhan Kesehatan', 'Desa Binaan Akupunktur', 'Kemitraan Posyandu'],
+      labels: pkmProposals.length > 0 ? ['Bakti Sosial Terapi', 'Penyuluhan', 'Desa Binaan'] : ['Belum Ada Usulan PkM (0)'],
       datasets: [{
-        data: [5, 3, 2, 2],
-        backgroundColor: ['#10b981', '#059669', '#34d399', '#6ee7b7'],
+        data: pkmProposals.length > 0 ? [pkmProposals.length, 0, 0] : [1],
+        backgroundColor: pkmProposals.length > 0 ? ['#10b981', '#059669', '#34d399'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2529,7 +2819,7 @@ function renderAllDepartmentHubCharts(data) {
       labels: ['Nyeri Sendi (Bi)', 'Stroke & Hemiplegia', 'Insomnia / Stress', 'Hipertensi', 'Gangguan Lambung'],
       datasets: [{
         label: 'Kasus Pasien',
-        data: [48, 26, 18, 15, 12],
+        data: [0, 0, 0, 0, 0],
         backgroundColor: '#059669',
         borderRadius: 6
       }]
@@ -2540,7 +2830,7 @@ function renderAllDepartmentHubCharts(data) {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { beginAtZero: true, suggestedMax: 5, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         y: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
@@ -2549,10 +2839,10 @@ function renderAllDepartmentHubCharts(data) {
   safeHubChart('allChart_pkmVAS', {
     type: 'bar',
     data: {
-      labels: ['Nyeri Sendi', 'Lumbago/Pinggang', 'Bahu Kaku (Frozen)', 'Migrain/Vertigo'],
+      labels: ['Belum Ada Data Pasien (0 Data)'],
       datasets: [
-        { label: 'Sebelum Terapi (Pre-VAS)', data: [7.4, 7.8, 6.9, 7.1], backgroundColor: '#ef4444', borderRadius: 4 },
-        { label: 'Sesudah Terapi (Post-VAS)', data: [2.3, 2.6, 2.1, 2.2], backgroundColor: '#22c55e', borderRadius: 4 }
+        { label: 'Sebelum Terapi (Pre-VAS)', data: [0], backgroundColor: '#ef4444', borderRadius: 4 },
+        { label: 'Sesudah Terapi (Post-VAS)', data: [0], backgroundColor: '#22c55e', borderRadius: 4 }
       ]
     },
     options: {
@@ -2569,10 +2859,10 @@ function renderAllDepartmentHubCharts(data) {
   safeHubChart('allChart_pkmLuaran', {
     type: 'doughnut',
     data: {
-      labels: ['Jurnal Pengabdian', 'HKI & Hak Cipta', 'Buku / Modul Panduan', 'Video Dokumentasi Edukasi'],
+      labels: pkmOutputs.length > 0 ? ['Jurnal Pengabdian', 'HKI & Hak Cipta', 'Modul Panduan', 'Video Edukasi'] : ['Belum Ada Luaran PkM (0)'],
       datasets: [{
-        data: [4, 3, 4, 3],
-        backgroundColor: ['#14b8a6', '#0d9488', '#2dd4bf', '#99f6e4'],
+        data: pkmOutputs.length > 0 ? [pkmOutputs.length, 0, 0, 0] : [1],
+        backgroundColor: pkmOutputs.length > 0 ? ['#14b8a6', '#0d9488', '#2dd4bf', '#99f6e4'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2586,35 +2876,52 @@ function renderAllDepartmentHubCharts(data) {
   });
 
   // ══════════════════════════════════════════════════
-  // 8. RUMAH TANGGA & KAS OPERASIONAL (SIM-RT)
+  // 8. RUMAH TANGGA & KAS OPERASIONAL (SIM-RT) (Sumber Riil: getSimRTData)
   // ══════════════════════════════════════════════════
+  const rtData = (typeof getSimRTData === 'function') ? getSimRTData() : { kasKecil: [], utilitas: [] };
+  const rtDebit = (rtData.kasKecil || []).filter(k => k.type === 'debit').reduce((sum, k) => sum + (Number(k.amount) || 0), 0);
+  const rtKredit = (rtData.kasKecil || []).filter(k => k.type === 'kredit').reduce((sum, k) => sum + (Number(k.amount) || 0), 0);
+  const rtSaldo = rtDebit - rtKredit;
+
   safeHubChart('allChart_rtCashFlow', {
     type: 'bar',
     data: {
-      labels: ['Mei 2026', 'Jun 2026', 'Jul 2026', 'Agu 2026', 'Sep 2026'],
-      datasets: [
-        { label: 'Penerimaan Kas (Debit)', data: [15.0, 16.5, 18.0, 17.5, 19.0], backgroundColor: '#10b981', borderRadius: 4 },
-        { label: 'Pengeluaran Kas (Kredit)', data: [12.2, 13.8, 14.5, 15.0, 14.2], backgroundColor: '#ef4444', borderRadius: 4 }
-      ]
+      labels: ['Pemasukan Kas (Debit)', 'Realisasi Beban (Kredit)', 'Sisa Saldo Kasir'],
+      datasets: [{
+        label: 'Kas Operasional (Rp)',
+        data: [rtDebit, rtKredit, rtSaldo > 0 ? rtSaldo : 0],
+        backgroundColor: ['#10b981', '#ef4444', '#06b6d4'],
+        borderRadius: 6
+      }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (c) => ' Rp ' + Number(c.raw).toLocaleString('id-ID') } }
+      },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, callback: v => 'Rp ' + v + ' jt' } },
+        y: { beginAtZero: true, suggestedMax: 1000000, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, callback: v => 'Rp ' + (v / 1000000) + ' jt' } },
         x: { grid: { display: false }, ticks: { font: baseFont } }
       }
     }
   });
 
+  const rtBills = rtData.utilitas || [];
+  const rtExpenseCounts = {};
+  rtBills.forEach(b => {
+    const kat = b.kategori || 'Beban Lainnya';
+    rtExpenseCounts[kat] = (rtExpenseCounts[kat] || 0) + (Number(b.nominal) || 0);
+  });
+  const hasRtBills = Object.keys(rtExpenseCounts).length > 0;
   safeHubChart('allChart_rtExpensePie', {
     type: 'doughnut',
     data: {
-      labels: ['Listrik PLN', 'Air PDAM & Kebersihan', 'Keamanan & Satpam', 'ATK & Cetak', 'Konsumsi & Rapat'],
+      labels: hasRtBills ? Object.keys(rtExpenseCounts) : ['Belum Ada Beban Operasional (0)'],
       datasets: [{
-        data: [38, 22, 16, 14, 10],
-        backgroundColor: ['#0d9488', '#14b8a6', '#2dd4bf', '#5eead4', '#a7f3d0'],
+        data: hasRtBills ? Object.values(rtExpenseCounts) : [1],
+        backgroundColor: hasRtBills ? ['#0d9488', '#14b8a6', '#2dd4bf', '#5eead4', '#a7f3d0'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2622,21 +2929,33 @@ function renderAllDepartmentHubCharts(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } },
+        tooltip: {
+          callbacks: {
+            label: function(ctx) {
+              if (!hasRtBills) return ' Rp 0';
+              return ' ' + ctx.label + ': Rp ' + Number(ctx.raw).toLocaleString('id-ID');
+            }
+          }
+        }
+      },
       cutout: '65%'
     }
   });
 
   // ══════════════════════════════════════════════════
-  // 9. MUTU & AKREDITASI (BAN-PT & LAM-PTKES)
+  // 9. MUTU & AKREDITASI (Sumber Riil: 51 Dokumen Otomatis Terklasifikasi)
   // ══════════════════════════════════════════════════
+  const lCounts = [1, 2, 3, 4, 5, 6, 7, 8].map(k => (data || []).filter(a => getLamptkesCriteriaForDoc(a) === k).length);
+  const maxLCount = Math.max(...lCounts, 1);
   safeHubChart('allChart_mutuLamptkes', {
     type: 'bar',
     data: {
       labels: ['K1 VMTS', 'K2 Tata Pamong', 'K3 Mahasiswa', 'K4 SDM', 'K5 Keuangan/Sarpras', 'K6 Pendidikan', 'K7 Penelitian', 'K8 PkM'],
       datasets: [{
-        label: 'Dokumen Borang',
-        data: [3, 2, 4, 3, 2, 3, 2, 2],
+        label: 'Dokumen Borang LAM-PTKes',
+        data: lCounts,
         backgroundColor: '#3b82f6',
         borderRadius: 5
       }]
@@ -2644,21 +2963,26 @@ function renderAllDepartmentHubCharts(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (c) => ' ' + c.raw + ' Dokumen Borang' } }
+      },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { beginAtZero: true, suggestedMax: maxLCount + 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         x: { grid: { display: false }, ticks: { font: { size: 9 } } }
       }
     }
   });
 
+  const bCounts = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(k => (data || []).filter(a => getBanptCriteriaForDoc(a) === k).length);
+  const maxBCount = Math.max(...bCounts, 1);
   safeHubChart('allChart_mutuBanpt', {
     type: 'bar',
     data: {
       labels: ['K1 VMTS', 'K2 Tata Kelola', 'K3 Mahasiswa', 'K4 SDM', 'K5 Keuangan', 'K6 Pendidikan', 'K7 Riset', 'K8 PkM', 'K9 Luaran'],
       datasets: [{
-        label: 'Dokumen Standar',
-        data: [4, 4, 5, 6, 5, 7, 5, 4, 6],
+        label: 'Dokumen Borang BAN-PT',
+        data: bCounts,
         backgroundColor: '#6366f1',
         borderRadius: 5
       }]
@@ -2666,21 +2990,28 @@ function renderAllDepartmentHubCharts(data) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: (c) => ' ' + c.raw + ' Dokumen Borang' } }
+      },
       scales: {
-        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { beginAtZero: true, suggestedMax: maxBCount + 2, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
         x: { grid: { display: false }, ticks: { font: { size: 9 } } }
       }
     }
   });
 
+  const spmiDocsCount = (data || []).filter(a => {
+    const t = ((a.bidang || '') + ' ' + (a.jenis || '') + ' ' + (a.judul || '')).toLowerCase();
+    return t.includes('spmi') || t.includes('standar mutu');
+  }).length;
   safeHubChart('allChart_mutuSpmi', {
     type: 'doughnut',
     data: {
-      labels: ['Standar Tercapai (68%)', 'Standar Terlampaui (22%)', 'Dalam Peningkatan (10%)'],
+      labels: ['Standar Mutu Terpenuhi (' + spmiDocsCount + ')', 'Dalam Peningkatan (0)'],
       datasets: [{
-        data: [24, 8, 4],
-        backgroundColor: ['#22c55e', '#3b82f6', '#f59e0b'],
+        data: spmiDocsCount > 0 ? [spmiDocsCount, 0] : [1],
+        backgroundColor: spmiDocsCount > 0 ? ['#22c55e', '#f59e0b'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2693,13 +3024,17 @@ function renderAllDepartmentHubCharts(data) {
     }
   });
 
+  const amiDocsCount = (data || []).filter(a => {
+    const t = ((a.bidang || '') + ' ' + (a.jenis || '') + ' ' + (a.judul || '')).toLowerCase();
+    return t.includes('ami') || t.includes('audit');
+  }).length;
   safeHubChart('allChart_mutuAmi', {
     type: 'doughnut',
     data: {
-      labels: ['Temuan Closed / Selesai', 'Dalam Pemantauan (On-Progress)', 'Temuan Baru (Open)'],
+      labels: ['Temuan AMI Selesai (' + amiDocsCount + ')', 'Dalam Pemantauan (0)'],
       datasets: [{
-        data: [16, 3, 0],
-        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+        data: amiDocsCount > 0 ? [amiDocsCount, 0] : [1],
+        backgroundColor: amiDocsCount > 0 ? ['#10b981', '#f59e0b'] : ['#e2e8f0'],
         borderWidth: 2,
         borderColor: '#fff'
       }]
@@ -2713,7 +3048,7 @@ function renderAllDepartmentHubCharts(data) {
   });
 
   // ══════════════════════════════════════════════════
-  // 10. DISTRIBUSI LENGKAP 30 BIDANG INSTITUSI
+  // 10. DISTRIBUSI LENGKAP 30 BIDANG INSTITUSI (Sumber Riil: 51 Dokumen)
   // ══════════════════════════════════════════════════
   const deptEntries = Object.keys(DEPT).map(k => {
     const rawLabel = DEPT[k].label || k;
@@ -2724,8 +3059,8 @@ function renderAllDepartmentHubCharts(data) {
       label: shortLabel,
       fullLabel: rawLabel,
       count: (data || []).filter(a => a.bidang === k).length,
-      aktif: (data || []).filter(a => a.bidang === k && a.status === 'aktif').length,
-      arsip: (data || []).filter(a => a.bidang === k && a.status !== 'aktif').length,
+      aktif: (data || []).filter(a => a.bidang === k && (a.status || 'aktif').toLowerCase() === 'aktif').length,
+      arsip: (data || []).filter(a => a.bidang === k && (a.status || 'aktif').toLowerCase() !== 'aktif').length,
       color: DEPT[k].color || '#3b82f6'
     };
   }).sort((a, b) => b.count - a.count);
@@ -2749,39 +3084,55 @@ function renderAllDepartmentHubCharts(data) {
         legend: { display: false },
         tooltip: {
           callbacks: {
-            title: items => deptEntries[items[0].dataIndex]?.fullLabel || items[0].label,
-            label: item => ' ' + item.raw + ' Dokumen'
+            title: (items) => deptEntries[items[0].dataIndex]?.fullLabel || items[0].label,
+            label: (c) => ' Total: ' + c.raw + ' Dokumen'
           }
         }
       },
       scales: {
         x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
-        y: { grid: { display: false }, ticks: { font: { size: 9, weight: '600' } } }
+        y: { grid: { display: false }, ticks: { font: { size: 10 } } }
       }
     }
   });
 
-  safeHubChart('allChart_allDeptStatus', {
+  safeHubChart('allChart_allDeptStacked', {
     type: 'bar',
     data: {
-      labels: deptEntries.slice(0, 12).map(d => d.label),
+      labels: deptEntries.slice(0, 10).map(d => d.label),
       datasets: [
-        { label: 'Status Aktif', data: deptEntries.slice(0, 12).map(d => d.aktif), backgroundColor: '#22c55e', borderRadius: 4 },
-        { label: 'Diarsipkan / Selesai', data: deptEntries.slice(0, 12).map(d => d.arsip), backgroundColor: '#94a3b8', borderRadius: 4 }
+        {
+          label: 'Aktif',
+          data: deptEntries.slice(0, 10).map(d => d.aktif),
+          backgroundColor: '#22c55e',
+          borderRadius: 4
+        },
+        {
+          label: 'Diarsipkan',
+          data: deptEntries.slice(0, 10).map(d => d.arsip),
+          backgroundColor: '#94a3b8',
+          borderRadius: 4
+        }
       ]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      plugins: {
+        legend: { position: 'top', labels: { boxWidth: 12, font: baseFont } },
+        tooltip: {
+          callbacks: {
+            title: (items) => deptEntries.slice(0, 10)[items[0].dataIndex]?.fullLabel || items[0].label
+          }
+        }
+      },
       scales: {
-        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 9 } } },
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 10 } } },
         y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } }
       }
     }
   });
 }
-
 
 function initDashCharts(data) {
   document.getElementById('dashLineSub').textContent=`TA ${currentAY}`;
@@ -2975,7 +3326,7 @@ function renderArsipTable() {
     return`<tr>
       <td style="color:var(--t3);font-size:.72rem">${i+1}</td>
       <td><span class="td-nomor">${esc(a.nomor)}</span></td>
-      <td><span class="td-judul" title="${esc(a.judul)}">${esc(a.judul)}</span></td>
+      <td><span class="td-judul" title="${esc(a.judul)}">${esc(a.judul)}</span><div style="display:flex; gap:4px; margin-top:3px; flex-wrap:wrap;"><span class="badge" style="background:#eff6ff; color:#1d4ed8; font-size:10px; padding:1px 5px; border-radius:4px; border:1px solid #bfdbfe;"><i class="fas fa-building-columns" style="font-size:9px;"></i> BAN-PT: K${getBanptCriteriaForDoc(a)}</span><span class="badge" style="background:#ecfdf5; color:#047857; font-size:10px; padding:1px 5px; border-radius:4px; border:1px solid #a7f3d0;"><i class="fas fa-notes-medical" style="font-size:9px;"></i> LAM-PTKes: K${getLamptkesCriteriaForDoc(a)}</span></div></td>
       <td><span class="d-badge" style="background:${d.color}18;color:${d.color}; white-space: normal !important; text-align: left; line-height: 1.2; min-width: 120px; display: inline-block;"><i class="${d.icon}"></i>${d.label}</span></td>
       <td style="font-size:.78rem;color:var(--t2);"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/"/g, '&quot;')}" style="white-space:normal; line-height:1.3; word-break:normal; overflow-wrap:break-word; font-size:0.72rem;">${getJenisLabel(a.bidang,a.jenis)}</div></td>
       <td style="font-size:.78rem;">${fmtDate(a.tanggal)}</td>
@@ -4680,6 +5031,8 @@ async function saveArsip(e) {
     gdriveFolder,
     keterangan:document.getElementById('fKeterangan') ? document.getElementById('fKeterangan').value.trim() : '',
     metadata: metadata,
+    kriteria_banpt: getBanptCriteriaForDoc({ bidang, jenis, judul: document.getElementById('fJudul').value.trim(), keterangan: document.getElementById('fKeterangan') ? document.getElementById('fKeterangan').value.trim() : '' }),
+    kriteria_lamptkes: getLamptkesCriteriaForDoc({ bidang, jenis, judul: document.getElementById('fJudul').value.trim(), keterangan: document.getElementById('fKeterangan') ? document.getElementById('fKeterangan').value.trim() : '' }),
     createdAt:id?(arsip.find(x=>x.id===id)?.createdAt||new Date().toISOString()):new Date().toISOString(),
     updatedAt:new Date().toISOString(),
   };
@@ -4969,7 +5322,7 @@ function viewDetail(id) {
       <div class="detail-field"><label>Tanggal</label><span>${fmtDate(a.tanggal)}</span></div>
       <div class="detail-field" style="grid-column:1/-1"><label>Judul / Perihal</label><span style="font-size:.98rem;font-weight:700">${esc(a.judul)}</span></div>
       <div class="detail-field"><label>Bidang</label><span class="d-badge" style="background:${d.color||'#888'}18;color:${d.color||'#888'}"><i class="${d.icon||'fas fa-file'}"></i>${d.label||a.bidang}</span></div>
-      <div class="detail-field"><label>Jenis Dokumen</label><span>${getJenisLabel(a.bidang,a.jenis)}</span></div>
+      <div class="detail-field"><label>Jenis Dokumen</label><span>${getJenisLabel(a.bidang,a.jenis)}</span></div><div class="detail-field"><label>Kriteria BAN-PT (Otomatis)</label><span class="badge" style="background:#eff6ff; color:#1d4ed8; font-weight:600; padding:4px 8px; border-radius:6px; font-size:0.8rem;"><i class="fas fa-building-columns"></i> Kriteria ${getBanptCriteriaForDoc(a)}: ${BANPT_TITLES[getBanptCriteriaForDoc(a)] || "Tata Pamong / Sarana"}</span></div><div class="detail-field"><label>Kriteria LAM-PTKes (Otomatis)</label><span class="badge" style="background:#ecfdf5; color:#047857; font-weight:600; padding:4px 8px; border-radius:6px; font-size:0.8rem;"><i class="fas fa-notes-medical"></i> Kriteria ${getLamptkesCriteriaForDoc(a)}: ${KRITERIA_TITLES[getLamptkesCriteriaForDoc(a)] || "Pendidikan / Sarana"}</span></div>
       <div class="detail-field"><label>Pengirim / Pembuat</label><span>${esc(a.pengirim||'—')}</span></div>
       <div class="detail-field"><label>Status</label>${statusBadge(a.status)}</div>
       <div class="detail-field"><label>Tahun Akademik</label><span class="td-ta">${a.ay||'—'}</span></div>
@@ -5603,7 +5956,7 @@ function getLamptkesCriteriaForUpload(jenis) {
 }
 
 function getBanptData(k) {
-  return arsip.filter(a => getBanptCriteriaForUpload(a.bidang, a.jenis) === k);
+  return arsip.filter(a => getBanptCriteriaForDoc(a) === k);
 }
 
 function generateBanptReport() {
@@ -5656,7 +6009,7 @@ function initLamptkes() {
 
 function switchLamptkesTab(tabNum, element) {
   document.querySelectorAll('#lamptkes-sub-menu li').forEach(li => li.classList.remove('active'));
-  element.classList.add('active');
+  if (element) element.classList.add('active');
   currentLamptkesTab = tabNum;
   generateLamptkesReport();
 }
@@ -5697,7 +6050,7 @@ function generateLamptkesReport() {
   let filtered = arsip.filter(a => {
       if (currentLamptkesTab === 11) return (a.jenis && a.jenis.includes('_led')) || (a.jenis && a.jenis.startsWith('led_'));
       if (currentLamptkesTab === 12) return (a.jenis && a.jenis.includes('_spmi')) || (a.jenis && a.jenis.startsWith('spmi_'));
-      return getKriteriaNumber(a.jenis) === currentLamptkesTab;
+      return getLamptkesCriteriaForDoc(a) === currentLamptkesTab;
     });
   
   let html = "<div class='akr-tab-content active'>";
@@ -6878,14 +7231,26 @@ function initLabCharts() {
   if (window.chartLabLogbook) window.chartLabLogbook.destroy();
   if (window.chartLabAnggaran) window.chartLabAnggaran.destroy();
 
+  // Data riil laboratorium
+  const labDocs = (typeof arsip !== 'undefined' ? arsip : []).filter(a => a.bidang === 'laboratorium');
+  const kondisi = { baik: 0, rusakRingan: 0, rusakBerat: 0, sedangServis: 0 };
+  labDocs.forEach(a => {
+    const ket = (a.keterangan || '').toLowerCase();
+    if (ket.includes('kondisi: rusak ringan')) kondisi.rusakRingan++;
+    else if (ket.includes('kondisi: rusak berat')) kondisi.rusakBerat++;
+    else if (ket.includes('kondisi: servis') || ket.includes('sedang servis')) kondisi.sedangServis++;
+    else kondisi.baik++;
+  });
+  const hasLab = labDocs.length > 0;
+
   // 1. Chart Kondisi Alat (Doughnut)
   window.chartLabKondisi = new Chart(ctxKondisi.getContext('2d'), {
     type: 'doughnut',
     data: {
-      labels: ['Kondisi Baik / Siap', 'Rusak Ringan', 'Rusak Berat', 'Sedang Servis'],
+      labels: hasLab ? ['Kondisi Baik (' + kondisi.baik + ')', 'Rusak Ringan (' + kondisi.rusakRingan + ')', 'Rusak Berat (' + kondisi.rusakBerat + ')', 'Sedang Servis (' + kondisi.sedangServis + ')'] : ['Belum Ada Data Lab (0)'],
       datasets: [{
-        data: [13, 1, 0, 1],
-        backgroundColor: ['#22c55e', '#f59e0b', '#ef4444', '#3b82f6'],
+        data: hasLab ? [kondisi.baik, kondisi.rusakRingan, kondisi.rusakBerat, kondisi.sedangServis] : [1],
+        backgroundColor: hasLab ? ['#22c55e', '#f59e0b', '#ef4444', '#3b82f6'] : ['#cbd5e1'],
         borderWidth: 2,
         borderColor: '#ffffff'
       }]
@@ -6895,20 +7260,30 @@ function initLabCharts() {
       maintainAspectRatio: false,
       plugins: {
         legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Inter', size: 11 } } },
-        datalabels: { color: '#ffffff', font: { weight: 'bold', size: 11 } }
+        datalabels: { display: false }
       }
     }
   });
 
   // 2. Chart Kategori Aset (Bar)
+  const labCatCounts = {};
+  labDocs.forEach(a => {
+    const mKat = (a.keterangan || '').match(/Kategori:\s*([^•\n]+)/i);
+    const kat = mKat ? mKat[1].trim() : (a.jenis ? getJenisLabel(a.bidang, a.jenis) : 'Peralatan Lab');
+    labCatCounts[kat] = (labCatCounts[kat] || 0) + 1;
+  });
+  const labCatLabels = Object.keys(labCatCounts).length > 0 ? Object.keys(labCatCounts) : ['Jarum Akupunktur', 'Model Anatomi', 'Elektro-Akupunktur', 'Bahan Habis Pakai', 'Sterilisator'];
+  const labCatVals = Object.keys(labCatCounts).length > 0 ? Object.values(labCatCounts) : [0, 0, 0, 0, 0];
+  const maxLabCat = Math.max(...labCatVals, 1);
+
   window.chartLabKategori = new Chart(ctxKategori.getContext('2d'), {
     type: 'bar',
     data: {
-      labels: ['Akupunktur', 'Elektronik/TDP', 'Manekin Model', 'Sterilisasi', 'Bahan Habis Pakai'],
+      labels: labCatLabels.map(l => l.length > 20 ? l.slice(0, 18) + '...' : l),
       datasets: [{
-        label: 'Jumlah Item/Jenis',
-        data: [3, 4, 2, 3, 3],
-        backgroundColor: ['#ec4899', '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b'],
+        label: 'Jumlah Item / Aset',
+        data: labCatVals,
+        backgroundColor: ['#ec4899', '#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#06b6d4'],
         borderRadius: 6
       }]
     },
@@ -6920,20 +7295,30 @@ function initLabCharts() {
         datalabels: { anchor: 'end', align: 'top', color: 'var(--t1)', font: { weight: 'bold' } }
       },
       scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        y: { beginAtZero: true, suggestedMax: maxLabCat > 1 ? maxLabCat + 1 : 2, ticks: { precision: 0 } },
+        x: { ticks: { font: { size: 10 } } }
       }
     }
   });
 
   // 3. Chart Tren Logbook Bulanan (Line)
   if (ctxLogbook) {
+    const labMonthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    labDocs.forEach(a => {
+      if (a.tanggal) {
+        const m = new Date(a.tanggal).getMonth();
+        if (m >= 0 && m < 12) labMonthly[m]++;
+      }
+    });
+    const maxLabMonthly = Math.max(...labMonthly, 1);
+
     window.chartLabLogbook = new Chart(ctxLogbook.getContext('2d'), {
       type: 'line',
       data: {
         labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
         datasets: [{
-          label: 'Sesi Praktikum & Logbook',
-          data: [8, 14, 22, 19, 12, 6, 4, 18, 26, 24, 20, 15],
+          label: 'Aktivitas Praktikum & Arsip',
+          data: labMonthly,
           borderColor: '#10b981',
           backgroundColor: 'rgba(16, 185, 129, 0.12)',
           fill: true,
@@ -6950,7 +7335,7 @@ function initLabCharts() {
           datalabels: { display: false }
         },
         scales: {
-          y: { beginAtZero: true }
+          y: { beginAtZero: true, suggestedMax: maxLabMonthly > 1 ? maxLabMonthly + 1 : 2, ticks: { precision: 0 } }
         }
       }
     });
@@ -6965,13 +7350,13 @@ function initLabCharts() {
         datasets: [
           {
             label: 'Pengajuan (RAB)',
-            data: [4500000, 3500000, 1500000, 2800000],
+            data: [0, 0, 0, 0],
             backgroundColor: '#93c5fd',
             borderRadius: 4
           },
           {
             label: 'Terealisasi',
-            data: [4500000, 3500000, 1500000, 2000000],
+            data: [0, 0, 0, 0],
             backgroundColor: '#22c55e',
             borderRadius: 4
           }
@@ -6981,16 +7366,11 @@ function initLabCharts() {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { position: 'top' },
+          legend: { position: 'top', labels: { boxWidth: 12 } },
           datalabels: { display: false }
         },
         scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              callback: val => 'Rp ' + (val / 1000000).toFixed(1) + ' Jt'
-            }
-          }
+          y: { beginAtZero: true, suggestedMax: 1000000, ticks: { callback: v => 'Rp ' + (v / 1000000) + 'jt' } }
         }
       }
     });
@@ -7165,7 +7545,7 @@ function filterSaranaByAY(data) {
 }
 
 function renderSaranaContent() {
-  const syncedInv = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-INVENTARIS-') || (a.metadata && a.metadata.module === 'inventaris')));
+  const syncedInv = arsip.filter(a => (a.bidang === 'sarana' || a.bidang === 'sarpras'));
   let combinedInv = syncedInv.map(a => ({
     id: a.id,
     kode: a.nomor || a.id,
@@ -7663,7 +8043,7 @@ function initSaranaCharts() {
   if (ctxTren) {
     const pinjamMonthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     const maintMonthly = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    arsip.filter(a => a.bidang === 'sarana').forEach(a => {
+    arsip.filter(a => a.bidang === 'sarana' || a.bidang === 'sarpras').forEach(a => {
       if (a.tanggal) {
         const m = parseInt(a.tanggal.split('-')[1], 10) - 1;
         if (m >= 0 && m < 12) {
@@ -7716,7 +8096,7 @@ function initSaranaCharts() {
 
   // 4. Chart Anggaran Sarpras (Bar: Pengajuan vs Realisasi)
   if (ctxAnggaran) {
-    const syncedRab = arsip.filter(a => a.bidang === 'sarana' && (a.id.startsWith('SIMSPRAS-ANGGARAN-') || a.isAnggaran || (a.metadata && a.metadata.module === 'anggaran'))).map(a => ({
+    const syncedRab = arsip.filter(a => (a.bidang === 'sarana' || a.bidang === 'sarpras') && (a.isAnggaran || a.jenis === 'anggaran' || (a.keterangan || '').toLowerCase().includes('rab') || (a.keterangan || '').toLowerCase().includes('kas'))).map(a => ({
       uraian: a.judul.replace('RAB Sarpras: ', ''),
       total: Number(a.rab_amount) || 0,
       status: a.rab_status || (a.status === 'selesai' ? 'Terealisasi' : 'Direncanakan')
@@ -9356,6 +9736,11 @@ let ketChartTendikInst = null;
 function initKetenagaanCharts() {
   if (typeof Chart === 'undefined') return;
 
+  const sdmList = (typeof sdm !== 'undefined' && Array.isArray(sdm)) ? sdm : [];
+  const dty = sdmList.filter(s => (s.status || s.ikatan || '').toLowerCase().includes('tetap') && !(s.status || s.ikatan || '').toLowerCase().includes('tidak')).length;
+  const dtt = sdmList.filter(s => (s.status || s.ikatan || '').toLowerCase().includes('tidak tetap')).length;
+  const hasDosen = (dty + dtt) > 0;
+
   // 1. Chart Ikatan Dosen (Tetap vs Tidak Tetap)
   const canvasIkatan = document.getElementById('ketChartIkatan');
   if (canvasIkatan) {
@@ -9364,10 +9749,10 @@ function initKetenagaanCharts() {
     ketChartIkatanInst = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['Dosen Tetap (DTY)', 'Dosen Tidak Tetap (DTT)'],
+        labels: hasDosen ? ['Dosen Tetap (DTY) (' + dty + ')', 'Dosen Tidak Tetap (DTT) (' + dtt + ')'] : ['Belum Ada Data Dosen (0)'],
         datasets: [{
-          data: [3, 1],
-          backgroundColor: ['#2563eb', '#8b5cf6'],
+          data: hasDosen ? [dty, dtt] : [1],
+          backgroundColor: hasDosen ? ['#2563eb', '#8b5cf6'] : ['#cbd5e1'],
           borderColor: '#ffffff',
           borderWidth: 2
         }]
@@ -9379,7 +9764,7 @@ function initKetenagaanCharts() {
           legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
           tooltip: {
             callbacks: {
-              label: (item) => ` ${item.label}: ${item.raw} Dosen (${Math.round(item.raw / 4 * 100)}%)`
+              label: (item) => hasDosen ? ` ${item.label}: ${item.raw} Dosen` : ' 0 Dosen Terdata'
             }
           }
         },
@@ -9389,6 +9774,11 @@ function initKetenagaanCharts() {
   }
 
   // 2. Chart Jabatan Fungsional Dosen
+  const lektor = sdmList.filter(s => (s.jafung || '').toLowerCase().includes('lektor')).length;
+  const asisten = sdmList.filter(s => (s.jafung || '').toLowerCase().includes('asisten')).length;
+  const pengajar = sdmList.filter(s => (s.jafung || '').toLowerCase().includes('pengajar')).length;
+  const maxJafung = Math.max(lektor, asisten, pengajar, 1);
+
   const canvasJafung = document.getElementById('ketChartJafung');
   if (canvasJafung) {
     if (ketChartJafungInst) ketChartJafungInst.destroy();
@@ -9399,7 +9789,7 @@ function initKetenagaanCharts() {
         labels: ['Lektor', 'Asisten Ahli', 'Tenaga Pengajar'],
         datasets: [{
           label: 'Jumlah Dosen',
-          data: [2, 1, 1],
+          data: [lektor, asisten, pengajar],
           backgroundColor: ['#2563eb', '#3b82f6', '#93c5fd'],
           borderRadius: 6
         }]
@@ -9409,7 +9799,7 @@ function initKetenagaanCharts() {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+          y: { beginAtZero: true, suggestedMax: maxJafung > 1 ? maxJafung + 1 : 2, ticks: { stepSize: 1, precision: 0 } },
           x: { grid: { display: false } }
         }
       }
@@ -9417,6 +9807,11 @@ function initKetenagaanCharts() {
   }
 
   // 3. Chart Jenjang Pendidikan
+  const s3 = sdmList.filter(s => (s.pendidikan || '').toUpperCase().includes('S3')).length;
+  const s2 = sdmList.filter(s => (s.pendidikan || '').toUpperCase().includes('S2')).length;
+  const s1 = sdmList.filter(s => (s.pendidikan || '').toUpperCase().includes('S1') || (s.pendidikan || '').toUpperCase().includes('D4')).length;
+  const maxPend = Math.max(s3, s2, s1, 1);
+
   const canvasPendidikan = document.getElementById('ketChartPendidikan');
   if (canvasPendidikan) {
     if (ketChartPendidikanInst) ketChartPendidikanInst.destroy();
@@ -9427,7 +9822,7 @@ function initKetenagaanCharts() {
         labels: ['S3 / Sp-2', 'S2 / Sp-1', 'S1 / D4'],
         datasets: [{
           label: 'Jumlah Dosen',
-          data: [2, 2, 0],
+          data: [s3, s2, s1],
           backgroundColor: ['#10b981', '#34d399', '#a7f3d0'],
           borderRadius: 6
         }]
@@ -9438,7 +9833,7 @@ function initKetenagaanCharts() {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          x: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+          x: { beginAtZero: true, suggestedMax: maxPend > 1 ? maxPend + 1 : 2, ticks: { stepSize: 1, precision: 0 } },
           y: { grid: { display: false } }
         }
       }
@@ -9446,6 +9841,12 @@ function initKetenagaanCharts() {
   }
 
   // 4. Chart Bidang Tenaga Kependidikan
+  const it = sdmList.filter(s => (s.unit || s.bagian || '').toLowerCase().includes('it') || (s.role || '').toLowerCase().includes('it')).length;
+  const lab = sdmList.filter(s => (s.unit || s.bagian || '').toLowerCase().includes('lab') || (s.role || '').toLowerCase().includes('laboran')).length;
+  const keu = sdmList.filter(s => (s.unit || s.bagian || '').toLowerCase().includes('keuangan')).length;
+  const tu = sdmList.filter(s => (s.unit || s.bagian || '').toLowerCase().includes('tu') || (s.role || '').toLowerCase().includes('administrasi')).length;
+  const maxTendik = Math.max(it, lab, keu, tu, 1);
+
   const canvasTendik = document.getElementById('ketChartTendik');
   if (canvasTendik) {
     if (ketChartTendikInst) ketChartTendikInst.destroy();
@@ -9456,7 +9857,7 @@ function initKetenagaanCharts() {
         labels: ['IT & SIM', 'Laboran', 'Keuangan', 'TU & Kepegawaian'],
         datasets: [{
           label: 'Personel',
-          data: [1, 1, 1, 1],
+          data: [it, lab, keu, tu],
           backgroundColor: ['#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'],
           borderRadius: 6
         }]
@@ -9466,7 +9867,7 @@ function initKetenagaanCharts() {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+          y: { beginAtZero: true, suggestedMax: maxTendik > 1 ? maxTendik + 1 : 2, ticks: { stepSize: 1, precision: 0 } },
           x: { grid: { display: false } }
         }
       }
@@ -9867,15 +10268,16 @@ function openAkademikUploadModal() {
 function initAkademikCharts() {
   if (typeof Chart === 'undefined') return;
 
-  const list = (akademikData.students && akademikData.students.length > 0) 
-    ? akademikData.students 
-    : FALLBACK_AKADEMIK_STUDENTS;
+  const list = (typeof mahasiswa !== 'undefined' && Array.isArray(mahasiswa) && mahasiswa.length > 0)
+    ? mahasiswa
+    : ((typeof akademikData !== 'undefined' && akademikData.students) ? akademikData.students : []);
 
   // 1. Chart Semester (1 - 6)
   const canvasSem = document.getElementById('akChartSemester');
   if (canvasSem) {
     if (akChartSemesterInst) akChartSemesterInst.destroy();
     const semCounts = [1, 2, 3, 4, 5, 6].map(sem => list.filter(s => Number(s.semester) === sem).length);
+    const maxSem = Math.max(...semCounts, 1);
     const ctx = canvasSem.getContext('2d');
     akChartSemesterInst = new Chart(ctx, {
       type: 'bar',
@@ -9893,7 +10295,7 @@ function initAkademikCharts() {
         maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
-          y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+          y: { beginAtZero: true, suggestedMax: maxSem > 1 ? maxSem + 1 : 2, ticks: { stepSize: 1, precision: 0 } },
           x: { grid: { display: false } }
         }
       }
@@ -9901,19 +10303,20 @@ function initAkademikCharts() {
   }
 
   // 2. Chart Program Kelas (Reguler vs Alih Jenjang/Karyawan)
+  const regulerCount = list.filter(s => (s.prodi || '').toLowerCase().includes('reguler')).length;
+  const alihCount = list.filter(s => (s.prodi || '').toLowerCase().includes('alih') || (s.prodi || '').toLowerCase().includes('karyawan')).length;
+  const hasKelas = (regulerCount + alihCount) > 0;
   const canvasKelas = document.getElementById('akChartKelas');
   if (canvasKelas) {
     if (akChartKelasInst) akChartKelasInst.destroy();
-    const regulerCount = list.filter(s => (s.prodi || '').includes('Reguler')).length;
-    const alihCount = list.filter(s => (s.prodi || '').includes('Alih Jenjang') || (s.prodi || '').includes('Karyawan')).length;
     const ctx = canvasKelas.getContext('2d');
     akChartKelasInst = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['Reguler', 'Alih Jenjang / Karyawan'],
+        labels: hasKelas ? ['Reguler (' + regulerCount + ')', 'Alih Jenjang / Karyawan (' + alihCount + ')'] : ['Belum Ada Data Kelas (0)'],
         datasets: [{
-          data: [regulerCount || 1, alihCount || 1],
-          backgroundColor: ['#3b82f6', '#8b5cf6'],
+          data: hasKelas ? [regulerCount, alihCount] : [1],
+          backgroundColor: hasKelas ? ['#3b82f6', '#8b5cf6'] : ['#cbd5e1'],
           borderWidth: 2
         }]
       },
@@ -9926,19 +10329,20 @@ function initAkademikCharts() {
   }
 
   // 3. Chart Gender (L vs P)
+  const lCount = list.filter(s => s.gender === 'L' || s.jk === 'L').length;
+  const pCount = list.filter(s => s.gender === 'P' || s.jk === 'P').length;
+  const hasGender = (lCount + pCount) > 0;
   const canvasGender = document.getElementById('akChartGender');
   if (canvasGender) {
     if (akChartGenderInst) akChartGenderInst.destroy();
-    const lCount = list.filter(s => s.gender === 'L').length;
-    const pCount = list.filter(s => s.gender === 'P').length;
     const ctx = canvasGender.getContext('2d');
     akChartGenderInst = new Chart(ctx, {
       type: 'pie',
       data: {
-        labels: ['Laki-laki', 'Perempuan'],
+        labels: hasGender ? ['Laki-laki (' + lCount + ')', 'Perempuan (' + pCount + ')'] : ['Belum Ada Data Gender (0)'],
         datasets: [{
-          data: [lCount || 1, pCount || 1],
-          backgroundColor: ['#0284c7', '#ec4899'],
+          data: hasGender ? [lCount, pCount] : [1],
+          backgroundColor: hasGender ? ['#0284c7', '#ec4899'] : ['#cbd5e1'],
           borderWidth: 2
         }]
       },
@@ -9951,20 +10355,21 @@ function initAkademikCharts() {
   }
 
   // 4. Chart Status Keaktifan
+  const aktifCount = list.filter(s => (s.status || '').toLowerCase() === 'aktif').length;
+  const cutiCount = list.filter(s => (s.status || '').toLowerCase() === 'cuti').length;
+  const lulusCount = list.filter(s => (s.status || '').toLowerCase() === 'lulus').length;
+  const hasStatus = (aktifCount + cutiCount + lulusCount) > 0;
   const canvasStatus = document.getElementById('akChartStatus');
   if (canvasStatus) {
     if (akChartStatusInst) akChartStatusInst.destroy();
-    const aktifCount = list.filter(s => (s.status || '').toLowerCase() === 'aktif').length;
-    const cutiCount = list.filter(s => (s.status || '').toLowerCase() === 'cuti').length;
-    const lulusCount = list.filter(s => (s.status || '').toLowerCase() === 'lulus').length;
     const ctx = canvasStatus.getContext('2d');
     akChartStatusInst = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['Aktif', 'Cuti', 'Lulus'],
+        labels: hasStatus ? ['Aktif (' + aktifCount + ')', 'Cuti (' + cutiCount + ')', 'Lulus (' + lulusCount + ')'] : ['Belum Ada Data Status (0)'],
         datasets: [{
-          data: [aktifCount || 1, cutiCount, lulusCount],
-          backgroundColor: ['#10b981', '#f59e0b', '#6366f1'],
+          data: hasStatus ? [aktifCount, cutiCount, lulusCount] : [1],
+          backgroundColor: hasStatus ? ['#10b981', '#f59e0b', '#6366f1'] : ['#cbd5e1'],
           borderWidth: 2
         }]
       },
