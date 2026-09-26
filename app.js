@@ -11573,3 +11573,435 @@ window.togglePdfWatermark = function() {
     }
   }
 };
+
+
+// ══════════════════════════════════════════════════════════════════
+// FITUR OPSI 3: GENERATOR LABEL ORDNER & BOKS ARSIP FISIK
+// ══════════════════════════════════════════════════════════════════
+
+let currentLabelType = 'ordner'; // 'ordner' | 'box' | 'folder'
+
+window.openBoxLabelModal = function(defaultDeptKey) {
+  const modal = document.getElementById('overlayBoxLabel');
+  if (!modal) return;
+
+  // Populate Dept dropdown if empty
+  const select = document.getElementById('lblDeptSelect');
+  if (select && select.options.length <= 1) {
+    select.innerHTML = '<option value="all">Semua Bidang (Koleksi Campuran)</option>' +
+      Object.keys(DEPT).map(k => `<option value="${k}">${esc(DEPT[k].label || k)}</option>`).join('');
+  }
+
+  // Pre-select department if provided or from current state
+  const targetDept = defaultDeptKey || (typeof currentDept !== 'undefined' ? currentDept : 'all');
+  if (select && targetDept) {
+    select.value = DEPT[targetDept] ? targetDept : 'all';
+  }
+
+  // Set default box code and color
+  const d = DEPT[select?.value] || { label: 'ARSIP UMUM', color: '#1e40af' };
+  const customColor = document.getElementById('lblCustomColor');
+  if (customColor && d.color) {
+    customColor.value = d.color.length === 7 ? d.color : '#1e40af';
+  }
+
+  // Trigger field change calculation
+  onBoxLabelFieldChange(true);
+
+  modal.classList.add('open');
+};
+
+window.closeBoxLabelModal = function() {
+  document.getElementById('overlayBoxLabel')?.classList.remove('open');
+};
+
+window.setBoxLabelType = function(type, btn) {
+  currentLabelType = type;
+  document.querySelectorAll('.btn-label-type').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const sizeBadge = document.getElementById('lblSizeBadge');
+  if (sizeBadge) {
+    if (type === 'ordner') sizeBadge.textContent = '6.5 cm x 19 cm (Binder/Bantex)';
+    else if (type === 'box') sizeBadge.textContent = '14 cm x 10 cm (Stiker Boks)';
+    else sizeBadge.textContent = '10 cm x 4 cm (Tab Map Gantung)';
+  }
+
+  onBoxLabelFieldChange(false);
+};
+
+window.onBoxLabelFieldChange = function(resetFields) {
+  const deptSelect = document.getElementById('lblDeptSelect');
+  const ayearSelect = document.getElementById('lblAYearSelect');
+  const boxCodeInput = document.getElementById('lblBoxCode');
+  const boxLocInput = document.getElementById('lblBoxLocation');
+  const boxTitleInput = document.getElementById('lblBoxTitle');
+  const colorInput = document.getElementById('lblCustomColor');
+
+  const deptKey = deptSelect ? deptSelect.value : 'all';
+  const ayear = ayearSelect ? ayearSelect.value : '2026';
+  const d = DEPT[deptKey] || { label: 'SEMUA BIDANG / UMUM', color: '#1e40af', icon: 'fas fa-box-archive' };
+
+  // Filter matched records
+  let matched = arsip || [];
+  if (deptKey !== 'all') {
+    matched = matched.filter(x => x.bidang === deptKey);
+  }
+  if (ayear !== 'Semua') {
+    matched = matched.filter(x => x.ay === ayear);
+  }
+
+  // Auto-generate defaults if resetting or empty
+  if (resetFields) {
+    const deptPrefix = deptKey !== 'all' ? deptKey.toUpperCase().slice(0, 4) : 'GEN';
+    const yr = ayear !== 'Semua' ? ayear : '2026';
+    if (boxCodeInput) boxCodeInput.value = `ORDNER-${deptPrefix}-${yr}-01`;
+    if (boxLocInput) boxLocInput.value = `Ruang Arsip AAS, Lemari ${deptPrefix.slice(0,2)}, Rak 1`;
+    if (boxTitleInput) {
+      if (deptKey === 'rumah_tangga') {
+        boxTitleInput.value = 'Buku Kas Kecil, Realisasi RAB & Berita Acara Rekonsiliasi Cash Opname';
+      } else if (deptKey === 'akademik') {
+        boxTitleInput.value = 'KHS, KRS, Berkas Ijazah & Rekap Kelulusan Mahasiswa D3 Akupunktur';
+      } else if (deptKey === 'pendidikan') {
+        boxTitleInput.value = 'Kurikulum, RPS OBE, Modul Ajar & Surat Keputusan Beban Mengajar';
+      } else {
+        boxTitleInput.value = `Koleksi Dokumen & Surat Keputusan Resmi Bidang ${d.label}`;
+      }
+    }
+  }
+
+  // Update Stats
+  const statCount = document.getElementById('lblStatCount');
+  const statRange = document.getElementById('lblStatRange');
+  if (statCount) statCount.textContent = `${matched.length} Berkas Arsip`;
+  if (statRange) {
+    if (matched.length > 0) {
+      const firstNo = matched[0]?.nomor || matched[0]?.id || '-';
+      const lastNo = matched[matched.length - 1]?.nomor || matched[matched.length - 1]?.id || '-';
+      statRange.textContent = `${firstNo.slice(0, 15)}... s.d ${lastNo.slice(0, 15)}...`;
+    } else {
+      statRange.textContent = 'Belum ada arsip pada filter ini';
+    }
+  }
+
+  // Render Live Preview
+  renderBoxLabelPreview({
+    type: currentLabelType,
+    deptKey: deptKey,
+    deptLabel: d.label,
+    color: colorInput?.value || d.color || '#1e40af',
+    boxCode: boxCodeInput?.value || 'ORDNER-01',
+    boxLoc: boxLocInput?.value || 'Ruang Arsip AAS',
+    boxTitle: boxTitleInput?.value || 'Koleksi Berkas Arsip',
+    ayear: ayear,
+    count: matched.length
+  });
+};
+
+function renderBoxLabelPreview(cfg) {
+  const container = document.getElementById('labelPreviewContainer');
+  if (!container) return;
+
+  const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '');
+  const targetUrl = `${baseUrl}/index.html?dept=${encodeURIComponent(cfg.deptKey)}&ay=${encodeURIComponent(cfg.ayear)}`;
+  const qrApi = 'https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=' + encodeURIComponent(targetUrl);
+
+  if (cfg.type === 'ordner') {
+    container.innerHTML = `
+      <div class="preview-ordner-spine">
+        <div style="background:${cfg.color}; height:8px; border-radius:4px 4px 0 0; margin:-12px -10px 10px -10px;"></div>
+        <div class="spine-ring-hole"></div>
+        
+        <div style="text-align:center; border-bottom:1.5px solid #000; padding-bottom:6px; margin-bottom:8px;">
+          <div style="font-size:7.5pt; font-weight:bold; letter-spacing:0.5px;">AKADEMI AKUPUNKTUR</div>
+          <div style="font-size:8.5pt; font-weight:900; color:${cfg.color};">SURABAYA</div>
+        </div>
+
+        <div style="background:${cfg.color}15; border:1px solid ${cfg.color}; border-radius:4px; padding:4px 6px; text-align:center; margin-bottom:8px;">
+          <div style="font-size:7pt; font-weight:700; color:var(--t3); text-transform:uppercase;">KODE ORDNER</div>
+          <div style="font-size:9pt; font-weight:900; color:${cfg.color}; word-break:break-word;">${esc(cfg.boxCode)}</div>
+        </div>
+
+        <div style="flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center; padding:4px 0;">
+          <div style="font-size:7pt; font-weight:bold; color:var(--t3); text-transform:uppercase;">BIDANG / UNIT KERJA</div>
+          <div style="font-size:9.5pt; font-weight:800; color:#0f172a; line-height:1.2; margin-bottom:6px;">${esc(cfg.deptLabel)}</div>
+          <div style="font-size:7.5pt; color:#475569; font-weight:500; line-height:1.3; overflow:hidden; max-height:48px;">${esc(cfg.boxTitle)}</div>
+        </div>
+
+        <div style="border-top:1px dashed #cbd5e1; padding-top:6px; margin-top:6px; display:flex; align-items:center; justify-content:space-between;">
+          <div style="text-align:left; font-size:6.5pt; color:#475569;">
+            <div>TA: <b>${esc(cfg.ayear)}</b></div>
+            <div>Isi: <b>${cfg.count} Berkas</b></div>
+            <div style="max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${esc(cfg.boxLoc)}</div>
+          </div>
+          <img src="${qrApi}" style="width:42px; height:42px; border:1px solid #ccc; padding:1px;" alt="QR" />
+        </div>
+      </div>
+    `;
+  } else if (cfg.type === 'box') {
+    container.innerHTML = `
+      <div class="preview-box-sticker">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2px solid ${cfg.color}; padding-bottom:8px; margin-bottom:8px;">
+          <div>
+            <div style="font-size:8pt; font-weight:bold; color:#475569;">AKADEMI AKUPUNKTUR SURABAYA</div>
+            <div style="font-size:12pt; font-weight:900; color:${cfg.color};">${esc(cfg.deptLabel)}</div>
+          </div>
+          <div style="background:${cfg.color}; color:#fff; font-weight:900; font-size:9pt; padding:4px 10px; border-radius:4px;">
+            ${esc(cfg.boxCode)}
+          </div>
+        </div>
+
+        <div style="flex:1;">
+          <div style="font-size:8pt; font-weight:700; color:#1e293b; margin-bottom:4px;">KLASIFIKASI DOKUMEN:</div>
+          <div style="font-size:9pt; color:#334155; line-height:1.4;">${esc(cfg.boxTitle)}</div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1px dashed #cbd5e1; padding-top:8px;">
+          <div style="font-size:7.5pt; color:#475569;">
+            <div>Tahun Akademik: <b>${esc(cfg.ayear)}</b> &bull; Total Arsip: <b>${cfg.count} Berkas</b></div>
+            <div>Lokasi Simpan: <b>${esc(cfg.boxLoc)}</b></div>
+            <div style="font-size:7pt; color:#16a34a; font-weight:bold; margin-top:2px;"><i class="fas fa-qrcode"></i> Scan QR untuk Buka Daftar Berkas Online</div>
+          </div>
+          <img src="${qrApi}" style="width:50px; height:50px; border:1px solid #ccc; padding:2px;" alt="QR" />
+        </div>
+      </div>
+    `;
+  } else {
+    // Folder Tab
+    container.innerHTML = `
+      <div class="preview-folder-tab">
+        <div style="flex:1; padding-right:10px;">
+          <div style="font-size:7pt; font-weight:bold; color:${cfg.color};">${esc(cfg.deptLabel)} &bull; TA ${esc(cfg.ayear)}</div>
+          <div style="font-size:10pt; font-weight:900; color:#0f172a; margin:2px 0;">${esc(cfg.boxCode)}</div>
+          <div style="font-size:7.5pt; color:#475569; overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">${esc(cfg.boxTitle)}</div>
+        </div>
+        <img src="${qrApi}" style="width:45px; height:45px; border:1px solid #ccc; padding:1px;" alt="QR" />
+      </div>
+    `;
+  }
+}
+
+window.printBoxLabels = function() {
+  const deptSelect = document.getElementById('lblDeptSelect');
+  const ayearSelect = document.getElementById('lblAYearSelect');
+  const boxCodeInput = document.getElementById('lblBoxCode');
+  const boxLocInput = document.getElementById('lblBoxLocation');
+  const boxTitleInput = document.getElementById('lblBoxTitle');
+  const colorInput = document.getElementById('lblCustomColor');
+  const copiesSelect = document.getElementById('lblPrintCopies');
+
+  const deptKey = deptSelect ? deptSelect.value : 'all';
+  const ayear = ayearSelect ? ayearSelect.value : '2026';
+  const d = DEPT[deptKey] || { label: 'SEMUA BIDANG / UMUM', color: '#1e40af' };
+  const color = colorInput?.value || d.color || '#1e40af';
+  const boxCode = boxCodeInput?.value || 'ORDNER-01';
+  const boxLoc = boxLocInput?.value || 'Ruang Arsip AAS';
+  const boxTitle = boxTitleInput?.value || 'Koleksi Berkas Arsip';
+  const copies = parseInt(copiesSelect?.value || '2', 10);
+
+  let matched = arsip || [];
+  if (deptKey !== 'all') matched = matched.filter(x => x.bidang === deptKey);
+  if (ayear !== 'Semua') matched = matched.filter(x => x.ay === ayear);
+
+  const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '').replace(/\/$/, '');
+  const targetUrl = `${baseUrl}/index.html?dept=${encodeURIComponent(deptKey)}&ay=${encodeURIComponent(ayear)}`;
+  const qrApi = 'https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=' + encodeURIComponent(targetUrl);
+
+  const w = window.open('', '_blank', 'width=920,height=960');
+  
+  // Render single label unit
+  function renderSingleLabel(idx) {
+    if (currentLabelType === 'ordner') {
+      return `
+        <div class="print-ordner-spine">
+          <div style="background:${color}; height:10px; margin:-12mm -10mm 12mm -10mm;"></div>
+          <div class="print-ring-hole"></div>
+
+          <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:8px; margin-bottom:12px;">
+            <div style="font-size:9pt; font-weight:bold; letter-spacing:0.5px;">AKADEMI AKUPUNKTUR SURABAYA</div>
+            <div style="font-size:11pt; font-weight:900; color:${color};">SISTEM ARSIP RESMI</div>
+          </div>
+
+          <div style="border:2px solid ${color}; border-radius:6px; padding:6px 10px; text-align:center; margin-bottom:14px; background:${color}08;">
+            <div style="font-size:8pt; font-weight:700; color:#64748b; text-transform:uppercase;">KODE IDENTIFIKASI ARSIP</div>
+            <div style="font-size:12pt; font-weight:900; color:${color};">${esc(boxCode)}</div>
+          </div>
+
+          <div style="flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center;">
+            <div style="font-size:8pt; font-weight:bold; color:#64748b; text-transform:uppercase;">BIDANG / UNIT KERJA</div>
+            <div style="font-size:13pt; font-weight:900; color:#0f172a; margin-bottom:8px; line-height:1.2;">${esc(d.label)}</div>
+            <div style="font-size:9.5pt; font-weight:600; color:#334155; line-height:1.4;">${esc(boxTitle)}</div>
+          </div>
+
+          <div style="border-top:1.5px dashed #64748b; padding-top:10px; margin-top:10px; display:flex; align-items:center; justify-content:space-between;">
+            <div style="font-size:8pt; color:#334155; line-height:1.4;">
+              <div>Tahun: <b>${esc(ayear)}</b></div>
+              <div>Jumlah: <b>${matched.length} Dokumen</b></div>
+              <div>Lokasi: <b>${esc(boxLoc)}</b></div>
+            </div>
+            <div style="text-align:center;">
+              <img src="${qrApi}" style="width:60px; height:60px; border:1px solid #999; padding:2px;" alt="QR" />
+              <div style="font-size:6.5pt; font-style:italic;">Scan isi boks</div>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (currentLabelType === 'box') {
+      return `
+        <div class="print-box-sticker">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; border-bottom:2.5px solid ${color}; padding-bottom:8px; margin-bottom:10px;">
+            <div>
+              <div style="font-size:9pt; font-weight:bold; color:#475569;">AKADEMI AKUPUNKTUR SURABAYA</div>
+              <div style="font-size:14pt; font-weight:900; color:${color};">${esc(d.label)}</div>
+            </div>
+            <div style="background:${color}; color:#fff; font-weight:900; font-size:11pt; padding:6px 14px; border-radius:6px;">
+              ${esc(boxCode)}
+            </div>
+          </div>
+
+          <div style="flex:1;">
+            <div style="font-size:8.5pt; font-weight:700; color:#1e293b; text-transform:uppercase; margin-bottom:4px;">URAIAN ISI BOKS ARSIP:</div>
+            <div style="font-size:10pt; color:#334155; line-height:1.45;">${esc(boxTitle)}</div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:flex-end; border-top:1.5px dashed #94a3b8; padding-top:8px;">
+            <div style="font-size:8.5pt; color:#334155;">
+              <div>Tahun Akademik: <b>${esc(ayear)}</b> &bull; Total Berkas: <b>${matched.length} Arsip</b></div>
+              <div>Lokasi Penyimpanan: <b>${esc(boxLoc)}</b></div>
+              <div style="font-size:7.5pt; color:#16a34a; font-weight:bold; margin-top:3px;">
+                <i class="fas fa-qrcode"></i> Pindai QR Code untuk akses katalog berkas digital online
+              </div>
+            </div>
+            <img src="${qrApi}" style="width:65px; height:65px; border:1px solid #999; padding:2px;" alt="QR" />
+          </div>
+        </div>
+      `;
+    } else {
+      return `
+        <div class="print-folder-tab">
+          <div style="flex:1; padding-right:12px;">
+            <div style="font-size:8pt; font-weight:bold; color:${color};">${esc(d.label)} &bull; TA ${esc(ayear)}</div>
+            <div style="font-size:12pt; font-weight:900; color:#0f172a; margin:3px 0;">${esc(boxCode)}</div>
+            <div style="font-size:8.5pt; color:#334155;">${esc(boxTitle)}</div>
+            <div style="font-size:7pt; color:#64748b; margin-top:4px;">Lokasi: ${esc(boxLoc)}</div>
+          </div>
+          <img src="${qrApi}" style="width:55px; height:55px; border:1px solid #999; padding:2px;" alt="QR" />
+        </div>
+      `;
+    }
+  }
+
+  let labelsHtml = '';
+  for (let i = 0; i < copies; i++) {
+    labelsHtml += renderSingleLabel(i + 1);
+  }
+
+  w.document.write(`
+    <!DOCTYPE html>
+    <html lang="id">
+    <head>
+      <meta charset="UTF-8">
+      <title>Cetak Label Ordner - ${esc(boxCode)}</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+      <style>
+        @page { size: A4 portrait; margin: 10mm; }
+        body { font-family: 'Segoe UI', Tahoma, Helvetica, sans-serif; color: #111; margin: 0; padding: 20px; background: #fff; }
+        .no-print-bar { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 18px; margin-bottom: 20px; }
+        .btn-print { background: #8b5cf6; color: #fff; border: none; border-radius: 6px; padding: 8px 18px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 0.9rem; }
+        .btn-close { background: #64748b; color: #fff; border: none; border-radius: 6px; padding: 8px 14px; font-weight: 600; cursor: pointer; }
+        @media print { .no-print-bar { display: none !important; } body { padding: 0; } }
+
+        /* GRID CETAK */
+        .print-sheet-grid {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 15mm;
+          justify-content: center;
+          align-items: flex-start;
+        }
+
+        /* 1. ORDNER SPINE (Lebar 65mm x Tinggi 190mm) */
+        .print-ordner-spine {
+          width: 65mm;
+          height: 190mm;
+          border: 1px dashed #64748b;
+          border-radius: 4px;
+          padding: 12mm 8mm;
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          background: #fff;
+          page-break-inside: avoid;
+        }
+        .print-ring-hole {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          border: 2px dashed #94a3b8;
+          margin: 0 auto 12px auto;
+        }
+
+        /* 2. BOX STICKER (Lebar 140mm x Tinggi 95mm) */
+        .print-box-sticker {
+          width: 140mm;
+          height: 95mm;
+          border: 1px dashed #64748b;
+          border-radius: 6px;
+          padding: 8mm 10mm;
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          background: #fff;
+          page-break-inside: avoid;
+        }
+
+        /* 3. FOLDER TAB (Lebar 100mm x Tinggi 45mm) */
+        .print-folder-tab {
+          width: 100mm;
+          height: 45mm;
+          border: 1px dashed #64748b;
+          border-radius: 4px;
+          padding: 5mm 6mm;
+          box-sizing: border-box;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: #fff;
+          page-break-inside: avoid;
+        }
+
+        .guide-text {
+          text-align: center;
+          font-size: 8pt;
+          color: #64748b;
+          margin-bottom: 12px;
+          font-style: italic;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="no-print-bar">
+        <div>
+          <strong style="color:#0f172a;"><i class="fas fa-tags" style="color:#8b5cf6;"></i> Pratinjau Lembar Cetak Label Boks &amp; Ordner AAS</strong>
+          <div style="font-size:0.8rem; color:#64748b;">Garis putus-putus abu-abu adalah panduan potong gunting (crop marks).</div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-print" onclick="window.print()"><i class="fas fa-print"></i> Cetak Sekarang (Print / PDF)</button>
+          <button class="btn-close" onclick="window.close()">Tutup</button>
+        </div>
+      </div>
+
+      <div class="guide-text no-print-bar">
+        * Gunakan kertas HVS A4 standar 80gr atau kertas stiker HVS A4 untuk langsung tempel pada punggung ordner / boks arsip.
+      </div>
+
+      <div class="print-sheet-grid">
+        ${labelsHtml}
+      </div>
+    </body>
+    </html>
+  `);
+  w.document.close();
+};

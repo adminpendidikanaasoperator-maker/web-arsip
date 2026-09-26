@@ -23,7 +23,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=20260927_superapp_v10" />
+  <link rel="stylesheet" href="style.css?v=20260927_superapp_v11" />
 </head>
 <body>
 
@@ -377,6 +377,7 @@
           <button onclick="exportWord()"><i class="fas fa-file-word"></i> Word (.docx)</button>
           <hr/>
           <button onclick="printExecutiveReport()"><i class="fas fa-chart-line" style="color:#d97706;"></i> Laporan Eksekutif Bulanan (Direktur)</button>
+          <button onclick="openBoxLabelModal()"><i class="fas fa-tags" style="color:#8b5cf6;"></i> Cetak Label Ordner &amp; Boks Arsip</button>
           <hr/>
           <button onclick="exportJSON()"><i class="fas fa-database"></i> JSON Arsip</button>
           <hr/>
@@ -1044,6 +1045,136 @@
     </div>
   </div>
 </div>
+
+<!-- ═══ MODAL: GENERATOR LABEL ORDNER & BOKS ARSIP FISIK (OPSI 3) ═══ -->
+<div class="overlay" id="overlayBoxLabel" onclick="if(event.target===this)closeBoxLabelModal()">
+  <div class="modal-box" style="max-width: 960px; width: 94%; max-height: 92vh;">
+    <div class="modal-head">
+      <div class="modal-head-title">
+        <i class="fas fa-tags" style="color:#8b5cf6;"></i>
+        <span>Generator Label Punggung Ordner &amp; Boks Arsip Fisik</span>
+      </div>
+      <button class="close-btn" onclick="closeBoxLabelModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-scroll" style="padding: 20px;">
+      <div style="display: grid; grid-template-columns: 1fr 1.1fr; gap: 20px;" class="box-label-grid">
+        
+        <!-- KOLOM KIRI: KONFIGURASI FORM -->
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+          <div>
+            <label style="font-size: 0.8rem; font-weight: 700; color: var(--t2); margin-bottom: 6px; display: block;">
+              <i class="fas fa-sliders" style="color:#8b5cf6;"></i> 1. Pilih Format &amp; Ukuran Label Fisik
+            </label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+              <button type="button" class="btn-label-type active" id="btnTypeOrdner" onclick="setBoxLabelType('ordner', this)">
+                <i class="fas fa-folder-closed"></i>
+                <strong>Punggung Ordner</strong>
+                <span>Lebar 6.5 x 19 cm</span>
+              </button>
+              <button type="button" class="btn-label-type" id="btnTypeBox" onclick="setBoxLabelType('box', this)">
+                <i class="fas fa-box-archive"></i>
+                <strong>Stiker Boks</strong>
+                <span>Kotak 14 x 10 cm</span>
+              </button>
+              <button type="button" class="btn-label-type" id="btnTypeFolder" onclick="setBoxLabelType('folder', this)">
+                <i class="fas fa-file-lines"></i>
+                <strong>Map Gantung</strong>
+                <span>Tab 10 x 4 cm</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-row-2" style="margin-bottom:0;">
+            <div class="form-field" style="margin-bottom:0;">
+              <label><i class="fas fa-building" style="color:var(--primary);"></i> Bidang / Unit Kerja</label>
+              <select id="lblDeptSelect" class="form-input" onchange="onBoxLabelFieldChange()">
+                <!-- Populated dynamically via JS -->
+              </select>
+            </div>
+            <div class="form-field" style="margin-bottom:0;">
+              <label><i class="fas fa-calendar-alt" style="color:var(--primary);"></i> Tahun Akademik</label>
+              <select id="lblAYearSelect" class="form-input" onchange="onBoxLabelFieldChange()">
+                <option value="Semua">Semua Tahun</option>
+                <option value="2026" selected>TA 2026</option>
+                <option value="2025">TA 2025</option>
+                <option value="2024">TA 2024</option>
+                <option value="2023">TA 2023</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-2" style="margin-bottom:0;">
+            <div class="form-field" style="margin-bottom:0;">
+              <label><i class="fas fa-barcode"></i> Kode / Nomor Boks Ordner</label>
+              <input type="text" id="lblBoxCode" class="form-input" placeholder="Misal: ORDNER-01-RT-2026" oninput="onBoxLabelFieldChange()" />
+            </div>
+            <div class="form-field" style="margin-bottom:0;">
+              <label><i class="fas fa-location-dot" style="color:#ef4444;"></i> Lokasi Rak / Lemari Fisik</label>
+              <input type="text" id="lblBoxLocation" class="form-input" placeholder="Misal: Lemari Arsip B, Rak 2" oninput="onBoxLabelFieldChange()" />
+            </div>
+          </div>
+
+          <div class="form-field" style="margin-bottom:0;">
+            <label><i class="fas fa-heading"></i> Judul / Uraian Isi Berkas Boks</label>
+            <textarea id="lblBoxTitle" class="form-input" rows="2" placeholder="Uraian dokumen di dalam boks/ordner ini..." oninput="onBoxLabelFieldChange()"></textarea>
+          </div>
+
+          <div class="form-row-2" style="margin-bottom:0;">
+            <div class="form-field" style="margin-bottom:0;">
+              <label><i class="fas fa-copy"></i> Jumlah Cetak per Halaman</label>
+              <select id="lblPrintCopies" class="form-input" onchange="onBoxLabelFieldChange()">
+                <option value="1">1 Label Tunggal (Center A4)</option>
+                <option value="2" selected>2 Label per Halaman A4</option>
+                <option value="4">4 Label per Halaman A4 (Grid)</option>
+              </select>
+            </div>
+            <div class="form-field" style="margin-bottom:0;">
+              <label><i class="fas fa-palette"></i> Aksen Warna Label</label>
+              <input type="color" id="lblCustomColor" value="#1e40af" style="height:42px; padding:2px; width:100%; cursor:pointer;" onchange="onBoxLabelFieldChange()" />
+            </div>
+          </div>
+
+          <div style="background:var(--bg3); border:1px solid var(--b1); border-radius:8px; padding:10px 14px; font-size:0.78rem; color:var(--t2);">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <span>Berkas Terdata di Sistem:</span>
+              <strong id="lblStatCount" style="color:var(--primary);">0 Arsip</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span>Rentang Nomor Dokumen:</span>
+              <span id="lblStatRange" style="font-weight:600;">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- KOLOM KANAN: LIVE INTERACTIVE PREVIEW -->
+        <div style="display: flex; flex-direction: column; background: var(--bg3); border: 1px solid var(--b1); border-radius: 12px; padding: 18px; position: relative;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--t2); text-transform: uppercase; letter-spacing: 0.5px;">
+              <i class="fas fa-eye" style="color:var(--primary);"></i> Pratinjau Desain Fisik
+            </span>
+            <span style="font-size: 0.72rem; color: var(--t3); background: #fff; padding: 3px 8px; border-radius: 99px; border: 1px solid var(--b1);" id="lblSizeBadge">
+              6.5 cm x 19 cm
+            </span>
+          </div>
+
+          <!-- CONTAINER PRATINJAU -->
+          <div style="flex:1; display:flex; align-items:center; justify-content:center; padding:10px; overflow:hidden;" id="labelPreviewContainer">
+            <!-- Rendered by JS -->
+          </div>
+
+          <div style="margin-top:14px; display:flex; justify-content:flex-end; gap:10px;">
+            <button type="button" class="btn-ghost" onclick="closeBoxLabelModal()">Batal</button>
+            <button type="button" class="tb-btn tb-btn-primary" onclick="printBoxLabels()" style="background:#8b5cf6; border-color:#8b5cf6;">
+              <i class="fas fa-print"></i> Cetak Label (Print / PDF)
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ MODAL: DETAIL PERSON (MHS / SDM) ═══ -->
 <div class="overlay" id="overlayPerson" onclick="if(event.target===this)closePersonDetail()">
   <div class="modal-box detail-box">
@@ -4209,7 +4340,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=20260927_superapp_v10" defer></script>
+<script src="app.js?v=20260927_superapp_v11" defer></script>
 
 <!-- Notification Sounds -->
 

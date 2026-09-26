@@ -894,3 +894,114 @@ input,select,textarea{font-family:inherit}
     color: #000000 !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   FITUR OPSI 3: GENERATOR LABEL ORDNER & BOKS ARSIP FISIK
+   ══════════════════════════════════════════════════════════════════ */
+.box-label-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 20px;
+}
+@media (max-width: 820px) {
+  .box-label-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.btn-label-type {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+  background: var(--card);
+  border: 1.5px solid var(--b2);
+  border-radius: var(--r3);
+  cursor: pointer;
+  transition: all var(--tr);
+  text-align: center;
+  gap: 4px;
+}
+.btn-label-type i {
+  font-size: 1.25rem;
+  color: var(--t3);
+  transition: all var(--tr);
+}
+.btn-label-type strong {
+  font-size: 0.74rem;
+  color: var(--t1);
+  display: block;
+}
+.btn-label-type span {
+  font-size: 0.65rem;
+  color: var(--t3);
+}
+.btn-label-type:hover {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.04);
+}
+.btn-label-type.active {
+  border-color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.08);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+.btn-label-type.active i {
+  color: #8b5cf6;
+}
+.btn-label-type.active strong {
+  color: #6d28d9;
+}
+
+/* PREVIEW BOX STYLES */
+.preview-ordner-spine {
+  width: 170px;
+  height: 380px;
+  background: #ffffff;
+  border: 2px solid #334155;
+  border-radius: 6px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 12px 10px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.spine-ring-hole {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid #94a3b8;
+  background: #f1f5f9;
+  margin: 0 auto 10px auto;
+  flex-shrink: 0;
+}
+.preview-box-sticker {
+  width: 320px;
+  height: 220px;
+  background: #ffffff;
+  border: 2px solid #334155;
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 14px 16px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.preview-folder-tab {
+  width: 290px;
+  height: 110px;
+  background: #ffffff;
+  border: 2px solid #334155;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  box-sizing: border-box;
+}
