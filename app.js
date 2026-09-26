@@ -849,21 +849,6 @@ const DEPT_JENIS = {
                 }
             ]
         }
-    ],
-    "rumah_tangga": [
-        {
-            "group": "Sarana, Prasarana Pendidikan, dan Keuangan",
-            "items": [
-                {
-                    "val": "k6_1",
-                    "label": "Daftar infrastruktur fisik/sarana dan prasarana"
-                },
-                {
-                    "val": "k6_6",
-                    "label": "Kebijakan mengenai keselamatan dan kesehatan kerja civitas akademika."
-                }
-            ]
-        }
     ]
 };
 
