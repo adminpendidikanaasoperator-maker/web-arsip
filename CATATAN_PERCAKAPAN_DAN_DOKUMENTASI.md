@@ -344,4 +344,85 @@ Menjawab permintaan pengguna (*"bisa buat animasi bergerak untuk latar belakangn
 
 ---
 
+---
+
+## 📜 12. Kronologi Percakapan & Solusi: Fase 8 (Pusat Analisis & Seluruh Grafik dari Semua Bidang)
+
+### 1. Implementasi Master Multi-Department Charts Hub (27 September 2026)
+
+Menjawab permintaan pengguna (*"tampilkan semua grafik dari semua bidang"*):
+Sebelumnya, pada Dashboard Utama (Portal Utama) hanya terdapat 4 grafik institusi umum (Tren Bulanan, Tren Tahunan, Distribusi 8 Bidang Terbesar, dan Status Arsip), sementara grafik-grafik analitik operasional spesifik per bidang lainnya (seperti SIAKAD, SIPENAS, SDM Ketenagaan, Kemahasiswaan, Laboratorium, Sarana Prasarana, Pengabdian PkM, SIM-RT, dan Akreditasi LAM-PTKes/BAN-PT) tersebar tersembunyi di dalam sub-portal masing-masing.
+
+Kini, telah diintegrasikan **Pusat Grafik & Analisis Seluruh Bidang Institusi (*Master Multi-Department Charts Hub*)** langsung di halaman Dashboard Utama:
+
+1. **Akses Cepat & Tombol Navigasi Pintar**:
+   - **Tombol Hero Header**: Ditambahkan tombol bergradien biru elegan di bagian atas Portal Utama: **`[ 📊 Tampilkan Semua Grafik Bidang ]`** yang langsung menggulirkan layar (*smooth scrolling*) ke pusat grafik.
+   - **Menu Sidebar Terpadu**: Ditambahkan menu **`Semua Grafik Bidang`** di bawah Portal Utama pada sidebar utama untuk akses 1-klik dari halaman mana pun.
+
+2. **Peningkatan Kartu "Distribusi Bidang" Dashboard**:
+   - Ditambahkan tombol toggle interaktif pada kartu Distribusi Bidang di dashboard:
+     - **`[ Top 8 ]`**: Menampilkan 8 bidang teratas (tampilan ringkas).
+     - **`[ Semua (26+) ]`**: Menampilkan grafik batang horizontal (*horizontal bar chart*) menyeluruh dari **seluruh 26+ bidang & unit kerja institusi** tanpa terpotong, terurut dari volume dokumen terbanyak.
+
+3. **Pusat Grafik Terpadu 10 Klaster Bidang (`#allDeptChartsSection`)**:
+   - Dilengkapi **Pill Filter Bar** untuk berpindah antar bidang atau melihat seluruhnya:
+     1. 🌐 **Semua Bidang (35+ Grafik Sekaligus)**
+     2. 🎓 **Akademik & SIAKAD (4 Grafik)**:
+        - Distribusi Mahasiswa per Semester (Semester 1 s/d Semester 6)
+        - Sebaran Kelas Perkuliahan (Reguler Pagi vs Kelas Karyawan/Sore)
+        - Rasio Gender Mahasiswa (Laki-laki vs Perempuan)
+        - Status Akademik Mahasiswa (Aktif, Cuti, Lulus)
+     3. 👥 **SDM & Ketenagaan (4 Grafik)**:
+        - Status Ikatan Kerja Dosen (Tetap Yayasan / DTY vs Dosen Tidak Tetap / DTT)
+        - Jenjang Jabatan Fungsional Dosen (Lektor, Asisten Ahli, Tenaga Pengajar)
+        - Kualifikasi Jenjang Pendidikan Dosen (S3/Sp-2, S2/Sp-1, S1/D4)
+        - Sebaran Tenaga Kependidikan / Tendik per Unit (IT & SIM, Laboran, Keuangan, TU)
+     4. 📚 **Pendidikan & Kurikulum SIPENAS (4 Grafik)**:
+        - Distribusi Kategori Dokumen Pembelajaran (Kurikulum OBE, RPS, Silabus, Modul Ajar, Soal & OSCE, BAP Presensi)
+        - Sebaran Dokumen Pembelajaran per Tahun Akademik
+        - Beban SKS Mata Kuliah per Semester (Semester 1 s/d Semester 6)
+        - Format Distribusi Berkas Kurikulum (PDF, Word DOCX, Excel XLSX, PPTX)
+     5. 🎓 **Kemahasiswaan & Alumni (4 Grafik)**:
+        - Tren Pendaftaran Mahasiswa Baru per Angkatan (TA 2022 s/d TA 2026)
+        - Status Mahasiswa (Aktif, Cuti Akademik, Lulus/Alumni)
+        - Demografi Gender Mahasiswa
+        - *Tracer Study* & Keterserapan Karir Alumni (Klinik/RS Akupunktur, Praktek Mandiri, Homecare, Lanjut S1/S2, Pencari Kerja)
+     6. 🔬 **Laboratorium Akupunktur & Herbal (4 Grafik)**:
+        - Kondisi Peralatan Praktikum (Baik / Siap Pakai, Rusak Ringan, Rusak Berat, Sedang Servis)
+        - Kategori Peralatan Praktikum (Jarum Akupunktur, Model Anatomi/Acupoints, Elektro-Akupunktur, Alat Moksibusi, Sterilisator, Bahan Herbal)
+        - Logbook Jam Penggunaan Lab per Bulan
+        - Utilisasi Anggaran & Bahan Praktikum Lab
+     7. 🏢 **Sarana & Prasarana SARPRAS (4 Grafik)**:
+        - Kondisi Fisik Fasilitas & Gedung (Sangat Baik, Baik, Rusak Ringan)
+        - Kategori Inventaris Sarpras (Ruang Kuliah, Ruang Lab, Gedung, Utilitas Listrik & Genset, Sistem AC)
+        - Tren Pemeliharaan & Perawatan Berkala (2022 s/d 2026)
+        - Alokasi & Realisasi Biaya Pemeliharaan Sarpras
+     8. 🌿 **Pengabdian Masyarakat (PkM / LPPM) (4 Grafik)**:
+        - Sebaran Skema Pengabdian (Bakti Sosial Terapi Akupunktur, Penyuluhan, Desa Binaan, Kemitraan)
+        - Kasus Modalitas Terapi TCM / Akupunktur (Nyeri Sendi/Sindrom Bi, Pasca Stroke & Hemiplegia, Insomnia/Stress, Hipertensi, Lambung)
+        - Efektivitas Penurunan Skala Nyeri Pasien (Komparasi Skor VAS Sebelum Akupunktur [7.4/10] vs Sesudah Akupunktur [2.3/10])
+        - Capaian Luaran PkM & Publikasi (Jurnal Pengabdian, HKI & Hak Cipta, Modul/Booklet, Video Edukasi)
+     9. 🏠 **Rumah Tangga & Keuangan Operasional SIM-RT (2 Grafik)**:
+        - Arus Kas Operasional SIM-RT (Penerimaan Kas Kecil vs Realisasi Belanja)
+        - Komposisi Beban Operasional & Utilitas (Listrik PLN, Air PDAM, Kebersihan, Keamanan, ATK Kantor, Konsumsi Rapat)
+     10. 🏆 **Penjaminan Mutu & Akreditasi (4 Grafik)**:
+         - Sebaran Dokumen Borang LAM-PTKes (Kriteria 1 s/d Kriteria 8)
+         - Sebaran Dokumen Borang BAN-PT (Kriteria 1 s/d Kriteria 9)
+         - Ketercapaian Standar SPMI Institusi (Tercapai, Terlampaui, Dalam Siklus PPEPP)
+         - Status Tindak Lanjut Temuan Audit Mutu Internal / AMI (Closed, On-Progress, Open)
+     11. 📊 **Distribusi Seluruh 30 Bidang Lengkap (2 Grafik)**:
+         - Grafik Batang Sebaran Dokumen Seluruh 30 Bidang Institusi
+         - Rasio Dokumen Aktif vs Diarsipkan per Bidang
+
+4. **Fitur Ekspor & Interaktivitas**:
+   - **Mode Tampilan Ganda**: Pengguna dapat memilih antara `[ 📜 Tampilkan Semua Sekaligus ]` (menampilkan seluruh klaster secara utuh) atau `[ 📑 Mode Tab Per Bidang ]` (fokus pada 1 bidang yang dipilih).
+   - **Unduh Gambar Grafik PNG 1-Klik**: Pada setiap kartu grafik terdapat tombol kamera/unduh (`.btn-dl-chart`) yang memungkinkan pengguna mengunduh gambar grafik beresolusi tinggi langsung untuk keperluan laporan atau akreditasi.
+   - **Tombol Pintas `Buka Modul Portal ->`**: Di setiap header klaster bidang, terdapat tombol pintas untuk langsung membuka modul/sub-portal bidang terkait.
+   - **Tombol `Unduh Ringkasan Grafik`**: Membuka dialog cetak/PDF ringkasan visual seluruh grafik institusi.
+
+5. **Pembaruan Tag Versi Cache**:
+   - Diperbarui menjadi `?v=20260927_superapp_v13` pada `index.html`.
+
+---
+
 *Dokumen ini merupakan arsip riwayat percakapan resmi, keputusan teknis, dan dokumentasi arsitektur pengembangan sistem Akademi Akupunktur Surabaya (AAS).*

@@ -1168,3 +1168,202 @@ input,select,textarea{font-family:inherit}
   padding: 12px 14px;
   box-sizing: border-box;
 }
+
+
+/* ══════════════════════════════════════════════════════════════ */
+/* HUB ANALITIK & SEMUA GRAFIK SELURUH BIDANG                     */
+/* ══════════════════════════════════════════════════════════════ */
+.hub-dept-section {
+  margin-top: 24px;
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 20px -2px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+.hub-dept-section:hover {
+  box-shadow: 0 8px 30px -4px rgba(0,0,0,0.08);
+}
+.hub-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color, #f1f5f9);
+}
+.hub-title-group h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main, #1e293b);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 4px 0;
+}
+.hub-title-group p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-sub, #64748b);
+}
+.hub-tab-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  padding: 8px;
+  background: rgba(241, 245, 249, 0.7);
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+.hub-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+.hub-tab-btn:hover {
+  background: #ffffff;
+  color: #1e293b;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+.hub-tab-btn.active {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.25);
+}
+.hub-tab-btn .badge-pill {
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.25);
+  color: inherit;
+}
+.hub-tab-btn:not(.active) .badge-pill {
+  background: #e2e8f0;
+  color: #64748b;
+}
+
+.hub-dept-block {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px dashed #e2e8f0;
+  animation: fadeInHub 0.3s ease-out;
+}
+.hub-dept-block:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.hub-dept-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.hub-dept-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hub-dept-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+}
+.hub-dept-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-main, #1e293b);
+}
+.hub-dept-desc {
+  font-size: 0.78rem;
+  color: var(--text-sub, #64748b);
+  margin-top: 2px;
+}
+.hub-chart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.hub-chart-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.hub-chart-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+.hub-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.hub-card-header h4 {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #334155;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.hub-card-header .btn-dl-chart {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: color 0.2s;
+}
+.hub-card-header .btn-dl-chart:hover {
+  color: #2563eb;
+  background: #eff6ff;
+}
+.hub-canvas-wrap {
+  position: relative;
+  height: 230px;
+  width: 100%;
+}
+@keyframes fadeInHub {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+  .hub-chart-grid {
+    grid-template-columns: 1fr;
+  }
+  .hub-tab-bar {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 10px;
+  }
+}

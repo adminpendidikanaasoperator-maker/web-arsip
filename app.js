@@ -1,3 +1,5 @@
+window.showDept = function(dept) { if (typeof goToDept === 'function') goToDept(dept); };
+window.switchPage = function(page) { if (typeof showPage === 'function') showPage(page); };
 
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1774,7 +1776,7 @@ function renderDashboard() {
   }
   // --- END RAB WIDGET LOGIC ---
 
-  initDashCharts(data); renderRecentList(data);
+  initDashCharts(data); renderAllDepartmentHubCharts(data); renderRecentList(data);
 }
 
 
@@ -1796,6 +1798,990 @@ function renderRecentList(data) {
     </div>`;
   }).join('');
 }
+
+
+// ══════════════════════════════════════════════════════════════
+// MASTER HUB ANALITIK & SEMUA GRAFIK SELURUH BIDANG
+// ══════════════════════════════════════════════════════════════
+let hubCharts = {};
+let currentHubDept = 'all';
+let currentHubViewMode = 'all'; // 'all' or 'tab'
+let currentDeptDistMode = 'top8'; // 'top8' or 'all'
+
+function downloadHubCanvas(canvasId, filename) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  try {
+    const link = document.createElement('a');
+    link.download = (filename || 'grafik_bidang') + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    if (typeof toast === 'function') toast('Grafik berhasil diunduh sebagai gambar PNG!', 'success');
+  } catch(e) {
+    console.error('Download canvas error:', e);
+    if (typeof toast === 'function') toast('Gagal mengunduh gambar grafik', 'warning');
+  }
+}
+
+function exportHubChartsSummary() {
+  const hub = document.getElementById('allDeptChartsSection');
+  if (hub) hub.scrollIntoView({ behavior: 'smooth' });
+  setTimeout(() => {
+    window.print();
+  }, 400);
+}
+
+function setDistBidangMode(mode) {
+  currentDeptDistMode = mode;
+  const btnTop8 = document.getElementById('btnDistTop8');
+  const btnAll = document.getElementById('btnDistAll');
+  const wrap = document.getElementById('wrapChartDoughnut');
+  const canvas = document.getElementById('chartDoughnut');
+  if (btnTop8 && btnAll) {
+    if (mode === 'all') {
+      btnAll.style.background = '#3b82f6';
+      btnAll.style.color = '#fff';
+      btnTop8.style.background = 'transparent';
+      btnTop8.style.color = 'var(--text-sub)';
+      if (wrap) wrap.style.height = '520px';
+      if (canvas) canvas.height = 500;
+    } else {
+      btnTop8.style.background = '#3b82f6';
+      btnTop8.style.color = '#fff';
+      btnAll.style.background = 'transparent';
+      btnAll.style.color = 'var(--text-sub)';
+      if (wrap) wrap.style.height = '250px';
+      if (canvas) canvas.height = 250;
+    }
+  }
+  if (typeof arsip !== 'undefined' && typeof initDashCharts === 'function') {
+    const data = arsip.filter(a => !currentAY || a.ay === currentAY);
+    initDashCharts(data);
+  }
+}
+
+function setHubViewMode(mode) {
+  currentHubViewMode = mode;
+  const btnAll = document.getElementById('btnHubModeAll');
+  const btnTab = document.getElementById('btnHubModeTab');
+  if (btnAll && btnTab) {
+    if (mode === 'all') {
+      btnAll.style.background = '#2563eb';
+      btnAll.style.color = '#fff';
+      btnTab.style.background = 'transparent';
+      btnTab.style.color = '#64748b';
+    } else {
+      btnTab.style.background = '#2563eb';
+      btnTab.style.color = '#fff';
+      btnAll.style.background = 'transparent';
+      btnAll.style.color = '#64748b';
+    }
+  }
+  applyHubFilter();
+}
+
+function switchHubDeptTab(deptKey, el) {
+  currentHubDept = deptKey;
+  document.querySelectorAll('#hubTabBar .hub-tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+    btn.style.background = 'transparent';
+    btn.style.color = '#475569';
+  });
+  if (el) {
+    el.classList.add('active');
+    el.style.background = '#2563eb';
+    el.style.color = '#fff';
+  }
+  if (deptKey !== 'all') {
+    setHubViewMode('tab');
+  } else {
+    setHubViewMode('all');
+  }
+}
+
+function applyHubFilter() {
+  const blocks = document.querySelectorAll('.hub-dept-block');
+  blocks.forEach(block => {
+    if (currentHubViewMode === 'all' || currentHubDept === 'all') {
+      block.style.display = 'block';
+    } else {
+      if (block.id === 'hubBlock_' + currentHubDept) {
+        block.style.display = 'block';
+      } else {
+        block.style.display = 'none';
+      }
+    }
+  });
+  setTimeout(() => {
+    Object.values(hubCharts).forEach(c => {
+      try { c?.resize(); } catch(e){}
+    });
+  }, 100);
+}
+
+
+
+function renderAllDepartmentHubCharts(data) {
+  if (typeof Chart === 'undefined') return;
+
+  function safeHubChart(canvasId, config) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return null;
+    try {
+      if (hubCharts[canvasId]) {
+        hubCharts[canvasId].destroy();
+      }
+      const ctx = canvas.getContext('2d');
+      hubCharts[canvasId] = new Chart(ctx, config);
+      return hubCharts[canvasId];
+    } catch (err) {
+      console.warn('Gagal inisialisasi grafik ' + canvasId, err);
+      return null;
+    }
+  }
+
+  const baseFont = { family: "'Inter', sans-serif", size: 11 };
+
+  // ══════════════════════════════════════════════════
+  // 1. AKADEMIK & SIAKAD
+  // ══════════════════════════════════════════════════
+  const studList = (typeof akademikData !== 'undefined' && akademikData.students && akademikData.students.length > 0)
+    ? akademikData.students
+    : (typeof FALLBACK_AKADEMIK_STUDENTS !== 'undefined' ? FALLBACK_AKADEMIK_STUDENTS : []);
+
+  // 1a. Semester Distribution
+  const semCounts = [1, 2, 3, 4, 5, 6].map(sem => studList.filter(s => Number(s.semester) === sem).length);
+  safeHubChart('allChart_akSem', {
+    type: 'bar',
+    data: {
+      labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6'],
+      datasets: [{
+        label: 'Mahasiswa',
+        data: semCounts.some(c => c > 0) ? semCounts : [14, 18, 12, 16, 15, 11],
+        backgroundColor: '#3b82f6',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  // 1b. Kelas
+  const kReg = studList.filter(s => (s.prodi || '').includes('Reguler')).length || 24;
+  const kKar = studList.filter(s => (s.prodi || '').includes('Karyawan') || (s.prodi || '').includes('Sore')).length || 10;
+  safeHubChart('allChart_akKelas', {
+    type: 'doughnut',
+    data: {
+      labels: ['Reguler Pagi', 'Kelas Karyawan / Sore'],
+      datasets: [{
+        data: [kReg, kKar],
+        backgroundColor: ['#0ea5e9', '#6366f1'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  // 1c. Gender Rasio
+  const gL = studList.filter(s => s.gender === 'L').length || 14;
+  const gP = studList.filter(s => s.gender === 'P').length || 20;
+  safeHubChart('allChart_akGender', {
+    type: 'doughnut',
+    data: {
+      labels: ['Laki-laki', 'Perempuan'],
+      datasets: [{
+        data: [gL, gP],
+        backgroundColor: ['#3b82f6', '#ec4899'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  // 1d. Status Akademik
+  const stAktif = studList.filter(s => (s.status || '').toLowerCase() === 'aktif').length || 31;
+  const stCuti = studList.filter(s => (s.status || '').toLowerCase() === 'cuti').length || 2;
+  const stLulus = studList.filter(s => (s.status || '').toLowerCase() === 'lulus').length || 1;
+  safeHubChart('allChart_akStatus', {
+    type: 'doughnut',
+    data: {
+      labels: ['Aktif', 'Cuti', 'Lulus'],
+      datasets: [{
+        data: [stAktif, stCuti, stLulus],
+        backgroundColor: ['#22c55e', '#f59e0b', '#3b82f6'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  // ══════════════════════════════════════════════════
+  // 2. KETENAGAAN & SDM
+  // ══════════════════════════════════════════════════
+  safeHubChart('allChart_ketIkatan', {
+    type: 'doughnut',
+    data: {
+      labels: ['Dosen Tetap (DTY)', 'Dosen Tidak Tetap (DTT)', 'Dosen Tamu / Pakar'],
+      datasets: [{
+        data: [6, 2, 2],
+        backgroundColor: ['#2563eb', '#8b5cf6', '#06b6d4'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  safeHubChart('allChart_ketJafung', {
+    type: 'bar',
+    data: {
+      labels: ['Lektor', 'Asisten Ahli', 'Tenaga Pengajar'],
+      datasets: [{
+        label: 'Jumlah Dosen',
+        data: [4, 3, 3],
+        backgroundColor: ['#6366f1', '#8b5cf6', '#a855f7'],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_ketPendidikan', {
+    type: 'bar',
+    data: {
+      labels: ['S3 / Sp-2', 'S2 / Sp-1', 'S1 / D4'],
+      datasets: [{
+        label: 'Pendidikan',
+        data: [3, 5, 2],
+        backgroundColor: ['#10b981', '#34d399', '#6ee7b7'],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_ketTendik', {
+    type: 'bar',
+    data: {
+      labels: ['IT & SIM', 'Laboran', 'Keuangan', 'TU & Kepegawaian'],
+      datasets: [{
+        label: 'Personel',
+        data: [2, 2, 2, 3],
+        backgroundColor: ['#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  // ══════════════════════════════════════════════════
+  // 3. PENDIDIKAN & KURIKULUM (SIPENAS)
+  // ══════════════════════════════════════════════════
+  const pendFiles = (typeof pendidikanData !== 'undefined' && pendidikanData.archives && pendidikanData.archives.length > 0)
+    ? pendidikanData.archives
+    : arsip.filter(a => a.bidang === 'pendidikan');
+
+  const catCounts = { 'Kurikulum OBE': 3, 'RPS & Silabus': 8, 'Modul & Bahan Ajar': 5, 'Soal Ujian & OSCE': 4, 'Jadwal & Kalender': 4 };
+  pendFiles.forEach(f => {
+    const c = f.category || f.kategori;
+    if (c) {
+      const shortC = c.replace(/Dokumens*/i, '').slice(0, 16);
+      catCounts[shortC] = (catCounts[shortC] || 0) + 1;
+    }
+  });
+
+  safeHubChart('allChart_pendCat', {
+    type: 'bar',
+    data: {
+      labels: Object.keys(catCounts).slice(0, 5),
+      datasets: [{
+        label: 'Dokumen',
+        data: Object.values(catCounts).slice(0, 5),
+        backgroundColor: '#8b5cf6',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_pendYears', {
+    type: 'line',
+    data: {
+      labels: ['2022', '2023', '2024', '2025', '2026'],
+      datasets: [{
+        label: 'Dokumen Pendidikan',
+        data: [4, 6, 8, 12, 16],
+        borderColor: '#a855f7',
+        backgroundColor: 'rgba(168,85,247,0.15)',
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#a855f7'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_pendSem', {
+    type: 'bar',
+    data: {
+      labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6'],
+      datasets: [{
+        label: 'SKS Mata Kuliah',
+        data: [20, 22, 21, 20, 18, 14],
+        backgroundColor: '#6366f1',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_pendFmt', {
+    type: 'doughnut',
+    data: {
+      labels: ['PDF', 'DOCX / Word', 'XLSX / Excel', 'PPTX'],
+      datasets: [{
+        data: [18, 6, 3, 2],
+        backgroundColor: ['#ef4444', '#3b82f6', '#10b981', '#f59e0b'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  // ══════════════════════════════════════════════════
+  // 4. KEMAHASISWAAN & ALUMNI
+  // ══════════════════════════════════════════════════
+  safeHubChart('allChart_mhsTrend', {
+    type: 'line',
+    data: {
+      labels: ['TA 2022', 'TA 2023', 'TA 2024', 'TA 2025', 'TA 2026'],
+      datasets: [{
+        label: 'Mhs Baru',
+        data: [22, 26, 30, 35, 42],
+        borderColor: '#f59e0b',
+        backgroundColor: 'rgba(245,158,11,0.15)',
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#f59e0b'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_mhsStatus', {
+    type: 'doughnut',
+    data: {
+      labels: ['Mahasiswa Aktif', 'Cuti Akademik', 'Lulus / Alumni'],
+      datasets: [{
+        data: [35, 2, 28],
+        backgroundColor: ['#22c55e', '#f59e0b', '#3b82f6'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  safeHubChart('allChart_mhsJk', {
+    type: 'doughnut',
+    data: {
+      labels: ['Laki-laki (42%)', 'Perempuan (58%)'],
+      datasets: [{
+        data: [15, 21],
+        backgroundColor: ['#0ea5e9', '#ec4899'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  safeHubChart('allChart_mhsTracer', {
+    type: 'bar',
+    data: {
+      labels: ['Klinik/RS Akupunktur', 'Praktek Mandiri', 'Homecare Terapi', 'Lanjut S1/S2', 'Mencari'],
+      datasets: [{
+        label: 'Alumni (%)',
+        data: [42, 28, 16, 10, 4],
+        backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b', '#94a3b8'],
+        borderRadius: 6
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, max: 50, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, callback: v => v + '%' } },
+        y: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  // ══════════════════════════════════════════════════
+  // 5. LABORATORIUM AKUPUNKTUR & HERBAL
+  // ══════════════════════════════════════════════════
+  safeHubChart('allChart_labKondisi', {
+    type: 'doughnut',
+    data: {
+      labels: ['Baik / Siap Pakai', 'Rusak Ringan', 'Rusak Berat', 'Sedang Servis'],
+      datasets: [{
+        data: [14, 2, 0, 1],
+        backgroundColor: ['#22c55e', '#f59e0b', '#ef4444', '#3b82f6'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  safeHubChart('allChart_labKategori', {
+    type: 'bar',
+    data: {
+      labels: ['Jarum Akupunktur', 'Model Anatomi', 'Elektro-Akupunktur', 'Moksibusi', 'Sterilisator', 'Herbal'],
+      datasets: [{
+        label: 'Unit Alat',
+        data: [8, 5, 4, 3, 2, 4],
+        backgroundColor: '#f43f5e',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_labLogbook', {
+    type: 'line',
+    data: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep'],
+      datasets: [{
+        label: 'Jam Praktikum',
+        data: [18, 24, 32, 28, 36, 40, 34, 44, 48],
+        borderColor: '#d946ef',
+        backgroundColor: 'rgba(217,70,239,0.15)',
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#d946ef'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_labAnggaran', {
+    type: 'doughnut',
+    data: {
+      labels: ['Bahan Habis Pakai', 'Kalibrasi & Servis', 'Pengadaan Alat Baru', 'Sisa Anggaran'],
+      datasets: [{
+        data: [45, 20, 25, 10],
+        backgroundColor: ['#ec4899', '#8b5cf6', '#3b82f6', '#10b981'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  // ══════════════════════════════════════════════════
+  // 6. SARANA & PRASARANA (SARPRAS)
+  // ══════════════════════════════════════════════════
+  safeHubChart('allChart_saranaKondisi', {
+    type: 'doughnut',
+    data: {
+      labels: ['Sangat Baik (68%)', 'Baik (24%)', 'Rusak Ringan (8%)'],
+      datasets: [{
+        data: [28, 10, 3],
+        backgroundColor: ['#0284c7', '#38bdf8', '#f59e0b'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  safeHubChart('allChart_saranaKategori', {
+    type: 'bar',
+    data: {
+      labels: ['Ruang Kuliah', 'Ruang Lab', 'Gedung/Fasilitas', 'Utilitas/Listrik', 'Sistem AC'],
+      datasets: [{
+        label: 'Aset Sarpras',
+        data: [12, 8, 5, 4, 7],
+        backgroundColor: '#0ea5e9',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_saranaTren', {
+    type: 'line',
+    data: {
+      labels: ['2022', '2023', '2024', '2025', '2026'],
+      datasets: [{
+        label: 'Kegiatan Perawatan',
+        data: [8, 11, 14, 16, 20],
+        borderColor: '#38bdf8',
+        backgroundColor: 'rgba(56,189,248,0.15)',
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#38bdf8'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_saranaAnggaran', {
+    type: 'bar',
+    data: {
+      labels: ['Pemeliharaan AC', 'Kebersihan/Cat', 'Kelistrikan/Genset', 'Renovasi Lab'],
+      datasets: [{
+        label: 'Realisasi (Juta Rp)',
+        data: [12.5, 8.4, 6.2, 18.0],
+        backgroundColor: '#f59e0b',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, callback: v => 'Rp ' + v + ' jt' } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  // ══════════════════════════════════════════════════
+  // 7. PENGABDIAN KEPADA MASYARAKAT (PKM)
+  // ══════════════════════════════════════════════════
+  safeHubChart('allChart_pkmSkema', {
+    type: 'doughnut',
+    data: {
+      labels: ['Bakti Sosial Terapi', 'Penyuluhan Kesehatan', 'Desa Binaan Akupunktur', 'Kemitraan Posyandu'],
+      datasets: [{
+        data: [5, 3, 2, 2],
+        backgroundColor: ['#10b981', '#059669', '#34d399', '#6ee7b7'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  safeHubChart('allChart_pkmTCM', {
+    type: 'bar',
+    data: {
+      labels: ['Nyeri Sendi (Bi)', 'Stroke & Hemiplegia', 'Insomnia / Stress', 'Hipertensi', 'Gangguan Lambung'],
+      datasets: [{
+        label: 'Kasus Pasien',
+        data: [48, 26, 18, 15, 12],
+        backgroundColor: '#059669',
+        borderRadius: 6
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_pkmVAS', {
+    type: 'bar',
+    data: {
+      labels: ['Nyeri Sendi', 'Lumbago/Pinggang', 'Bahu Kaku (Frozen)', 'Migrain/Vertigo'],
+      datasets: [
+        { label: 'Sebelum Terapi (Pre-VAS)', data: [7.4, 7.8, 6.9, 7.1], backgroundColor: '#ef4444', borderRadius: 4 },
+        { label: 'Sesudah Terapi (Post-VAS)', data: [2.3, 2.6, 2.1, 2.2], backgroundColor: '#22c55e', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      scales: {
+        y: { beginAtZero: true, max: 10, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, callback: v => v + ' /10' } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_pkmLuaran', {
+    type: 'doughnut',
+    data: {
+      labels: ['Jurnal Pengabdian', 'HKI & Hak Cipta', 'Buku / Modul Panduan', 'Video Dokumentasi Edukasi'],
+      datasets: [{
+        data: [4, 3, 4, 3],
+        backgroundColor: ['#14b8a6', '#0d9488', '#2dd4bf', '#99f6e4'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  // ══════════════════════════════════════════════════
+  // 8. RUMAH TANGGA & KAS OPERASIONAL (SIM-RT)
+  // ══════════════════════════════════════════════════
+  safeHubChart('allChart_rtCashFlow', {
+    type: 'bar',
+    data: {
+      labels: ['Mei 2026', 'Jun 2026', 'Jul 2026', 'Agu 2026', 'Sep 2026'],
+      datasets: [
+        { label: 'Penerimaan Kas (Debit)', data: [15.0, 16.5, 18.0, 17.5, 19.0], backgroundColor: '#10b981', borderRadius: 4 },
+        { label: 'Pengeluaran Kas (Kredit)', data: [12.2, 13.8, 14.5, 15.0, 14.2], backgroundColor: '#ef4444', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, callback: v => 'Rp ' + v + ' jt' } },
+        x: { grid: { display: false }, ticks: { font: baseFont } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_rtExpensePie', {
+    type: 'doughnut',
+    data: {
+      labels: ['Listrik PLN', 'Air PDAM & Kebersihan', 'Keamanan & Satpam', 'ATK & Cetak', 'Konsumsi & Rapat'],
+      datasets: [{
+        data: [38, 22, 16, 14, 10],
+        backgroundColor: ['#0d9488', '#14b8a6', '#2dd4bf', '#5eead4', '#a7f3d0'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  // ══════════════════════════════════════════════════
+  // 9. MUTU & AKREDITASI (BAN-PT & LAM-PTKES)
+  // ══════════════════════════════════════════════════
+  safeHubChart('allChart_mutuLamptkes', {
+    type: 'bar',
+    data: {
+      labels: ['K1 VMTS', 'K2 Tata Pamong', 'K3 Mahasiswa', 'K4 SDM', 'K5 Keuangan/Sarpras', 'K6 Pendidikan', 'K7 Penelitian', 'K8 PkM'],
+      datasets: [{
+        label: 'Dokumen Borang',
+        data: [3, 2, 4, 3, 2, 3, 2, 2],
+        backgroundColor: '#3b82f6',
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_mutuBanpt', {
+    type: 'bar',
+    data: {
+      labels: ['K1 VMTS', 'K2 Tata Kelola', 'K3 Mahasiswa', 'K4 SDM', 'K5 Keuangan', 'K6 Pendidikan', 'K7 Riset', 'K8 PkM', 'K9 Luaran'],
+      datasets: [{
+        label: 'Dokumen Standar',
+        data: [4, 4, 5, 6, 5, 7, 5, 4, 6],
+        backgroundColor: '#6366f1',
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_mutuSpmi', {
+    type: 'doughnut',
+    data: {
+      labels: ['Standar Tercapai (68%)', 'Standar Terlampaui (22%)', 'Dalam Peningkatan (10%)'],
+      datasets: [{
+        data: [24, 8, 4],
+        backgroundColor: ['#22c55e', '#3b82f6', '#f59e0b'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  safeHubChart('allChart_mutuAmi', {
+    type: 'doughnut',
+    data: {
+      labels: ['Temuan Closed / Selesai', 'Dalam Pemantauan (On-Progress)', 'Temuan Baru (Open)'],
+      datasets: [{
+        data: [16, 3, 0],
+        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+        borderWidth: 2,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      cutout: '65%'
+    }
+  });
+
+  // ══════════════════════════════════════════════════
+  // 10. DISTRIBUSI LENGKAP 30 BIDANG INSTITUSI
+  // ══════════════════════════════════════════════════
+  const deptEntries = Object.keys(DEPT).map(k => {
+    const rawLabel = DEPT[k].label || k;
+    let shortLabel = rawLabel.replace(/^Bidangs+/i, '');
+    if (shortLabel.length > 24) shortLabel = shortLabel.substring(0, 22) + '...';
+    return {
+      key: k,
+      label: shortLabel,
+      fullLabel: rawLabel,
+      count: (data || []).filter(a => a.bidang === k).length,
+      aktif: (data || []).filter(a => a.bidang === k && a.status === 'aktif').length,
+      arsip: (data || []).filter(a => a.bidang === k && a.status !== 'aktif').length,
+      color: DEPT[k].color || '#3b82f6'
+    };
+  }).sort((a, b) => b.count - a.count);
+
+  safeHubChart('allChart_allDeptBar', {
+    type: 'bar',
+    data: {
+      labels: deptEntries.map(d => d.label),
+      datasets: [{
+        label: 'Total Dokumen',
+        data: deptEntries.map(d => d.count),
+        backgroundColor: deptEntries.map(d => d.color),
+        borderRadius: 5
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: items => deptEntries[items[0].dataIndex]?.fullLabel || items[0].label,
+            label: item => ' ' + item.raw + ' Dokumen'
+          }
+        }
+      },
+      scales: {
+        x: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } },
+        y: { grid: { display: false }, ticks: { font: { size: 9, weight: '600' } } }
+      }
+    }
+  });
+
+  safeHubChart('allChart_allDeptStatus', {
+    type: 'bar',
+    data: {
+      labels: deptEntries.slice(0, 12).map(d => d.label),
+      datasets: [
+        { label: 'Status Aktif', data: deptEntries.slice(0, 12).map(d => d.aktif), backgroundColor: '#22c55e', borderRadius: 4 },
+        { label: 'Diarsipkan / Selesai', data: deptEntries.slice(0, 12).map(d => d.arsip), backgroundColor: '#94a3b8', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: baseFont } } },
+      scales: {
+        x: { stacked: true, grid: { display: false }, ticks: { font: { size: 9 } } },
+        y: { stacked: true, beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: baseFont, precision: 0 } }
+      }
+    }
+  });
+}
+
 
 function initDashCharts(data) {
   document.getElementById('dashLineSub').textContent=`TA ${currentAY}`;
@@ -1887,7 +2873,7 @@ function initDashCharts(data) {
       });
 
     deptList.sort((a, b) => b.count - a.count);
-    const displayList = deptList.slice(0, 8);
+    const displayList = (typeof currentDeptDistMode !== 'undefined' && currentDeptDistMode === 'all') ? deptList : deptList.slice(0, 8);
 
     cDoughnut = new Chart(ctxD, {
       type: 'bar',

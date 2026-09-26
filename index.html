@@ -23,7 +23,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=20260927_superapp_v12" />
+  <link rel="stylesheet" href="style.css?v=20260927_superapp_v13" />
 </head>
 <body>
 
@@ -163,6 +163,7 @@
   <nav class="sb-nav">
     <div class="sb-section">Beranda</div>
     <a class="sb-link active" href="#" data-page="dashboard" id="nav-dashboard"><i class="fas fa-house"></i><span>Portal Utama</span></a>
+    <a class="sb-link" href="javascript:void(0)" onclick="showPage('dashboard'); setTimeout(() => { const el = document.getElementById('allDeptChartsSection'); if(el) el.scrollIntoView({behavior:'smooth'}); }, 100);" id="nav-semua-grafik"><i class="fas fa-chart-pie" style="color:#38bdf8;"></i><span>Semua Grafik Bidang</span></a>
     <a class="sb-link" href="bidang-it.html" id="nav-admin-portal" style="display:none;"><i class="fas fa-server" style="color:#e11d48;"></i><span>Portal Admin & IT</span></a>
 
 
@@ -1313,9 +1314,16 @@
   </main>
 <main class="page hidden" id="page-dashboard">
 
-    <div class="portal-header">
-      <h1>Portal SIMARSIP Akademik</h1>
-      <p>Sistem Informasi Manajemen Arsip Terpadu Kelola dan pantau seluruh dokumen akademik, keuangan, dan data induk dalam satu platform tersentralisasi.</p>
+    <div class="portal-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+      <div>
+        <h1>Portal SIMARSIP Akademik</h1>
+        <p>Sistem Informasi Manajemen Arsip Terpadu Kelola dan pantau seluruh dokumen akademik, keuangan, dan data induk dalam satu platform tersentralisasi.</p>
+      </div>
+      <div>
+        <button type="button" onclick="document.getElementById('allDeptChartsSection').scrollIntoView({behavior:'smooth'})" class="btn-primary" style="display:inline-flex; align-items:center; gap:8px; font-size:0.82rem; padding:9px 18px; border-radius:8px; background:linear-gradient(135deg, #2563eb, #3b82f6); box-shadow:0 4px 14px rgba(37,99,235,0.28); color:#fff; font-weight:600; border:none; cursor:pointer;">
+          <i class="fas fa-chart-pie"></i> Tampilkan Semua Grafik Bidang
+        </button>
+      </div>
     </div>
     
 
@@ -1381,7 +1389,13 @@
     </div>
     <div class="grid-2-1">
       <div class="panel">
-        <div class="panel-hd"><h3><i class="fas fa-chart-bar"></i> Distribusi Bidang</h3></div>
+        <div class="panel-hd" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <h3><i class="fas fa-chart-bar"></i> Distribusi Bidang</h3>
+          <div class="btn-group-toggle" style="display:inline-flex; background:rgba(0,0,0,0.04); padding:2px; border-radius:6px; border:1px solid rgba(0,0,0,0.06);">
+            <button id="btnDistTop8" type="button" class="btn-toggle active" onclick="setDistBidangMode('top8')" style="border:none; padding:3px 8px; font-size:0.72rem; border-radius:4px; font-weight:600; cursor:pointer; background:#3b82f6; color:#fff;">Top 8</button>
+            <button id="btnDistAll" type="button" class="btn-toggle" onclick="setDistBidangMode('all')" style="border:none; padding:3px 8px; font-size:0.72rem; border-radius:4px; font-weight:600; cursor:pointer; background:transparent; color:var(--text-sub);">Semua (26+)</button>
+          </div>
+        </div>
         <div class="chart-wrap chart-center" style="width:100%;"><canvas id="chartDoughnut" height="250"></canvas></div>
       </div>
       <div class="panel">
@@ -1390,7 +1404,706 @@
       </div>
     </div>
     <div class="panel panel-fill" style="margin-bottom:24px;">
-      <div class="panel-hd"><h3><i class="fas fa-clock"></i> Arsip Terbaru</h3></div>
+      
+    <!-- ======================================================== -->
+    <!-- PUSAT ANALITIK & SEMUA GRAFIK DARI SEMUA BIDANG           -->
+    <!-- ======================================================== -->
+    <div id="allDeptChartsSection" class="hub-dept-section">
+      <div class="hub-header-bar">
+        <div class="hub-title-group">
+          <h3><i class="fas fa-chart-pie" style="color:#2563eb;"></i> Pusat Grafik & Analisis Seluruh Bidang</h3>
+          <p>Eksplorasi visual dan indikator kinerja seluruh 10 klaster bidang operasional Akademi Akupunktur Surabaya</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <div class="btn-group-toggle" style="display:inline-flex; background:rgba(0,0,0,0.04); padding:3px; border-radius:8px; border:1px solid #e2e8f0;">
+            <button id="btnHubModeAll" type="button" class="btn-toggle active" onclick="setHubViewMode('all')" style="border:none; padding:5px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; cursor:pointer; background:#2563eb; color:#fff; display:inline-flex; align-items:center; gap:5px;">
+              <i class="fas fa-layer-group"></i> Tampilkan Semua Sekaligus
+            </button>
+            <button id="btnHubModeTab" type="button" class="btn-toggle" onclick="setHubViewMode('tab')" style="border:none; padding:5px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; cursor:pointer; background:transparent; color:#64748b; display:inline-flex; align-items:center; gap:5px;">
+              <i class="fas fa-table-columns"></i> Mode Tab Per Bidang
+            </button>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="exportHubChartsSummary()" style="padding:5px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; cursor:pointer;">
+            <i class="fas fa-camera"></i> Unduh Ringkasan Grafik
+          </button>
+        </div>
+      </div>
+
+      <!-- FILTER TABS PER BIDANG -->
+      <div class="hub-tab-bar" id="hubTabBar">
+        <button class="hub-tab-btn active" onclick="switchHubDeptTab('all', this)">
+          <i class="fas fa-globe"></i> Semua Bidang <span class="badge-pill">35+ Grafik</span>
+        </button>
+        <button class="hub-tab-btn" onclick="switchHubDeptTab('akademik', this)">
+          <i class="fas fa-graduation-cap"></i> Akademik & SIAKAD <span class="badge-pill">4</span>
+        </button>
+        <button class="hub-tab-btn" onclick="switchHubDeptTab('ketenagaan', this)">
+          <i class="fas fa-users-gear"></i> SDM & Ketenagaan <span class="badge-pill">4</span>
+        </button>
+        <button class="hub-tab-btn" onclick="switchHubDeptTab('pendidikan', this)">
+          <i class="fas fa-chalkboard-teacher"></i> Pendidikan SIPENAS <span class="badge-pill">4</span>
+        </button>
+        <button class="hub-tab-btn" onclick="switchHubDeptTab('kemahasiswaan', this)">
+          <i class="fas fa-user-graduate"></i> Kemahasiswaan & Alumni <span class="badge-pill">4</span>
+        </button>
+        <button class="hub-tab-btn" onclick="switchHubDeptTab('laboratorium', this)">
+          <i class="fas fa-vials"></i> Laboratorium <span class="badge-pill">4</span>
+        </button>
+        <button class="hub-tab-btn" onclick="switchHubDeptTab('sarana', this)">
+          <i class="fas fa-building"></i> Sarana Prasarana <span class="badge-pill">4</span>
+        </button>
+        <button class="hub-tab-btn" onclick="switchHubDeptTab('pengabdian', this)">
+          <i class="fas fa-hand-holding-heart"></i> Pengabdian PkM <span class="badge-pill">4</span>
+        </button>
+        <button class="hub-tab-btn" onclick="switchHubDeptTab('rumah_tangga', this)">
+          <i class="fas fa-wallet"></i> Rumah Tangga (RT) <span class="badge-pill">2</span>
+        </button>
+        <button class="hub-tab-btn" onclick="switchHubDeptTab('mutu', this)">
+          <i class="fas fa-award"></i> Mutu & Akreditasi <span class="badge-pill">4</span>
+        </button>
+        <button class="hub-tab-btn" onclick="switchHubDeptTab('distribusi_all', this)">
+          <i class="fas fa-chart-bar"></i> 30 Bidang Lengkap <span class="badge-pill">2</span>
+        </button>
+      </div>
+
+      <!-- CONTAINER DAFTAR BLOK BIDANG -->
+      <div id="hubDeptBlocksContainer">
+
+      <!-- BLOK: AKADEMIK -->
+      <div class="hub-dept-block" id="hubBlock_akademik">
+        <div class="hub-dept-header">
+          <div class="hub-dept-title">
+            <div class="hub-dept-icon" style="background:#3b82f618; color:#3b82f6;">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div>
+              <div class="hub-dept-name">Bidang Administrasi Akademik (SIAKAD)</div>
+              <div class="hub-dept-desc">Statistik mahasiswa, sebaran semester, distribusi kelas perkuliahan, dan status akademik</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="goToDept('akademik')" style="padding:6px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; background:#f8fafc; border:1px solid #cbd5e1; cursor:pointer; color:#1e293b;">Buka Modul Portal <i class="fas fa-arrow-right" style="margin-left:4px;"></i></button>
+        </div>
+        <div class="hub-chart-grid">
+          
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-chart-column" style="color:#3b82f6"></i> Distribusi Mahasiswa per Semester</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_akSem', 'Distribusi_Mahasiswa_per_Semester')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_akSem"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-chalkboard" style="color:#0ea5e9"></i> Sebaran Kelas Perkuliahan</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_akKelas', 'Sebaran_Kelas_Perkuliahan')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_akKelas"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-venus-mars" style="color:#ec4899"></i> Rasio Gender Mahasiswa</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_akGender', 'Rasio_Gender_Mahasiswa')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_akGender"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-user-check" style="color:#10b981"></i> Status Akademik Mahasiswa</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_akStatus', 'Status_Akademik_Mahasiswa')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_akStatus"></canvas>
+          </div>
+        </div>
+  
+        </div>
+      </div>
+  
+
+      <!-- BLOK: KETENAGAAN -->
+      <div class="hub-dept-block" id="hubBlock_ketenagaan">
+        <div class="hub-dept-header">
+          <div class="hub-dept-title">
+            <div class="hub-dept-icon" style="background:#6366f118; color:#6366f1;">
+              <i class="fas fa-users-gear"></i>
+            </div>
+            <div>
+              <div class="hub-dept-name">Bidang Ketenagaan & SDM (Dosen & Tendik)</div>
+              <div class="hub-dept-desc">Statistik dosen tetap, jabatan fungsional, kualifikasi pendidikan tertinggi, dan tenaga kependidikan</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="goToDept('ketenagaan')" style="padding:6px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; background:#f8fafc; border:1px solid #cbd5e1; cursor:pointer; color:#1e293b;">Buka Modul Portal <i class="fas fa-arrow-right" style="margin-left:4px;"></i></button>
+        </div>
+        <div class="hub-chart-grid">
+          
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-id-badge" style="color:#6366f1"></i> Status Ikatan Kerja Dosen</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_ketIkatan', 'Status_Ikatan_Kerja_Dosen')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_ketIkatan"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-award" style="color:#8b5cf6"></i> Jenjang Jabatan Fungsional</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_ketJafung', 'Jenjang_Jabatan_Fungsional')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_ketJafung"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-user-graduate" style="color:#10b981"></i> Kualifikasi Jenjang Pendidikan</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_ketPendidikan', 'Kualifikasi_Jenjang_Pendidikan')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_ketPendidikan"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-user-tie" style="color:#f59e0b"></i> Sebaran Tenaga Kependidikan</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_ketTendik', 'Sebaran_Tenaga_Kependidikan')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_ketTendik"></canvas>
+          </div>
+        </div>
+  
+        </div>
+      </div>
+  
+
+      <!-- BLOK: PENDIDIKAN -->
+      <div class="hub-dept-block" id="hubBlock_pendidikan">
+        <div class="hub-dept-header">
+          <div class="hub-dept-title">
+            <div class="hub-dept-icon" style="background:#8b5cf618; color:#8b5cf6;">
+              <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <div>
+              <div class="hub-dept-name">Bidang Pendidikan & Kurikulum (SIPENAS)</div>
+              <div class="hub-dept-desc">Dokumen kurikulum OBE, RPS, silabus, beban semester, dan format arsip pembelajaran</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="goToDept('pendidikan')" style="padding:6px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; background:#f8fafc; border:1px solid #cbd5e1; cursor:pointer; color:#1e293b;">Buka Modul Portal <i class="fas fa-arrow-right" style="margin-left:4px;"></i></button>
+        </div>
+        <div class="hub-chart-grid">
+          
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-folder-tree" style="color:#8b5cf6"></i> Distribusi Kategori Dokumen Pembelajaran</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_pendCat', 'Distribusi_Kategori_Dokumen_Pembelajaran')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_pendCat"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-calendar-days" style="color:#a855f7"></i> Sebaran Dokumen per Tahun</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_pendYears', 'Sebaran_Dokumen_per_Tahun')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_pendYears"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-layer-group" style="color:#6366f1"></i> Beban Mata Kuliah per Semester</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_pendSem', 'Beban_Mata_Kuliah_per_Semester')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_pendSem"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-file-code" style="color:#ec4899"></i> Format Distribusi Dokumen</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_pendFmt', 'Format_Distribusi_Dokumen')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_pendFmt"></canvas>
+          </div>
+        </div>
+  
+        </div>
+      </div>
+  
+
+      <!-- BLOK: KEMAHASISWAAN -->
+      <div class="hub-dept-block" id="hubBlock_kemahasiswaan">
+        <div class="hub-dept-header">
+          <div class="hub-dept-title">
+            <div class="hub-dept-icon" style="background:#f59e0b18; color:#f59e0b;">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+            <div>
+              <div class="hub-dept-name">Bidang Kemahasiswaan & Alumni</div>
+              <div class="hub-dept-desc">Pertumbuhan mahasiswa baru, status studi, demografi, dan keterserapan alumni (tracer study)</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="goToDept('kemahasiswaan')" style="padding:6px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; background:#f8fafc; border:1px solid #cbd5e1; cursor:pointer; color:#1e293b;">Buka Modul Portal <i class="fas fa-arrow-right" style="margin-left:4px;"></i></button>
+        </div>
+        <div class="hub-chart-grid">
+          
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-chart-line" style="color:#f59e0b"></i> Tren Mahasiswa Baru per Angkatan</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_mhsTrend', 'Tren_Mahasiswa_Baru_per_Angkatan')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_mhsTrend"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-user-clock" style="color:#22c55e"></i> Status Mahasiswa</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_mhsStatus', 'Status_Mahasiswa')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_mhsStatus"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-restroom" style="color:#3b82f6"></i> Demografi Gender Mahasiswa</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_mhsJk', 'Demografi_Gender_Mahasiswa')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_mhsJk"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-briefcase" style="color:#10b981"></i> Tracer Study & Karir Alumni</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_mhsTracer', 'Tracer_Study___Karir_Alumni')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_mhsTracer"></canvas>
+          </div>
+        </div>
+  
+        </div>
+      </div>
+  
+
+      <!-- BLOK: LABORATORIUM -->
+      <div class="hub-dept-block" id="hubBlock_laboratorium">
+        <div class="hub-dept-header">
+          <div class="hub-dept-title">
+            <div class="hub-dept-icon" style="background:#ec489918; color:#ec4899;">
+              <i class="fas fa-vials"></i>
+            </div>
+            <div>
+              <div class="hub-dept-name">Bidang Laboratorium Akupunktur & Herbal</div>
+              <div class="hub-dept-desc">Kondisi fisik peralatan, sebaran kategori alat praktikum, jam pemakaian logbook, dan anggaran</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="goToDept('laboratorium')" style="padding:6px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; background:#f8fafc; border:1px solid #cbd5e1; cursor:pointer; color:#1e293b;">Buka Modul Portal <i class="fas fa-arrow-right" style="margin-left:4px;"></i></button>
+        </div>
+        <div class="hub-chart-grid">
+          
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-heart-pulse" style="color:#ec4899"></i> Kondisi Peralatan Praktikum</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_labKondisi', 'Kondisi_Peralatan_Praktikum')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_labKondisi"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-boxes-stacked" style="color:#f43f5e"></i> Kategori Peralatan Lab</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_labKategori', 'Kategori_Peralatan_Lab')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_labKategori"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-clock-rotate-left" style="color:#d946ef"></i> Logbook Jam Penggunaan Lab</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_labLogbook', 'Logbook_Jam_Penggunaan_Lab')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_labLogbook"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-receipt" style="color:#8b5cf6"></i> Utilisasi Bahan & Anggaran Lab</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_labAnggaran', 'Utilisasi_Bahan___Anggaran_Lab')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_labAnggaran"></canvas>
+          </div>
+        </div>
+  
+        </div>
+      </div>
+  
+
+      <!-- BLOK: SARANA -->
+      <div class="hub-dept-block" id="hubBlock_sarana">
+        <div class="hub-dept-header">
+          <div class="hub-dept-title">
+            <div class="hub-dept-icon" style="background:#0284c718; color:#0284c7;">
+              <i class="fas fa-building"></i>
+            </div>
+            <div>
+              <div class="hub-dept-name">Bidang Sarana & Prasarana (SARPRAS)</div>
+              <div class="hub-dept-desc">Kondisi fisik gedung, inventaris ruangan, tren pemeliharaan berkala, dan alokasi anggaran</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="goToDept('sarana')" style="padding:6px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; background:#f8fafc; border:1px solid #cbd5e1; cursor:pointer; color:#1e293b;">Buka Modul Portal <i class="fas fa-arrow-right" style="margin-left:4px;"></i></button>
+        </div>
+        <div class="hub-chart-grid">
+          
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-shield-halved" style="color:#0284c7"></i> Kondisi Fisik Fasilitas Gedung</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_saranaKondisi', 'Kondisi_Fisik_Fasilitas_Gedung')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_saranaKondisi"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-list-check" style="color:#0ea5e9"></i> Kategori Inventaris Sarpras</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_saranaKategori', 'Kategori_Inventaris_Sarpras')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_saranaKategori"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-arrow-trend-up" style="color:#38bdf8"></i> Tren Pemeliharaan & Perawatan</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_saranaTren', 'Tren_Pemeliharaan___Perawatan')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_saranaTren"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-sack-dollar" style="color:#f59e0b"></i> Alokasi & Realisasi Biaya Sarpras</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_saranaAnggaran', 'Alokasi___Realisasi_Biaya_Sarpras')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_saranaAnggaran"></canvas>
+          </div>
+        </div>
+  
+        </div>
+      </div>
+  
+
+      <!-- BLOK: PENGABDIAN -->
+      <div class="hub-dept-block" id="hubBlock_pengabdian">
+        <div class="hub-dept-header">
+          <div class="hub-dept-title">
+            <div class="hub-dept-icon" style="background:#10b98118; color:#10b981;">
+              <i class="fas fa-hand-holding-heart"></i>
+            </div>
+            <div>
+              <div class="hub-dept-name">Bidang Pengabdian Masyarakat (PkM / LPPM)</div>
+              <div class="hub-dept-desc">Skema pengabdian baksos, modalitas TCM, efektivitas terapi nyeri (VAS Score), dan capaian luaran</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="goToDept('pengabdian')" style="padding:6px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; background:#f8fafc; border:1px solid #cbd5e1; cursor:pointer; color:#1e293b;">Buka Modul Portal <i class="fas fa-arrow-right" style="margin-left:4px;"></i></button>
+        </div>
+        <div class="hub-chart-grid">
+          
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-handshake-angle" style="color:#10b981"></i> Sebaran Skema Pengabdian (PkM)</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_pkmSkema', 'Sebaran_Skema_Pengabdian__PkM_')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_pkmSkema"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-spa" style="color:#059669"></i> Kasus Modalitas Terapi TCM / Akupunktur</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_pkmTCM', 'Kasus_Modalitas_Terapi_TCM___Akupunktur')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_pkmTCM"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-chart-column" style="color:#f97316"></i> Efektivitas Penurunan Nyeri (VAS Pre vs Post)</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_pkmVAS', 'Efektivitas_Penurunan_Nyeri__VAS_Pre_vs_Post_')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_pkmVAS"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-trophy" style="color:#14b8a6"></i> Capaian Luaran PkM & Publikasi</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_pkmLuaran', 'Capaian_Luaran_PkM___Publikasi')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_pkmLuaran"></canvas>
+          </div>
+        </div>
+  
+        </div>
+      </div>
+  
+
+      <!-- BLOK: RUMAH_TANGGA -->
+      <div class="hub-dept-block" id="hubBlock_rumah_tangga">
+        <div class="hub-dept-header">
+          <div class="hub-dept-title">
+            <div class="hub-dept-icon" style="background:#14b8a618; color:#14b8a6;">
+              <i class="fas fa-wallet"></i>
+            </div>
+            <div>
+              <div class="hub-dept-name">Bidang Rumah Tangga & Keuangan Operasional (SIM-RT)</div>
+              <div class="hub-dept-desc">Arus kas kas kecil operasional, pengeluaran utilitas bulanan, dan efisiensi belanja rumah tangga</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="goToDept('rumah_tangga')" style="padding:6px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; background:#f8fafc; border:1px solid #cbd5e1; cursor:pointer; color:#1e293b;">Buka Modul Portal <i class="fas fa-arrow-right" style="margin-left:4px;"></i></button>
+        </div>
+        <div class="hub-chart-grid">
+          
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-scale-balanced" style="color:#14b8a6"></i> Arus Kas Operasional SIM-RT (In vs Out)</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_rtCashFlow', 'Arus_Kas_Operasional_SIM_RT__In_vs_Out_')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_rtCashFlow"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-chart-pie" style="color:#0d9488"></i> Komposisi Beban Operasional & Utilitas</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_rtExpensePie', 'Komposisi_Beban_Operasional___Utilitas')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_rtExpensePie"></canvas>
+          </div>
+        </div>
+  
+        </div>
+      </div>
+  
+
+      <!-- BLOK: MUTU -->
+      <div class="hub-dept-block" id="hubBlock_mutu">
+        <div class="hub-dept-header">
+          <div class="hub-dept-title">
+            <div class="hub-dept-icon" style="background:#3b82f618; color:#3b82f6;">
+              <i class="fas fa-award"></i>
+            </div>
+            <div>
+              <div class="hub-dept-name">Bidang Penjaminan Mutu & Akreditasi (BAN-PT, LAM-PTKes, SPMI)</div>
+              <div class="hub-dept-desc">Pemenuhan borang kriteria LAM-PTKes, BAN-PT, ketercapaian standar SPMI, dan audit mutu</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="showPage('lamptkes')" style="padding:6px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; background:#f8fafc; border:1px solid #cbd5e1; cursor:pointer; color:#1e293b;">Buka Modul Portal <i class="fas fa-arrow-right" style="margin-left:4px;"></i></button>
+        </div>
+        <div class="hub-chart-grid">
+          
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-shield-virus" style="color:#3b82f6"></i> Sebaran Dokumen Borang LAM-PTKes (K1-K8)</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_mutuLamptkes', 'Sebaran_Dokumen_Borang_LAM_PTKes__K1_K8_')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_mutuLamptkes"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-building-columns" style="color:#6366f1"></i> Sebaran Dokumen Borang BAN-PT (K1-K9)</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_mutuBanpt', 'Sebaran_Dokumen_Borang_BAN_PT__K1_K9_')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_mutuBanpt"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-clipboard-check" style="color:#22c55e"></i> Ketercapaian Standar SPMI Institusi</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_mutuSpmi', 'Ketercapaian_Standar_SPMI_Institusi')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_mutuSpmi"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-magnifying-glass-chart" style="color:#f59e0b"></i> Status Temuan Audit Mutu Internal (AMI)</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_mutuAmi', 'Status_Temuan_Audit_Mutu_Internal__AMI_')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_mutuAmi"></canvas>
+          </div>
+        </div>
+  
+        </div>
+      </div>
+  
+
+      <!-- BLOK: DISTRIBUSI_ALL -->
+      <div class="hub-dept-block" id="hubBlock_distribusi_all">
+        <div class="hub-dept-header">
+          <div class="hub-dept-title">
+            <div class="hub-dept-icon" style="background:#3b82f618; color:#3b82f6;">
+              <i class="fas fa-chart-bar"></i>
+            </div>
+            <div>
+              <div class="hub-dept-name">Distribusi Volume Dokumen Seluruh 30 Bidang</div>
+              <div class="hub-dept-desc">Komparasi beban arsip dan rasio status aktif dari seluruh 30 bidang/unit institusi</div>
+            </div>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="showPage('analytics')" style="padding:6px 12px; font-size:0.75rem; border-radius:6px; font-weight:600; background:#f8fafc; border:1px solid #cbd5e1; cursor:pointer; color:#1e293b;">Buka Modul Portal <i class="fas fa-arrow-right" style="margin-left:4px;"></i></button>
+        </div>
+        <div class="hub-chart-grid">
+          
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-bars-staggered" style="color:#3b82f6"></i> Sebaran Arsip Seluruh 30 Bidang Institusi</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_allDeptBar', 'Sebaran_Arsip_Seluruh_30_Bidang_Institusi')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_allDeptBar"></canvas>
+          </div>
+        </div>
+  
+        <div class="hub-chart-card">
+          <div class="hub-card-header">
+            <h4><i class="fas fa-signal" style="color:#10b981"></i> Rasio Status Arsip (Aktif vs Diarsipkan)</h4>
+            <button class="btn-dl-chart" title="Unduh Gambar PNG" onclick="downloadHubCanvas('allChart_allDeptStatus', 'Rasio_Status_Arsip__Aktif_vs_Diarsipkan_')">
+              <i class="fas fa-download"></i>
+            </button>
+          </div>
+          <div class="hub-canvas-wrap">
+            <canvas id="allChart_allDeptStatus"></canvas>
+          </div>
+        </div>
+  
+        </div>
+      </div>
+  
+      </div>
+    </div>
+
+<div class="panel-hd"><h3><i class="fas fa-clock"></i> Arsip Terbaru</h3></div>
       <div class="recent-list" id="recentList"></div>
     </div>
 
@@ -4353,7 +5066,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=20260927_superapp_v12" defer></script>
+<script src="app.js?v=20260927_superapp_v13" defer></script>
 
 <!-- Notification Sounds -->
 
