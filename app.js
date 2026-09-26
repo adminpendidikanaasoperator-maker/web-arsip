@@ -9846,323 +9846,11 @@ let rtCashFlowChartInstance = null;
 let rtExpensePieChartInstance = null;
 
 const SIMRT_DEFAULT_DATA = {
-  pettyCashTransactions: [
-    {
-      id: 'PC-20260901-001',
-      voucherNo: 'BPKK/AAS/2026/09/001',
-      date: '2026-09-01',
-      type: 'in',
-      category: 'Pembentukan Kas Kecil',
-      recipient: 'Dewi Anggraini, A.Md. (Kasir RT)',
-      description: 'Penerimaan Pembentukan Saldo Dana Tetap (Imprest Fund) Kas Kecil Rumah Tangga AAS',
-      amount: 5000000,
-      evidenceNo: 'BKK-AAS-09/2026',
-      operator: 'Sugeng Waluyo, S.E.',
-      status: 'verified'
-    },
-    {
-      id: 'PC-20260905-002',
-      voucherNo: 'BPKK/AAS/2026/09/002',
-      date: '2026-09-05',
-      type: 'out',
-      category: 'Pantry & Konsumsi Kampus',
-      recipient: 'Toko Sumber Rejeki',
-      description: 'Pengadaan Galon Air Mineral Cleo, Kopi, Gula, & Teh Ruang Dosen',
-      amount: 320000,
-      evidenceNo: 'NOTA-0905-01',
-      operator: 'Dewi Anggraini, A.Md.',
-      status: 'verified'
-    },
-    {
-      id: 'PC-20260908-003',
-      voucherNo: 'BPKK/AAS/2026/09/003',
-      date: '2026-09-08',
-      type: 'out',
-      category: 'Kebersihan & Sanitasi Lingkungan',
-      recipient: 'Supermarket Superindo',
-      description: 'Pembelian Sabun Cuci Tangan Wastafel, Karbol Lantai, dan Plastik Sampah Medis/Non Medis',
-      amount: 450000,
-      evidenceNo: 'STRUK-SP-0908',
-      operator: 'Dewi Anggraini, A.Md.',
-      status: 'verified'
-    },
-    {
-      id: 'PC-20260912-004',
-      voucherNo: 'BPKK/AAS/2026/09/004',
-      date: '2026-09-12',
-      type: 'out',
-      category: 'Alat Tulis Kantor & Kebutuhan Administrasi',
-      recipient: 'Toko Buku Uranus Surabaya',
-      description: 'Pengadaan Kertas HVS A4 80gr 10 Rim & Spidol Whiteboard Persiapan Kuliah',
-      amount: 680000,
-      evidenceNo: 'INV-URN-2291',
-      operator: 'Dewi Anggraini, A.Md.',
-      status: 'verified'
-    },
-    {
-      id: 'PC-20260915-005',
-      voucherNo: 'BPKK/AAS/2026/09/005',
-      date: '2026-09-15',
-      type: 'in',
-      category: 'Penggantian Kas Kecil (Reimburse)',
-      recipient: 'Dewi Anggraini, A.Md.',
-      description: 'Penggantian Biaya Kas Kecil (Reimbursement Imprest Fund) Tahap 1 September 2026',
-      amount: 1450000,
-      evidenceNo: 'BKK-AAS-09/2026-R1',
-      operator: 'Sugeng Waluyo, S.E.',
-      status: 'verified'
-    }
-  ],
-  budgets: [
-    {
-      id: 'RAB-2026-01',
-      code: '5.1.01',
-      periodType: 'monthly',
-      year: 2026,
-      month: 9,
-      category: 'Tagihan Utilitas & Operasional Gedung',
-      name: 'Pembayaran Rekening Listrik PLN Kampus',
-      allocated: 4500000,
-      realized: 4250000,
-      notes: 'PLN 3 Phasa Gedung Kampus Utama AAS'
-    },
-    {
-      id: 'RAB-2026-02',
-      code: '5.1.02',
-      periodType: 'monthly',
-      year: 2026,
-      month: 9,
-      category: 'Tagihan Utilitas & Operasional Gedung',
-      name: 'Pembayaran Rekening Air PDAM Surabaya',
-      allocated: 1200000,
-      realized: 950000,
-      notes: 'PDAM Surya Sembada Kota Surabaya'
-    },
-    {
-      id: 'RAB-2026-03',
-      code: '5.1.03',
-      periodType: 'monthly',
-      year: 2026,
-      month: 9,
-      category: 'Tagihan Utilitas & Operasional Gedung',
-      name: 'Akses Internet Kampus & Wi-Fi Mahasiswa',
-      allocated: 3000000,
-      realized: 2750000,
-      notes: 'Dedicated Bandwidth Kampus AAS'
-    },
-    {
-      id: 'RAB-2026-04',
-      code: '5.1.04',
-      periodType: 'monthly',
-      year: 2026,
-      month: 9,
-      category: 'Tagihan Utilitas & Operasional Gedung',
-      name: 'Iuran Kebersihan & Keamanan RW Kampus',
-      allocated: 500000,
-      realized: 500000,
-      notes: 'Retribusi RT/RW Ketintang Madya Surabaya'
-    },
-    {
-      id: 'RAB-2026-05',
-      code: '5.2.01',
-      periodType: 'monthly',
-      year: 2026,
-      month: 9,
-      category: 'Alat Tulis Kantor & Kebutuhan Administrasi',
-      name: 'Pengadaan Kertas HVS & Formulir Ujian',
-      allocated: 2000000,
-      realized: 680000,
-      notes: 'Kertas HVS A4 & F4 ujian dan surat menyurat'
-    },
-    {
-      id: 'RAB-2026-06',
-      code: '5.3.01',
-      periodType: 'monthly',
-      year: 2026,
-      month: 9,
-      category: 'Kebersihan & Sanitasi Lingkungan',
-      name: 'Bahan Habis Pakai Kebersihan & Sanitasi',
-      allocated: 1500000,
-      realized: 450000,
-      notes: 'Pembersih lantai, sabun wastafel, desinfektan'
-    },
-    {
-      id: 'RAB-2026-07',
-      code: '5.4.01',
-      periodType: 'monthly',
-      year: 2026,
-      month: 9,
-      category: 'Pantry & Konsumsi Kampus',
-      name: 'Kebutuhan Pantry Dosen & Konsumsi Tamu',
-      allocated: 1800000,
-      realized: 320000,
-      notes: 'Galon air mineral, kopi, teh, gula, tisu makan'
-    },
-    {
-      id: 'RAB-2026-08',
-      code: '5.5.01',
-      periodType: 'yearly',
-      year: 2026,
-      month: 0,
-      category: 'Pengadaan Rumah Tangga Tahunan',
-      name: 'Perawatan & Peremajaan Fasilitas Kampus',
-      allocated: 3500000,
-      realized: 0,
-      notes: 'Pemeliharaan fasilitas klinik & laboratorium'
-    }
-  ],
-  bills: [
-    {
-      id: 'BILL-202609-01',
-      month: 9,
-      year: 2026,
-      utilityType: 'Listrik PLN',
-      customerNo: '5120-8910-2341 (ID Pelanggan)',
-      provider: 'PT PLN (Persero) Surabaya Selatan',
-      amount: 4250000,
-      dueDate: '2026-09-20',
-      status: 'Lunas',
-      paymentMethod: 'Transfer Bank Mandiri',
-      notes: 'Pemakaian listrik ruang kelas AC, klinik, dan lab'
-    },
-    {
-      id: 'BILL-202609-02',
-      month: 9,
-      year: 2026,
-      utilityType: 'Air PDAM',
-      customerNo: '02-88219-01 (No. Sambungan)',
-      provider: 'PDAM Surya Sembada Kota Surabaya',
-      amount: 950000,
-      dueDate: '2026-09-20',
-      status: 'Lunas',
-      paymentMethod: 'Transfer Bank Mandiri',
-      notes: 'Pemakaian air operasional kampus & klinik'
-    },
-    {
-      id: 'BILL-202609-03',
-      month: 9,
-      year: 2026,
-      utilityType: 'Internet Kampus',
-      customerNo: 'BIZ-SBY-881920 (Account ID)',
-      provider: 'Biznet Networks Surabaya',
-      amount: 2750000,
-      dueDate: '2026-09-25',
-      status: 'Lunas',
-      paymentMethod: 'Autodebet / Transfer Bank',
-      notes: 'Dedicated 100 Mbps Internet Kampus & Wi-Fi'
-    },
-    {
-      id: 'BILL-202609-04',
-      month: 9,
-      year: 2026,
-      utilityType: 'Kebersihan & Keamanan RW',
-      customerNo: 'KTT-MDY-RW04-012',
-      provider: 'Pengurus Lingkungan Ketintang Madya',
-      amount: 500000,
-      dueDate: '2026-09-10',
-      status: 'Lunas',
-      paymentMethod: 'Kas Kecil Rumah Tangga',
-      notes: 'Iuran kebersihan sampah & keamanan lingkungan'
-    }
-  ],
-  inventoryATK: [
-    {
-      id: 'ATK-001',
-      code: 'ATK-KRT-01',
-      name: 'Kertas HVS PaperOne A4 80gr',
-      category: 'Kertas & Formulir',
-      unit: 'Rim',
-      stockInitial: 30,
-      stockAvailable: 25,
-      minStock: 10,
-      unitPrice: 58000,
-      location: 'Gudang RT Lemari A1'
-    },
-    {
-      id: 'ATK-002',
-      code: 'ATK-KRT-02',
-      name: 'Kertas HVS Sinar Dunia F4/Folio 75gr',
-      category: 'Kertas & Formulir',
-      unit: 'Rim',
-      stockInitial: 30,
-      stockAvailable: 22,
-      minStock: 10,
-      unitPrice: 62000,
-      location: 'Gudang RT Lemari A1'
-    },
-    {
-      id: 'ATK-003',
-      code: 'ATK-PEN-01',
-      name: 'Pulpen Standard AE7 Hitam 0.5',
-      category: 'Alat Tulis',
-      unit: 'Lusin',
-      stockInitial: 15,
-      stockAvailable: 12,
-      minStock: 5,
-      unitPrice: 32000,
-      location: 'Gudang RT Lemari B2'
-    },
-    {
-      id: 'ATK-004',
-      code: 'ATK-PEN-02',
-      name: 'Spidol Whiteboard Snowman Hitam',
-      category: 'Alat Tulis',
-      unit: 'Pcs',
-      stockInitial: 40,
-      stockAvailable: 35,
-      minStock: 15,
-      unitPrice: 9500,
-      location: 'Gudang RT Lemari B2'
-    },
-    {
-      id: 'ATK-005',
-      code: 'ATK-PEN-03',
-      name: 'Tinta Refill Spidol Whiteboard Hitam',
-      category: 'Alat Tulis',
-      unit: 'Botol',
-      stockInitial: 15,
-      stockAvailable: 11,
-      minStock: 5,
-      unitPrice: 22000,
-      location: 'Gudang RT Lemari B2'
-    },
-    {
-      id: 'ATK-006',
-      code: 'ATK-ARS-01',
-      name: 'Map Snelhefter Kertas Folio Biru',
-      category: 'Penyimpanan & Arsip',
-      unit: 'Pack',
-      stockInitial: 10,
-      stockAvailable: 8,
-      minStock: 3,
-      unitPrice: 45000,
-      location: 'Gudang RT Rak C'
-    },
-    {
-      id: 'ATK-007',
-      code: 'ATK-ARS-02',
-      name: 'Ordner Bantex Folio 7cm Hitam',
-      category: 'Penyimpanan & Arsip',
-      unit: 'Pcs',
-      stockInitial: 25,
-      stockAvailable: 18,
-      minStock: 8,
-      unitPrice: 34000,
-      location: 'Gudang RT Rak C'
-    },
-    {
-      id: 'ATK-008',
-      code: 'ATK-KPL-01',
-      name: 'Klip Kertas Paper Clip No. 3',
-      category: 'Perlengkapan Meja',
-      unit: 'Kotak',
-      stockInitial: 40,
-      stockAvailable: 36,
-      minStock: 10,
-      unitPrice: 5000,
-      location: 'Gudang RT Lemari B1'
-    }
-  ]
+  pettyCashTransactions: [],
+  budgets: [],
+  bills: [],
+  inventoryATK: [],
+  cashOpnameReports: []
 };
 
 function getSimRTData() {
@@ -10170,10 +9858,21 @@ function getSimRTData() {
     const raw = localStorage.getItem('AAS_SIM_RUMAH_TANGGA_V1');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed && parsed.pettyCashTransactions) return parsed;
+      if (parsed) {
+        // Bersihkan sisa data dummy lama jika terdeteksi di browser
+        if (parsed.pettyCashTransactions && parsed.pettyCashTransactions.some(t => t.id === 'PC-20260901-001' || t.voucherNo === 'BPKK/AAS/2026/09/001' || t.amount === 5000000)) {
+          localStorage.removeItem('AAS_SIM_RUMAH_TANGGA_V1');
+          return { pettyCashTransactions: [], budgets: [], bills: [], inventoryATK: [], cashOpnameReports: [] };
+        }
+        if (parsed.budgets && parsed.budgets.some(b => b.allocated === 4500000 || b.allocated === 18000000)) {
+          localStorage.removeItem('AAS_SIM_RUMAH_TANGGA_V1');
+          return { pettyCashTransactions: [], budgets: [], bills: [], inventoryATK: [], cashOpnameReports: [] };
+        }
+        return parsed;
+      }
     }
   } catch(e) {}
-  return SIMRT_DEFAULT_DATA;
+  return { pettyCashTransactions: [], budgets: [], bills: [], inventoryATK: [], cashOpnameReports: [] };
 }
 
 function saveSimRTData(data) {
@@ -10316,19 +10015,53 @@ function renderRumahTanggaContent() {
 
 function initRumahTanggaCharts() {
   const data = getSimRTData();
+  const gridEl = document.getElementById('rtChartsGrid');
+  const emptyEl = document.getElementById('rtChartsEmptyState');
 
-  // Chart 1: Cash flow
+  let debit = 0;
+  let kredit = 0;
+  (data.pettyCashTransactions || []).forEach(t => {
+    if (t.type === 'in') debit += Number(t.amount || 0);
+    else kredit += Number(t.amount || 0);
+  });
+
+  const billLabels = [];
+  const billValues = [];
+  (data.bills || []).forEach(b => {
+    const amt = Number(b.amount || 0);
+    if (amt > 0) {
+      billLabels.push(b.utilityType || 'Utilitas');
+      billValues.push(amt);
+    }
+  });
+
+  const hasCashData = (debit > 0 || kredit > 0);
+  const hasBillData = billValues.length > 0;
+  const hasAnyData = hasCashData || hasBillData;
+
+  // Jika data transaksi masih 0 / kosong, HANCURKAN grafik dan sembunyikan container
+  if (!hasAnyData) {
+    if (rtCashFlowChartInstance) {
+      rtCashFlowChartInstance.destroy();
+      rtCashFlowChartInstance = null;
+    }
+    if (rtExpensePieChartInstance) {
+      rtExpensePieChartInstance.destroy();
+      rtExpensePieChartInstance = null;
+    }
+    if (gridEl) gridEl.style.display = 'none';
+    if (emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+
+  // Jika ada data riil, tampilkan grafik
+  if (gridEl) gridEl.style.display = 'grid';
+  if (emptyEl) emptyEl.style.display = 'none';
+
+  // Chart 1: Cash flow (hanya dirender jika ada transaksi)
   const ctx1 = document.getElementById('rtCashFlowChart');
-  if (ctx1) {
+  if (ctx1 && hasCashData) {
     if (rtCashFlowChartInstance) rtCashFlowChartInstance.destroy();
-
-    let debit = 0;
-    let kredit = 0;
-    (data.pettyCashTransactions || []).forEach(t => {
-      if (t.type === 'in') debit += Number(t.amount || 0);
-      else kredit += Number(t.amount || 0);
-    });
-
     rtCashFlowChartInstance = new Chart(ctx1, {
       type: 'bar',
       data: {
@@ -10367,25 +10100,17 @@ function initRumahTanggaCharts() {
     });
   }
 
-  // Chart 2: Utilitas / Budget composition
+  // Chart 2: Utilitas / Beban (hanya dirender jika ada tagihan)
   const ctx2 = document.getElementById('rtExpensePieChart');
-  if (ctx2) {
+  if (ctx2 && hasBillData) {
     if (rtExpensePieChartInstance) rtExpensePieChartInstance.destroy();
-
-    const labels = [];
-    const values = [];
-    (data.bills || []).forEach(b => {
-      labels.push(b.utilityType);
-      values.push(Number(b.amount || 0));
-    });
-
     rtExpensePieChartInstance = new Chart(ctx2, {
       type: 'doughnut',
       data: {
-        labels: labels,
+        labels: billLabels,
         datasets: [{
-          data: values,
-          backgroundColor: ['#f59e0b', '#0ea5e9', '#8b5cf6', '#10b981'],
+          data: billValues,
+          backgroundColor: ['#f59e0b', '#0ea5e9', '#8b5cf6', '#10b981', '#ec4899', '#6366f1'],
           borderWidth: 2
         }]
       },
@@ -10430,6 +10155,11 @@ function renderRumahTanggaKasKecilTable() {
            (t.recipient || '').toLowerCase().includes(q);
   });
 
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--t3);"><i class="fas fa-wallet" style="margin-right:8px; opacity:0.5;"></i>Belum ada catatan transaksi kas kecil.</td></tr>';
+    return;
+  }
+
   list.forEach((t, i) => {
     const isMasuk = t.type === 'in';
     const amount = Number(t.amount || 0);
@@ -10452,10 +10182,6 @@ function renderRumahTanggaKasKecilTable() {
     </tr>`;
   });
 
-  if (list.length === 0) {
-    rows = `<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--t3);">Belum ada catatan transaksi kas kecil.</td></tr>`;
-  }
-
   tbody.innerHTML = rows;
 }
 
@@ -10464,8 +10190,15 @@ function renderRumahTanggaRABTable() {
   const tbody = document.getElementById('rtRABTableBody');
   if (!tbody) return;
 
+  const list = (data.budgets || []).filter(b => Number(b.allocated || 0) > 0 || Number(b.realized || 0) > 0);
+
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--t3);"><i class="fas fa-file-invoice-dollar" style="margin-right:8px; opacity:0.5;"></i>Belum ada data anggaran & realisasi RAB.</td></tr>';
+    return;
+  }
+
   let rows = '';
-  (data.budgets || []).forEach(b => {
+  list.forEach(b => {
     const allocated = Number(b.allocated || 0);
     const realized = Number(b.realized || 0);
     const sisa = allocated - realized;
@@ -10503,14 +10236,21 @@ function renderRumahTanggaUtilitasTable() {
   const tbody = document.getElementById('rtUtilitasTableBody');
   if (!tbody) return;
 
+  const list = (data.bills || []).filter(b => Number(b.amount || 0) > 0);
+
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--t3);"><i class="fas fa-bolt" style="margin-right:8px; opacity:0.5;"></i>Belum ada data tagihan utilitas kampus.</td></tr>';
+    return;
+  }
+
   let rows = '';
-  (data.bills || []).forEach(b => {
+  list.forEach(b => {
     const isPaid = b.status === 'Lunas';
     const amount = Number(b.amount || 0);
 
     rows += `<tr>
       <td style="font-weight:700; color:var(--t1);">
-        <i class="fas ${b.utilityType.includes('Listrik') ? 'fa-bolt' : b.utilityType.includes('Air') ? 'fa-droplet' : b.utilityType.includes('Internet') ? 'fa-wifi' : 'fa-building'}" style="color:#f59e0b; margin-right:6px;"></i>
+        <i class="fas ${(b.utilityType || '').includes('Listrik') ? 'fa-bolt' : (b.utilityType || '').includes('Air') ? 'fa-droplet' : (b.utilityType || '').includes('Internet') ? 'fa-wifi' : 'fa-building'}" style="color:#f59e0b; margin-right:6px;"></i>
         ${b.utilityType || '-'}
       </td>
       <td><span class="badge" style="background:var(--bg3); color:var(--t1); font-family:monospace; font-size:0.8rem;">${b.customerNo || '-'}</span></td>
@@ -10537,37 +10277,45 @@ function renderRumahTanggaATKTable() {
   const searchInput = document.getElementById('rtATKSearch');
   const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
-  let rows = '';
   const list = (data.inventoryATK || []).filter(a => {
+    const total = Number(a.stockAvailable || a.currentStock || a.stockInitial || 0);
+    if (total === 0 && !q) return false;
     if (!q) return true;
     return (a.name || '').toLowerCase().includes(q) ||
            (a.code || '').toLowerCase().includes(q) ||
            (a.category || '').toLowerCase().includes(q);
   });
 
+  if (list.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--t3);"><i class="fas fa-boxes-stacked" style="margin-right:8px; opacity:0.5;"></i>Belum ada data stok barang ATK.</td></tr>';
+    return;
+  }
+
+  let rows = '';
   list.forEach(a => {
-    const stock = Number(a.stockAvailable || a.stockInitial || 0);
+    const stock = Number(a.stockAvailable || a.currentStock || a.stockInitial || 0);
     const min = Number(a.minStock || 0);
     const price = Number(a.unitPrice || 0);
-    const totalValue = stock * price;
-
-    let statusBadge = '<span class="badge" style="background:#10b98118; color:#10b981;"><i class="fas fa-check"></i> Aman</span>';
-    if (stock <= 0) {
-      statusBadge = '<span class="badge" style="background:#ef444418; color:#ef4444;"><i class="fas fa-triangle-exclamation"></i> Habis</span>';
-    } else if (stock <= min) {
-      statusBadge = '<span class="badge" style="background:#f59e0b18; color:#f59e0b;"><i class="fas fa-circle-exclamation"></i> Menipis</span>';
-    }
+    const totalVal = stock * price;
+    const isAman = stock >= min;
 
     rows += `<tr>
       <td><span class="badge" style="background:#8b5cf618; color:#8b5cf6; font-family:monospace; font-weight:700;">${a.code || '-'}</span></td>
-      <td style="font-weight:700; color:var(--t1);">${a.name || '-'}</td>
+      <td>
+        <div style="font-weight:700; color:var(--t1);">${a.name || '-'}</div>
+        <div style="font-size:0.75rem; color:var(--t3);">Lokasi: ${a.location || '-'}</div>
+      </td>
       <td><span class="badge bg-p2" style="font-size:0.75rem;">${a.category || '-'}</span></td>
-      <td style="text-align:center; font-size:0.8rem;">${a.unit || 'Pcs'}</td>
-      <td style="text-align:center; font-weight:600; color:var(--t3);">${min}</td>
-      <td style="text-align:center; font-weight:800; font-size:1rem; color:${stock <= min ? '#f59e0b' : '#10b981'};">${stock}</td>
+      <td style="font-weight:600;">${a.unit || 'Unit'}</td>
+      <td style="text-align:center; color:var(--t3);">${min}</td>
+      <td style="text-align:center; font-weight:800; color:${isAman ? '#10b981' : '#ef4444'}; font-size:1rem;">${stock}</td>
       <td style="text-align:right;">Rp ${price.toLocaleString('id-ID')}</td>
-      <td style="text-align:right; font-weight:700; color:var(--t1);">Rp ${totalValue.toLocaleString('id-ID')}</td>
-      <td>${statusBadge}</td>
+      <td style="text-align:right; font-weight:700; color:var(--t1);">Rp ${totalVal.toLocaleString('id-ID')}</td>
+      <td>
+        <span class="badge" style="background:${isAman ? '#10b98118' : '#ef444418'}; color:${isAman ? '#10b981' : '#ef4444'}; font-weight:700;">
+          <i class="fas ${isAman ? 'fa-check' : 'fa-triangle-exclamation'}"></i> ${isAman ? 'Aman' : 'Menipis'}
+        </span>
+      </td>
     </tr>`;
   });
 
@@ -10576,27 +10324,21 @@ function renderRumahTanggaATKTable() {
 
 function exportRumahTanggaExcel() {
   const data = getSimRTData();
-  if (typeof XLSX === 'undefined') {
-    alert('Library Excel belum dimuat. Silakan muat ulang halaman.');
-    return;
-  }
-
   const wb = XLSX.utils.book_new();
 
   // Sheet 1: Kas Kecil
-  const kasKecilData = (data.pettyCashTransactions || []).map((t, idx) => ({
-    'No': idx + 1,
-    'Tanggal': t.date,
+  const kasData = (data.pettyCashTransactions || []).map(t => ({
     'No. Voucher': t.voucherNo,
-    'Uraian': t.description,
+    'Tanggal': t.date,
+    'Tipe': t.type === 'in' ? 'Pemasukan' : 'Pengeluaran',
     'Kategori': t.category,
+    'Keterangan': t.description,
     'Pihak Terkait': t.recipient,
-    'Jenis': t.type === 'in' ? 'Debit (Masuk)' : 'Kredit (Keluar)',
     'Nominal': t.amount,
     'No. Bukti': t.evidenceNo,
     'Operator': t.operator
   }));
-  const ws1 = XLSX.utils.json_to_sheet(kasKecilData);
+  const ws1 = XLSX.utils.json_to_sheet(kasData);
   XLSX.utils.book_append_sheet(wb, ws1, 'Kas Kecil');
 
   // Sheet 2: Anggaran RAB
@@ -10632,10 +10374,10 @@ function exportRumahTanggaExcel() {
     'Nama Barang': a.name,
     'Kategori': a.category,
     'Satuan': a.unit,
-    'Stok Tersedia': a.stockAvailable || a.stockInitial,
+    'Stok Tersedia': a.stockAvailable || a.currentStock || a.stockInitial,
     'Stok Min': a.minStock,
     'Harga Satuan': a.unitPrice,
-    'Total Nilai': (a.stockAvailable || a.stockInitial) * a.unitPrice,
+    'Total Nilai': (a.stockAvailable || a.currentStock || a.stockInitial || 0) * (a.unitPrice || 0),
     'Lokasi': a.location
   }));
   const ws4 = XLSX.utils.json_to_sheet(atkData);
@@ -10655,7 +10397,7 @@ async function syncRumahTanggaFromSumber(silent = false) {
   if (sbIcon) sbIcon.className = 'fas fa-spinner fa-spin';
 
   if (!silent && typeof toast === 'function') {
-    toast('Menyambungkan live ke Firebase Cloud Bidang Rumah Tangga...', 'info');
+    toast('Menyambungkan realtime ke Cloud Firestore Bidang Rumah Tangga...', 'info');
   }
 
   try {
@@ -10676,27 +10418,54 @@ async function syncRumahTanggaFromSumber(silent = false) {
     }
 
     if (dbRumahTanggaSumber) {
-      const snap = await dbRumahTanggaSumber.collection('sim_rt_data').doc('main_store').get();
+      const docRef = dbRumahTanggaSumber.collection('sim_rt_database').doc('current_state');
+
+      // 1. Pasang Realtime onSnapshot Listener agar selalu sinkron secara otomatis
+      if (!window._rtCloudListenerAttached) {
+        window._rtCloudListenerAttached = true;
+        docRef.onSnapshot((snapshot) => {
+          if (snapshot.exists) {
+            const docData = snapshot.data();
+            const payload = docData ? (docData.payload || docData) : null;
+            if (payload) {
+              saveSimRTData(payload);
+            }
+          } else {
+            saveSimRTData({ pettyCashTransactions: [], budgets: [], bills: [], inventoryATK: [], cashOpnameReports: [] });
+          }
+          renderRumahTanggaContent();
+        }, (err) => {
+          console.warn('[Sync RT] Realtime listener notice:', err.message);
+        });
+      }
+
+      // 2. Ambil data saat ini
+      const snap = await docRef.get();
       if (snap.exists) {
-        const cloudData = snap.data();
-        if (cloudData) {
-          saveSimRTData(cloudData);
+        const docData = snap.data();
+        const payload = docData ? (docData.payload || docData) : null;
+        if (payload) {
+          saveSimRTData(payload);
         }
+      } else {
+        saveSimRTData({ pettyCashTransactions: [], budgets: [], bills: [], inventoryATK: [], cashOpnameReports: [] });
       }
     }
 
     renderRumahTanggaContent();
     if (!silent && typeof toast === 'function') {
-      toast('Sinkronisasi data Bidang Rumah Tangga berhasil!', 'success');
+      toast('Sinkronisasi Realtime Bidang Rumah Tangga Aktif!', 'success');
     }
   } catch(err) {
-    console.warn('Sync RT fallback to local store:', err);
+    console.warn('Sync RT notice:', err);
     renderRumahTanggaContent();
-    if (!silent && typeof toast === 'function') {
-      toast('Menggunakan data operasional lokal terverifikasi Rumah Tangga AAS.', 'info');
-    }
   } finally {
     if (icon) icon.className = 'fas fa-rotate';
     if (sbIcon) sbIcon.className = 'fas fa-rotate';
   }
 }
+
+// Auto-sync realtime data rumah tangga saat SIMARSIP dimuat
+setTimeout(() => {
+  try { syncRumahTanggaFromSumber(true); } catch(e) {}
+}, 350);

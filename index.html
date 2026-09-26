@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=20260926_rt_sidebar_v6" />
+  <link rel="stylesheet" href="style.css?v=20260927_rt_clean_v7" />
 </head>
 <body>
 
@@ -3560,31 +3560,38 @@
           <div class="stat-card" style="--c:#10b981; border-left: 4px solid #10b981;">
             <div class="sc-icon" style="background:#10b98115; color:#10b981;"><i class="fas fa-wallet"></i></div>
             <div class="sc-label">Saldo Kas Kecil</div>
-            <div class="sc-val" id="rtStatSaldoKas" style="font-size:1.35rem; color:#10b981;">Rp 5.000.000</div>
-            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">Dana Tetap (Imprest) Kasir RT</div>
+            <div class="sc-val" id="rtStatSaldoKas" style="font-size:1.35rem; color:#10b981;">Rp 0</div>
+            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">Kasir Rumah Tangga</div>
           </div>
           <div class="stat-card" style="--c:#3b82f6; border-left: 4px solid #3b82f6;">
             <div class="sc-icon" style="background:#3b82f615; color:#3b82f6;"><i class="fas fa-file-invoice-dollar"></i></div>
             <div class="sc-label">Alokasi Pagu RAB Bulanan</div>
-            <div class="sc-val" id="rtStatAlokasiRAB" style="font-size:1.35rem; color:#3b82f6;">Rp 18.000.000</div>
-            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">8 Pos Anggaran Operasional</div>
+            <div class="sc-val" id="rtStatAlokasiRAB" style="font-size:1.35rem; color:#3b82f6;">Rp 0</div>
+            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">Pagu Anggaran Operasional</div>
           </div>
           <div class="stat-card" style="--c:#f59e0b; border-left: 4px solid #f59e0b;">
             <div class="sc-icon" style="background:#f59e0b15; color:#f59e0b;"><i class="fas fa-bolt"></i></div>
             <div class="sc-label">Tagihan Utilitas Bulan Ini</div>
-            <div class="sc-val" id="rtStatTagihanUtilitas" style="font-size:1.35rem; color:#f59e0b;">Rp 8.450.000</div>
-            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">4 Tagihan (Listrik, PDAM, Net, RW)</div>
+            <div class="sc-val" id="rtStatTagihanUtilitas" style="font-size:1.35rem; color:#f59e0b;">Rp 0</div>
+            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">Listrik, PDAM, Internet, RW</div>
           </div>
           <div class="stat-card" style="--c:#8b5cf6; border-left: 4px solid #8b5cf6;">
             <div class="sc-icon" style="background:#8b5cf615; color:#8b5cf6;"><i class="fas fa-boxes-stacked"></i></div>
             <div class="sc-label">Stok Item ATK Kampus</div>
-            <div class="sc-val" id="rtStatStokATK" style="font-size:1.35rem; color:#8b5cf6;">8 Item (167 Unit)</div>
-            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">Kertas HVS, Spidol, Pulpen, dll</div>
+            <div class="sc-val" id="rtStatStokATK" style="font-size:1.35rem; color:#8b5cf6;">0 Item (0 Unit)</div>
+            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">Barang Habis Pakai</div>
           </div>
         </div>
 
-        <!-- 2 Visual Charts Side-by-Side -->
-        <div class="grid-1-1" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; margin-bottom: 25px;">
+        <!-- Empty state placeholder saat data masih 0 -->
+        <div id="rtChartsEmptyState" class="table-card" style="padding:28px 20px; text-align:center; color:var(--t3); margin-bottom:25px; border:1px dashed var(--b2); display:block;">
+          <i class="fas fa-chart-line" style="font-size:2rem; opacity:0.35; margin-bottom:10px; display:block; color:var(--p1);"></i>
+          <h4 style="margin:0 0 5px 0; color:var(--t1); font-size:0.95rem; font-weight:600;">Belum Ada Transaksi Operasional</h4>
+          <p style="margin:0; font-size:0.8rem; color:var(--t3);">Grafik arus kas dan beban utilitas akan otomatis muncul saat data transaksi dicatat di portal SIM-RT.</p>
+        </div>
+
+        <!-- 2 Visual Charts Side-by-Side (ditampilkan hanya saat data > 0) -->
+        <div class="grid-1-1" id="rtChartsGrid" style="display:none; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; margin-bottom: 25px;">
           <div class="table-card" style="padding:18px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
               <h4 style="font-size:0.95rem; font-weight:700; color:var(--t1); margin:0;">
@@ -4033,7 +4040,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=20260926_rt_sidebar_v6" defer></script>
+<script src="app.js?v=20260927_rt_clean_v7" defer></script>
 
 <!-- Notification Sounds -->
 
