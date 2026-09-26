@@ -221,6 +221,17 @@
     <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_kepegawaian" id="nav-admin_kepegawaian"><i class="fas fa-user-tie" style="color:#10b981"></i><span>Administrasi Kepegawaian</span><em id="badge-admin_kepegawaian">0</em></a>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_keuangan" id="nav-admin_keuangan"><i class="fas fa-coins" style="color:#14b8a6"></i><span>Keuangan Institusi dan Pendidikan</span><em id="badge-admin_keuangan">0</em></a>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="rumah_tangga" id="nav-rumah_tangga"><i class="fas fa-home" style="color:#06b6d4"></i><span>Rumah Tangga</span><em id="badge-rumah_tangga">0</em></a>
+    <ul class="sb-sub-menu" id="dept-rumah_tangga-sub-menu" style="display:none;">
+      <li class="active" onclick="switchRumahTanggaTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#06b6d4;"></i> <span style="flex:1;">Dashboard &amp; Grafik</span></li>
+      <li onclick="switchRumahTanggaTabFromSidebar('kas-kecil', this)"><i class="fas fa-wallet" style="color:#10b981;"></i> <span style="flex:1;">Buku Kas Kecil (Petty Cash)</span></li>
+      <li onclick="switchRumahTanggaTabFromSidebar('rab', this)"><i class="fas fa-file-invoice-dollar" style="color:#3b82f6;"></i> <span style="flex:1;">Anggaran &amp; Realisasi RAB</span></li>
+      <li onclick="switchRumahTanggaTabFromSidebar('utilitas', this)"><i class="fas fa-bolt" style="color:#f59e0b;"></i> <span style="flex:1;">Tagihan &amp; Utilitas Kampus</span></li>
+      <li onclick="switchRumahTanggaTabFromSidebar('atk', this)"><i class="fas fa-boxes-stacked" style="color:#8b5cf6;"></i> <span style="flex:1;">Inventaris &amp; Stok ATK</span></li>
+      <li onclick="switchRumahTanggaTabFromSidebar('cash-opname', this)"><i class="fas fa-money-bill-wave" style="color:#ec4899;"></i> <span style="flex:1;">Berita Acara Cash Opname</span></li>
+      <hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">
+      <li onclick="syncRumahTanggaFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbRumahTanggaSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Rumah Tangga</span></li>
+      <li onclick="window.open('https://bidang-rumah-tangga.web.app', '_blank')" style="color:#06b6d4; font-weight:700;"><i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Web App SIM-RT Utuh</span></li>
+    </ul>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="sarana" id="nav-sarana"><i class="fas fa-tools" style="color:#0ea5e9"></i><span>Sarana dan Prasarana</span><em id="badge-sarana">0</em></a>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="sistem_informasi" id="nav-sistem_informasi"><i class="fas fa-network-wired" style="color:#0284c7"></i><span>Sistem Informasi</span><em id="badge-sistem_informasi">0</em></a>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="humas" id="nav-humas"><i class="fas fa-bullhorn" style="color:#3b82f6"></i><span>Humas</span><em id="badge-humas">0</em></a>
@@ -3501,6 +3512,333 @@
 
     </div>
 
+
+    <!-- ════════════ RUMAH TANGGA & SARANA INTEGRATED MODULES ════════════ -->
+    <div id="rumahTanggaContainer" style="display:none; margin-bottom: 25px;">
+      
+      <!-- Navigasi Tab Modul Rumah Tangga -->
+      <div id="rumahTanggaNavTabs" style="background:var(--card); border:1px solid var(--b1); border-radius:var(--r2); padding:12px 16px; margin-bottom:20px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; box-shadow:var(--sh2);">
+        <div style="font-weight:700; color:#06b6d4; font-size:0.9rem; margin-right:8px; display:flex; align-items:center; gap:6px;">
+          <i class="fas fa-home"></i> Modul Rumah Tangga:
+        </div>
+        <button type="button" class="btn-ghost-sm active" id="btnRumahTanggaTab-dashboard" onclick="switchRumahTanggaTab('dashboard')" style="border-radius:20px; padding:6px 14px; font-weight:600; background:linear-gradient(135deg, #06b6d4, #0891b2); color:#fff;">
+          <i class="fas fa-chart-pie"></i> Dashboard &amp; Grafik
+        </button>
+        <button type="button" class="btn-ghost-sm" id="btnRumahTanggaTab-kas-kecil" onclick="switchRumahTanggaTab('kas-kecil')" style="border-radius:20px; padding:6px 14px; font-weight:600;">
+          <i class="fas fa-wallet"></i> Buku Kas Kecil
+        </button>
+        <button type="button" class="btn-ghost-sm" id="btnRumahTanggaTab-rab" onclick="switchRumahTanggaTab('rab')" style="border-radius:20px; padding:6px 14px; font-weight:600;">
+          <i class="fas fa-file-invoice-dollar"></i> Anggaran (RAB)
+        </button>
+        <button type="button" class="btn-ghost-sm" id="btnRumahTanggaTab-utilitas" onclick="switchRumahTanggaTab('utilitas')" style="border-radius:20px; padding:6px 14px; font-weight:600;">
+          <i class="fas fa-bolt"></i> Tagihan Utilitas
+        </button>
+        <button type="button" class="btn-ghost-sm" id="btnRumahTanggaTab-atk" onclick="switchRumahTanggaTab('atk')" style="border-radius:20px; padding:6px 14px; font-weight:600;">
+          <i class="fas fa-boxes-stacked"></i> Inventaris ATK
+        </button>
+        <button type="button" class="btn-ghost-sm" id="btnRumahTanggaTab-cash-opname" onclick="switchRumahTanggaTab('cash-opname')" style="border-radius:20px; padding:6px 14px; font-weight:600;">
+          <i class="fas fa-money-bill-wave"></i> Cash Opname
+        </button>
+        <button type="button" class="btn-ghost-sm" id="btnRumahTanggaTab-portal" onclick="switchRumahTanggaTab('portal')" style="border-radius:20px; padding:6px 14px; font-weight:600; color:#06b6d4; border:1px solid #06b6d4;">
+          <i class="fas fa-window-maximize"></i> Web App SIM-RT
+        </button>
+
+        <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
+          <button type="button" class="btn-ghost-sm" onclick="syncRumahTanggaFromSumber()" style="background:var(--bg3); border:1px solid var(--b2); color:#06b6d4; font-weight:600; border-radius:6px;" title="Sinkronkan data live dari Firebase bidang-rumah-tangga">
+            <i class="fas fa-rotate" id="rtSyncIcon"></i> Sinkron Data Live
+          </button>
+          <button type="button" class="btn-ghost-sm" onclick="exportRumahTanggaExcel()" style="background:var(--bg3); border:1px solid #10b98140; color:#10b981; font-weight:600; border-radius:6px;" title="Ekspor data operasional Rumah Tangga ke Excel">
+            <i class="fas fa-file-excel"></i> Ekspor Excel
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEW 1: DASHBOARD & GRAFIK -->
+      <div id="rumahTanggaView-dashboard" style="display:block;">
+        <!-- Stat Cards Row -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px;">
+          <div class="stat-card" style="--c:#10b981; border-left: 4px solid #10b981;">
+            <div class="sc-icon" style="background:#10b98115; color:#10b981;"><i class="fas fa-wallet"></i></div>
+            <div class="sc-label">Saldo Kas Kecil</div>
+            <div class="sc-val" id="rtStatSaldoKas" style="font-size:1.35rem; color:#10b981;">Rp 5.000.000</div>
+            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">Dana Tetap (Imprest) Kasir RT</div>
+          </div>
+          <div class="stat-card" style="--c:#3b82f6; border-left: 4px solid #3b82f6;">
+            <div class="sc-icon" style="background:#3b82f615; color:#3b82f6;"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div class="sc-label">Alokasi Pagu RAB Bulanan</div>
+            <div class="sc-val" id="rtStatAlokasiRAB" style="font-size:1.35rem; color:#3b82f6;">Rp 18.000.000</div>
+            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">8 Pos Anggaran Operasional</div>
+          </div>
+          <div class="stat-card" style="--c:#f59e0b; border-left: 4px solid #f59e0b;">
+            <div class="sc-icon" style="background:#f59e0b15; color:#f59e0b;"><i class="fas fa-bolt"></i></div>
+            <div class="sc-label">Tagihan Utilitas Bulan Ini</div>
+            <div class="sc-val" id="rtStatTagihanUtilitas" style="font-size:1.35rem; color:#f59e0b;">Rp 8.450.000</div>
+            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">4 Tagihan (Listrik, PDAM, Net, RW)</div>
+          </div>
+          <div class="stat-card" style="--c:#8b5cf6; border-left: 4px solid #8b5cf6;">
+            <div class="sc-icon" style="background:#8b5cf615; color:#8b5cf6;"><i class="fas fa-boxes-stacked"></i></div>
+            <div class="sc-label">Stok Item ATK Kampus</div>
+            <div class="sc-val" id="rtStatStokATK" style="font-size:1.35rem; color:#8b5cf6;">8 Item (167 Unit)</div>
+            <div style="font-size:0.75rem; color:var(--t3); margin-top:4px;">Kertas HVS, Spidol, Pulpen, dll</div>
+          </div>
+        </div>
+
+        <!-- 2 Visual Charts Side-by-Side -->
+        <div class="grid-1-1" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; margin-bottom: 25px;">
+          <div class="table-card" style="padding:18px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+              <h4 style="font-size:0.95rem; font-weight:700; color:var(--t1); margin:0;">
+                <i class="fas fa-chart-line" style="color:#06b6d4; margin-right:6px;"></i> Arus Kas Masuk vs Beban Operasional
+              </h4>
+              <span class="badge" style="background:#06b6d418; color:#06b6d4; font-weight:600; font-size:0.75rem;">TA 2026</span>
+            </div>
+            <div style="position:relative; height:280px; width:100%;">
+              <canvas id="rtCashFlowChart"></canvas>
+            </div>
+          </div>
+
+          <div class="table-card" style="padding:18px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+              <h4 style="font-size:0.95rem; font-weight:700; color:var(--t1); margin:0;">
+                <i class="fas fa-chart-pie" style="color:#f59e0b; margin-right:6px;"></i> Komposisi Beban Utilitas &amp; Belanja RT
+              </h4>
+              <span class="badge" style="background:#f59e0b18; color:#f59e0b; font-weight:600; font-size:0.75rem;">September 2026</span>
+            </div>
+            <div style="position:relative; height:280px; width:100%;">
+              <canvas id="rtExpensePieChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 2: KAS KECIL -->
+      <div id="rumahTanggaView-kas-kecil" style="display:none;">
+        <div class="table-card" style="padding:20px;">
+          <div class="table-top-row" style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h3 style="margin:0; font-size:1.1rem; color:var(--t1); font-weight:700;">
+                <i class="fas fa-wallet" style="color:#10b981; margin-right:8px;"></i> Buku Kas Kecil (Petty Cash Imprest Fund)
+              </h3>
+              <p style="font-size:0.8rem; color:var(--t3); margin:3px 0 0 0;">Pencatatan pengeluaran harian &amp; penggantian saldo kas kecil bidang rumah tangga</p>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <div class="search-field" style="max-width:250px;">
+                <i class="fas fa-search"></i>
+                <input type="text" id="rtKasKecilSearch" placeholder="Cari transaksi kas kecil..." oninput="renderRumahTanggaKasKecilTable()" />
+              </div>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" style="width:100%;">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Tanggal</th>
+                  <th>No. Voucher</th>
+                  <th>Uraian Transaksi</th>
+                  <th>Kategori</th>
+                  <th style="text-align:right;">Pemasukan (Rp)</th>
+                  <th style="text-align:right;">Pengeluaran (Rp)</th>
+                  <th style="text-align:right;">Saldo (Rp)</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="rtKasKecilTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 3: ANGGARAN & REALISASI (RAB) -->
+      <div id="rumahTanggaView-rab" style="display:none;">
+        <div class="table-card" style="padding:20px;">
+          <div class="table-top-row" style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h3 style="margin:0; font-size:1.1rem; color:var(--t1); font-weight:700;">
+                <i class="fas fa-file-invoice-dollar" style="color:#3b82f6; margin-right:8px;"></i> Rencana Anggaran Biaya (RAB) &amp; Realisasi
+              </h3>
+              <p style="font-size:0.8rem; color:var(--t3); margin:3px 0 0 0;">Monitoring pagu, realisasi serapan anggaran, dan sisa pagu operasional Rumah Tangga</p>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" style="width:100%;">
+              <thead>
+                <tr>
+                  <th>Kode Akun</th>
+                  <th>Pos Anggaran / Program Kegiatan</th>
+                  <th>Kategori Biaya</th>
+                  <th>Periode</th>
+                  <th style="text-align:right;">Pagu Anggaran</th>
+                  <th style="text-align:right;">Realisasi</th>
+                  <th style="text-align:right;">Sisa Pagu</th>
+                  <th style="text-align:center;">Serapan</th>
+                </tr>
+              </thead>
+              <tbody id="rtRABTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 4: TAGIHAN & UTILITAS KAMPUS -->
+      <div id="rumahTanggaView-utilitas" style="display:none;">
+        <div class="table-card" style="padding:20px;">
+          <div class="table-top-row" style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h3 style="margin:0; font-size:1.1rem; color:var(--t1); font-weight:700;">
+                <i class="fas fa-bolt" style="color:#f59e0b; margin-right:8px;"></i> Tagihan Utilitas &amp; Operasional Gedung Kampus
+              </h3>
+              <p style="font-size:0.8rem; color:var(--t3); margin:3px 0 0 0;">Rekapitulasi rekening PLN, PDAM, Internet, dan retribusi lingkungan kampus AAS</p>
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" style="width:100%;">
+              <thead>
+                <tr>
+                  <th>Jenis Utilitas</th>
+                  <th>No. Sambungan / ID Pelanggan</th>
+                  <th>Penyedia / Vendor</th>
+                  <th style="text-align:right;">Jumlah Tagihan</th>
+                  <th>Jatuh Tempo</th>
+                  <th>Metode Bayar</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="rtUtilitasTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 5: INVENTARIS & STOK ATK -->
+      <div id="rumahTanggaView-atk" style="display:none;">
+        <div class="table-card" style="padding:20px;">
+          <div class="table-top-row" style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <h3 style="margin:0; font-size:1.1rem; color:var(--t1); font-weight:700;">
+                <i class="fas fa-boxes-stacked" style="color:#8b5cf6; margin-right:8px;"></i> Kartu Stok &amp; Inventaris ATK Kampus
+              </h3>
+              <p style="font-size:0.8rem; color:var(--t3); margin:3px 0 0 0;">Monitoring posisi stok barang habis pakai administrasi, perkuliahan, dan formulir ujian</p>
+            </div>
+            <div class="search-field" style="max-width:250px;">
+              <i class="fas fa-search"></i>
+              <input type="text" id="rtATKSearch" placeholder="Cari ATK..." oninput="renderRumahTanggaATKTable()" />
+            </div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="data-table" style="width:100%;">
+              <thead>
+                <tr>
+                  <th>Kode ATK</th>
+                  <th>Nama Barang</th>
+                  <th>Kategori</th>
+                  <th>Satuan</th>
+                  <th style="text-align:center;">Stok Min</th>
+                  <th style="text-align:center;">Stok Tersedia</th>
+                  <th style="text-align:right;">Harga Satuan</th>
+                  <th style="text-align:right;">Total Nilai</th>
+                  <th>Status Stok</th>
+                </tr>
+              </thead>
+              <tbody id="rtATKTableBody">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 6: CASH OPNAME FISIK -->
+      <div id="rumahTanggaView-cash-opname" style="display:none;">
+        <div class="table-card" style="padding:25px;">
+          <div style="border-bottom:2px solid var(--b1); padding-bottom:15px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h3 style="margin:0; font-size:1.15rem; color:var(--t1); font-weight:800;">
+                <i class="fas fa-money-bill-wave" style="color:#ec4899; margin-right:8px;"></i> BERITA ACARA CASH OPNAME KAS KECIL
+              </h3>
+              <p style="font-size:0.8rem; color:var(--t3); margin:3px 0 0 0;">Akademi Akupunktur Surabaya • Verifikasi Fisik Uang Kas per Tanggal Berjalan</p>
+            </div>
+            <span class="badge" style="background:#10b98120; color:#10b981; font-weight:700; font-size:0.85rem; padding:6px 12px; border-radius:20px;">
+              <i class="fas fa-check-circle"></i> STATUS: BALANCED (Rp 0 SELISIH)
+            </span>
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:25px;">
+            <!-- Rincian Fisik Uang Kertas -->
+            <div style="background:var(--bg2); border:1px solid var(--b1); border-radius:var(--r2); padding:16px;">
+              <h4 style="margin:0 0 12px 0; font-size:0.9rem; color:var(--t1); font-weight:700;">
+                <i class="fas fa-money-bill" style="color:#10b981;"></i> Rincian Pecahan Uang Kertas
+              </h4>
+              <table style="width:100%; font-size:0.85rem; border-collapse:collapse;">
+                <tr style="border-bottom:1px solid var(--b1);"><td style="padding:6px 0;">Rp 100.000</td><td style="text-align:center;">30 Lembar</td><td style="text-align:right; font-weight:600;">Rp 3.000.000</td></tr>
+                <tr style="border-bottom:1px solid var(--b1);"><td style="padding:6px 0;">Rp 50.000</td><td style="text-align:center;">20 Lembar</td><td style="text-align:right; font-weight:600;">Rp 1.000.000</td></tr>
+                <tr style="border-bottom:1px solid var(--b1);"><td style="padding:6px 0;">Rp 20.000</td><td style="text-align:center;">25 Lembar</td><td style="text-align:right; font-weight:600;">Rp 500.000</td></tr>
+                <tr style="border-bottom:1px solid var(--b1);"><td style="padding:6px 0;">Rp 10.000</td><td style="text-align:center;">30 Lembar</td><td style="text-align:right; font-weight:600;">Rp 300.000</td></tr>
+                <tr style="border-bottom:1px solid var(--b1);"><td style="padding:6px 0;">Rp 5.000</td><td style="text-align:center;">30 Lembar</td><td style="text-align:right; font-weight:600;">Rp 150.000</td></tr>
+                <tr style="border-bottom:1px solid var(--b1);"><td style="padding:6px 0;">Rp 2.000</td><td style="text-align:center;">20 Lembar</td><td style="text-align:right; font-weight:600;">Rp 40.000</td></tr>
+                <tr><td style="padding:6px 0;">Rp 1.000</td><td style="text-align:center;">10 Lembar</td><td style="text-align:right; font-weight:600;">Rp 10.000</td></tr>
+                <tr style="border-top:2px solid var(--b1); font-weight:700;"><td colspan="2" style="padding:8px 0;">Subtotal Uang Kertas:</td><td style="text-align:right; color:#10b981;">Rp 5.000.000</td></tr>
+              </table>
+            </div>
+
+            <!-- Rekapitulasi Kas & Tanda Tangan -->
+            <div style="background:var(--bg2); border:1px solid var(--b1); border-radius:var(--r2); padding:16px; display:flex; flex-direction:column; justify-content:space-between;">
+              <div>
+                <h4 style="margin:0 0 12px 0; font-size:0.9rem; color:var(--t1); font-weight:700;">
+                  <i class="fas fa-scale-balanced" style="color:#3b82f6;"></i> Rekonsiliasi &amp; Berita Acara
+                </h4>
+                <div style="font-size:0.85rem; line-height:1.8;">
+                  <div style="display:flex; justify-content:space-between;"><span>Saldo Menurut Buku Kas:</span><strong>Rp 5.000.000</strong></div>
+                  <div style="display:flex; justify-content:space-between;"><span>Total Fisik Uang di Brankas:</span><strong>Rp 5.000.000</strong></div>
+                  <div style="display:flex; justify-content:space-between; color:#10b981; font-weight:700; border-top:1px dashed var(--b1); padding-top:4px;">
+                    <span>Selisih Kas (Varian):</span><span>Rp 0 (NIHIL / COCOK)</span>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top:20px; padding-top:15px; border-top:1px solid var(--b1); display:grid; grid-template-columns: 1fr 1fr; gap:15px; text-align:center; font-size:0.8rem;">
+                <div>
+                  <div style="color:var(--t3);">Dibuat / Dihitung Oleh:</div>
+                  <div style="height:45px;"></div>
+                  <strong style="display:block;">Dewi Anggraini, A.Md.</strong>
+                  <span style="color:var(--t3); font-size:0.75rem;">Kasir / Pengelola RT</span>
+                </div>
+                <div>
+                  <div style="color:var(--t3);">Diverifikasi Oleh:</div>
+                  <div style="height:45px;"></div>
+                  <strong style="display:block;">Sugeng Waluyo, S.E.</strong>
+                  <span style="color:var(--t3); font-size:0.75rem;">Bag. Keuangan &amp; Administrasi</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW 7: WEB APP SIM-RT UTUH -->
+      <div id="rumahTanggaView-portal" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div>
+            <h4 style="margin:0; font-size:1rem; font-weight:700; color:var(--t1);">
+              <i class="fas fa-window-maximize" style="color:#06b6d4; margin-right:8px;"></i> Web App SIM-RT AAS Utuh
+            </h4>
+            <p style="margin:2px 0 0 0; font-size:0.8rem; color:var(--t3);">Akses langsung portal mandiri Sistem Informasi Rumah Tangga Akademi Akupunktur Surabaya</p>
+          </div>
+          <button type="button" class="btn-ghost-sm" onclick="window.open('https://bidang-rumah-tangga.web.app', '_blank')" style="color:#06b6d4; border:1px solid #06b6d4; font-weight:600;">
+            <i class="fas fa-up-right-from-square"></i> Buka Layar Penuh
+          </button>
+        </div>
+        <div style="width:100%; height:860px; border:1px solid var(--b1); border-radius:var(--r3); overflow:hidden; background:var(--bg2); box-shadow:var(--sh2);">
+          <iframe id="rumahTanggaIframe" src="" width="100%" height="100%" style="border:none;" title="Portal Bidang Rumah Tangga AAS"></iframe>
+        </div>
+      </div>
+
+    </div>
 
     <!-- Arsip Table -->
     <div id="deptTableContainer" class="table-card">
