@@ -686,103 +686,71 @@ const DEPT_JENIS = {
     ],
     "sistem_pendidikan": [
         {
-            "group": "Visi, Misi, Tujuan, dan Strategi",
+            "group": "PDDikti & Neo Feeder",
             "items": [
-                {
-                    "val": "k1_1",
-                    "label": "Laporan kegiatan atau notulen rapat pada saat perumusan visi, misi, dan unggulan Program Studi yang berasal dari visi, misi, dan unggulan fakultas dan universitas. Visi, misi, dan unggulan tersebut mencakup peran UPPS dalam meningkatkan derajat kesehatan masyarakat."
-                },
-                {
-                    "val": "k1_2",
-                    "label": "Bukti kegiatan keterlibatan pemangku kepentingan internal (mahasiswa, dosen, tendik, pengelola) dan eksternal (lulusan, pengguna lulusan, mitra, pakar, organisasi profesi dan pemerintah) seperti daftar hadir, rekaman foto/video pada saat pertemuan."
-                },
-                {
-                    "val": "k1_3",
-                    "label": "Media yang digunakan untuk publikasi/sosialisasi visi, misi, dan unggulan."
-                },
-                {
-                    "val": "k1_4",
-                    "label": "Dokumen rencana strategi (renstra) dan rencana operasional (renop)"
-                }
+                { "val": "pddikti_feeder", "label": "Laporan Sinkronisasi PDDikti Feeder & Validasi Mahasiswa" },
+                { "val": "pddikti_akm", "label": "Aktivitas Kuliah Mahasiswa (AKM) & KRS Feeder" },
+                { "val": "pddikti_krs_khs", "label": "Transkrip Nilai & KHS Feeder Kemendikbudristek" }
             ]
         },
         {
-            "group": "Kurikulum",
+            "group": "SISTER & BKD Dosen",
             "items": [
-                {
-                    "val": "k2_8",
-                    "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
-                }
+                { "val": "sister_bkd", "label": "Rekap Beban Kerja Dosen (BKD) SISTER Dikti" },
+                { "val": "sister_biodata", "label": "Validasi Biodata, Jabatan Fungsional & NIDN Dosen" },
+                { "val": "sister_tri_dharma", "label": "Dokumen Tri Dharma PT SISTER Dosen AAS" }
             ]
         },
         {
-            "group": "Penjaminan Mutu",
+            "group": "PIN, PISN & Ijazah SIVIL",
             "items": [
-                {
-                    "val": "k7_1",
-                    "label": "Sistem penjaminan mutu: struktur dan tupoksi."
-                },
-                {
-                    "val": "k7_2",
-                    "label": "Dokumen mutu: kebijakan, standar, manual, formulir, dan dokumen pendukung lainnya."
-                },
-                {
-                    "val": "k7_3",
-                    "label": "Laporan audit mutu internal."
-                },
-                {
-                    "val": "k7_4",
-                    "label": "Laporan rapat tinjauan manajemen."
-                },
-                {
-                    "val": "k7_5",
-                    "label": "Sumber daya yang dialokasikan untuk penjaminan mutu."
-                },
-                {
-                    "val": "k7_6",
-                    "label": "Notulen/risalah rapat dan laporan keterlibatan pemangku kepentingan eksternal dalam sistem penjaminan mutu dan strategi keselamatan pasien."
-                },
-                {
-                    "val": "k7_7",
-                    "label": "Dokumen tindak lanjut atas umpan balik penjaminan mutu untuk peningkatan mutu berkelanjutan."
-                },
-                {
-                    "val": "k7_8",
-                    "label": "Pedoman pelaksanaan RCA (Root Cause Analysis) meliputi a. Identifikasi Masalah, b. Pengumpulan Data, c. Analisis Penyebab, d. Identifikasi Akar Penyebab, e. Pengembangan Solusi, f. Implementasi Solusi, g. Pemantauan dan Tindak Lanjut"
-                },
-                {
-                    "val": "k7_9",
-                    "label": "Kebijakan dan prosedur mitigasi kasus risiko."
-                }
+                { "val": "pin_pisn", "label": "Reservasi Penomoran Ijazah Nasional (PIN) & PISN" },
+                { "val": "sivil_verifikasi", "label": "Verifikasi Ijazah Elektronik (SIVIL Kemendiktisaintek)" },
+                { "val": "skpi_nasional", "label": "Surat Keterangan Pendamping Ijazah (SKPI) Nasional" }
             ]
         },
         {
-            "group": "Tata Kelola dan Administrasi",
+            "group": "SIMKATMAWA Dikti",
             "items": [
-                {
-                    "val": "k8_1",
-                    "label": "Bagan organisasi pengelolaan dan administrasi beserta tupoksi."
-                },
-                {
-                    "val": "k8_3",
-                    "label": "Laporkan tinjauan kinerja institusi/UPPS"
-                },
-                {
-                    "val": "k8_4",
-                    "label": "Dokumen identifikasi dan mitigasi risiko."
-                },
-                {
-                    "val": "k8_5",
-                    "label": "Laporan/risalah rapat keterlibatan mahasiswa dan dosen dalam pengambilan keputusan dan fungsi UPPS"
-                },
-                {
-                    "val": "k8_6",
-                    "label": "Standar prosedur operasional (SPO) untuk proses pengambilan keputusan."
-                },
-                {
-                    "val": "k8_8",
-                    "label": "Dokumen indikator kinerja utama dan kinerja tambahan."
-                }
+                { "val": "simkatmawa_lapor", "label": "Laporan Kinerja Tata Kelola Kemahasiswaan SIMKATMAWA" },
+                { "val": "simkatmawa_prestasi", "label": "Bukti Prestasi & Kegiatan Mandiri Mahasiswa Dikti" }
+            ]
+        },
+        {
+            "group": "Capaian IKU LLDIKTI VII",
+            "items": [
+                { "val": "iku_lldikti", "label": "Pelaporan Capaian 8 Indikator Kinerja Utama (IKU)" },
+                { "val": "monev_lldikti", "label": "Monitoring & Evaluasi Fasilitasi LLDIKTI Wilayah VII" }
+            ]
+        },
+        {
+            "group": "Manajemen Server & Cloud",
+            "items": [
+                { "val": "server_cloud", "label": "Laporan Uptime Server & Cloud Infrastructure AAS" },
+                { "val": "domain_ssl", "label": "DNS Management, Domain & Sertifikat Keamanan SSL" }
+            ]
+        },
+        {
+            "group": "Keamanan Siber & Backup",
+            "items": [
+                { "val": "backup_db", "label": "Log Backup Database Mingguan & Bulanan Cloud" },
+                { "val": "keamanan_siber", "label": "Audit Keamanan Informasi & Akses Jaringan Kampus" }
+            ]
+        },
+        {
+            "group": "Akreditasi & SPMI Bidang TI",
+            "items": [
+                { "val": "borang_ti_lamptkes", "label": "Dokumen Sistem Informasi Akreditasi LAM-PTKes (Kriteria 6)" },
+                { "val": "borang_ti_banpt", "label": "Borang Standar 5 & Kriteria 6 BAN-PT" },
+                { "val": "spmi_ti", "label": "SOP & Kebijakan Tata Kelola SI Pendidikan Tinggi" }
+            ]
+        },
+        {
+            "group": "Dokumen Regulasi & Lainnya",
+            "items": [
+                { "val": "sk_operator", "label": "SK Penugasan Operator PDDIKTI & Admin Sistem AAS" },
+                { "val": "panduan_sistem", "label": "Manual Book & Panduan Penggunaan Sistem Informasi" },
+                { "val": "regulasi_ti", "label": "Peraturan & Kebijakan Tata Kelola Sistem Informasi AAS" }
             ]
         }
     ],
@@ -921,7 +889,6 @@ let currentLabTab = 'dashboard';
 let currentSaranaTab = 'dashboard';
 let currentPengabdianTab = 'dashboard';
 let currentPengabdianAY = '2025/2026 Genap';
-let currentSistemPendidikanTab = 'portal';
 
 function renderDeptSubmenus() {
   document.querySelectorAll('.sb-link[data-page="dept"]').forEach(link => {
@@ -1083,24 +1050,6 @@ function renderDeptSubmenus() {
       ul.innerHTML += `<li onclick="window.open('https://bidang-pendidikan.web.app', '_blank')" style="color:#8b5cf6; font-weight:600;">
         <i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Buka Portal di Tab Baru</span>
       </li>`;
-    } else if (deptId === 'sistem_pendidikan') {
-      const spSubItems = [
-        { id: 'portal', label: 'Web App SIM-TI AAS Utuh', icon: 'fas fa-window-maximize', isCat: false },
-        { id: 'dashboard', label: 'Ringkasan & Statistik', icon: 'fas fa-chart-pie', isCat: false },
-      ];
-      spSubItems.forEach(item => {
-        let isActive = (currentSistemPendidikanTab === item.id && currentDept === 'sistem_pendidikan') ? 'active' : '';
-        ul.innerHTML += `<li class="${isActive}" onclick="switchSistemPendidikanTabFromSidebar('${item.id}', this)">
-          <i class="${item.icon}"></i> <span style="flex:1;">${item.label}</span>
-        </li>`;
-      });
-      ul.innerHTML += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
-      ul.innerHTML += `<li onclick="reloadSistemPendidikanFrame()" style="color:#22c55e; font-weight:600;">
-        <i class="fas fa-rotate"></i> <span style="flex:1;">Muat Ulang Portal</span>
-      </li>`;
-      ul.innerHTML += `<li onclick="window.open('https://bidang-administrasi-sistem-informasi-pendidikan-tinggi.adminpendidikanaas-operator.workers.dev', '_blank')" style="color:#d946ef; font-weight:600;">
-        <i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Buka Portal di Tab Baru</span>
-      </li>`;
     } else if (DEPT_JENIS[deptId]) {
       let countAll = arsip.filter(a => a.bidang === deptId).length;
       ul.innerHTML += `<li class="${currentDeptSub === 'all' && currentDept === deptId ? 'active' : ''}" onclick="switchDeptSub('all', this, '${deptId}')">
@@ -1119,6 +1068,13 @@ function renderDeptSubmenus() {
           <i class="fas fa-caret-right"></i> ${group.group} <span class="badge bg-p2" style="float:right; margin-top:2px;">${count}</span>
         </li>`;
       });
+
+      if (deptId === 'sistem_pendidikan') {
+        ul.innerHTML += `<hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">`;
+        ul.innerHTML += `<li onclick="window.open('https://bidang-administrasi-sistem-informasi-pendidikan-tinggi.adminpendidikanaas-operator.workers.dev', '_blank')" style="color:#d946ef; font-weight:600;">
+          <i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Web App SIM-TI Utuh (Tab Baru)</span>
+        </li>`;
+      }
     }
     
     link.parentNode.insertBefore(ul, link.nextSibling);
@@ -2009,8 +1965,7 @@ function renderDeptPage(dept) {
     {lb:'Selesai',val:all.filter(a=>a.status==='selesai').length,ic:'check-circle',c:'#3b82f6'},
   ].map(c=>`<div class="stat-card" style="--c:${c.c}"><div class="sc-icon"><i class="fas fa-${c.ic}"></i></div><div class="sc-label">${c.lb}</div><div class="sc-val">${c.val}</div></div>`).join('');
 
-  document.getElementById('deptChartSub').textContent=`TA ${currentAY}`;
-  if (dept !== 'laboratorium' && dept !== 'sarana' && dept !== 'pengabdian' && dept !== 'sistem_pendidikan') {
+  if (dept !== 'laboratorium' && dept !== 'sarana' && dept !== 'pengabdian') {
     initDeptCharts(dept,all,d.color);
   }
 
@@ -2143,27 +2098,6 @@ function renderDeptPage(dept) {
     if (dSdm) dSdm.style.display = 'none';
     switchPendidikanTab(currentPendidikanTab || 'dashboard');
     renderPendidikanContent();
-  } else if (dept === 'sistem_pendidikan') {
-    if (kmhsContainer) kmhsContainer.style.display = 'none';
-    if (iframeContainer) iframeContainer.style.display = 'none';
-    if (labContainer) labContainer.style.display = 'none';
-    if (saranaContainer) saranaContainer.style.display = 'none';
-    if (pengabdianContainer) pengabdianContainer.style.display = 'none';
-    if (ketenagaanContainer) ketenagaanContainer.style.display = 'none';
-    const akC = document.getElementById('akademikContainer');
-    if (akC) akC.style.display = 'none';
-    const pendC = document.getElementById('pendidikanContainer');
-    if (pendC) pendC.style.display = 'none';
-    const spC = document.getElementById('sistemPendidikanContainer');
-    if (spC) spC.style.display = 'block';
-    if (deptArsipCharts) deptArsipCharts.style.display = 'none';
-    if (statRow) statRow.style.display = 'none';
-    if (deptTableContainer) deptTableContainer.style.display = 'none';
-    const dMhs = document.getElementById('deptMhsContainer');
-    if (dMhs) dMhs.style.display = 'none';
-    const dSdm = document.getElementById('deptSdmContainer');
-    if (dSdm) dSdm.style.display = 'none';
-    switchSistemPendidikanTab(currentSistemPendidikanTab || 'portal');
   } else {
     const akC = document.getElementById('akademikContainer');
     if (akC) akC.style.display = 'none';
@@ -9835,85 +9769,3 @@ setTimeout(() => {
   try { syncPendidikanFromSumber(true); } catch(e) {}
 }, 350);
 
-/* ═══════════════════════════════════════════════════════════════
-   BIDANG ADMINISTRASI SISTEM INFORMASI PENDIDIKAN TINGGI
-   ═══════════════════════════════════════════════════════════════ */
-
-function switchSistemPendidikanTab(tabKey) {
-  currentSistemPendidikanTab = tabKey || 'portal';
-
-  const spContainer = document.getElementById('sistemPendidikanContainer');
-  if (spContainer) spContainer.style.display = 'block';
-
-  const views = [
-    { key: 'portal', id: 'sistemPendidikanView-portal' },
-    { key: 'dashboard', id: 'sistemPendidikanView-dashboard' }
-  ];
-
-  views.forEach(v => {
-    const el = document.getElementById(v.id);
-    if (el) el.style.display = (v.key === currentSistemPendidikanTab) ? 'block' : 'none';
-
-    const btn = document.getElementById(`btnSistemPendidikanTab-${v.key}`);
-    if (btn) {
-      if (v.key === currentSistemPendidikanTab) {
-        btn.classList.add('active');
-        btn.style.background = 'linear-gradient(135deg, #d946ef, #a21caf)';
-        btn.style.color = '#fff';
-        btn.style.fontWeight = '700';
-      } else {
-        btn.classList.remove('active');
-        btn.style.background = 'transparent';
-        btn.style.color = 'var(--t1)';
-        btn.style.fontWeight = '600';
-      }
-    }
-  });
-
-  // Highlight active sidebar item
-  const sbMenu = document.getElementById('submenu-sistem_pendidikan');
-  if (sbMenu) {
-    const lis = sbMenu.querySelectorAll('li');
-    lis.forEach(li => {
-      const onclickAttr = li.getAttribute('onclick') || '';
-      if (onclickAttr.includes(`'${currentSistemPendidikanTab}'`)) {
-        li.classList.add('active');
-      } else if (!onclickAttr.includes('window.open') && !onclickAttr.includes('reloadSistemPendidikan')) {
-        li.classList.remove('active');
-      }
-    });
-  }
-
-  // Load iframe if portal tab
-  if (currentSistemPendidikanTab === 'portal') {
-    const iframe = document.getElementById('sistemPendidikanIframe');
-    if (iframe && !iframe.src) {
-      iframe.src = 'https://bidang-administrasi-sistem-informasi-pendidikan-tinggi.adminpendidikanaas-operator.workers.dev';
-    }
-  }
-}
-
-function switchSistemPendidikanTabFromSidebar(tabKey, el) {
-  if (typeof currentPage === 'undefined' || currentPage !== 'dept' || currentDept !== 'sistem_pendidikan') {
-    const link = document.getElementById('nav-sistem_pendidikan');
-    if (link && typeof setActiveNav === 'function') setActiveNav(link);
-    currentDept = 'sistem_pendidikan';
-    if (typeof showPage === 'function') showPage('dept');
-  }
-  switchSistemPendidikanTab(tabKey);
-
-  const sbMenu = document.getElementById('submenu-sistem_pendidikan');
-  if (sbMenu && el) {
-    sbMenu.querySelectorAll('li').forEach(li => li.classList.remove('active'));
-    el.classList.add('active');
-  }
-}
-
-function reloadSistemPendidikanFrame() {
-  const iframe = document.getElementById('sistemPendidikanIframe');
-  if (iframe) {
-    const url = 'https://bidang-administrasi-sistem-informasi-pendidikan-tinggi.adminpendidikanaas-operator.workers.dev';
-    iframe.src = url;
-    try { iframe.contentWindow?.location.reload(); } catch(e) { iframe.src = url; }
-  }
-}

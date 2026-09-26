@@ -198,20 +198,7 @@
     </ul>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="administrasi" id="nav-administrasi"><i class="fas fa-folder-open" style="color:#a855f7"></i><span>Administrasi</span><em id="badge-administrasi">0</em></a>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="sistem_pendidikan" id="nav-sistem_pendidikan"><i class="fas fa-laptop-code" style="color:#d946ef"></i><span>Sistem Informasi Pendidikan Tinggi</span><em id="badge-sistem_pendidikan">0</em></a>
-    <ul class="sb-sub-menu" id="dept-sistem_pendidikan-sub-menu" style="display:none;">
-      <li class="active" onclick="switchSistemPendidikanTabFromSidebar('portal', this)" style="color:#d946ef; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Portal SIM-TI AAS Utuh</span></li>
-      <li onclick="switchSistemPendidikanTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#d946ef;"></i> <span style="flex:1;">Ringkasan &amp; Statistik</span></li>
-      <li onclick="selectSistemPendidikanCategoryFromSidebar('PDDikti & Neo Feeder', this)"><i class="fas fa-database" style="color:#3b82f6;"></i> <span style="flex:1;">PDDikti &amp; Neo Feeder</span></li>
-      <li onclick="selectSistemPendidikanCategoryFromSidebar('SISTER & BKD Dosen', this)"><i class="fas fa-users-gear" style="color:#10b981;"></i> <span style="flex:1;">SISTER &amp; BKD Dosen</span></li>
-      <li onclick="selectSistemPendidikanCategoryFromSidebar('PIN & PISN Ijazah', this)"><i class="fas fa-graduation-cap" style="color:#f59e0b;"></i> <span style="flex:1;">PIN &amp; PISN Ijazah</span></li>
-      <li onclick="selectSistemPendidikanCategoryFromSidebar('Infrastruktur Jaringan & Server', this)"><i class="fas fa-server" style="color:#ef4444;"></i> <span style="flex:1;">Server &amp; Jaringan</span></li>
-      <li onclick="selectSistemPendidikanCategoryFromSidebar('Aplikasi & Sistem Informasi PT', this)"><i class="fas fa-laptop-code" style="color:#8b5cf6;"></i> <span style="flex:1;">Aplikasi &amp; Sistem PT</span></li>
-      <li onclick="selectSistemPendidikanCategoryFromSidebar('SPMI & Dokumen Mutu TI', this)"><i class="fas fa-shield-check" style="color:#ec4899;"></i> <span style="flex:1;">SPMI &amp; Mutu TI</span></li>
-      <hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">
-      <li onclick="window.open('https://bidang-administrasi-sistem-informasi-pendidikan-tinggi.adminpendidikanaas-operator.workers.dev', '_blank')" style="color:#d946ef; font-weight:600;">
-        <i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Buka Portal di Tab Baru</span>
-      </li>
-    </ul>
+
     <a class="sb-link dept" href="#" data-page="dept" data-dept="laboratorium" id="nav-laboratorium"><i class="fas fa-vials" style="color:#ec4899"></i><span>Laboratorium</span><em id="badge-laboratorium">0</em></a>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="perpustakaan" id="nav-perpustakaan"><i class="fas fa-book" style="color:#f43f5e"></i><span>Perpustakaan</span><em id="badge-perpustakaan">0</em></a>
     <a class="sb-link dept" href="#" data-page="dept" data-dept="penelitian_pelatihan" id="nav-penelitian_pelatihan"><i class="fas fa-microscope" style="color:#f97316"></i><span>Penelitian dan Pelatihan</span><em id="badge-penelitian_pelatihan">0</em></a>
@@ -3514,54 +3501,6 @@
 
     </div>
 
-    <!-- ════════════ BIDANG ADMINISTRASI SISTEM INFORMASI PENDIDIKAN TINGGI (SIM-TI AAS) ════════════ -->
-    <div id="sistemPendidikanContainer" style="display:none; margin-bottom: 25px;">
-      
-      <!-- Navigasi Tab Modul Sistem Informasi Pendidikan Tinggi AAS -->
-      <div id="sistemPendidikanNavTabs" style="background:var(--card); border:1px solid var(--b1); border-radius:var(--r2); padding:12px 16px; margin-bottom:20px; display:flex; flex-wrap:wrap; gap:8px; align-items:center; box-shadow:var(--sh2);">
-        <div style="font-weight:700; color:#d946ef; font-size:0.9rem; margin-right:8px; display:flex; align-items:center; gap:6px;">
-          <i class="fas fa-laptop-code" style="color:#d946ef;"></i> Modul Administrasi SI PT:
-        </div>
-        <button type="button" class="btn-ghost-sm active" id="btnSistemPendidikanTab-portal" onclick="switchSistemPendidikanTab('portal')" style="border-radius:20px; padding:6px 14px; font-weight:700; background:linear-gradient(135deg, #d946ef, #a21caf); color:#fff; border:none;">
-          <i class="fas fa-window-maximize"></i> Web App SIM-TI AAS (Portal Utuh)
-        </button>
-        <button type="button" class="btn-ghost-sm" id="btnSistemPendidikanTab-dashboard" onclick="switchSistemPendidikanTab('dashboard')" style="border-radius:20px; padding:6px 14px; font-weight:600;">
-          <i class="fas fa-chart-pie"></i> Ringkasan &amp; Statistik
-        </button>
-
-        <div style="margin-left:auto; display:flex; gap:8px; align-items:center;">
-          <button onclick="reloadSistemPendidikanFrame()" class="btn-ghost-sm" style="font-weight:600; cursor:pointer; border:1px solid var(--b2); border-radius:6px; padding:6px 12px;" title="Muat ulang portal">
-            <i class="fas fa-rotate"></i> Muat Ulang
-          </button>
-          <a href="https://bidang-administrasi-sistem-informasi-pendidikan-tinggi.adminpendidikanaas-operator.workers.dev" target="_blank" rel="noopener" class="btn-ghost-sm" style="background:var(--bg3); border:1px solid #f97316; color:#ea580c; font-weight:600; border-radius:6px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:6px 12px;" title="Buka aplikasi web di Cloudflare">
-            <i class="fab fa-cloudflare" style="color:#f97316;"></i> Cloudflare Live
-          </a>
-          <a href="https://bidang-asipt.firebaseapp.com" target="_blank" rel="noopener" class="btn-ghost-sm" style="background:var(--bg3); border:1px solid var(--b2); color:#d946ef; font-weight:600; border-radius:6px; text-decoration:none; display:inline-flex; align-items:center; gap:6px; padding:6px 12px;" title="Buka aplikasi web di Firebase">
-            <i class="fas fa-fire" style="color:#f59e0b;"></i> Firebase Live
-          </a>
-        </div>
-      </div>
-
-      <!-- TAB 1: WEB APP SIM-TI AAS UTUH (DENGAN SIDEBAR, GRAFIK, DAN SELURUH FITUR) -->
-      <div id="sistemPendidikanView-portal" class="sistemPendidikan-tab-view" style="display:block;">
-        <div style="width:100%; height:980px; border:1px solid var(--b1); border-radius:var(--r3); overflow:hidden; background:var(--bg2); box-shadow:var(--sh2);">
-          <iframe id="sistemPendidikanIframe" src="https://bidang-administrasi-sistem-informasi-pendidikan-tinggi.adminpendidikanaas-operator.workers.dev" width="100%" height="100%" style="border:none;" title="Portal Bidang Administrasi Sistem Informasi Pendidikan Tinggi AAS"></iframe>
-        </div>
-      </div>
-
-      <!-- TAB 2: RINGKASAN & STATISTIK -->
-      <div id="sistemPendidikanView-dashboard" class="sistemPendidikan-tab-view" style="display:none;">
-        <div style="background:var(--card); border:1px solid var(--b1); border-radius:var(--r2); padding:24px; margin-bottom:20px;">
-          <h3 style="margin-top:0; color:#0f172a; display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-chart-line" style="color:#d946ef;"></i> Ringkasan Kinerja Pelaporan Sistem Informasi Dikti
-          </h3>
-          <p style="color:var(--t2); font-size:0.9rem; line-height:1.6;">
-            Seluruh berkas pelaporan PDDikti Feeder, SISTER BKD Dosen, PIN &amp; PISN Ijazah Nasional, dan Uptime Server Cloud tersinkronisasi realtime dengan cloud.
-          </p>
-        </div>
-      </div>
-
-    </div>
 
     <!-- Arsip Table -->
     <div id="deptTableContainer" class="table-card">
