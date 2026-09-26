@@ -18,7 +18,7 @@
   <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-  <link rel="stylesheet" href="style.css?v=20260927_rt_clean_v7" />
+  <link rel="stylesheet" href="style.css?v=20260927_superapp_v8" />
 </head>
 <body>
 
@@ -112,7 +112,7 @@
   </div>
 </div>
 
-<!-- ÔòÉÔòÉÔòÉ PORTAL SELECTION (MULTI-BIDANG) ÔòÉÔòÉÔòÉ -->
+<!-- ═══ PORTAL SELECTION (MULTI-BIDANG) ═══ -->
 <div id="portalSelectionWrapper" class="auth-container" style="display:none; background: var(--bg-main);">
   <div class="auth-box" style="max-width: 800px; text-align:center;">
     <h2 style="color:var(--p1); margin-bottom:10px;"><i class="fas fa-layer-group"></i> Pilih Portal Bidang Tugas</h2>
@@ -129,7 +129,7 @@
 <div id="appWrapper" style="display:none;">
 
 
-<!-- ÔòÉÔòÉÔòÉ SIDEBAR ÔòÉÔòÉÔòÉ -->
+<!-- ═══ SIDEBAR ═══ -->
 <aside class="sidebar" id="sidebar">
   <div class="sb-brand" style="display:flex; align-items:center; gap:12px; padding:16px 18px;">
     <div class="sb-logo-wrap" style="background:#ffffff; border-radius:12px; padding:5px; width:44px; height:44px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 8px rgba(0,0,0,0.15); flex-shrink:0;">
@@ -151,94 +151,146 @@
     <div class="sb-section">Manajemen Arsip</div>
     <a class="sb-link" href="#" data-page="arsip" id="nav-arsip"><i class="fas fa-folder-tree"></i><span>Semua Arsip</span><em id="badge-total">0</em></a>
     <div class="sb-section">Daftar Bidang / Departemen</div>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="akademik" id="nav-akademik"><i class="fas fa-graduation-cap" style="color:#3b82f6"></i><span>Administrasi Akademik</span><em id="badge-akademik">0</em></a>
-    <ul class="sb-sub-menu" id="dept-akademik-sub-menu" style="display:none;">
-      <li class="active" onclick="switchAkademikTabFromSidebar('dashboard', this)"><i class="fas fa-table-cells-large" style="color:#3b82f6;"></i> <span style="flex:1;">Dashboard Arsip</span></li>
-      <li onclick="selectAkademikCategoryFromSidebar('KHS & Transkrip', this)"><i class="fas fa-copy" style="color:#60a5fa;"></i> <span style="flex:1;">KHS &amp; Transkrip</span></li>
-      <li onclick="selectAkademikCategoryFromSidebar('KRS', this)"><i class="fas fa-folder-open" style="color:#a78bfa;"></i> <span style="flex:1;">KRS (Rencana Studi)</span></li>
-      <li onclick="selectAkademikCategoryFromSidebar('Sertifikat & UKOM', this)"><i class="fas fa-box-archive" style="color:#34d399;"></i> <span style="flex:1;">Sertifikat &amp; UKOM</span></li>
-      <li onclick="selectAkademikCategoryFromSidebar('Ijazah & SKL', this)"><i class="fas fa-box-archive" style="color:#f87171;"></i> <span style="flex:1;">Ijazah &amp; SKL</span></li>
-      <li onclick="selectAkademikCategoryFromSidebar('Surat Keterangan', this)"><i class="fas fa-box-archive" style="color:#fbbf24;"></i> <span style="flex:1;">Surat Keterangan</span></li>
-      <li onclick="selectAkademikCategoryFromSidebar('Presensi & Absensi', this)"><i class="fas fa-box-archive" style="color:#22d3ee;"></i> <span style="flex:1;">Presensi &amp; Absensi</span></li>
-      <li onclick="selectAkademikCategoryFromSidebar('Logbook Klinik', this)"><i class="fas fa-box-archive" style="color:#f472b6;"></i> <span style="flex:1;">Logbook Klinik</span></li>
-      <li onclick="selectAkademikCategoryFromSidebar('SK & Keputusan', this)"><i class="fas fa-box-archive" style="color:#818cf8;"></i> <span style="flex:1;">SK &amp; Keputusan</span></li>
-      <li onclick="selectAkademikCategoryFromSidebar('Akreditasi & Feeder', this)"><i class="fas fa-box-archive" style="color:#fb923c;"></i> <span style="flex:1;">Akreditasi &amp; Feeder</span></li>
-      <li onclick="selectAkademikCategoryFromSidebar('Lainnya', this)"><i class="fas fa-folder" style="color:#94a3b8;"></i> <span style="flex:1;">Dokumen Lainnya</span></li>
-      <hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">
-      <li onclick="switchAkademikTabFromSidebar('mahasiswa', this)"><i class="fas fa-user-graduate" style="color:#10b981;"></i> <span style="flex:1;">Data Mahasiswa AAS &amp; Grafik</span></li>
-      <li onclick="switchAkademikTabFromSidebar('portal', this)" style="color:#3b82f6; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App SIAKAD Utuh</span></li>
-      <li onclick="syncAkademikFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbAkademikSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Akademik</span></li>
-    </ul>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="ketenagaan" id="nav-ketenagaan"><i class="fas fa-users-gear" style="color:#6366f1"></i><span>Ketenagaan</span><em id="badge-ketenagaan">0</em></a>
-    <ul class="sb-sub-menu" id="dept-ketenagaan-sub-menu" style="display:none;">
-      <li class="active" onclick="switchKetenagaanTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#6366f1;"></i> <span style="flex:1;">Dashboard &amp; Grafik</span></li>
-      <li onclick="switchKetenagaanTabFromSidebar('sdm', this)"><i class="fas fa-users" style="color:#2563eb;"></i> <span style="flex:1;">Data SDM (Dosen &amp; Tendik)</span></li>
-      <li onclick="switchKetenagaanTabFromSidebar('akreditasi', this)"><i class="fas fa-shield-halved" style="color:#10b981;"></i> <span style="flex:1;">Akreditasi SDM (LAM-PTKes)</span></li>
-      <li onclick="switchKetenagaanTabFromSidebar('bkd', this)"><i class="fas fa-briefcase" style="color:#f59e0b;"></i> <span style="flex:1;">Rekap BKD &amp; Tri Dharma</span></li>
-      <li onclick="switchKetenagaanTabFromSidebar('dokumen', this)"><i class="fas fa-file-contract" style="color:#8b5cf6;"></i> <span style="flex:1;">Dokumen &amp; SK Dosen</span></li>
-      <li onclick="switchKetenagaanTabFromSidebar('portal', this)" style="color:#6366f1; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App SIM-Ketenagaan</span></li>
-    </ul>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="pendidikan" id="nav-pendidikan"><i class="fas fa-chalkboard-teacher" style="color:#8b5cf6"></i><span>Pendidikan</span><em id="badge-pendidikan">0</em></a>
-    <ul class="sb-sub-menu" id="dept-pendidikan-sub-menu" style="display:none;">
-      <li class="active" onclick="switchPendidikanTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#8b5cf6;"></i> <span style="flex:1;">Dashboard &amp; Grafik</span></li>
-      <li onclick="selectPendidikanCategoryFromSidebar('Kurikulum & RPS OBE', this)"><i class="fas fa-graduation-cap" style="color:#6366f1;"></i> <span style="flex:1;">Kurikulum &amp; RPS OBE</span></li>
-      <li onclick="selectPendidikanCategoryFromSidebar('Modul & Bahan Ajar', this)"><i class="fas fa-book-bookmark" style="color:#0ea5e9;"></i> <span style="flex:1;">Modul &amp; Bahan Ajar</span></li>
-      <li onclick="selectPendidikanCategoryFromSidebar('Kalender & Jadwal Kuliah', this)"><i class="fas fa-calendar-days" style="color:#10b981;"></i> <span style="flex:1;">Kalender &amp; Jadwal</span></li>
-      <li onclick="selectPendidikanCategoryFromSidebar('Soal Ujian & OSCE', this)"><i class="fas fa-file-signature" style="color:#f59e0b;"></i> <span style="flex:1;">Soal Ujian &amp; OSCE</span></li>
-      <li onclick="selectPendidikanCategoryFromSidebar('SK Beban Mengajar Dosen', this)"><i class="fas fa-file-contract" style="color:#ef4444;"></i> <span style="flex:1;">SK Beban Mengajar</span></li>
-      <li onclick="selectPendidikanCategoryFromSidebar('Berita Acara & Presensi Kuliah', this)"><i class="fas fa-clipboard-user" style="color:#14b8a6;"></i> <span style="flex:1;">BAP &amp; Presensi</span></li>
-      <li onclick="selectPendidikanCategoryFromSidebar('Panduan Praktik Klinik & RS', this)"><i class="fas fa-hospital-user" style="color:#ec4899;"></i> <span style="flex:1;">Praktik Klinik &amp; RS</span></li>
-      <li onclick="selectPendidikanCategoryFromSidebar('Akreditasi & Dokumen LAM-PTKes', this)"><i class="fas fa-award" style="color:#a855f7;"></i> <span style="flex:1;">Akreditasi LAM-PTKes</span></li>
-      <li onclick="selectPendidikanCategoryFromSidebar('Evaluasi & Notulen Rapat Monev', this)"><i class="fas fa-comments" style="color:#3b82f6;"></i> <span style="flex:1;">Notulen &amp; Monev</span></li>
-      <li onclick="selectPendidikanCategoryFromSidebar('Dokumen Lainnya / Kebijakan', this)"><i class="fas fa-folder" style="color:#94a3b8;"></i> <span style="flex:1;">Dokumen Lainnya</span></li>
-      <hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">
-      <li onclick="switchPendidikanTabFromSidebar('kurikulum', this)"><i class="fas fa-layer-group" style="color:#10b981;"></i> <span style="flex:1;">Struktur Mata Kuliah &amp; RPS</span></li>
-      <li onclick="switchPendidikanTabFromSidebar('portal', this)" style="color:#8b5cf6; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App SIPENAS Utuh</span></li>
-      <li onclick="syncPendidikanFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbPendidikanSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Pendidikan</span></li>
-    </ul>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="administrasi" id="nav-administrasi"><i class="fas fa-folder-open" style="color:#a855f7"></i><span>Administrasi</span><em id="badge-administrasi">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="sistem_pendidikan" id="nav-sistem_pendidikan"><i class="fas fa-laptop-code" style="color:#d946ef"></i><span>Sistem Informasi Pendidikan Tinggi</span><em id="badge-sistem_pendidikan">0</em></a>
 
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="laboratorium" id="nav-laboratorium"><i class="fas fa-vials" style="color:#ec4899"></i><span>Laboratorium</span><em id="badge-laboratorium">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="perpustakaan" id="nav-perpustakaan"><i class="fas fa-book" style="color:#f43f5e"></i><span>Perpustakaan</span><em id="badge-perpustakaan">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="penelitian_pelatihan" id="nav-penelitian_pelatihan"><i class="fas fa-microscope" style="color:#f97316"></i><span>Penelitian dan Pelatihan</span><em id="badge-penelitian_pelatihan">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="kemahasiswaan" id="nav-kemahasiswaan"><i class="fas fa-user-graduate" style="color:#f59e0b"></i><span>Kemahasiswaan dan Alumni</span><em id="badge-kemahasiswaan">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="pengabdian" id="nav-pengabdian"><i class="fas fa-hands-helping" style="color:#eab308"></i><span>Pengabdian Masyarakat</span><em id="badge-pengabdian">0</em></a>
-    <ul class="sb-sub-menu" id="dept-pengabdian-sub-menu" style="display:none;">
-      <li class="active" onclick="switchPengabdianTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#eab308;"></i> <span style="flex:1;">Dashboard &amp; Grafik</span></li>
-      <li onclick="switchPengabdianTabFromSidebar('usulan', this)"><i class="fas fa-file-signature" style="color:#3b82f6;"></i> <span style="flex:1;">Usulan Proposal PkM</span></li>
-      <li onclick="switchPengabdianTabFromSidebar('baksos', this)"><i class="fas fa-stethoscope" style="color:#10b981;"></i> <span style="flex:1;">Logbook &amp; Pasien Baksos</span></li>
-      <li onclick="switchPengabdianTabFromSidebar('reviewer', this)"><i class="fas fa-clipboard-check" style="color:#8b5cf6;"></i> <span style="flex:1;">Reviewer Desk</span></li>
-      <li onclick="switchPengabdianTabFromSidebar('luaran', this)"><i class="fas fa-award" style="color:#ec4899;"></i> <span style="flex:1;">Katalog Luaran &amp; HKI</span></li>
-      <li onclick="switchPengabdianTabFromSidebar('borang', this)"><i class="fas fa-table" style="color:#f59e0b;"></i> <span style="flex:1;">Borang LAM-PTKes (7 &amp; 8)</span></li>
-      <li onclick="switchPengabdianTabFromSidebar('dokumen', this)"><i class="fas fa-file-contract" style="color:#06b6d4;"></i> <span style="flex:1;">Dokumen &amp; SK PkM</span></li>
-      <li onclick="switchPengabdianTabFromSidebar('portal', this)" style="color:#eab308; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App PkM Utuh</span></li>
-      <li onclick="syncPengabdianFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbPengabdianSyncIcon"></i> <span style="flex:1;">Sinkron Data Live PkM</span></li>
-      <li onclick="clearAllPengabdianData()" style="color:#ef4444; font-weight:600;"><i class="fas fa-trash-can"></i> <span style="flex:1;">Hapus Data Dummy (Reset 0)</span></li>
-    </ul>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_kelembagaan" id="nav-admin_kelembagaan"><i class="fas fa-sitemap" style="color:#84cc16"></i><span>Administrasi dan Kelembagaan</span><em id="badge-admin_kelembagaan">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_umum" id="nav-admin_umum"><i class="fas fa-building" style="color:#22c55e"></i><span>Administrasi Umum</span><em id="badge-admin_umum">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_kepegawaian" id="nav-admin_kepegawaian"><i class="fas fa-user-tie" style="color:#10b981"></i><span>Administrasi Kepegawaian</span><em id="badge-admin_kepegawaian">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_keuangan" id="nav-admin_keuangan"><i class="fas fa-coins" style="color:#14b8a6"></i><span>Keuangan Institusi dan Pendidikan</span><em id="badge-admin_keuangan">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="rumah_tangga" id="nav-rumah_tangga"><i class="fas fa-home" style="color:#06b6d4"></i><span>Rumah Tangga</span><em id="badge-rumah_tangga">0</em></a>
-    <ul class="sb-sub-menu" id="dept-rumah_tangga-sub-menu" style="display:none;">
-      <li class="active" onclick="switchRumahTanggaTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#06b6d4;"></i> <span style="flex:1;">Dashboard &amp; Grafik</span></li>
-      <li onclick="switchRumahTanggaTabFromSidebar('kas-kecil', this)"><i class="fas fa-wallet" style="color:#10b981;"></i> <span style="flex:1;">Buku Kas Kecil (Petty Cash)</span></li>
-      <li onclick="switchRumahTanggaTabFromSidebar('rab', this)"><i class="fas fa-file-invoice-dollar" style="color:#3b82f6;"></i> <span style="flex:1;">Anggaran &amp; Realisasi RAB</span></li>
-      <li onclick="switchRumahTanggaTabFromSidebar('utilitas', this)"><i class="fas fa-bolt" style="color:#f59e0b;"></i> <span style="flex:1;">Tagihan &amp; Utilitas Kampus</span></li>
-      <li onclick="switchRumahTanggaTabFromSidebar('atk', this)"><i class="fas fa-boxes-stacked" style="color:#8b5cf6;"></i> <span style="flex:1;">Inventaris &amp; Stok ATK</span></li>
-      <li onclick="switchRumahTanggaTabFromSidebar('cash-opname', this)"><i class="fas fa-money-bill-wave" style="color:#ec4899;"></i> <span style="flex:1;">Berita Acara Cash Opname</span></li>
-      <hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">
-      <li onclick="syncRumahTanggaFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbRumahTanggaSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Rumah Tangga</span></li>
-      <li onclick="window.open('https://bidang-rumah-tangga.adminpendidikanaas-operator.workers.dev', '_blank')" style="color:#06b6d4; font-weight:700;"><i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Web App SIM-RT Utuh</span></li>
-    </ul>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="sarana" id="nav-sarana"><i class="fas fa-tools" style="color:#0ea5e9"></i><span>Sarana dan Prasarana</span><em id="badge-sarana">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="sistem_informasi" id="nav-sistem_informasi"><i class="fas fa-network-wired" style="color:#0284c7"></i><span>Sistem Informasi</span><em id="badge-sistem_informasi">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="humas" id="nav-humas"><i class="fas fa-bullhorn" style="color:#3b82f6"></i><span>Humas</span><em id="badge-humas">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="promosi" id="nav-promosi"><i class="fas fa-ad" style="color:#4f46e5"></i><span>Promosi</span><em id="badge-promosi">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="kerjasama" id="nav-kerjasama"><i class="fas fa-handshake" style="color:#7c3aed"></i><span>Kerjasama</span><em id="badge-kerjasama">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="it" id="nav-it"><i class="fas fa-server" style="color:#db2777"></i><span>IT</span><em id="badge-it">0</em></a>
-    <a class="sb-link dept" href="#" data-page="dept" data-dept="ami" id="nav-ami"><i class="fas fa-clipboard-check" style="color:#10b981"></i><span>AMI</span><em id="badge-ami">0</em></a>
+    <!-- KLASTER 1: TRIDHARMA & AKADEMIK -->
+    <div class="sb-cluster open" id="cluster-akademik">
+      <div class="sb-cluster-hd" onclick="toggleSidebarCluster('cluster-akademik')">
+        <div class="sb-cluster-title">
+          <i class="fas fa-graduation-cap" style="color:#3b82f6;"></i>
+          <span>Tridharma &amp; Akademik</span>
+        </div>
+        <i class="fas fa-chevron-down sb-cluster-arrow"></i>
+      </div>
+      <div class="sb-cluster-body">
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="akademik" id="nav-akademik"><i class="fas fa-graduation-cap" style="color:#3b82f6"></i><span>Administrasi Akademik</span><em id="badge-akademik">0</em></a>
+        <ul class="sb-sub-menu" id="dept-akademik-sub-menu" style="display:none;">
+          <li class="active" onclick="switchAkademikTabFromSidebar('dashboard', this)"><i class="fas fa-table-cells-large" style="color:#3b82f6;"></i> <span style="flex:1;">Dashboard Arsip</span></li>
+          <li onclick="selectAkademikCategoryFromSidebar('KHS & Transkrip', this)"><i class="fas fa-copy" style="color:#60a5fa;"></i> <span style="flex:1;">KHS &amp; Transkrip</span></li>
+          <li onclick="selectAkademikCategoryFromSidebar('KRS', this)"><i class="fas fa-folder-open" style="color:#a78bfa;"></i> <span style="flex:1;">KRS (Rencana Studi)</span></li>
+          <li onclick="selectAkademikCategoryFromSidebar('Sertifikat & UKOM', this)"><i class="fas fa-box-archive" style="color:#34d399;"></i> <span style="flex:1;">Sertifikat &amp; UKOM</span></li>
+          <li onclick="selectAkademikCategoryFromSidebar('Ijazah & SKL', this)"><i class="fas fa-box-archive" style="color:#f87171;"></i> <span style="flex:1;">Ijazah &amp; SKL</span></li>
+          <li onclick="selectAkademikCategoryFromSidebar('Surat Keterangan', this)"><i class="fas fa-box-archive" style="color:#fbbf24;"></i> <span style="flex:1;">Surat Keterangan</span></li>
+          <li onclick="selectAkademikCategoryFromSidebar('Presensi & Absensi', this)"><i class="fas fa-box-archive" style="color:#22d3ee;"></i> <span style="flex:1;">Presensi &amp; Absensi</span></li>
+          <li onclick="selectAkademikCategoryFromSidebar('Logbook Klinik', this)"><i class="fas fa-box-archive" style="color:#f472b6;"></i> <span style="flex:1;">Logbook Klinik</span></li>
+          <li onclick="selectAkademikCategoryFromSidebar('SK & Keputusan', this)"><i class="fas fa-box-archive" style="color:#818cf8;"></i> <span style="flex:1;">SK &amp; Keputusan</span></li>
+          <li onclick="selectAkademikCategoryFromSidebar('Akreditasi & Feeder', this)"><i class="fas fa-box-archive" style="color:#fb923c;"></i> <span style="flex:1;">Akreditasi &amp; Feeder</span></li>
+          <li onclick="selectAkademikCategoryFromSidebar('Lainnya', this)"><i class="fas fa-folder" style="color:#94a3b8;"></i> <span style="flex:1;">Dokumen Lainnya</span></li>
+          <hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">
+          <li onclick="switchAkademikTabFromSidebar('mahasiswa', this)"><i class="fas fa-user-graduate" style="color:#10b981;"></i> <span style="flex:1;">Data Mahasiswa AAS &amp; Grafik</span></li>
+          <li onclick="switchAkademikTabFromSidebar('portal', this)" style="color:#3b82f6; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App SIAKAD Utuh</span></li>
+          <li onclick="syncAkademikFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbAkademikSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Akademik</span></li>
+        </ul>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="pendidikan" id="nav-pendidikan"><i class="fas fa-chalkboard-teacher" style="color:#8b5cf6"></i><span>Pendidikan (SIPENAS)</span><em id="badge-pendidikan">0</em></a>
+        <ul class="sb-sub-menu" id="dept-pendidikan-sub-menu" style="display:none;">
+          <li class="active" onclick="switchPendidikanTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#8b5cf6;"></i> <span style="flex:1;">Dashboard &amp; Grafik</span></li>
+          <li onclick="selectPendidikanCategoryFromSidebar('Kurikulum & RPS OBE', this)"><i class="fas fa-graduation-cap" style="color:#6366f1;"></i> <span style="flex:1;">Kurikulum &amp; RPS OBE</span></li>
+          <li onclick="selectPendidikanCategoryFromSidebar('Modul & Bahan Ajar', this)"><i class="fas fa-book-bookmark" style="color:#0ea5e9;"></i> <span style="flex:1;">Modul &amp; Bahan Ajar</span></li>
+          <li onclick="selectPendidikanCategoryFromSidebar('Kalender & Jadwal Kuliah', this)"><i class="fas fa-calendar-days" style="color:#10b981;"></i> <span style="flex:1;">Kalender &amp; Jadwal</span></li>
+          <li onclick="selectPendidikanCategoryFromSidebar('Soal Ujian & OSCE', this)"><i class="fas fa-file-signature" style="color:#f59e0b;"></i> <span style="flex:1;">Soal Ujian &amp; OSCE</span></li>
+          <li onclick="selectPendidikanCategoryFromSidebar('SK Beban Mengajar Dosen', this)"><i class="fas fa-file-contract" style="color:#ef4444;"></i> <span style="flex:1;">SK Beban Mengajar</span></li>
+          <li onclick="selectPendidikanCategoryFromSidebar('Berita Acara & Presensi Kuliah', this)"><i class="fas fa-clipboard-user" style="color:#14b8a6;"></i> <span style="flex:1;">BAP &amp; Presensi</span></li>
+          <li onclick="selectPendidikanCategoryFromSidebar('Panduan Praktik Klinik & RS', this)"><i class="fas fa-hospital-user" style="color:#ec4899;"></i> <span style="flex:1;">Praktik Klinik &amp; RS</span></li>
+          <li onclick="selectPendidikanCategoryFromSidebar('Akreditasi & Dokumen LAM-PTKes', this)"><i class="fas fa-award" style="color:#a855f7;"></i> <span style="flex:1;">Akreditasi LAM-PTKes</span></li>
+          <li onclick="selectPendidikanCategoryFromSidebar('Evaluasi & Notulen Rapat Monev', this)"><i class="fas fa-comments" style="color:#3b82f6;"></i> <span style="flex:1;">Notulen &amp; Monev</span></li>
+          <li onclick="selectPendidikanCategoryFromSidebar('Dokumen Lainnya / Kebijakan', this)"><i class="fas fa-folder" style="color:#94a3b8;"></i> <span style="flex:1;">Dokumen Lainnya</span></li>
+          <hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">
+          <li onclick="switchPendidikanTabFromSidebar('kurikulum', this)"><i class="fas fa-layer-group" style="color:#10b981;"></i> <span style="flex:1;">Struktur Mata Kuliah &amp; RPS</span></li>
+          <li onclick="switchPendidikanTabFromSidebar('portal', this)" style="color:#8b5cf6; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App SIPENAS Utuh</span></li>
+          <li onclick="syncPendidikanFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbPendidikanSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Pendidikan</span></li>
+        </ul>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="kemahasiswaan" id="nav-kemahasiswaan"><i class="fas fa-user-graduate" style="color:#f59e0b"></i><span>Kemahasiswaan &amp; Alumni</span><em id="badge-kemahasiswaan">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="ketenagaan" id="nav-ketenagaan"><i class="fas fa-users-gear" style="color:#6366f1"></i><span>Ketenagaan &amp; SDM</span><em id="badge-ketenagaan">0</em></a>
+        <ul class="sb-sub-menu" id="dept-ketenagaan-sub-menu" style="display:none;">
+          <li class="active" onclick="switchKetenagaanTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#6366f1;"></i> <span style="flex:1;">Dashboard &amp; Grafik</span></li>
+          <li onclick="switchKetenagaanTabFromSidebar('sdm', this)"><i class="fas fa-users" style="color:#2563eb;"></i> <span style="flex:1;">Data SDM (Dosen &amp; Tendik)</span></li>
+          <li onclick="switchKetenagaanTabFromSidebar('akreditasi', this)"><i class="fas fa-shield-halved" style="color:#10b981;"></i> <span style="flex:1;">Akreditasi SDM (LAM-PTKes)</span></li>
+          <li onclick="switchKetenagaanTabFromSidebar('bkd', this)"><i class="fas fa-briefcase" style="color:#f59e0b;"></i> <span style="flex:1;">Rekap BKD &amp; Tri Dharma</span></li>
+          <li onclick="switchKetenagaanTabFromSidebar('dokumen', this)"><i class="fas fa-file-contract" style="color:#8b5cf6;"></i> <span style="flex:1;">Dokumen &amp; SK Dosen</span></li>
+          <li onclick="switchKetenagaanTabFromSidebar('portal', this)" style="color:#6366f1; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App SIM-Ketenagaan</span></li>
+        </ul>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="penelitian_pelatihan" id="nav-penelitian_pelatihan"><i class="fas fa-microscope" style="color:#f97316"></i><span>Penelitian &amp; Pelatihan</span><em id="badge-penelitian_pelatihan">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="pengabdian" id="nav-pengabdian"><i class="fas fa-hands-helping" style="color:#eab308"></i><span>Pengabdian (PkM)</span><em id="badge-pengabdian">0</em></a>
+        <ul class="sb-sub-menu" id="dept-pengabdian-sub-menu" style="display:none;">
+          <li class="active" onclick="switchPengabdianTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#eab308;"></i> <span style="flex:1;">Dashboard &amp; Grafik</span></li>
+          <li onclick="switchPengabdianTabFromSidebar('usulan', this)"><i class="fas fa-file-signature" style="color:#3b82f6;"></i> <span style="flex:1;">Usulan Proposal PkM</span></li>
+          <li onclick="switchPengabdianTabFromSidebar('baksos', this)"><i class="fas fa-stethoscope" style="color:#10b981;"></i> <span style="flex:1;">Logbook &amp; Pasien Baksos</span></li>
+          <li onclick="switchPengabdianTabFromSidebar('reviewer', this)"><i class="fas fa-clipboard-check" style="color:#8b5cf6;"></i> <span style="flex:1;">Reviewer Desk</span></li>
+          <li onclick="switchPengabdianTabFromSidebar('luaran', this)"><i class="fas fa-award" style="color:#ec4899;"></i> <span style="flex:1;">Katalog Luaran &amp; HKI</span></li>
+          <li onclick="switchPengabdianTabFromSidebar('borang', this)"><i class="fas fa-table" style="color:#f59e0b;"></i> <span style="flex:1;">Borang LAM-PTKes (7 &amp; 8)</span></li>
+          <li onclick="switchPengabdianTabFromSidebar('dokumen', this)"><i class="fas fa-file-contract" style="color:#06b6d4;"></i> <span style="flex:1;">Dokumen &amp; SK PkM</span></li>
+          <li onclick="switchPengabdianTabFromSidebar('portal', this)" style="color:#eab308; font-weight:700;"><i class="fas fa-window-maximize"></i> <span style="flex:1;">Web App PkM Utuh</span></li>
+          <li onclick="syncPengabdianFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbPengabdianSyncIcon"></i> <span style="flex:1;">Sinkron Data Live PkM</span></li>
+          <li onclick="clearAllPengabdianData()" style="color:#ef4444; font-weight:600;"><i class="fas fa-trash-can"></i> <span style="flex:1;">Hapus Data Dummy (Reset 0)</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- KLASTER 2: TATA KELOLA, KEUANGAN & RUMAH TANGGA -->
+    <div class="sb-cluster open" id="cluster-tatakelola">
+      <div class="sb-cluster-hd" onclick="toggleSidebarCluster('cluster-tatakelola')">
+        <div class="sb-cluster-title">
+          <i class="fas fa-building" style="color:#06b6d4;"></i>
+          <span>Tata Kelola &amp; Rumah Tangga</span>
+        </div>
+        <i class="fas fa-chevron-down sb-cluster-arrow"></i>
+      </div>
+      <div class="sb-cluster-body">
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="rumah_tangga" id="nav-rumah_tangga"><i class="fas fa-home" style="color:#06b6d4"></i><span>Rumah Tangga (SIM-RT)</span><em id="badge-rumah_tangga">0</em></a>
+        <ul class="sb-sub-menu" id="dept-rumah_tangga-sub-menu" style="display:none;">
+          <li class="active" onclick="switchRumahTanggaTabFromSidebar('dashboard', this)"><i class="fas fa-chart-pie" style="color:#06b6d4;"></i> <span style="flex:1;">Dashboard &amp; Grafik</span></li>
+          <li onclick="switchRumahTanggaTabFromSidebar('kas-kecil', this)"><i class="fas fa-wallet" style="color:#10b981;"></i> <span style="flex:1;">Buku Kas Kecil (Petty Cash)</span></li>
+          <li onclick="switchRumahTanggaTabFromSidebar('rab', this)"><i class="fas fa-file-invoice-dollar" style="color:#3b82f6;"></i> <span style="flex:1;">Anggaran &amp; Realisasi RAB</span></li>
+          <li onclick="switchRumahTanggaTabFromSidebar('utilitas', this)"><i class="fas fa-bolt" style="color:#f59e0b;"></i> <span style="flex:1;">Tagihan &amp; Utilitas Kampus</span></li>
+          <li onclick="switchRumahTanggaTabFromSidebar('atk', this)"><i class="fas fa-boxes-stacked" style="color:#8b5cf6;"></i> <span style="flex:1;">Inventaris &amp; Stok ATK</span></li>
+          <li onclick="switchRumahTanggaTabFromSidebar('cash-opname', this)"><i class="fas fa-money-bill-wave" style="color:#ec4899;"></i> <span style="flex:1;">Berita Acara Cash Opname</span></li>
+          <hr style="border-color:rgba(255,255,255,0.08); margin:4px 10px;">
+          <li onclick="syncRumahTanggaFromSumber()" style="color:#22c55e; font-weight:600;"><i class="fas fa-rotate" id="sbRumahTanggaSyncIcon"></i> <span style="flex:1;">Sinkron Data Live Rumah Tangga</span></li>
+          <li onclick="window.open('https://bidang-rumah-tangga.adminpendidikanaas-operator.workers.dev', '_blank')" style="color:#06b6d4; font-weight:700;"><i class="fas fa-up-right-from-square"></i> <span style="flex:1;">Web App SIM-RT Utuh</span></li>
+        </ul>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_keuangan" id="nav-admin_keuangan"><i class="fas fa-coins" style="color:#14b8a6"></i><span>Keuangan Institusi</span><em id="badge-admin_keuangan">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="sarana" id="nav-sarana"><i class="fas fa-tools" style="color:#0ea5e9"></i><span>Sarana dan Prasarana</span><em id="badge-sarana">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_kepegawaian" id="nav-admin_kepegawaian"><i class="fas fa-user-tie" style="color:#10b981"></i><span>Administrasi Kepegawaian</span><em id="badge-admin_kepegawaian">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_umum" id="nav-admin_umum"><i class="fas fa-building" style="color:#22c55e"></i><span>Administrasi Umum</span><em id="badge-admin_umum">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="admin_kelembagaan" id="nav-admin_kelembagaan"><i class="fas fa-sitemap" style="color:#84cc16"></i><span>Administrasi Kelembagaan</span><em id="badge-admin_kelembagaan">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="administrasi" id="nav-administrasi"><i class="fas fa-folder-open" style="color:#a855f7"></i><span>Administrasi</span><em id="badge-administrasi">0</em></a>
+      </div>
+    </div>
+
+    <!-- KLASTER 3: SISTEM, IT & PENUNJANG -->
+    <div class="sb-cluster open" id="cluster-it-penunjang">
+      <div class="sb-cluster-hd" onclick="toggleSidebarCluster('cluster-it-penunjang')">
+        <div class="sb-cluster-title">
+          <i class="fas fa-laptop-code" style="color:#d946ef;"></i>
+          <span>Sistem, IT &amp; Penunjang</span>
+        </div>
+        <i class="fas fa-chevron-down sb-cluster-arrow"></i>
+      </div>
+      <div class="sb-cluster-body">
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="sistem_pendidikan" id="nav-sistem_pendidikan"><i class="fas fa-laptop-code" style="color:#d946ef"></i><span>Sistem Informasi Dikti (SIM-TI)</span><em id="badge-sistem_pendidikan">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="it" id="nav-it"><i class="fas fa-server" style="color:#db2777"></i><span>Bidang IT</span><em id="badge-it">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="sistem_informasi" id="nav-sistem_informasi"><i class="fas fa-network-wired" style="color:#0284c7"></i><span>Sistem Informasi</span><em id="badge-sistem_informasi">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="laboratorium" id="nav-laboratorium"><i class="fas fa-vials" style="color:#ec4899"></i><span>Laboratorium</span><em id="badge-laboratorium">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="perpustakaan" id="nav-perpustakaan"><i class="fas fa-book" style="color:#f43f5e"></i><span>Perpustakaan</span><em id="badge-perpustakaan">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="humas" id="nav-humas"><i class="fas fa-bullhorn" style="color:#3b82f6"></i><span>Humas</span><em id="badge-humas">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="promosi" id="nav-promosi"><i class="fas fa-ad" style="color:#4f46e5"></i><span>Promosi</span><em id="badge-promosi">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="kerjasama" id="nav-kerjasama"><i class="fas fa-handshake" style="color:#7c3aed"></i><span>Kerjasama</span><em id="badge-kerjasama">0</em></a>
+      </div>
+    </div>
+
+    <!-- KLASTER 4: PENJAMINAN MUTU & AKREDITASI -->
+    <div class="sb-cluster open" id="cluster-mutu">
+      <div class="sb-cluster-hd" onclick="toggleSidebarCluster('cluster-mutu')">
+        <div class="sb-cluster-title">
+          <i class="fas fa-shield-halved" style="color:#10b981;"></i>
+          <span>Penjaminan Mutu &amp; Akreditasi</span>
+        </div>
+        <i class="fas fa-chevron-down sb-cluster-arrow"></i>
+      </div>
+      <div class="sb-cluster-body">
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="spmi" id="nav-spmi"><i class="fas fa-shield-check" style="color:#f43f5e"></i><span>Bidang SPMI</span><em id="badge-spmi">0</em></a>
+        <a class="sb-link dept" href="#" data-page="dept" data-dept="ami" id="nav-ami"><i class="fas fa-clipboard-check" style="color:#10b981"></i><span>Bidang AMI</span><em id="badge-ami">0</em></a>
+      </div>
+    </div>
 
     <div class="sb-section" id="sb-admin-section">Admin Khusus</div>
     <a class="sb-link" href="#" data-page="users" id="nav-users"><i class="fas fa-users-gear" style="color:#f43f5e"></i><span>Manajemen Pengguna</span></a>
@@ -285,7 +337,7 @@
   <div class="sb-foot"><div id="sidebarDate" class="sb-date"></div></div>
 </aside>
 
-<!-- ÔòÉÔòÉÔòÉ MAIN ÔòÉÔòÉÔòÉ -->
+<!-- ═══ MAIN ═══ -->
 <div class="main" id="mainWrap">
 
   <!-- TOPBAR -->
@@ -293,6 +345,10 @@
     <button class="hamburger" id="hamburger" aria-label="Menu"><i class="fas fa-bars"></i></button>
     <div class="topbar-title" id="topbarTitle">Dashboard</div>
     <div class="topbar-actions">
+      <div class="topbar-search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="topbarSearch" class="topbar-search-input" placeholder="Cari arsip, no. surat..." onkeyup="handleTopbarSearch(event)">
+      </div>
 
       <button class="tb-btn tb-btn-outline" style="color:#b91c1c; border-color:#b91c1c; margin-left:10px;" onclick="doLogout()">
         <i class="fas fa-sign-out-alt"></i> Keluar
@@ -327,39 +383,39 @@
     </div>
   </header>
 
-  <!-- ÔöÇÔöÇÔöÇ DASHBOARD ÔöÇÔöÇÔöÇ -->
+  <!-- ─── DASHBOARD ─── -->
   
 
-  <!-- ÔöÇÔöÇÔöÇ SEMUA ARSIP ÔöÇÔöÇÔöÇ -->
+  <!-- ─── SEMUA ARSIP ─── -->
   
 
-  <!-- ÔöÇÔöÇÔöÇ PER BIDANG ÔöÇÔöÇÔöÇ -->
+  <!-- ─── PER BIDANG ─── -->
   
 
-  <!-- ÔöÇÔöÇÔöÇ MANAJEMEN PENGGUNA ÔöÇÔöÇÔöÇ -->
-  
-
-
-  <!-- ÔöÇÔöÇÔöÇ GENERATOR DOKUMEN ÔöÇÔöÇÔöÇ -->
-  
-
-  <!-- ÔöÇÔöÇÔöÇ ANALITIK ÔöÇÔöÇÔöÇ -->
-  
-
-  <!-- ÔöÇÔöÇÔöÇ DATA MAHASISWA ÔöÇÔöÇÔöÇ -->
-
-
-  <!-- ÔöÇÔöÇÔöÇ BORANG BAN-PT ÔöÇÔöÇÔöÇ -->
-  
-
-  <!-- ÔöÇÔöÇÔöÇ BORANG LAM-PTKes ÔöÇÔöÇÔöÇ -->
-  
-
-  <!-- ÔöÇÔöÇÔöÇ AKTIVITAS ÔöÇÔöÇÔöÇ -->
+  <!-- ─── MANAJEMEN PENGGUNA ─── -->
   
 
 
-<!-- ÔòÉÔòÉÔòÉ MODAL: FORM ARSIP ÔòÉÔòÉÔòÉ -->
+  <!-- ─── GENERATOR DOKUMEN ─── -->
+  
+
+  <!-- ─── ANALITIK ─── -->
+  
+
+  <!-- ─── DATA MAHASISWA ─── -->
+
+
+  <!-- ─── BORANG BAN-PT ─── -->
+  
+
+  <!-- ─── BORANG LAM-PTKes ─── -->
+  
+
+  <!-- ─── AKTIVITAS ─── -->
+  
+
+
+<!-- ═══ MODAL: FORM ARSIP ═══ -->
 <div class="overlay" id="overlayForm" onclick="closeFormOut(event)">
   <div class="modal-box" id="formBox">
     <div class="modal-head">
@@ -414,7 +470,7 @@
           </div>
         </div>
 
-        <!-- ÔöÇÔöÇ DYNAMIC METADATA FIELDS ÔöÇÔöÇ -->
+        <!-- ── DYNAMIC METADATA FIELDS ── -->
         <div id="dynamicFieldsContainer"></div>
 
         <div class="form-row-2">
@@ -439,7 +495,7 @@
           </select>
         </div>
 
-        <!-- ÔöÇÔöÇ DOKUMEN GOOGLE DRIVE ÔöÇÔöÇ -->
+        <!-- ── DOKUMEN GOOGLE DRIVE ── -->
         <div class="gdrive-section">
           <div class="gdrive-section-title">
             <i class="fab fa-google-drive" style="color:#4285f4"></i>
@@ -501,7 +557,7 @@
   </div>
 </div>
 
-<!-- ÔòÉÔòÉÔòÉ MODAL: DETAIL ÔòÉÔòÉÔòÉ -->
+<!-- ═══ MODAL: DETAIL ═══ -->
 <div class="overlay" id="overlayDetail" onclick="closeDetailOut(event)">
   <div class="modal-box detail-box" id="detailBox">
     <div class="modal-head">
@@ -512,7 +568,7 @@
   </div>
 </div>
 
-<!-- ÔòÉÔòÉÔòÉ MODAL: PRATINJAU DOKUMEN ÔòÉÔòÉÔòÉ -->
+<!-- ═══ MODAL: PRATINJAU DOKUMEN ═══ -->
 <div class="overlay pdf-overlay" id="overlayPDF">
   <div class="pdf-box">
     <div class="pdf-head">
@@ -535,7 +591,7 @@
     </div>
   </div>
 </div>
-<!-- ÔòÉÔòÉÔòÉ MODAL: USER MANAGEMENT (auth.js version) ÔòÉÔòÉÔòÉ -->
+<!-- ═══ MODAL: USER MANAGEMENT (auth.js version) ═══ -->
 <div class="overlay" id="userModal" onclick="if(event.target===this)closeUserModal()">
   <div class="modal-box">
     <div class="modal-head">
@@ -603,7 +659,7 @@
   </div>
 </div>
 
-<!-- ÔòÉÔòÉÔòÉ MODAL: FORM MAHASISWA ÔòÉÔòÉÔòÉ -->
+<!-- ═══ MODAL: FORM MAHASISWA ═══ -->
 <div class="overlay" id="overlayMhsForm" onclick="if(event.target===this)closeMhsForm()">
   <div class="modal-box">
     <div class="modal-head">
@@ -742,7 +798,7 @@
   </div>
 </div>
 
-<!-- ÔòÉÔòÉÔòÉ MODAL: FORM SDM ÔòÉÔòÉÔòÉ -->
+<!-- ═══ MODAL: FORM SDM ═══ -->
 <div class="overlay" id="overlaySdmForm" onclick="if(event.target===this)closeSdmForm()">
   <div class="modal-box">
     <div class="modal-head">
@@ -875,7 +931,7 @@
   </div>
 </div>
 
-<!-- ÔòÉÔòÉÔòÉ MODAL: DETAIL PERSON (MHS / SDM) ÔòÉÔòÉÔòÉ -->
+<!-- ═══ MODAL: DETAIL PERSON (MHS / SDM) ═══ -->
 <div class="overlay" id="overlayPerson" onclick="if(event.target===this)closePersonDetail()">
   <div class="modal-box detail-box">
     <div class="modal-head">
@@ -1058,9 +1114,9 @@
           <h3><i class="fas fa-chart-area"></i> Tren Arsip Tahunan</h3>
           <span class="panel-sub" style="display:inline-flex; align-items:center; gap:6px;">
             Tahun:
-            <input type="number" id="trendStartY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2021" min="2014" max="2050" oninput="updateYearlyChart()">
+            <input type="number" id="trendStartY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2022" min="2014" max="2050" oninput="updateYearlyChart()">
             <span style="color:var(--text-sub)">-</span>
-            <input type="number" id="trendEndY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2025" min="2014" max="2050" oninput="updateYearlyChart()">
+            <input type="number" id="trendEndY" class="input-modern" style="width:65px; padding:2px 4px; font-size:0.75rem; height:24px; text-align:center;" value="2026" min="2014" max="2050" oninput="updateYearlyChart()">
           </span>
         </div>
         <div class="chart-wrap"><canvas id="chartYearlyLine"></canvas></div>
@@ -4040,7 +4096,7 @@
 <script src="generator.js?v=1014" defer></script>
 <script src="auth.js?v=1014" defer></script>
 <script src="admin.js?v=1014" defer></script>
-<script src="app.js?v=20260927_rt_clean_v7" defer></script>
+<script src="app.js?v=20260927_superapp_v8" defer></script>
 
 <!-- Notification Sounds -->
 

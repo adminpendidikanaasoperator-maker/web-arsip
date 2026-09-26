@@ -1,24 +1,24 @@
 
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
-   SIMARSIP  ÔÇö  app.js  v3.0
+/* ═══════════════════════════════════════════════════════════════
+   SIMARSIP  —  app.js  v3.0
    Akademi Akupunktur Surabaya
-   ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */
+   ═══════════════════════════════════════════════════════════════ */
 'use strict';
 Chart.register(ChartDataLabels);
 
-/* ÔöÇÔöÇÔöÇ STORAGE KEYS ÔöÇÔöÇÔöÇ */
+/* ─── STORAGE KEYS ─── */
 const SK  = 'aas_arsip_v3';
 const SAK = 'aas_activity_v3';
 const SK_MHS = 'aas_mhs_v3';
 const SK_SDM = 'aas_sdm_v3';
 
-/* ÔöÇÔöÇÔöÇ GOOGLE APPS SCRIPT URL ÔöÇÔöÇÔöÇ */
+/* ─── GOOGLE APPS SCRIPT URL ─── */
 // Paste URL "Web app" dari Google Apps Script di sini setelah melakukan Deployment.
 // Contoh: 'https://script.google.com/macros/s/AKfycby.../exec'
 const GAS_URL = 'https://script.google.com/macros/s/AKfycby0heFyeXzAmm_uNBvItuoCqFBe-79h6vL0sJ6iIYYJ-b-eWesITSu4MvHoSv4gqgMoNw/exec'; 
 
-/* ÔöÇÔöÇÔöÇ DEPARTEMEN ÔöÇÔöÇÔöÇ */
+/* ─── DEPARTEMEN ─── */
 const DEPT = {
   akademik: { label:'Bidang Administrasi Akademik', icon:'fas fa-graduation-cap', color:'#3b82f6' },
   ketenagaan: { label:'Bidang Ketenagaan', icon:'fas fa-users-gear', color:'#6366f1' },
@@ -49,10 +49,12 @@ const DEPT = {
   umum: { label:'Bidang Administrasi Umum', icon:'fas fa-building', color:'#22c55e' },
   kepegawaian: { label:'Bidang Administrasi Kepegawaian', icon:'fas fa-user-tie', color:'#10b981' },
   keuangan: { label:'Bidang Administrasi Keuangan', icon:'fas fa-coins', color:'#14b8a6' },
-  sdm: { label:'SDM & Kepegawaian', icon:'fas fa-user-tie', color:'#10b981' }
+  sdm: { label:'SDM & Kepegawaian', icon:'fas fa-user-tie', color:'#10b981' },
+  sarpras: { label:'Bidang Sarana dan Prasarana', icon:'fas fa-tools', color:'#0ea5e9' },
+  'rumah-tangga': { label:'Bidang Rumah Tangga', icon:'fas fa-home', color:'#06b6d4' }
 };
 
-/* ÔöÇÔöÇÔöÇ JENIS DOKUMEN PER BIDANG (tidak ada "Lainnya") ÔöÇÔöÇÔöÇ */
+/* ─── JENIS DOKUMEN PER BIDANG (tidak ada "Lainnya") ─── */
 
 
 const LAMPTKES_KRITERIA_JENIS = {
@@ -1120,9 +1122,9 @@ let currentAY   = '';
 let pendingPdfId = '';
 let cLine, cYearlyLine, cDoughnut, cStatus, cDeptBar, cDeptDonut, cAnBar, cAnYear;
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
+/* ════════════════════════════════════════════════════════════
    INIT
-   ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ */
+   ════════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', async () => {
   currentAY = getAY(new Date().toISOString().slice(0,10));
   renderSidebarDate();
@@ -1142,7 +1144,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   showPage('dashboard');
 });
 
-/* ÔöÇÔöÇÔöÇ ACADEMIC YEAR ÔöÇÔöÇÔöÇ */
+/* ─── ACADEMIC YEAR ─── */
 function getAY(dateStr) {
   if (!dateStr) return '';
   if (String(dateStr).length === 4) return String(dateStr);
@@ -1195,7 +1197,7 @@ function onAYearChange() {
 
 }
 
-/* ÔöÇÔöÇÔöÇ DATA ÔöÇÔöÇÔöÇ */
+/* ─── DATA ─── */
 function checkKadaluarsa(tanggal) {
   if(!tanggal) return 'aman';
   const d = new Date(tanggal);
@@ -1515,7 +1517,7 @@ function sampleData() {
   ];
 }
 
-/* ÔöÇÔöÇÔöÇ HELPERS ÔöÇÔöÇÔöÇ */
+/* ─── HELPERS ─── */
 function getJenisLabel(bidang, jenis) {
   if (!jenis) return '-';
   const groups = DEPT_JENIS[bidang] || [];
@@ -1543,12 +1545,12 @@ function logGDriveOpen(id, e) {
 }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmtDate(d) { if(!d)return'ÔÇö'; return new Date(d+'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
-function fmtDateTime(d) { if(!d)return'ÔÇö'; return new Date(d).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
+function fmtDate(d) { if(!d)return'—'; return new Date(d+'T00:00:00').toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'}); }
+function fmtDateTime(d) { if(!d)return'—'; return new Date(d).toLocaleString('id-ID',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}); }
 function statusBadge(status) { const c=STATUS_CFG[status]||STATUS_CFG.arsip; return `<span class="s-badge ${c.cls}"><i class="fas ${c.icon}"></i>${c.label}</span>`; }
 function now() { return new Date().toISOString().slice(0,10); }
 
-/* ÔöÇÔöÇÔöÇ NAVIGATION ÔöÇÔöÇÔöÇ */
+/* ─── NAVIGATION ─── */
 function setupNav() {
   document.querySelectorAll('.sb-link').forEach(link => {
     link.addEventListener('click', e => {
@@ -1614,7 +1616,12 @@ async function showPage(page) {
 
   if (page==='dashboard')  renderDashboard();
   if (page==='arsip')      { clearFilters(); renderArsipTable(); }
-  if (page==='dept')       renderDeptPage(currentDept);
+  if (page==='dept') {
+    const activeLink = document.getElementById('nav-' + currentDept);
+    const parentCluster = activeLink?.closest('.sb-cluster');
+    if (parentCluster) parentCluster.classList.add('open');
+    renderDeptPage(currentDept);
+  }
   if (page==='analytics')  renderAnalytics();
   if (page==='aktivitas')  renderActivity();
   if (page==='mahasiswa')  renderMahasiswaPage();
@@ -1730,7 +1737,7 @@ function updateBadges() {
   });
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DASHBOARD ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ DASHBOARD ═════ */
 function renderDashboard() {
   let data=arsip.filter(a=>!currentAY||a.ay===currentAY);
 
@@ -1777,12 +1784,14 @@ function renderRecentList(data) {
   const recent=[...data].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).slice(0,6);
   if(!recent.length){el.innerHTML='<p style="padding:20px;text-align:center;color:var(--t3)">Belum ada arsip</p>';return;}
   el.innerHTML=recent.map(a=>{
-    const d=DEPT[a.bidang]||{}; const f=getFormatCfg(a.format);
+    const bidangKey = a.bidang ? String(a.bidang).toLowerCase().replace(/[\s-]+/g, '_') : '';
+    const d = DEPT[a.bidang] || DEPT[bidangKey] || { label: a.bidang ? String(a.bidang).replace(/^bidang\s*/i, '') : 'Umum', color:'#3b82f6', icon:'fas fa-file' };
+    const f = getFormatCfg(a.format);
     return`<div class="recent-item" onclick="viewDetail('${a.id}')">
       <div class="ri-icon" style="background:${d.color||'#888'}18;color:${d.color||'#888'}"><i class="${d.icon||'fas fa-file'}"></i></div>
       <div class="ri-info">
         <div class="ri-title">${esc(a.judul)}</div>
-        <div class="ri-meta">${d.label||'ÔÇö'} ┬À ${getJenisLabel(a.bidang,a.jenis)} ┬À ${fmtDate(a.tanggal)} ${a.gdriveLink?`<i class="fab fa-google-drive" style="color:#4285f4"></i>`:''}</div>
+        <div class="ri-meta">${d.label||'—'} • ${getJenisLabel(a.bidang,a.jenis)} • ${fmtDate(a.tanggal)} ${a.gdriveLink?`<i class="fab fa-google-drive" style="color:#4285f4"></i>`:''}</div>
       </div>
     </div>`;
   }).join('');
@@ -1798,53 +1807,133 @@ function initDashCharts(data) {
 
   // Yearly Trend
   destroyChart(cYearlyLine);
-    const ctxYL=document.getElementById('chartYearlyLine')?.getContext('2d');
-    if(ctxYL){
-      let startY = parseInt(document.getElementById('trendStartY')?.value || '2021', 10);
-      let endY = parseInt(document.getElementById('trendEndY')?.value || '2025', 10);
-      
-      if (startY > endY) {
-        let temp = startY; startY = endY; endY = temp;
-      }
-      
-      let allChrono = [...allAYears()].reverse(); // sorted chronologically (2014 -> 2050)
-      
-      let sy = allChrono.filter(ay => {
-        let ayStart = parseInt(ay.split('/')[0], 10);
-        return ayStart >= startY && ayStart <= endY;
-      });
-      
-      const yCounts = sy.map(y => arsip.filter(a=>a.ay===y).length);
+  const ctxYL = document.getElementById('chartYearlyLine')?.getContext('2d');
+  if (ctxYL) {
+    const currYearNum = parseInt(currentAY, 10) || new Date().getFullYear();
+    const startInput = document.getElementById('trendStartY');
+    const endInput = document.getElementById('trendEndY');
+
+    if (endInput && (!endInput.value || parseInt(endInput.value, 10) < currYearNum)) {
+      endInput.value = currYearNum;
+    }
+    if (startInput && (!startInput.value || parseInt(startInput.value, 10) > parseInt(endInput?.value || currYearNum, 10))) {
+      startInput.value = Math.max(2014, (parseInt(endInput?.value || currYearNum, 10) - 4));
+    }
+
+    let startY = parseInt(startInput?.value || (currYearNum - 4), 10);
+    let endY = parseInt(endInput?.value || currYearNum, 10);
     
-    const g=ctxYL.createLinearGradient(0,0,0,240);g.addColorStop(0,'rgba(59,130,246,.35)');g.addColorStop(1,'rgba(59,130,246,0)');
-    cYearlyLine=new Chart(ctxYL,{type:'line',data:{labels:sy,datasets:[{label:'Total Arsip',data:yCounts,borderColor:'#3b82f6',backgroundColor:g,tension:.4,pointBackgroundColor:'#3b82f6',pointRadius:4,fill:true}]},options:chartOpts({plugins:{legend:{display:false}},scales:{x:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',font:{size:10}}},y:{grid:{color:'rgba(255,255,255,.05)'},ticks:{color:'#4f617d',precision:0},beginAtZero:true}}})})
+    if (startY > endY) {
+      let temp = startY; startY = endY; endY = temp;
+    }
+    
+    let allChrono = [...allAYears()].reverse(); // sorted chronologically (2014 -> 2050)
+    let sy = allChrono.filter(ay => {
+      let ayStart = parseInt(ay.split('/')[0], 10);
+      return ayStart >= startY && ayStart <= endY;
+    });
+
+    if (!sy.length) {
+      for (let y = startY; y <= endY; y++) sy.push(String(y));
+    }
+    
+    const yCounts = sy.map(y => arsip.filter(a => a.ay === y || a.ay?.startsWith(String(y))).length);
+  
+    const g = ctxYL.createLinearGradient(0, 0, 0, 240);
+    g.addColorStop(0, 'rgba(59,130,246,.35)');
+    g.addColorStop(1, 'rgba(59,130,246,0)');
+    cYearlyLine = new Chart(ctxYL, {
+      type: 'line',
+      data: {
+        labels: sy,
+        datasets: [{
+          label: 'Total Arsip',
+          data: yCounts,
+          borderColor: '#3b82f6',
+          backgroundColor: g,
+          tension: .4,
+          pointBackgroundColor: '#3b82f6',
+          pointRadius: 4,
+          fill: true
+        }]
+      },
+      options: chartOpts({
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { color: 'rgba(0,0,0,.04)' }, ticks: { color: '#64748b', font: { size: 10 } } },
+          y: { grid: { color: 'rgba(0,0,0,.04)' }, ticks: { color: '#64748b', precision: 0 }, beginAtZero: true }
+        }
+      })
+    });
   }
 
   destroyChart(cDoughnut);
-  const ctxD=document.getElementById('chartDoughnut')?.getContext('2d');
-  if(ctxD){
-    const dK=Object.keys(DEPT),
-          dL=dK.map(k=>DEPT[k].label),
-          dV=dK.map(k=>data.filter(a=>a.bidang===k).length),
-          dC=dK.map(k=>DEPT[k].color);
-    cDoughnut=new Chart(ctxD,{
-      type:'bar',
-      data:{labels:dL,datasets:[{label:'Total Arsip', data:dV,backgroundColor:dC,borderRadius:4}]},
-      options:chartOpts({
-        plugins:{legend:{display:false}},
-        scales:{
-          x:{grid:{display:false},ticks:{font:{size:9}}},
-          y:{beginAtZero:true,ticks:{precision:0}}
+  const ctxD = document.getElementById('chartDoughnut')?.getContext('2d');
+  if (ctxD) {
+    const ignoredKeys = ['lppm', 'umum', 'kepegawaian'];
+    const deptList = Object.keys(DEPT)
+      .filter(k => !ignoredKeys.includes(k))
+      .map(k => {
+        const rawLabel = DEPT[k].label || k;
+        let shortLabel = rawLabel.replace(/^Bidang\s+/i, '');
+        if (shortLabel.length > 26) shortLabel = shortLabel.substring(0, 24) + '...';
+        return {
+          key: k,
+          fullLabel: rawLabel,
+          label: shortLabel,
+          count: data.filter(a => a.bidang === k).length,
+          color: DEPT[k].color || '#3b82f6'
+        };
+      });
+
+    deptList.sort((a, b) => b.count - a.count);
+    const displayList = deptList.slice(0, 8);
+
+    cDoughnut = new Chart(ctxD, {
+      type: 'bar',
+      data: {
+        labels: displayList.map(d => d.label),
+        datasets: [{
+          label: 'Total Arsip',
+          data: displayList.map(d => d.count),
+          backgroundColor: displayList.map(d => d.color),
+          borderRadius: 6,
+          barThickness: 16
+        }]
+      },
+      options: chartOpts({
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              title: (items) => displayList[items[0].dataIndex]?.fullLabel || items[0].label,
+              label: (item) => ' ' + item.raw + ' Dokumen Arsip'
+            }
+          }
+        },
+        scales: {
+          x: {
+            beginAtZero: true,
+            grid: { color: 'rgba(0,0,0,.04)' },
+            ticks: { precision: 0, font: { size: 10 }, color: '#64748b' }
+          },
+          y: {
+            grid: { display: false },
+            ticks: { font: { size: 10, weight: '600' }, color: '#334155' }
+          }
         }
       })
-    })
+    });
   }
   destroyChart(cStatus);
   const ctxS=document.getElementById('chartStatus')?.getContext('2d');
   if(ctxS){const sL=['Aktif','Diproses','Selesai','Diarsipkan'],sK=['aktif','diproses','selesai','arsip'],sV=sK.map(s=>data.filter(a=>a.status===s).length),sC=['#22c55e','#f59e0b','#3b82f6','#94a3b8'];cStatus=new Chart(ctxS,{type:'doughnut',plugins:[ChartDataLabels],data:{labels:sL,datasets:[{data:sV,backgroundColor:sC.map(c=>c+'88'),borderColor:sC,borderWidth:2}]},options:chartOpts({plugins:{legend:{position:'bottom',labels:{color:'#8b9dbf',font:{size:10},padding:8}}},cutout:'65%'})})}
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ ARSIP TABLE ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ ARSIP TABLE ═════ */
 function onFilterDeptChange() {
   const dept=document.getElementById('filterDept').value;
   populateFilterJenis(dept,'filterJenis');
@@ -1893,7 +1982,7 @@ function renderArsipTable() {
   if(!tbody)return;
   if(!data.length){tbody.innerHTML='';empty?.classList.remove('hidden');if(info)info.textContent='Tidak ada arsip ditemukan.';return;}
   empty?.classList.add('hidden');
-  if(info)info.textContent=`${data.length} dari ${arsip.filter(a=>!currentAY||a.ay===currentAY).length} arsip ┬À TA ${currentAY}`;
+  if(info)info.textContent=`${data.length} dari ${arsip.filter(a=>!currentAY||a.ay===currentAY).length} arsip • TA ${currentAY}`;
 
   tbody.innerHTML=data.map((a,i)=>{
     const d=DEPT[a.bidang]||{label:a.bidang,color:'#888',icon:'fas fa-file'};
@@ -1904,7 +1993,7 @@ function renderArsipTable() {
       <td><span class="d-badge" style="background:${d.color}18;color:${d.color}; white-space: normal !important; text-align: left; line-height: 1.2; min-width: 120px; display: inline-block;"><i class="${d.icon}"></i>${d.label}</span></td>
       <td style="font-size:.78rem;color:var(--t2);"><div title="${getJenisLabel(a.bidang,a.jenis).replace(/"/g, '&quot;')}" style="white-space:normal; line-height:1.3; word-break:normal; overflow-wrap:break-word; font-size:0.72rem;">${getJenisLabel(a.bidang,a.jenis)}</div></td>
       <td style="font-size:.78rem;">${fmtDate(a.tanggal)}</td>
-      <td><span class="td-ta" style="white-space:normal;">${a.ay||'ÔÇö'}</span></td>
+      <td><span class="td-ta" style="white-space:normal;">${a.ay||'—'}</span></td>
       <td>${statusBadge(a.status)}</td>
       <td>${fmtBadge(a)}</td>
       <td><div class="act-group">
@@ -1922,7 +2011,7 @@ function clearFilters() {
   renderArsipTable();
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DEPT PAGE ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ DEPT PAGE ═════ */
 function renderDeptPage(dept) {
   if(!dept)return;
   const d=DEPT[dept];
@@ -1931,7 +2020,7 @@ function renderDeptPage(dept) {
   document.getElementById('deptBanner').style.cssText=`--dept-bg:${d.color}18;--dept-color:${d.color};background:linear-gradient(135deg,${d.color}12,transparent)`;
   document.getElementById('deptBannerIcon').innerHTML=`<i class="${d.icon}"></i>`;
   document.getElementById('deptBannerName').textContent=d.label;
-  document.getElementById('deptBannerSub').textContent=`Manajemen arsip bidang ${d.label} ┬À TA ${currentAY}`;
+  document.getElementById('deptBannerSub').textContent=`Manajemen arsip bidang ${d.label} • TA ${currentAY}`;
 
   // --- START RAB WIDGET LOGIC PER BIDANG ---
   let deptTotalRAB = 0, deptRealisasi = 0, deptDitolak = 0, deptSisa = 0;
@@ -3007,7 +3096,7 @@ function renderDeptTable() {
   }
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DEPT CHARTS ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ DEPT CHARTS ═════ */
 function initDeptCharts(dept,data,color) {
   const t1 = document.getElementById('deptChart1Title');
   const t2 = document.getElementById('deptChart2Title');
@@ -3246,7 +3335,7 @@ function initDeptCharts(dept,data,color) {
   }
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ ANALYTICS ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ ANALYTICS ═════ */
 function renderAnalytics() {
   document.getElementById('anSub1').textContent=`TA ${currentAY}`;
   destroyChart(cAnBar);
@@ -3275,7 +3364,7 @@ function renderDeptMatrix() {
   }).join('');
 }
 
-/* ÔöÇÔöÇÔöÇ CHART HELPER ÔöÇÔöÇÔöÇ */
+/* ─── CHART HELPER ─── */
 function destroyChart(c){try{c?.destroy()}catch{}}
 function chartOpts(extra={}) {
   return{
@@ -3334,7 +3423,7 @@ function chartOpts(extra={}) {
   };
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ FORM MODAL ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ FORM MODAL ═════ */
 function openForm(prefillDept) {
     document.getElementById('arsipForm').reset();
     document.getElementById('editId').value='';
@@ -3879,7 +3968,7 @@ async function deleteArsip(id) {
   else if(currentPage==='dept')renderDeptPage(currentDept);
   else if(currentPage==='analytics')renderAnalytics();
 }
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DETAIL MODAL ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ DETAIL MODAL ═════ */
 function viewDetail(id) {
   const a=arsip.find(x=>x.id===id); if(!a)return;
   const d=DEPT[a.bidang]||{};
@@ -3891,9 +3980,9 @@ function viewDetail(id) {
       <div class="detail-field" style="grid-column:1/-1"><label>Judul / Perihal</label><span style="font-size:.98rem;font-weight:700">${esc(a.judul)}</span></div>
       <div class="detail-field"><label>Bidang</label><span class="d-badge" style="background:${d.color||'#888'}18;color:${d.color||'#888'}"><i class="${d.icon||'fas fa-file'}"></i>${d.label||a.bidang}</span></div>
       <div class="detail-field"><label>Jenis Dokumen</label><span>${getJenisLabel(a.bidang,a.jenis)}</span></div>
-      <div class="detail-field"><label>Pengirim / Pembuat</label><span>${esc(a.pengirim||'ÔÇö')}</span></div>
+      <div class="detail-field"><label>Pengirim / Pembuat</label><span>${esc(a.pengirim||'—')}</span></div>
       <div class="detail-field"><label>Status</label>${statusBadge(a.status)}</div>
-      <div class="detail-field"><label>Tahun Akademik</label><span class="td-ta">${a.ay||'ÔÇö'}</span></div>
+      <div class="detail-field"><label>Tahun Akademik</label><span class="td-ta">${a.ay||'—'}</span></div>
       <div class="detail-field" style="grid-column:1/-1">
         <label>Dokumen Google Drive</label>
         ${a.gdriveLink && a.gdriveLink !== 'UPLOADING'
@@ -3909,7 +3998,7 @@ function viewDetail(id) {
             </div>
             ${a.fileName?`<div style="margin-top:6px;font-size:.75rem;color:var(--t3)"><i class="${f.icon}" style="color:${f.color}"></i> ${esc(a.fileName)}</div>`:''}
           `
-          :`<span style="color:var(--t3);font-size:.84rem">Belum ada file dilampirkan ÔÇö Edit arsip untuk menambahkan link Google Drive.</span>`}
+          :`<span style="color:var(--t3);font-size:.84rem">Belum ada file dilampirkan — Edit arsip untuk menambahkan link Google Drive.</span>`}
       </div>
     </div>
     ${a.keterangan?`<div><label style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3)">Keterangan</label><div class="detail-keterangan">${esc(a.keterangan)}</div></div>`:''}
@@ -3922,7 +4011,7 @@ function viewDetail(id) {
 function closeDetail(){ document.getElementById('overlayDetail').classList.remove('open'); }
 function closeDetailOut(e){ if(e.target===document.getElementById('overlayDetail'))closeDetail(); }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ DOCUMENT VIEWER (GDrive Preview) ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ DOCUMENT VIEWER (GDrive Preview) ═════ */
 function getGDriveEmbedUrl(url) {
   if(!url)return null;
   // https://drive.google.com/file/d/ID/view ÔåÆ /preview
@@ -3963,7 +4052,7 @@ function openInGDrive() {
   else toast('Tidak ada link Google Drive.','error');
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ ACTIVITY ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ ACTIVITY ═════ */
 function log(type,text){
   const item = { id: genId(), type, text, time: new Date().toISOString() };
   activity.unshift(item);
@@ -3997,7 +4086,7 @@ async function clearActivity(){
   }
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ EXPORT ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ EXPORT ═════ */
 function toggleExportMenu(){ document.getElementById('exportMenu').classList.toggle('open'); }
 function getFilteredData(){ return arsip.filter(a=>!currentAY||a.ay===currentAY).sort((a,b)=>new Date(b.tanggal)-new Date(a.tanggal)); }
 
@@ -4011,7 +4100,7 @@ function exportJSON() {
   log('edit',`Backup JSON: ${fn}`);save();toast('Backup JSON berhasil diunduh!','success');
 }
 
-/* ÔöÇÔöÇÔöÇ TOAST ÔöÇÔöÇÔöÇ */
+/* ─── TOAST ─── */
 function toast(msg,type='success') {
   const stack=document.getElementById('toastStack'),el=document.createElement('div');
   el.className=`toast-item ${type}`;
@@ -4020,7 +4109,7 @@ function toast(msg,type='success') {
   setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(20px)';el.style.transition='all .3s';setTimeout(()=>el.remove(),300);},3200);
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ MASTER DATA MAHASISWA ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ MASTER DATA MAHASISWA ═════ */
 function renderMahasiswaPage() {
   const grid=document.getElementById('mhsGrid'), empty=document.getElementById('mhsEmpty');
   const q=document.getElementById('mhsSearch').value.toLowerCase();
@@ -4259,7 +4348,7 @@ async function deleteMhs(id) {
   mahasiswa=mahasiswa.filter(x=>x.id!==id); save(); renderMahasiswaPage(); updateBadges(); toast('Mahasiswa dihapus','success');
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ MASTER DATA SDM ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ MASTER DATA SDM ═════ */
 function renderSdmPage() {
   const grid=document.getElementById('sdmGrid'), empty=document.getElementById('sdmEmpty');
   const q=document.getElementById('sdmSearch').value.toLowerCase();
@@ -4367,7 +4456,7 @@ async function deleteSdm(id) {
   sdm=sdm.filter(x=>x.id!==id); save(); renderSdmPage(); updateBadges(); toast('SDM dihapus','success');
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ HELPER MASTER DATA ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ HELPER MASTER DATA ═════ */
 function getPersonColor(status) {
   if(['aktif'].includes(status)) return '#22c55e';
   if(['lulus','tugas_belajar'].includes(status)) return '#3b82f6';
@@ -4391,7 +4480,7 @@ function viewPersonDetail(id, type) {
       <div class="profile-img-wrap" style="width:120px;height:120px;margin:0"><img src="${convertGDriveImage(m.foto)}" class="profile-img" onerror="this.outerHTML='<i class=\\'fas fa-user profile-img-fallback\\' style=\\'font-size:3.5rem\\'></i>'"/></div>
       <div>
         <div style="font-weight:700;font-size:1.1rem;color:var(--t1)">${esc(m.nama)}</div>
-        <div style="font-size:.85rem;color:var(--t2)">${type==='mhs' ? 'NIM: '+esc(m.nim) + ' &bull; Semester ' + esc(m.semester||'ÔÇö') : 'NIDN/NIK: '+esc(m.nik)}</div>
+        <div style="font-size:.85rem;color:var(--t2)">${type==='mhs' ? 'NIM: '+esc(m.nim) + ' &bull; Semester ' + esc(m.semester||'—') : 'NIDN/NIK: '+esc(m.nik)}</div>
         <div style="font-size:.85rem;color:var(--t2)">${type==='mhs' ? 'Tgl Masuk: '+fmtDate(m.angkatan) : esc(m.jabatan)}</div>
       </div>
     </div>
@@ -4399,19 +4488,19 @@ function viewPersonDetail(id, type) {
     <div style="margin-bottom:10px;font-weight:600;color:var(--t1)"><i class="fas fa-address-book" style="color:var(--primary);margin-right:6px"></i> Biodata Lengkap</div>
     <table style="width:100%;border-collapse:collapse;font-size:.85rem;margin-bottom:20px">
       <tbody>
-        <tr><td style="padding:6px 0;width:35%;color:var(--t3)">Tempat, Tanggal Lahir</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.tempatLahir||'ÔÇö')}, ${fmtDate(m.tanggalLahir)}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3)">Jenis Kelamin</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.jk||'ÔÇö')}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3)">Agama</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.agama||'ÔÇö')}</td></tr>
-        ${type==='mhs' ? `<tr><td style="padding:6px 0;color:var(--t3)">Nama Orang Tua</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.namaOrtu||'ÔÇö')}</td></tr>` : ''}
-        <tr><td style="padding:6px 0;color:var(--t3)">No. Handphone (WA)</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.noHp||'ÔÇö')}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3)">Email</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.email||'ÔÇö')}</td></tr>
-        <tr><td style="padding:6px 0;color:var(--t3);vertical-align:top">Alamat Lengkap</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.alamat||'ÔÇö')}</td></tr>
+        <tr><td style="padding:6px 0;width:35%;color:var(--t3)">Tempat, Tanggal Lahir</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.tempatLahir||'—')}, ${fmtDate(m.tanggalLahir)}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3)">Jenis Kelamin</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.jk||'—')}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3)">Agama</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.agama||'—')}</td></tr>
+        ${type==='mhs' ? `<tr><td style="padding:6px 0;color:var(--t3)">Nama Orang Tua</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.namaOrtu||'—')}</td></tr>` : ''}
+        <tr><td style="padding:6px 0;color:var(--t3)">No. Handphone (WA)</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.noHp||'—')}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3)">Email</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.email||'—')}</td></tr>
+        <tr><td style="padding:6px 0;color:var(--t3);vertical-align:top">Alamat Lengkap</td><td style="padding:6px 0;color:var(--t1);font-weight:500">${esc(m.alamat||'—')}</td></tr>
       </tbody>
     </table>
     
     <div style="margin-bottom:10px;font-weight:600;color:var(--t1)"><i class="fas fa-notes-medical" style="color:#22c55e;margin-right:6px"></i> Jaminan Kesehatan</div>
     <div style="background:var(--bg3);padding:12px;border-radius:8px;font-size:.85rem;color:var(--t1);margin-bottom:20px;border:1px solid var(--b1)">
-      <span style="color:var(--t3)">No. BPJS / Jaminan:</span> <span style="font-weight:600">${esc(m.noBpjs||'ÔÇö')}</span>
+      <span style="color:var(--t3)">No. BPJS / Jaminan:</span> <span style="font-weight:600">${esc(m.noBpjs||'—')}</span>
     </div>
     
     <div style="margin-bottom:10px;font-weight:600;color:var(--t1)"><i class="fas fa-graduation-cap" style="color:var(--primary);margin-right:6px"></i> Catatan / Riwayat</div>
@@ -4463,7 +4552,7 @@ function previewImage(event, previewId, hiddenId) {
   reader.readAsDataURL(file);
 }
 
-/* ÔòÉÔòÉÔòÉÔòÉÔòÉ AKREDITASI (BAN-PT & LAM-PTKes) ÔòÉÔòÉÔòÉÔòÉÔòÉ */
+/* ═════ AKREDITASI (BAN-PT & LAM-PTKes) ═════ */
 
 // ==================== BAN-PT ====================
 let currentBanptTab = 1;
@@ -10469,3 +10558,25 @@ async function syncRumahTanggaFromSumber(silent = false) {
 setTimeout(() => {
   try { syncRumahTanggaFromSumber(true); } catch(e) {}
 }, 350);
+
+// ── SIDEBAR CLUSTER ACCORDION HELPERS ──────────────────────
+window.toggleSidebarCluster = function(clusterId) {
+  const el = document.getElementById(clusterId);
+  if (el) {
+    el.classList.toggle('open');
+  }
+};
+
+window.handleTopbarSearch = function(e) {
+  const val = document.getElementById('topbarSearch')?.value.trim();
+  if (e.key === 'Enter' || e.type === 'change') {
+    if (currentPage !== 'arsip') {
+      showPage('arsip');
+    }
+    const input = document.getElementById('searchInput');
+    if (input) {
+      input.value = val;
+      renderArsipTable();
+    }
+  }
+};

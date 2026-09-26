@@ -189,4 +189,31 @@ Dokumen database utama disimpan pada Firestore Proyek `bidang-rumah-tangga`:
    - Simpan, dan data akan langsung tersimpan di cloud Firestore serta terupdate seketika di semua komputer.
 
 ---
+
+---
+
+## 📜 7. Kronologi Percakapan & Solusi: Fase 3 (Penyempurnaan Tampilan, Grafik, Klaster Sidebar & Mojibake)
+
+### 1. Masukan & Perbaikan Tampilan yang Diterapkan (27 September 2026)
+- **Pembersihan Karakter Rusak (Mojibake)**:
+  - Karakter non-UTF8 seperti `ÔÇö`, `┬À`, dan `ÔÇÖ` pada daftar *Arsip Terbaru* dan metadata dibersihkan total dan digantikan oleh entitas bullet (`•`) dan tanda hubung bersih.
+- **Pembaruan Grafik Tren Arsip Tahunan**:
+  - Batas rentang tahun disesuaikan secara dinamis agar mencakup Tahun Akademik aktif (`TA 2026`), sehingga kurva 51 arsip aktif langsung terplot secara akurat dan tidak datar pada angka 0.
+- **Pembaruan Grafik Distribusi Bidang (Horizontal Bar Chart)**:
+  - Grafik batang vertikal dengan 20+ label miring yang saling bertabrakan diganti menjadi **Horizontal Bar Chart (`indexAxis: 'y'`)**.
+  - Menampilkan bidang dengan dokumen terbanyak di posisi teratas (`Laboratorium: 35`, `SIM-TI: 10`, `Kemahasiswaan: 1`, dsb.) dengan label pendek yang rapi dan tanpa potongan teks.
+- **Pengelompokan Sidebar Berbasis 4 Klaster (Accordion)**:
+  - 21 departemen yang semula berjejer panjang dikelompokkan ke dalam 4 Klaster Terpadu:
+    1. 🎓 **Tridharma & Akademik** (Akademik, SIPENAS, Kemahasiswaan, Ketenagaan/SDM, Penelitian, PkM).
+    2. 🏢 **Tata Kelola & Rumah Tangga** (Rumah Tangga/SIM-RT, Keuangan, Sarana Prasarana, Kepegawaian, Umum, Kelembagaan, Administrasi).
+    3. 💻 **Sistem, IT & Penunjang** (SIM-TI, IT, Sistem Informasi, Laboratorium, Perpustakaan, Humas, Promosi, Kerjasama).
+    4. 🏆 **Penjaminan Mutu & Akreditasi** (SPMI, AMI).
+  - Setiap klaster dapat di-expand/collapse secara interaktif, dan secara otomatis membuka klaster terkait saat menu departemen di dalamnya diakses.
+- **Global Search di Topbar Header**:
+  - Ditambahkan kotak pencarian cerdas di topbar (`#topbarSearch`) yang langsung menghubungkan pengguna ke pencarian tabel arsip dengan menekan tombol Enter.
+- **Penyegaran Hero Banner**:
+  - Banner utama dibuat lebih ramping dan profesional dengan tombol aksi cepat (*Upload Arsip* dan *Semua Arsip*).
+- **Cache Busting**:
+  - Versi aset diperbarui ke `?v=20260927_superapp_v8` pada `index.html`.
+
 *Dokumen ini merupakan arsip riwayat percakapan resmi, keputusan teknis, dan dokumentasi arsitektur pengembangan sistem Akademi Akupunktur Surabaya (AAS).*
