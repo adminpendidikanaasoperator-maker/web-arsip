@@ -1,158 +1,192 @@
 # 📋 DOKUMENTASI LENGKAP & CATATAN PERCAKAPAN PENGEMBANGAN
-## SIPENAS (Sistem Informasi & Arsip Digital Bidang Pendidikan) & Integrasi SIMARSIP
+## Ekosistem SIMARSIP, SIPENAS (Bidang Pendidikan), dan SIM-RT (Bidang Rumah Tangga & Sarana)
 ### Akademi Akupunktur Surabaya (AAS)
-**Terakhir Diperbarui:** 26 September 2026
+**Terakhir Diperbarui:** 27 September 2026
 
 ---
 
-## 📌 1. Ikhtisar Proyek & Tujuan
-Sistem Informasi dan Repositori Digital **Bidang Pendidikan (SIPENAS)** dikembangkan untuk mendigitalkan, mengarsipkan, dan memvisualisasikan seluruh tata kelola pendidikan vokasi D-III Akupunktur di Akademi Akupunktur Surabaya. Sistem ini terintegrasi penuh secara realtime dua arah dengan sistem induk arsip kampus **SIMARSIP** di [https://arsip.akademiakupunktursurabaya.web.id/](https://arsip.akademiakupunktursurabaya.web.id/).
+## 📌 1. Ikhtisar Proyek & Ekosistem Terpadu AAS
+Sistem Informasi Manajemen Arsip (**SIMARSIP**) di [https://arsip.akademiakupunktursurabaya.web.id/](https://arsip.akademiakupunktursurabaya.web.id/) berfungsi sebagai portal induk arsip dan aplikasi terpadu kampus Akademi Akupunktur Surabaya. Di dalam sistem induk ini terhubung modul-modul operasional yang masing-masing berdiri sebagai web application independen dan tersinkronisasi secara realtime lintas komputasi:
+1. **SIPENAS (Bidang Pendidikan)**: Repositori kurikulum OBE, RPS, modul, soal OSCE, dan akreditasi pendidikan vokasi.
+2. **SIM-RT (Bidang Rumah Tangga & Sarana)**: Pengelolaan operasional kas kecil (*petty cash*), anggaran operasional (*RAB*), tagihan utilitas & pemeliharaan gedung, serta inventaris ATK & aset kampus.
+3. **Modul Akademik, Kemahasiswaan, Kepegawaian, Laboratorium, dan Tata Kelola Arsip Kampus**.
+
+Seluruh aplikasi didukung infrastruktur multi-cloud: **GitHub** (versi kode), **Firebase Cloud Firestore & Hosting** (database realtime & CDN), serta **Cloudflare Workers & Pages** (edge computing & failover global).
 
 ---
 
-## 📜 2. Kronologi Lengkap Riwayat Permintaan & Solusi
+## 📜 2. Kronologi Percakapan & Solusi: Fase 1 (Bidang Pendidikan - SIPENAS)
 
-### 1. Pembuatan Web App Bidang Pendidikan (SIPENAS)
+### 1. Pembangunan Web App Bidang Pendidikan (SIPENAS)
 - **Kebutuhan**: Membangun portal mandiri penyimpanan berkas pendidikan AAS berbasis cloud.
-- **Implementasi**:
-  - Stack teknologi: React 19, Vite, Tailwind CSS, Lucide React, Chart.js.
-  - Implementasi 10 kategori resmi pendidikan vokasi kesehatan:
-    1. Kurikulum & RPS OBE
-    2. Modul & Bahan Ajar
-    3. Kalender & Jadwal Kuliah
-    4. Soal Ujian & OSCE
-    5. SK Beban Mengajar Dosen
-    6. Berita Acara & Presensi Kuliah
-    7. Panduan Praktik Klinik & RS
-    8. Akreditasi & Dokumen LAM-PTKes
-    9. Evaluasi & Notulen Rapat Monev
-    10. Dokumen Lainnya / Kebijakan
+- **Implementasi**: React 19, Vite, Tailwind CSS, Lucide React, Chart.js dengan 10 kategori resmi pendidikan vokasi kesehatan (Kurikulum, RPS, Modul, Jadwal, Soal Ujian/OSCE, SK Mengajar, BAP/Presensi, Praktik Klinik, Akreditasi LAM-PTKes, Evaluasi/Monev).
 
-### 2. Manajemen Pengguna (Users) & Pengaturan Sistem (Settings)
-- **Kebutuhan**: Panel otorisasi pengguna dan panel konfigurasi kuota cloud.
-- **Implementasi**:
-  - `UsersView.jsx`: Pengelolaan akun pengguna, penetapan peran (*Super Admin*, *Admin Pendidikan*, *Dosen Pengampu*, *Staf Akademik*), filter pencarian, dan modal tambah/edit pengguna.
-  - `SettingsView.jsx`: Monitoring kapasitas penyimpanan cloud, pengaturan integrasi multi-cloud, cadangan data JSON, dan parameter institusi.
+### 2. Manajemen Pengguna & Pengaturan Sistem
+- **Implementasi**: Panel peran otorisasi pengguna (`UsersView.jsx`), manajemen kuota cloud dan parameter instansi (`SettingsView.jsx`).
 
-### 3. Pembersihan Data Dummy Awal (Production Ready)
-- **Kebutuhan**: Memastikan sistem beroperasi tanpa data pura-pura/contoh.
-- **Implementasi**:
-  - Seluruh mock data dinonaktifkan (`INITIAL_ARCHIVE_FILES = []`).
-  - Sistem disiapkan dalam status siap pakai (*clean slate*) murni membaca database.
+### 3. Pembersihan Data Dummy Awal
+- **Implementasi**: Seluruh mock data dinonaktifkan (`INITIAL_ARCHIVE_FILES = []`), sistem beroperasi murni membaca database.
 
 ### 4. Konfigurasi Autentikasi Firebase & Multi-Cloud Deployment
-- **Kebutuhan**:
-  - Akun login admin resmi: `adminpendidikanaas.operator@gmail.com`
-  - Deployment ke Firebase Hosting (`bidang-pendidikan.web.app`) & Cloudflare Pages/Workers (`bidang-pendidikan.adminpendidikanaas-operator.workers.dev`).
-  - Push ke GitHub: `https://github.com/adminpendidikanaasoperator-maker/Bidang-Pendidikan`.
+- **Implementasi**: Akun admin `adminpendidikanaas.operator@gmail.com`, Firebase Hosting (`bidang-pendidikan.web.app`), Cloudflare Workers (`bidang-pendidikan.adminpendidikanaas-operator.workers.dev`), GitHub `adminpendidikanaasoperator-maker/Bidang-Pendidikan`.
 
-### 5. Penomoran Dokumen Otomatis & Atribut Tahun Akademik
-- **Kebutuhan**: Format penomoran dokumen resmi unik dan pencatatan tahun akademik berstandar akreditasi.
-- **Implementasi**:
-  - Generator format ID unik: `DOC-PEND-[TAHUN]-[RANDOM]` (contoh: `DOC-PEND-2026-8492`).
-  - Atribut `academicYear` (misal: `2026/2027 Ganjil`, `2025/2026 Genap`) terintegrasi pada seluruh form upload, filter, tabel, dan cetak PDF.
+### 5. Penomoran Dokumen & Tahun Akademik
+- **Implementasi**: Format ID unik `DOC-PEND-[TAHUN]-[RANDOM]` dan atribut tahun akademik berstandar akreditasi.
 
-### 6. Grafik & Visualisasi Statistik di Setiap Modul
-- **Kebutuhan**: Visualisasi analitik interaktif di dashboard, repositori berkas, dan manajemen pengguna.
-- **Implementasi**:
-  - Visualisasi 10 Kategori, Tren Tahun Akademik, Proporsi Semester I-VI, Format Berkas, Rasio Peran Dosen/Tendik, dan Bar Kuota Cloud.
+### 6. Grafik & Visualisasi Statistik
+- **Implementasi**: Grafik distribusi kategori, tren semester, dan bar kuota cloud.
 
 ### 7. Integrasi Penuh ke Portal Induk (SIMARSIP)
-- **Kebutuhan**: Menampilkan menu Pendidikan, grafik analitik, submenu sidebar, dan sinkronisasi realtime pada website master [https://arsip.akademiakupunktursurabaya.web.id/](https://arsip.akademiakupunktursurabaya.web.id/).
-- **Implementasi**:
-  - Pembuatan dropdown menu sidebar 14 item untuk Pendidikan.
-  - Pembuatan 4 sub-tab utama di halaman Pendidikan SIMARSIP:
-    1. *Dashboard & Grafik*
-    2. *Kelola Berkas Arsip (10 Kategori)*
-    3. *Struktur Kurikulum OBE & RPS*
-    4. *Web App SIPENAS Utuh (Embedded Iframe)*
-  - Terhubung langsung ke Firestore collection `sipenas_archive_files`.
+- **Implementasi**: 14 submenu pendidikan di sidebar SIMARSIP, 4 sub-tab utama (Dashboard, Repositori Berkas, Kurikulum OBE/RPS, SIPENAS Embedded), terhubung ke Firestore `sipenas_archive_files`.
 
-### 8. Sinkronisasi Realtime Lintas Komputer / Perangkat
-- **Kebutuhan**: Memastikan setiap berkas yang diunggah/diubah di satu komputer langsung terbaca seketika di komputer lain tanpa perlu refresh halaman.
-- **Implementasi**:
-  - Implementasi listener Firestore aktif (`onSnapshot`).
-  - Indikator status koneksi hijau berkedip *"⚡ Realtime Live (Firestore)"* pada antarmuka.
-
-### 9. Penghapusan Data Dummy Kurikulum & Penegasan Tombol Sidebar
-- **Kebutuhan Pengguna**:
-  - *"Di simarsip kenapa bidang pendidikan ada datanya padahal di portal bidang pendidikan datanya kosong, hapus data dumy. pastikan data bidang pendidikan kosong sesuai dengan portal pendidikan."*
-  - *"Maksud saya yang dihapus kurikulum dumynyabukan tombol disidebarnya"*
-- **Akar Masalah**:
-  - Di `DATA WEB ARSIP/app.js` sebelumnya terdapat konstanta `FALLBACK_PENDIDIKAN_COURSES` berisikan 12 baris mata kuliah statis (`AKP101` - `AKP601`). Hal ini menyebabkan tab *Struktur Kurikulum OBE & RPS* menampilkan 12 baris data meskipun database riil kosong.
-- **Solusi yang Diterapkan**:
-  - **Tombol Sidebar Tetap Utuh**: Menu sidebar **"Struktur Mata Kuliah & RPS"** dan kategori **"Kurikulum & RPS OBE"** tetap dipertahankan dan aktif 100%.
-  - **Tab Navigasi Tetap Utuh**: Tab **"Struktur Kurikulum OBE & RPS"** tetap tersedia dan berfungsi.
-  - **Data Dummy Dihapus Total**: `FALLBACK_PENDIDIKAN_COURSES` dihapus dari `app.js`. Tabel kurikulum kini secara murni menampilkan status kosong bersih (*0 data*):
-    `"Belum Ada Dokumen Kurikulum & RPS - Data kosong (0 berkas) murni sesuai database Portal Bidang Pendidikan."`
-  - Tabel baru akan terisi otomatis apabila berkas RPS/Kurikulum asli diunggah ke dalam sistem.
-  - Dilakukan cache-busting `app.js?v=20260926_kurikulum_clean`, git commit, git push, dan deploy ke Firebase Hosting `arsip-aas`.
+### 8. Penghapusan Data Dummy Kurikulum & Konsistensi Sidebar
+- **Catatan Permintaan**: Pengguna meminta dummy kurikulum dihapus tanpa menghilangkan tombol menu di sidebar.
+- **Implementasi**: `FALLBACK_PENDIDIKAN_COURSES` dihapus total dari `app.js`. Tombol menu sidebar tetap utuh dan tabel menampilkan status 0 data bersih (*clean slate*).
 
 ---
 
-## 🔑 3. Kredensial & Konfigurasi Teknis
+## 📜 3. Kronologi Percakapan & Solusi: Fase 2 (Bidang Rumah Tangga & Sarana)
 
-### A. Akun Administrator Utama
-- **Email**: `adminpendidikanaas.operator@gmail.com`
-- **Password**: `B@gus18081992`
-- **Peran**: Super Administrator / Penanggung Jawab Bidang Pendidikan AAS
+### 1. Permintaan: *"jangan kayak gini tampilannya"* & *"di dalam arsip.akademiakupunktursurabaya.web.id ada aplikasi yang tersinkron didalamnya selain Bidang Rumah Tangga"*
+- **Instruksi Pengguna**: Memastikan bahwa modul lain yang sudah aktif dan tersinkron (Bidang Pendidikan, Akademik, Lab, dsb.) tidak boleh rusak, tertimpa, atau hilang saat modul Rumah Tangga dipasang.
+- **Solusi**:
+  - Seluruh modul yang ada dipertahankan 100% tanpa mengubah fungsi modul lain.
+  - Modul Bidang Rumah Tangga dipasang sebagai departemen mandiri dengan tab-tab navigasi khusus.
 
-### B. Proyek Firebase Cloud
-- **Portal Bidang Pendidikan**:
-  - Project ID: `bidang-pendidikan`
-  - Storage Bucket: `bidang-pendidikan.firebasestorage.app`
-  - Koleksi Firestore Utama: `sipenas_archive_files`
-- **Portal Master SIMARSIP**:
-  - Project ID: `arsip-aas`
-  - Hosting: `https://arsip-aas.web.app` $\rightarrow$ `https://arsip.akademiakupunktursurabaya.web.id/`
+### 2. Permintaan: *"pasang modul bidang rumah tangga"* & *"Belum keluar pastikan juga tersinkron ke github, firebase dan cloudflare bidang rumah tangga juga"*
+- **Instruksi Pengguna**: Memasang modul operasional Bidang Rumah Tangga ke dalam SIMARSIP dan memastikan source code tersinkron ke GitHub, Firebase Hosting, dan Cloudflare.
+- **Solusi**:
+  - Dibuat integrasi tab Bidang Rumah Tangga di `DATA WEB ARSIP/index.html` dan logika di `DATA WEB ARSIP/app.js`.
+  - Aplikasi mandiri `APP BIDANG RUMAH TANGGA` di-build dan dideploy ke:
+    - GitHub: `adminpendidikanaasoperator-maker/BIDANG-RUMAH-TANGGA.git`
+    - Firebase Hosting: `https://gen-lang-client-0061932363.web.app` (Project ID: `bidang-rumah-tangga`)
+    - Cloudflare Pages: `https://bidang-rumah-tangga.pages.dev`
 
-### C. Repositori GitHub
-1. **SIPENAS (App Bidang Pendidikan)**:
-   - Git: `https://github.com/adminpendidikanaasoperator-maker/Bidang-Pendidikan.git`
+### 3. Permintaan: *"https://dash.cloudflare.com/221cad940bc0594c322d0510e19bba5e/workers/services/view/bidang-rumah-tangga/production bro sambungkan ke cloudflare ini juga"*
+- **Instruksi Pengguna**: Menghubungkan dan men-deploy langsung ke Cloudflare Worker Service `bidang-rumah-tangga`.
+- **Solusi**:
+  - Mengonfigurasi `wrangler.toml` dan `worker.js` di direktori `APP BIDANG RUMAH TANGGA`.
+  - Menjalankan `wrangler deploy` ke akun Cloudflare resmi pengguna.
+  - Endpoint Worker aktif: `https://bidang-rumah-tangga.adminpendidikanaas-operator.workers.dev` (Versi deployment `4f8443a1`).
+
+### 4. Permintaan: *"tampilkan sidebar bidang rumah tangga ke arsip.akademiakupunktursurabaya.web.id"* & *"belum muncul side bar rumah tangga di arsip... pastikan sidebar lama terhapus dan muncul sidebar bidang rumah tangga"*
+- **Instruksi Pengguna**: Mengganti kategori lama di sidebar (yang tadinya berisi sub-kategori standar borang akreditasi Kriteria 6) menjadi menu navigasi operasional Bidang Rumah Tangga yang sesungguhnya.
+- **Solusi**:
+  - Memperbarui `DEPT_JENIS['rumah_tangga']` pada `DATA WEB ARSIP/app.js` menjadi 6 menu operasional nyata:
+    1. **Dashboard & Analitik RT**
+    2. **Buku Kas Kecil (Petty Cash)**
+    3. **Anggaran Operasional (RAB)**
+    4. **Tagihan Utilitas & Pemeliharaan**
+    5. **Inventaris ATK & Aset**
+    6. **Portal Utuh Bidang Rumah Tangga**
+  - Mengaitkan event handler navigasi sidebar agar ketika salah satu item diklik, SIMARSIP langsung membuka tampilan Bidang Rumah Tangga dan mengaktifkan sub-tab yang sesuai.
+
+### 5. Permintaan: *"pastikan sinkron secara realtime, datanya nol kenapa muncul grafik. pastikan datanya kosong. hapus scriptnya bila perlu. mengganggu kalau kayak gini. di portal bidang rumah tangga tidak ada datanya, di arsip.akademiakupunktursurabaya.web.id kok ada. hapus semua data dumy discript maupun dimana saja. pastikan portal bidang rumah tangga bisa dibuka di dekstop lain"*
+- **Instruksi Pengguna**:
+  1. Hapus seluruh data dummy (mock data) di SIMARSIP maupun script mana pun.
+  2. Jika data masih 0 (kosong), **JANGAN tampilkan grafik** karena membingungkan dan mengganggu. Sembunyikan grafik sepenuhnya sampai ada data transaksi riil.
+  3. Pastikan sinkronisasi realtime dua arah dengan Firestore portal Bidang Rumah Tangga (`sim_rt_database/current_state`).
+  4. Pastikan portal Bidang Rumah Tangga dapat dibuka di desktop / laptop komputer lain tanpa kendala pemblokiran (CORS / iframe).
+- **Solusi Komprehensif yang Diterapkan**:
+  - **Pembersihan Data Dummy Total**:
+    - Menghapus lebih dari 300 baris mock transaksi kas kecil (Rp 5.000.000, bayar galon Aqua, dsb.), mock RAB (Rp 18.000.000), mock tagihan utilitas (PLN, PDAM, Internet Rp 8.450.000), dan 8 item inventaris ATK statis dari konstanta `SIMRT_DEFAULT_DATA` di `DATA WEB ARSIP/app.js`.
+    - Mengganti nilai default menjadi array kosong: `pettyCashTransactions: []`, `budgets: []`, `bills: []`, `inventoryATK: []`, `cashOpnameReports: []`.
+    - Stat card di HTML langsung diinisialisasi ke nilai awal `Rp 0` dan `0 Item (0 Unit)`.
+    - Membersihkan cache lama di `localStorage.getItem('sim_rt_data')` secara otomatis melalui script pembersih versi.
+  - **Penyembunyian Grafik Jika Data Berjumlah 0**:
+    - Memodifikasi fungsi `initRumahTanggaCharts()` di `DATA WEB ARSIP/app.js`.
+    - Jika total pengeluaran kas kecil = 0, saldo = 0, dan total tagihan utilitas = 0, maka seluruh instance Chart.js dihancurkan (`chart.destroy()`), kontainer grid grafik `#rtChartsGrid` disembunyikan sepenuhnya (`display: none`), dan ditampilkan kontainer `#rtChartsEmptyState` yang bersih dengan notifikasi:
+      *"Grafik Analitik Dinonaktifkan Sementara - Belum ada data transaksi keuangan atau tagihan operasional Rumah Tangga yang tercatat. Grafik visual akan otomatis aktif dan terhitung seketika data transaksi riil diinput ke dalam sistem."*
+  - **Sinkronisasi Realtime Firestore Aktif**:
+    - Mengarahkan `syncRumahTanggaFromSumber()` ke koleksi Firestore `sim_rt_database`, dokumen `current_state` (proyek Firebase `bidang-rumah-tangga`).
+    - Memasang listener `docRef.onSnapshot(...)` aktif sehingga data langsung tersinkronisasi seketika antar-perangkat tanpa perlu reload manual.
+  - **Dapat Diakses di Komputer / Desktop Lain**:
+    - Memperbarui file `_headers` dan `worker.js` pada `APP BIDANG RUMAH TANGGA` dengan menambahkan header `Access-Control-Allow-Origin: *` dan menghapus `X-Frame-Options: SAMEORIGIN` (menggunakan CSP modern `frame-ancestors *` dan `Cross-Origin-Resource-Policy: cross-origin`).
+    - Sekarang portal dapat dibuka langsung di browser desktop mana pun dan dapat di-embed di dalam SIMARSIP tanpa diblokir oleh browser.
+  - **Deployment & Cache Busting**:
+    - File `DATA WEB ARSIP/index.html` diperbarui dengan tag versi `?v=20260927_rt_clean_v7`.
+    - Di-commit dan di-push ke GitHub master, lalu dideploy ke Firebase Hosting `arsip-aas`.
+    - Repositori `APP BIDANG RUMAH TANGGA` di-commit dan di-push ke GitHub, dideploy ke Cloudflare Worker, Cloudflare Pages, dan Firebase Hosting.
+
+---
+
+## 🔑 4. Ringkasan Kredensial & Endpoint Multi-Cloud
+
+### A. Repositori GitHub
+1. **SIMARSIP (Portal Induk Master AAS)**:
+   - URL: `https://github.com/adminpendidikanaasoperator-maker/web-arsip.git`
    - Branch: `main`
-2. **SIMARSIP (DATA WEB ARSIP)**:
-   - Git: `https://github.com/adminpendidikanaasoperator-maker/web-arsip.git`
+2. **SIM-RT (Bidang Rumah Tangga & Sarana AAS)**:
+   - URL: `https://github.com/adminpendidikanaasoperator-maker/BIDANG-RUMAH-TANGGA.git`
+   - Branch: `main`
+3. **SIPENAS (Bidang Pendidikan AAS)**:
+   - URL: `https://github.com/adminpendidikanaasoperator-maker/Bidang-Pendidikan.git`
    - Branch: `main`
 
-### D. Alamat Akses Live (Produksi)
-- **Sistem Master SIMARSIP**: [https://arsip.akademiakupunktursurabaya.web.id/](https://arsip.akademiakupunktursurabaya.web.id/)
-- **Portal Web App SIPENAS (Firebase)**: [https://bidang-pendidikan.web.app](https://bidang-pendidikan.web.app)
-- **Portal Web App SIPENAS (Cloudflare)**: [https://bidang-pendidikan.adminpendidikanaas-operator.workers.dev](https://bidang-pendidikan.adminpendidikanaas-operator.workers.dev)
+### B. Alamat Akses Produksi (Live URLs)
+- **SIMARSIP Master**: [https://arsip.akademiakupunktursurabaya.web.id/](https://arsip.akademiakupunktursurabaya.web.id/)
+- **SIMARSIP Firebase CDN**: [https://arsip-aas.web.app](https://arsip-aas.web.app)
+- **Bidang Rumah Tangga - Cloudflare Worker**: [https://bidang-rumah-tangga.adminpendidikanaas-operator.workers.dev](https://bidang-rumah-tangga.adminpendidikanaas-operator.workers.dev)
+- **Bidang Rumah Tangga - Cloudflare Pages**: [https://bidang-rumah-tangga.pages.dev](https://bidang-rumah-tangga.pages.dev)
+- **Bidang Rumah Tangga - Firebase Hosting**: [https://gen-lang-client-0061932363.web.app](https://gen-lang-client-0061932363.web.app)
+- **Bidang Pendidikan - Web App**: [https://bidang-pendidikan.web.app](https://bidang-pendidikan.web.app)
+
+### C. Konfigurasi Proyek Cloud
+- **Firebase SIMARSIP**: Project ID `arsip-aas`
+- **Firebase Bidang Rumah Tangga**: Project ID `bidang-rumah-tangga` / `gen-lang-client-0061932363`
+- **Cloudflare Worker Service**: `bidang-rumah-tangga` (Account ID: `221cad940bc0594c322d0510e19bba5e`)
 
 ---
 
-## 📂 4. 10 Kategori Resmi Arsip Bidang Pendidikan
-| No | Nama Kategori | Kode Arsip | Deskripsi Dokumen |
-|:---:|:---|:---:|:---|
-| 1 | **Kurikulum & RPS OBE** | `KUR` | Naskah kurikulum, pemetaan CPL-CPMK, RPS OBE Teori & Praktikum |
-| 2 | **Modul & Bahan Ajar** | `MDL` | Modul praktikum meridian, diktat kuliah akupresur & moksibusi |
-| 3 | **Kalender & Jadwal Kuliah** | `JAD` | Kalender akademik tahunan, jadwal kuliah, jadwal ujian blok |
-| 4 | **Soal Ujian & OSCE** | `SOAL` | Blueprint ujian, bank soal UTS/UAS, rubrik stase OSCE klinis |
-| 5 | **SK Beban Mengajar Dosen** | `SK` | SK Direktur penugasan beban mengajar dosen tetap & tidak tetap |
-| 6 | **Berita Acara & Presensi** | `BAP` | BAP perkuliahan, lembar presensi mahasiswa dan dosen |
-| 7 | **Praktik Klinik & RS** | `KLN` | Logbook stase RS jejaring, penilaian pembimbing klinis CI |
-| 8 | **Akreditasi LAM-PTKes** | `AKR` | Bukti fisik borang akreditasi Kriteria 2 (Kurikulum) & Kriteria 3 |
-| 9 | **Evaluasi & Notulen Monev** | `MNV` | Notulen rapat tim kurikulum, laporan monev pembelajaran berkala |
-| 10 | **Dokumen Lainnya / Kebijakan** | `LAIN` | Panduan Tugas Akhir/KTI, kode etik akademik, surat edaran |
+## 📊 5. Skema Data & Struktur Database Firestore
+
+Dokumen database utama disimpan pada Firestore Proyek `bidang-rumah-tangga`:
+- **Collection**: `sim_rt_database`
+- **Document**: `current_state`
+- **Struktur Payload**:
+  ```json
+  {
+    "updatedAt": "2026-09-26T...",
+    "payload": {
+      "pettyCashTransactions": [],
+      "budgets": [],
+      "bills": [],
+      "inventoryATK": [],
+      "cashOpnameReports": [],
+      "appSettings": {}
+    }
+  }
+  ```
+
+### Aturan Tampilan SIMARSIP Terhadap Data:
+1. **Jika Array Kosong (`length === 0`)**:
+   - Saldo Kas: `Rp 0`
+   - Total Pagu RAB: `Rp 0`
+   - Tagihan Utilitas Belum Dibayar: `Rp 0 (0 Tagihan)`
+   - Inventaris ATK: `0 Item (0 Unit)`
+   - Grafik: **Disembunyikan total** (`rtChartsGrid.style.display = 'none'`), digantikan kartu bersih informasi.
+   - Tabel: Menampilkan baris status kosong elegan (contoh: *"Belum ada catatan transaksi kas kecil"*).
+2. **Jika Operator Menginput Data Baru**:
+   - Firestore `onSnapshot` memicu pembacaan otomatis tanpa refresh.
+   - Angka stat card menghitung agregasi riil.
+   - `#rtChartsGrid` dimunculkan kembali (`display: grid`) dan Chart.js merender grafik distribusi pengeluaran serta status tagihan secara dinamis.
 
 ---
 
-## 💡 5. Panduan Operasional & Pemeliharaan Cepat
+## 🛠️ 6. Panduan Penggunaan & Pemeliharaan
 
-1. **Mengunggah Dokumen Baru**:
-   - Buka SIPENAS atau SIMARSIP $\rightarrow$ Tab *Kelola Berkas Arsip*.
-   - Klik tombol **+ Upload Berkas**.
-   - Masukkan judul, pilih kategori (1 dari 10 kategori), tahun akademik, semester, dan unggah file PDF/dokumen atau masukkan link Google Drive.
-   - Data otomatis tersimpan di cloud Firestore dan muncul seketika di semua perangkat.
-
-2. **Mengecek Status Kosong vs Terisi**:
-   - Jika belum ada dokumen yang diunggah, dashboard dan tabel menampilkan angka 0 secara rapi dan bersih.
-   - Begitu dokumen diunggah, grafik visual, tabel repositori, dan tab kurikulum akan otomatis menghitung dan menampilkan datanya secara realtime.
-
-3. **Cara Hard Refresh Browser**:
-   - Jika tampilan browser pengguna belum terupdate karena cache:
-     - Windows: Tekan **`Ctrl + F5`** atau **`Ctrl + Shift + R`**.
-     - Mac: Tekan **`Cmd + Shift + R`**.
+1. **Memastikan Perubahan Tampil di Komputer Pengguna**:
+   - Browser modern sering menyimpan cache JavaScript secara agresif. Jika perubahan tampilan belum terlihat di komputer tertentu, lakukan hard refresh:
+     - **Windows / Linux**: Tekan **`Ctrl + F5`** atau **`Ctrl + Shift + R`**.
+     - **Mac**: Tekan **`Cmd + Shift + R`**.
+2. **Membuka Portal di Komputer Lain**:
+   - Buka langsung tautan resmi:
+     [https://bidang-rumah-tangga.adminpendidikanaas-operator.workers.dev](https://bidang-rumah-tangga.adminpendidikanaas-operator.workers.dev)
+     atau melalui SIMARSIP pada menu **Bidang Rumah Tangga $\rightarrow$ Portal Utuh Bidang Rumah Tangga**.
+3. **Memulai Pencatatan Kas / Tagihan / ATK**:
+   - Buka tab yang bersangkutan di SIMARSIP atau Portal Mandiri RT.
+   - Klik tombol **+ Tambah Transaksi / + Tambah Tagihan / + Tambah Item ATK**.
+   - Simpan, dan data akan langsung tersimpan di cloud Firestore serta terupdate seketika di semua komputer.
 
 ---
-*Catatan dokumentasi ini telah tersimpan aman di repositori proyek dan arsip sistem.*
+*Dokumen ini merupakan arsip riwayat percakapan resmi, keputusan teknis, dan dokumentasi arsitektur pengembangan sistem Akademi Akupunktur Surabaya (AAS).*
